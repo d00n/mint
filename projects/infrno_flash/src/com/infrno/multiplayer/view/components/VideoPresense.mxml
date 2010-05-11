@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 >
+	
+	<fx:Script>
+		<![CDATA[
+			import com.infrno.multiplayer.model.events.VideoPresenseEvent;
+			import com.infrno.multiplayer.model.vo.UserInfoVO;
+			
+			private var _is_local		:Boolean;
+			private var _camera			:Camera;
+			
+			private var _audio_level	:int;
+			
+			private var _data			:UserInfoVO;
+			private var _video			:Video;
+			
+			public function get video():Video
+			{
+				if(_video == null){
+					_video = new Video(160,120);
+					video_holder.addChild(_video);
+				}
+				return _video;
+			}
+			
+			public function set data(info:UserInfoVO):void
+			{
+				_data = info;
+			}
+			
+			public function set camera(cam:Camera):void
+			{
+				if(_camera == cam)
+					return;
+				
+				_is_local = true;
+				_camera = cam;
+//				video.attachNetStream(null);
+//				video.attachCamera(cam);
+				
+				toggleAudio();
+				toggleVideo();
+			}
+			
+			public function set netstream(ns:NetStream):void
+			{
+				_is_local = false;
+				video.attachCamera(null);
+				video.attachNetStream(ns);
+				
+				toggleAudio();
+				toggleVideo();
+			}
+			
+			/**
+			 * Private functions
+			 */
+			
+			private function adjustVolume():void
+			{
+				setAudioLevel(audio_level.value);
+			}
+			
+			private function toggleAudio():void
+			{
+				if(mute_audio.selected){
+					if(_is_local){
+						dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.AUDIO_MUTED,true))
+					} else {
+						setAudioLevel(0,true);
+						_data.ns.receiveAudio(false);
+					}
+				} else {
+					if(_is_local){
+						dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.AUDIO_UNMUTED,true))
+					} else {
+						setAudioLevel(audio_level.value);
+						_data.ns.receiveAudio(true);
+					}
+						
+				}
+			}
+			
+			private function toggleVideo():void
+			{
+				//if using peer then we are unable to request a receiveAudio/Video false.. we'd just need to hide it
+				if(hide_video.selected){
+					if(_is_local){
+						dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.VIDEO_MUTED,true));
+						video.attachCamera(null)
+					} else {
+						_data.ns.receiveVideo(false);
+					}
+					video.visible = false;
+				} else {
+					if(_is_local){
+						dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.VIDEO_UNMUTED,true));
+						video.attachCamera(_camera);
+					} else {
+						_data.ns.receiveVideo(true);
+					}
+					video.visible = true;
+				}
+			}
+			
+			private function setAudioLevel(levelIn:Number,force:Boolean=false):void
+			{
+				if(mute_audio.selected && !force)
+					return;
+				
+				if(_is_local){
+					dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.AUDIO_LEVEL,true,levelIn));
+				} else {
+					var curr_transform:SoundTransform = _data.ns.soundTransform;
+					curr_transform.volume = levelIn/100;
+					_data.ns.soundTransform = curr_transform;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:BorderContainer backgroundColor="#000000" width="160" height="120" />
+	<mx:UIComponent id="video_holder" width="160" height="120" />
+	<s:HGroup width="100%" height="100%" verticalAlign="bottom">
+		<s:CheckBox id="hide_video" label="hide video" color="#ffffff" click="toggleVideo()"/>
+		<mx:Spacer width="100%" />
+		<s:VGroup horizontalAlign="right">
+			<s:VSlider id="audio_level" showDataTip="false" value="90" maximum="100" change="adjustVolume()" />
+			<s:CheckBox id="mute_audio" label="mute audio" color="#ffffff" click="toggleAudio()" />
+		</s:VGroup>
+	</s:HGroup>
+	
+</s:Group>

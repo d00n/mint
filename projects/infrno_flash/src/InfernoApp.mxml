@@ -2,20 +2,26 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" 
-			   xmlns:multiplayer="com.inferno.multiplayer.*" 
-			   xmlns:components="com.inferno.multiplayer.view.components.*"
-			   minWidth="955" 
-			   minHeight="600" 
+			   xmlns:multiplayer="com.infrno.multiplayer.*" 
+			   xmlns:components="com.infrno.multiplayer.view.components.*"
 			   >
 	
 	<fx:Declarations>
 		<multiplayer:ApplicationContext contextView="{this}" />
 	</fx:Declarations>
 	
-	<mx:VBox width="200" height="100%">
-		<components:Videos width="100%" height="100%" />
-		<components:ControlButtons />
-		<components:Chat width="100%" />
-	</mx:VBox>
+	<s:HGroup width="100%" height="100%">
+		<s:Scroller height="100%">
+			<s:VGroup width="200" height="100%">
+				<components:Videos width="100%" height="100%" />
+				<components:ControlButtons />
+				<components:Chat width="100%" />
+			</s:VGroup>
+		</s:Scroller>
+		
+		<s:Scroller width="100%" height="100%">
+			<components:WhiteBoard width="100%" height="100%" />
+		</s:Scroller>
+	</s:HGroup>
 	
 </s:Application>

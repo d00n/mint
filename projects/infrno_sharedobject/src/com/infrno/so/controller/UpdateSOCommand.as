@@ -1,7 +1,7 @@
 package com.infrno.so.controller
 {
+	import com.infrno.so.model.SharedObjectProxy;
 	import com.infrno.so.model.events.BoxUpdateEvent;
-	import com.infrno.so.services.ConnectorService;
 	
 	import org.robotlegs.mvcs.Command;
 	
@@ -11,7 +11,7 @@ package com.infrno.so.controller
 		public var event				:BoxUpdateEvent;
 		
 		[Inject]
-		public var connector_service	:ConnectorService;
+		public var sharedObjectProxy	:SharedObjectProxy;
 		
 		override public function execute():void
 		{
@@ -19,7 +19,7 @@ package com.infrno.so.controller
 			var info_obj:Object = {};
 			info_obj.x = event.value.x;
 			info_obj.y = event.value.y;
-			connector_service.so.setProperty(event.value.id,info_obj);
+			sharedObjectProxy.so.setProperty(event.value.id,info_obj);
 		}
 	}
 }

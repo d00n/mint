@@ -1,6 +1,7 @@
 package com.infrno.so
 {
 	import com.infrno.so.controller.*;
+	import com.infrno.so.model.*;
 	import com.infrno.so.model.events.*;
 	import com.infrno.so.services.ConnectorService;
 	import com.infrno.so.view.components.Boxes;
@@ -22,8 +23,11 @@ package com.infrno.so
 		{
 			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE,ConnectServerCommand);
 			commandMap.mapEvent(BoxUpdateEvent.PROPERTY_UPDATE,UpdateSOCommand);
+			commandMap.mapEvent(NetConnectionEvent.NETCONNECTION_CONNECTED,ConnectSOCommand);
 			
 			mediatorMap.mapView(Boxes,BoxesMediator);
+			
+			injector.mapSingleton(SharedObjectProxy);
 			
 			injector.mapSingleton(ConnectorService);
 			super.startup();

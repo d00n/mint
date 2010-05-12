@@ -57,7 +57,6 @@ package com.infrno.chat
 			mediatorMap.mapView(Videos,VideosMediator);
 			
 			mediatorMap.mapView(ControlButtons,ControlButtonsMediator);
-			mediatorMap.mapView(WhiteBoard,WhiteBoardMediator);
 			
 			//Startup Commencing
 //			dispatchEvent(new ContextEvent(ContextEvent.STARTUP, StartupCommand));

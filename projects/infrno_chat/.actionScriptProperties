@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<actionScriptProperties mainApplicationPath="InfernoApp.mxml" projectUUID="0330f230-124e-4ea0-996c-e74754f184ff" version="6">
+<actionScriptProperties mainApplicationPath="InfernoChat.mxml" projectUUID="0330f230-124e-4ea0-996c-e74754f184ff" version="6">
   <compiler additionalCompilerArguments="-locale en_US" autoRSLOrdering="true" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="true" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin-debug" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
     <compilerSourcePath/>
     <libraryPath defaultLinkType="0">
@@ -13,7 +13,7 @@
     <sourceAttachmentPath/>
   </compiler>
   <applications>
-    <application path="InfernoApp.mxml"/>
+    <application path="InfernoChat.mxml"/>
   </applications>
   <modules/>
   <buildCSSFiles/>

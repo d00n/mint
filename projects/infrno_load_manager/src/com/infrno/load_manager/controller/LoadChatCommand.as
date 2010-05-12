@@ -6,12 +6,11 @@ package com.infrno.load_manager.controller
 	
 	import org.robotlegs.mvcs.Command;
 	
-	public class LoadWizzardCommand extends Command
+	public class LoadChatCommand extends Command
 	{
 		override public function execute():void
 		{
-			trace("supposed to try to load wizzard");
-			dispatch(new Event(EventConstants.LOAD_WIZZARD));
+			dispatch(new Event(EventConstants.LOAD_CHAT));
 		}
 	}
 }

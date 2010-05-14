@@ -19,9 +19,9 @@ package com.infrno.chat.model
 		
 		public var ns						:NetStream;
 		
-		public var auth_obj					:Object;
 		public var users_collection			:Object;
 		
+		public var auth_key					:String;
 		public var peer_server				:String		= "rtmfp://stratus.adobe.com";
 		//using personal stratus key for now
 		public var peer_server_key			:String		= "4b9d915ef5ee88cfd38eb359-abf46599bf1f";

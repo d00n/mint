@@ -22,13 +22,13 @@
 			import com.simplediagrams.events.*; 
 			import com.simplediagrams.config.Beans;			
 			import com.simplediagrams.util.Logger
-				import com.simplediagrams.model.ApplicationModel
-				import com.simplediagrams.model.DiagramModel
-				
-				import mx.rpc.events.FaultEvent;
+			import com.simplediagrams.model.ApplicationModel
+			import com.simplediagrams.model.DiagramModel
+			
+			import mx.rpc.events.FaultEvent;
 			import mx.logging.Log;
 			import mx.events.DynamicEvent
-				import mx.logging.LogEventLevel;
+			import mx.logging.LogEventLevel;
 			import mx.logging.targets.TraceTarget;
 			
 			

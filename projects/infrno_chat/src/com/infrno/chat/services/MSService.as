@@ -47,7 +47,7 @@ package com.infrno.chat.services
 		{
 			trace("connecting to media server: "+dataProxy.media_server+"/"+dataProxy.room_key);
 			dispatch(new MSEvent(MSEvent.NETCONNECTION_CONNECTING));
-			_nc.connect(dataProxy.media_server+"/"+dataProxy.room_key,dataProxy.my_info,dataProxy.auth_key);
+			_nc.connect(dataProxy.media_server+"/"+dataProxy.room_key, dataProxy.my_info, dataProxy.auth_key);
 		}
 		
 		public function get nc():NetConnection

@@ -31,6 +31,7 @@ package com.simplediagrams.events
 		public static const REFRESH_ZOOM:String = "rso_RefreshZoom";
 		public static const CHANGE_LINE_POSITION:String = "rso_ChangeLinePosition";
 		public static const SYMBOL_TEXT_EDIT:String = "rso_SymbolTextEdit";
+		public static const LOAD_FLASHVARS:String = "rso_LoadFlashvars";
 		
 		
 		private var _imageData:ByteArray
@@ -41,6 +42,10 @@ package com.simplediagrams.events
 		public var sdID:Number;
 		public var memento:TransformMemento;
 		public var sdObjectModel:SDObjectModel;
+		
+		public var auth_key:String;
+		public var username:String;
+		public var room_id:String;
 
 		public function RemoteSharedObjectEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

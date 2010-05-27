@@ -69,13 +69,18 @@ package com.simplediagrams.controllers
 		/** A value of "change" means another client changed the object or the server resynchronized the object. */
 		private static const CHANGE : String = "change";
 		
-		private static const WOWZA_SERVER:String = "rtmp://admin.infrno.net/whiteboard";
-//		private static const WOWZA_SERVER:String = "rtmp://gold/foo";
+//		private static const WOWZA_SERVER:String = "rtmp://admin.infrno.net/whiteboard";
+		private static const WOWZA_SERVER:String = "rtmp://gold/whiteboard";
 //		private static const WOWZA_SERVER:String = "rtmp://kai/foo";
 		
 		private var _netConnection:NetConnection;
 		private var _netStream:NetStream;
 		private var _remoteSharedObject:SharedObject;
+		
+		private var _auth_key:String;
+		private var _username:String;
+		private var _room_id:String;
+
 		
 		
 		[Autowire(bean='diagramModel')]
@@ -130,7 +135,7 @@ package com.simplediagrams.controllers
 			}			
 			_netConnection.client = clientObj;
 			
-			_netConnection.connect(WOWZA_SERVER);     
+			_netConnection.connect(WOWZA_SERVER, _auth_key, _room_id, _username);     
 		}
 		
 		public function onStatus( event : NetStatusEvent) : void {
@@ -250,6 +255,14 @@ package com.simplediagrams.controllers
 			_netStream.close();
 			_netStream = null;
 
+		}
+		
+		[Mediate(event="RemoteSharedObjectEvent.LOAD_FLASHVARS")]
+		public function loadFlashvars(event:RemoteSharedObjectEvent):void
+		{
+			_auth_key = event.auth_key;
+			_username = event.username;
+			_room_id = event.room_id;			
 		}
 				
 //		private function processUpdate( event : SyncEvent ) : void {

@@ -44,8 +44,9 @@ package com.simplediagrams.events
 		public var sdObjectModel:SDObjectModel;
 		
 		public var auth_key:String;
-		public var username:String;
 		public var room_id:String;
+		public var room_name:String;
+		public var user_name:String;
 
 		public function RemoteSharedObjectEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

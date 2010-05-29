@@ -70,7 +70,7 @@ package com.simplediagrams.controllers
 		private static const CHANGE : String = "change";
 		
 //		private static const WOWZA_SERVER:String = "rtmp://admin.infrno.net/whiteboard";
-		private static const WOWZA_SERVER:String = "rtmp://gold/whiteboard";
+		private static const WOWZA_SERVER:String = "rtmp://localhost/whiteboard";
 //		private static const WOWZA_SERVER:String = "rtmp://kai/foo";
 		
 		private var _netConnection:NetConnection;
@@ -78,8 +78,9 @@ package com.simplediagrams.controllers
 		private var _remoteSharedObject:SharedObject;
 		
 		private var _auth_key:String;
-		private var _username:String;
 		private var _room_id:String;
+		private var _room_name:String;
+		private var _user_name:String;
 
 		
 		
@@ -135,7 +136,7 @@ package com.simplediagrams.controllers
 			}			
 			_netConnection.client = clientObj;
 			
-			_netConnection.connect(WOWZA_SERVER, _auth_key, _room_id, _username);     
+			_netConnection.connect(WOWZA_SERVER+"/"+_room_id, _auth_key, _auth_key, _room_id, _room_name, _user_name);     
 		}
 		
 		public function onStatus( event : NetStatusEvent) : void {
@@ -237,6 +238,21 @@ package com.simplediagrams.controllers
 				Swiz.dispatchEvent(evt)		
 			}	
 		}
+		
+		//[Mediate(event="RemoteSharedObjectEvent.LOAD_IMAGE")]
+		public function dispatchUpdate_LoadImage(rsoEvent:RemoteSharedObjectEvent):void
+		{
+			_netConnection.call("sendJPG", null, rsoEvent.imageData, 
+				rsoEvent.sdImageModel.sdID,
+				rsoEvent.sdImageModel.x,
+				rsoEvent.sdImageModel.y,
+				rsoEvent.sdImageModel.width,
+				rsoEvent.sdImageModel.height,
+				rsoEvent.sdImageModel.zIndex,
+				rsoEvent.sdImageModel.origHeight,
+				rsoEvent.sdImageModel.origWidth,
+				rsoEvent.sdImageModel.styleName);
+		}		
 
 		[Mediate(event="RemoteSharedObjectEvent.RESET")]
 		public function reset():void
@@ -261,8 +277,9 @@ package com.simplediagrams.controllers
 		public function loadFlashvars(event:RemoteSharedObjectEvent):void
 		{
 			_auth_key = event.auth_key;
-			_username = event.username;
 			_room_id = event.room_id;			
+			_room_name = event.room_name;			
+			_user_name = event.user_name;
 		}
 				
 //		private function processUpdate( event : SyncEvent ) : void {
@@ -845,21 +862,6 @@ package com.simplediagrams.controllers
 //		public function processUpdate_ChangeAllShapesToDefaultColor(event:SyncEvent):void
 //		{
 //			diagramModel.changeAllShapesToDefaultColor();
-//		}
-//		
-//		//[Mediate(event="RemoteSharedObjectEvent.LOAD_IMAGE")]
-//		public function dispatchUpdate_LoadImage(rsoEvent:RemoteSharedObjectEvent):void
-//		{
-//			_netConnection.call("sendJPG", null, rsoEvent.imageData, 
-//				rsoEvent.sdImageModel.sdID,
-//				rsoEvent.sdImageModel.x,
-//				rsoEvent.sdImageModel.y,
-//				rsoEvent.sdImageModel.width,
-//				rsoEvent.sdImageModel.height,
-//				rsoEvent.sdImageModel.zIndex,
-//				rsoEvent.sdImageModel.origHeight,
-//				rsoEvent.sdImageModel.origWidth,
-//				rsoEvent.sdImageModel.styleName);
 //		}
 //		
 //		//[Mediate(event="RemoteSharedObjectEvent.CHANGE_COLOR")]

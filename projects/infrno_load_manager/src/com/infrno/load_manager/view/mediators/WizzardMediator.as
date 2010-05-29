@@ -27,7 +27,7 @@ package com.infrno.load_manager.view.mediators
 		{
 			if(e.target != wizzard.close_btn)
 				return;
-			trace("hit me");
+			trace("WizzardMediator.closeWizzard() hit me");
 			dispatch(new Event(EventConstants.WIZZARD_COMPLETE));
 		}
 		

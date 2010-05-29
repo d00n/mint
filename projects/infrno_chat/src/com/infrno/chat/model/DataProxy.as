@@ -22,14 +22,18 @@ package com.infrno.chat.model
 		public var users_collection			:Object;
 		
 		public var auth_key					:String;
-		public var peer_server				:String		= "rtmfp://stratus.adobe.com";
+		public var room_id					:String;
+		public var room_name				:String;
+		public var user_name				:String;
+		
 		//using personal stratus key for now
 		public var peer_server_key			:String		= "4b9d915ef5ee88cfd38eb359-abf46599bf1f";
+		public var peer_server				:String		= "rtmfp://stratus.adobe.com";
+		
 //		public var media_server				:String		= "rtmp://home.jakehilton.com/infrno";
 //		public var media_server				:String		= "rtmp://admin.infrno.net/chat";
-		public var media_server				:String		= "rtmp://gold/chat";
+		public var media_server				:String		= "rtmp://localhost/chat";
 		
-		public var room_key					:String		= "some_room";
 		
 		public var my_info					:UserInfoVO = new UserInfoVO({"uname":"user"+Math.round(Math.random()*1000)});
 		

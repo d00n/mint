@@ -39,15 +39,28 @@ package com.infrno.chat.services
 		
 		public function chatToServer(msgIn:String, targetUsers:Array=null):void
 		{
-			trace("sending this chat to the server: "+msgIn);
+			trace("MSService.chatToServer() sending this chat to the server: "+msgIn);
 			_nc.call("chatToServer",null,msgIn,targetUsers);
 		}
 		
 		public function connect():void
 		{
-			trace("connecting to media server: "+dataProxy.media_server+"/"+dataProxy.room_key);
+			trace("MSService.connect() connecting to media server: "
+				+dataProxy.media_server+"/"+dataProxy.room_id);
+			
+			trace("MSService.connect() dataProxy params available:" 
+				+ dataProxy.room_name 
+				+":"+ dataProxy.user_name 
+				+":"+ dataProxy.room_id 
+				+":"+ dataProxy.auth_key);
+		
 			dispatch(new MSEvent(MSEvent.NETCONNECTION_CONNECTING));
-			_nc.connect(dataProxy.media_server+"/"+dataProxy.room_key, dataProxy.my_info, dataProxy.auth_key);
+			_nc.connect(dataProxy.media_server+"/"+dataProxy.room_id, 
+				dataProxy.my_info, 
+				dataProxy.auth_key,
+				dataProxy.room_id,
+				dataProxy.room_name, 
+				dataProxy.user_name);
 		}
 		
 		public function get nc():NetConnection
@@ -69,7 +82,7 @@ package com.infrno.chat.services
 		
 		public function getUserStats():void
 		{
-			_nc.call("getUserStats",null);
+			_nc.call("MSService.connect() getUserStats",null);
 		}
 		
 		public function reportUserStats(statsIn:Object):void
@@ -81,7 +94,7 @@ package com.infrno.chat.services
 		{
 			if(!dataProxy.use_peer_connection){
 				if(!_publishing){
-					trace("### publishing my server stream with name: "+dataProxy.my_info.suid.toString());
+					trace("MSService.updatePublishStream() ### publishing my server stream with name: "+dataProxy.my_info.suid.toString());
 					if(dataProxy.pubishing_audio)
 						_ns.attachAudio(deviceProxy.mic);
 					if(dataProxy.pubishing_video)
@@ -90,10 +103,10 @@ package com.infrno.chat.services
 					
 					dataProxy.ns = _ns;
 				} else {
-					trace("### already publishing my server stream");
+					trace("MSService.updatePublishStream() ### already publishing my server stream");
 				}
 			} else {
-				trace("### closing server publish stream");
+				trace("MSService.updatePublishStream() ### closing server publish stream");
 				_ns.close();
 			}
 		}
@@ -109,7 +122,7 @@ package com.infrno.chat.services
 		
 		private function netStatusHandler(e:NetStatusEvent):void
 		{
-			trace("Media: "+e.info.code);
+			trace("MSService.netStatusHandler() Media: "+e.info.code);
 			switch(e.info.code){
 				case "NetConnection.Connect.Closed":
 					dispatch(new MSEvent(MSEvent.NETCONNECTION_DISCONNECTED));
@@ -164,7 +177,7 @@ package com.infrno.chat.services
 		
 		private function updateUsers(users_obj:Object):void
 		{
-			trace("users object has been updated");
+			trace("MSService.updateUsers() users object has been updated");
 			
 			//removing data
 			for(var n:String in dataProxy.users_collection)

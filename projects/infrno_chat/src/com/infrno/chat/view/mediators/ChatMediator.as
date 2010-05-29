@@ -39,7 +39,36 @@ package com.infrno.chat.view.mediators
 			if(stripWhite(chat.chat_in.text).length == 0)
 				return;
 			
-			dispatch(new ChatEvent(ChatEvent.SEND_CHAT,chat.chat_in.text));
+			var msg:String = chat.chat_in.text;
+			
+			var dieRollRE:RegExp = /^(roll )?(?P<numOfDie>\d*)d(?P<numOfSides>\d+)$/i;
+			var result:Array = dieRollRE.exec(msg);
+			var numOfDie:int = 1;
+			var rollDice:Boolean = false;
+			if (result != null && result.numOfSides != null && result.numOfSides > 0 && result.numOfSides < 101) {
+				if (result.numOfDie != null && result.numOfDie > 0 && result.numOfDie < 101) {
+					numOfDie = result.numOfDie;					
+				}
+				var numOfSides:int = result.numOfSides;
+				var rollsArray:Array = new Array(numOfDie);
+				var sumOfRolls:int = 0;
+				var roll:int = 0;
+				for (var i:int=0; i<numOfDie; i++) {
+					roll = Math.ceil(Math.random() * numOfSides);
+					rollsArray[i] = roll;
+					sumOfRolls += rollsArray[i]
+				}				
+				rollsArray.sort();
+				
+				msg += ": "
+				
+				for (var n:int=0; n<numOfDie; n++) {
+					msg += rollsArray[n] + ", " 
+				}								
+				msg += "total = " + sumOfRolls;	
+			}
+			
+			dispatch(new ChatEvent(ChatEvent.SEND_CHAT, msg));
 			clearChat();
 		}
 		

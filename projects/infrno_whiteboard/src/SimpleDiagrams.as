@@ -46,16 +46,16 @@ isFirstRun = event.target.isFirstRun
 
 protected function onAppComplete():void
 {
-//	Swiz.dispatchEvent(new ApplicationEvent(ApplicationEvent.INIT_APP, true));
+	Swiz.dispatchEvent(new ApplicationEvent(ApplicationEvent.INIT_APP, true));
 		
 	var loader_info:LoaderInfo = this.loaderInfo;
 	var flash_vars:Object = loader_info.parameters;
 	
 	try{
-		trace("SimpleDiagrams onAppComplete() parent load parameters");
+		Logger.debug("SimpleDiagrams.as onAppComplete() parent load parameters");
 		flash_vars = loader_info.loader.loaderInfo.parameters;
 	}catch(e:Object){
-		trace("SimpleDiagrams onAppComplete() not loaded by another movie");
+		Logger.debug("SimpleDiagrams.as onAppComplete() not loaded by another movie");
 	}
 		
 	var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LOAD_FLASHVARS);
@@ -63,21 +63,27 @@ protected function onAppComplete():void
 	try{
 		rsoEvent.auth_key = flash_vars.auth_key;
 	}catch(e:Object){
-		trace("SimpleDiagrams onAppComplete() flash_vars.auth_key not set");
-	}
-
-	try{
-		rsoEvent.username = flash_vars.username;
-	}catch(e:Object){
-		trace("SimpleDiagrams onAppComplete() flash_vars.username not set");
+		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.auth_key not set");
 	}
 
 	try{
 		rsoEvent.room_id = flash_vars.room_id;
 	}catch(e:Object){
-		trace("SimpleDiagrams onAppComplete() flash_vars.room_id not set");
+		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.room_id not set");
 	}
 	
+	try{
+		rsoEvent.room_name = flash_vars.room_name;
+	}catch(e:Object){
+		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.room_name not set");
+	}
+	
+	try{
+		rsoEvent.user_name = flash_vars.user_name;
+	}catch(e:Object){
+		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.username not set");
+	}
+
 	Swiz.dispatchEvent(rsoEvent);
 }
 

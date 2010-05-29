@@ -149,9 +149,9 @@ package com.infrno.chat.services
 		
 		private function setupNetGroup():void
 		{
-			trace("setting up group: "+dataProxy.room_key);
+			trace("setting up group: "+dataProxy.room_id);
 			
-			_group_spec = new GroupSpecifier("com.infrno.multiplayer:"+dataProxy.room_key);
+			_group_spec = new GroupSpecifier("com.infrno.multiplayer:"+dataProxy.room_id);
 			_group_spec.multicastEnabled = true;
 			_group_spec.serverChannelEnabled = true;
 			

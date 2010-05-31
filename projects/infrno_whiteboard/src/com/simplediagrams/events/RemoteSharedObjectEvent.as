@@ -43,8 +43,9 @@ package com.simplediagrams.events
 		public var memento:TransformMemento;
 		public var sdObjectModel:SDObjectModel;
 		
-		public var auth_key:String;
-		public var room_id:String;
+		// Wowza will accept these values for specified hosts.
+		public var auth_key:String = "test_key";
+		public var room_id:String= "test_room";
 		public var room_name:String;
 		public var user_name:String;
 

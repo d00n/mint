@@ -50,16 +50,22 @@ protected function onAppComplete():void
 		
 	var loader_info:LoaderInfo = this.loaderInfo;
 	var flash_vars:Object = loader_info.parameters;
-	
+
+	var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LOAD_FLASHVARS);
+
 	try{
 		Logger.debug("SimpleDiagrams.as onAppComplete() parent load parameters");
 		flash_vars = loader_info.loader.loaderInfo.parameters;
 	}catch(e:Object){
 		Logger.debug("SimpleDiagrams.as onAppComplete() not loaded by another movie");
+
+		// To facilitate dev work, rsoEvent has default values set for auth_key and room_id. 
+		// Wowza will accept these values for specified hosts.
+		Swiz.dispatchEvent(rsoEvent);
+		return;
 	}
 		
-	var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LOAD_FLASHVARS);
-	
+
 	try{
 		rsoEvent.auth_key = flash_vars.auth_key;
 	}catch(e:Object){

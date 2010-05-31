@@ -138,7 +138,7 @@ package com.simplediagrams.controllers
 			}			
 			_netConnection.client = clientObj;
 			
-			var wowza_server:String = WOWZA_SERVER +"/foo"+ _room_id;
+			var wowza_server:String = WOWZA_SERVER +"/"+ _room_id;
 			
 			Logger.info("connect() about to connect to " + wowza_server,this);
 			
@@ -153,10 +153,11 @@ package com.simplediagrams.controllers
 			if (event.info !== '' || event.info !== null) {  
 				switch (event.info.code) {
 					case "NetConnection.Connect.Success":   
+						Logger.info("NetConnection.Connect.Success", this);  
 						createSharedObject();  
 						break;
 					case "NetConnection.Connect.Closed":  
-						trace("Disconnected");  
+						Logger.info("NetConnection.Connect.Closed", this);  
 						break;
 				}      
 			}
@@ -180,9 +181,9 @@ package com.simplediagrams.controllers
 			_remoteSharedObject.connect(_netConnection); 
 		}
 		
-		public function securityErrorHandler(event : SecurityErrorEvent) : void {  trace('Security Error: '+event);  }
-		public function ioErrorHandler(event : IOErrorEvent) : void {  trace('IO Error: '+event);  }
-		public function asyncErrorHandler(event : AsyncErrorEvent) : void {  trace('Async Error: '+event);  }  		
+		public function securityErrorHandler(event : SecurityErrorEvent) : void {  Logger.info('Security Error: '+event, this);  }
+		public function ioErrorHandler(event : IOErrorEvent) : void {  Logger.info('IO Error: '+event, this);  }
+		public function asyncErrorHandler(event : AsyncErrorEvent) : void {  Logger.info('Async Error: '+event, this);  }  		
 		
 		private function onSyncEventHandler(event : SyncEvent):void {
 			Logger.info("onSyncEventHandler event:" + event,this);	

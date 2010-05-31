@@ -71,14 +71,14 @@ package com.infrno.chat.view.mediators
 					}
 				}catch(e:Object){
 					//out of range error I'm sure
-					trace(e.toString());
+					trace("VideosMediator.removeVideos() " +e.toString());
 				}
 			}
 		}
 		
 		private function updateVideos():void
 		{
-			trace("updating videos");
+			trace("VideosMediator.updateVideos() updating videos");
 			
 			for(var n:String in dataProxy.users_collection){
 				var curr_info:UserInfoVO = dataProxy.users_collection[n];
@@ -94,19 +94,19 @@ package com.infrno.chat.view.mediators
 				}
 				
 				if(curr_info.suid == dataProxy.my_info.suid){
-					trace("this is my video.. so showing my camera");
+					trace("VideosMediator.updateVideos() this is my video.. so showing my camera");
 					video_presense.camera = deviceProxy.camera;
 					video_presense.audio_level.value = deviceProxy.mic.gain;
 				} else {
 					//update/create netstream to play from
 					//start playing the suid
 					if(dataProxy.use_peer_connection && curr_info.nearID && dataProxy.peer_capable && !(curr_info.ns is NetStreamPeer) ){
-						trace("setting up and playing from the peer connection: "+curr_info.suid.toString());
+						trace("VideosMediator.updateVideos() setting up and playing from the peer connection: "+curr_info.suid.toString());
 						curr_info.ns = peerService.getNewNetStream(curr_info.nearID);
 						curr_info.ns.play(curr_info.suid.toString());
 						video_presense.netstream = curr_info.ns;
 					} else if(!dataProxy.use_peer_connection && !(curr_info.ns is NetStreamMS) ){
-						trace("setting up and playing from the stream server");
+						trace("VideosMediator.updateVideos() setting up and playing from the stream server");
 						curr_info.ns = msService.getNewNetStream();
 						curr_info.ns.play(curr_info.suid.toString(),-1);
 						video_presense.netstream = curr_info.ns;

@@ -63,24 +63,28 @@ protected function onAppComplete():void
 	try{
 		rsoEvent.auth_key = flash_vars.auth_key;
 	}catch(e:Object){
+		rsoEvent.auth_key = "not_set"
 		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.auth_key not set");
 	}
 
 	try{
 		rsoEvent.room_id = flash_vars.room_id;
 	}catch(e:Object){
+		rsoEvent.room_id = "not_set"
 		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.room_id not set");
 	}
 	
 	try{
 		rsoEvent.room_name = flash_vars.room_name;
 	}catch(e:Object){
+		rsoEvent.room_name = "not_set"
 		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.room_name not set");
 	}
 	
 	try{
 		rsoEvent.user_name = flash_vars.user_name;
 	}catch(e:Object){
+		rsoEvent.user_name = "not_set"
 		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.username not set");
 	}
 

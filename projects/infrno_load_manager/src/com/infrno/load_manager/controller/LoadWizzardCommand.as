@@ -10,7 +10,7 @@ package com.infrno.load_manager.controller
 	{
 		override public function execute():void
 		{
-			trace("supposed to try to load wizzard");
+			trace("LoadWizzardCommand.execute() supposed to try to load wizzard");
 			dispatch(new Event(EventConstants.LOAD_WIZZARD));
 		}
 	}

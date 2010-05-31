@@ -34,6 +34,7 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.view.SDComponents.SDLine;
 	import com.simplediagrams.view.SDComponents.SDTextArea;
 	import com.simplediagrams.view.dialogs.DiagramPropertiesDialog;
+	import com.simplediagrams.vo.DummyUserInfoVO;
 	
 	import flash.display.BitmapData;
 	import flash.events.AsyncErrorEvent;
@@ -59,7 +60,7 @@ package com.simplediagrams.controllers
 	import org.swizframework.controller.AbstractController;
 	
 	import spark.components.Group;
-	
+		
 	public class RemoteSharedObjectController extends AbstractController 
 	{
 
@@ -71,7 +72,9 @@ package com.simplediagrams.controllers
 		
 //		private static const WOWZA_SERVER:String = "rtmp://admin.infrno.net/whiteboard";
 		private static const WOWZA_SERVER:String = "rtmp://localhost/whiteboard";
-//		private static const WOWZA_SERVER:String = "rtmp://kai/foo";
+//		private static const WOWZA_SERVER:String = "rtmp://kai/whiteboard";
+		
+		private static const SHARED_OBJECT_NAME:String = "whiteboard_contents";
 		
 		private var _netConnection:NetConnection;
 		private var _netStream:NetStream;
@@ -103,7 +106,6 @@ package com.simplediagrams.controllers
 //		public var diagramStyleManager:DiagramStyleManager
 		
 		public function RemoteSharedObjectController() {			
-			connect();
 		}
 
 		[Mediate(event="RemoteSharedObjectEvent.START")]
@@ -136,7 +138,14 @@ package com.simplediagrams.controllers
 			}			
 			_netConnection.client = clientObj;
 			
-			_netConnection.connect(WOWZA_SERVER+"/"+_room_id, _auth_key, _auth_key, _room_id, _room_name, _user_name);     
+			var wowza_server:String = WOWZA_SERVER +"/foo"+ _room_id;
+			
+			Logger.info("connect() about to connect to " + wowza_server,this);
+			
+			var dummyUserInfoVO:DummyUserInfoVO = new DummyUserInfoVO();
+			_netConnection.connect(wowza_server, dummyUserInfoVO, _auth_key, _room_id, _room_name, _user_name);     
+			
+//			_netConnection.connect(wowza_server);     
 		}
 		
 		public function onStatus( event : NetStatusEvent) : void {
@@ -161,7 +170,7 @@ package com.simplediagrams.controllers
 			_netStream.client = this;    
 						
 			try {
-				_remoteSharedObject = SharedObject.getRemote("myDataObj", _netConnection.uri);
+				_remoteSharedObject = SharedObject.getRemote(SHARED_OBJECT_NAME, _netConnection.uri);
 			} catch(error:Error) {
 				Logger.info("createSharedObject() could not create remote shared object: " + error.toString(),this);		
 			}
@@ -216,7 +225,7 @@ package com.simplediagrams.controllers
 		[Mediate(event="RemoteSharedObjectEvent.SYMBOL_TEXT_EDIT")]
 		public function dispatchUpdate_xmlDiagram(event:RemoteSharedObjectEvent):void
 		{
-			Logger.info("dispatchUpdate_addSDObjectModel()",this);		
+			Logger.info("dispatchUpdate_xmlDiagram()",this);		
 			
 			var xmlDiagram:XML = fileManager.convertDiagramToXML();
 			
@@ -227,7 +236,7 @@ package com.simplediagrams.controllers
 		
 		public function processUpdate_xmlDiagram():void
 		{
-			Logger.info("processUpdate_addSDObjectModel()",this);		
+			Logger.info("processUpdate_xmlDiagram()",this);		
 			
 			var xmlDiagram:XML = new XML(_remoteSharedObject.data.xmlDiagram);
 			if (xmlDiagram != null ) {
@@ -239,9 +248,11 @@ package com.simplediagrams.controllers
 			}	
 		}
 		
-		//[Mediate(event="RemoteSharedObjectEvent.LOAD_IMAGE")]
+		[Mediate(event="RemoteSharedObjectEvent.LOAD_IMAGE")]
 		public function dispatchUpdate_LoadImage(rsoEvent:RemoteSharedObjectEvent):void
 		{
+			Logger.info("dispatchUpdate_LoadImage()",this);
+			
 			_netConnection.call("sendJPG", null, rsoEvent.imageData, 
 				rsoEvent.sdImageModel.sdID,
 				rsoEvent.sdImageModel.x,
@@ -280,6 +291,8 @@ package com.simplediagrams.controllers
 			_room_id = event.room_id;			
 			_room_name = event.room_name;			
 			_user_name = event.user_name;
+			
+			connect();
 		}
 				
 //		private function processUpdate( event : SyncEvent ) : void {

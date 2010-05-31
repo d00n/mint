@@ -17,10 +17,10 @@ package com.infrno.chat.controller
 			var flash_vars:Object = loader_info.parameters;
 			
 			try{
-				trace("parent load parameters");
+				trace("InitLocalVarsCommand.execute() parent load parameters");
 				flash_vars = loader_info.loader.loaderInfo.parameters;
 			}catch(e:Object){
-				trace("not loaded by another movie");
+				trace("InitLocalVarsCommand.execute() not loaded by another movie");
 			}
 			
 			dataProxy.auth_key = flash_vars.auth_key;
@@ -35,7 +35,7 @@ package com.infrno.chat.controller
 			}catch(e:Object){
 				dataProxy.peer_enabled = true;
 			}
-			trace("peer enabled: "+dataProxy.peer_enabled);
+			trace("InitLocalVarsCommand.execute() peer enabled: "+dataProxy.peer_enabled);
 		}
 	}
 }

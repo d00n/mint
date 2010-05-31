@@ -35,7 +35,7 @@ package com.infrno.chat.services
 		
 		public function connect():void
 		{
-			trace("connecting to peer server: "+dataProxy.peer_server);
+			trace("PeerService.connect() connecting to peer server: "+dataProxy.peer_server);
 			dispatch(new PeerEvent(PeerEvent.PEER_NETCONNECTION_CONNECTING));
 			_nc.connect(dataProxy.peer_server+"/"+dataProxy.peer_server_key);
 		}
@@ -58,7 +58,7 @@ package com.infrno.chat.services
 			
 			if(dataProxy.use_peer_connection){
 				if(!_publishing){
-					trace(">>> publishing my peer stream with name: "+dataProxy.my_info.suid.toString());
+					trace("PeerService.updatePublishStream() >>> publishing my peer stream with name: "+dataProxy.my_info.suid.toString());
 					setupOutgoingNetStream();
 					if(dataProxy.pubishing_audio)
 						_ns_outgoing.attachAudio(deviceProxy.mic);
@@ -68,10 +68,10 @@ package com.infrno.chat.services
 					
 					dataProxy.ns = _ns_outgoing;
 				} else {
-					trace(">>> already publishing my peer stream");
+					trace("PeerService.updatePublishStream() >>> already publishing my peer stream");
 				}
 			} else {
-				trace(">>> closing peer publish stream");
+				trace("PeerService.updatePublishStream() >>> closing peer publish stream");
 				if(_ns_outgoing)
 					_ns_outgoing.close();
 			}
@@ -83,7 +83,7 @@ package com.infrno.chat.services
 		
 		private function handleNetStatus(e:NetStatusEvent):void
 		{
-			trace("Peer: "+e.info.code);
+			trace("PeerService.handleNetStatus() Peer: "+e.info.code);
 			switch(e.info.code){
 				case "NetConnection.Connect.Success":
 					dispatch(new PeerEvent(PeerEvent.PEER_NETCONNECTION_CONNECTED,_nc.nearID));
@@ -103,7 +103,7 @@ package com.infrno.chat.services
 			trace("Outgoing Event: "+e.info.code);
 			switch(e.info.code){
 				case "NetStream.Play.Start":
-					trace("someone connected to me and is playing my stream");
+					trace("PeerService.handleOutgoingNetStatus() someone connected to me and is playing my stream");
 					break;
 				case "NetStream.Publish.BadName":
 					_publishing = false;
@@ -145,7 +145,7 @@ package com.infrno.chat.services
 			var c:Object = new Object();
 			c.onPeerConnect = function(caller:NetStream):Boolean
 			{
-				trace("#### Caller connecting to listener stream: " + caller.farID);
+				trace("PeerService.setupOutgoingNetStream() #### Caller connecting to listener stream: " + caller.farID);
 //				trace("opposite_user._nearID: "+opposite_user._nearID);
 //				return opposite_user._nearID==caller.farID;
 				return true;

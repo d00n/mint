@@ -35,6 +35,7 @@ package com.simplediagrams.events
 		
 		
 		private var _imageData:ByteArray
+		public var imageName:String;
 		public static const STYLE_PHOTO:String = "photoStyle";
 		public var sdImageModel:SDImageModel;
 		public var text:String;

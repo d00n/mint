@@ -500,11 +500,11 @@ package com.simplediagrams.controllers
 		[Mediate(event='LoadImageEvent.ADD_IMAGE_FROM_MENU')]
 		public function onAddImageFromMenu(event:LoadImageEvent):void
 		{			
-			_currModelForImageLoad = new SDImageModel();
-			_currModelForImageLoad.x = 10;
-			_currModelForImageLoad.y = 10;
-			
-			diagramModel.addSDObjectModel(_currModelForImageLoad);
+//			_currModelForImageLoad = new SDImageModel();
+//			_currModelForImageLoad.x = 10;
+//			_currModelForImageLoad.y = 10;
+//			
+//			diagramModel.addSDObjectModel(_currModelForImageLoad);
 			
 			_fileReference = new FileReference();
 			_fileReference.addEventListener(Event.SELECT, onFileSelect);
@@ -537,10 +537,16 @@ package com.simplediagrams.controllers
 		
 		public function onLoadComplete(event:Event):void
 		{				
+			_currModelForImageLoad = new SDImageModel();
+			_currModelForImageLoad.x = 10;
+			_currModelForImageLoad.y = 10;
 			_currModelForImageLoad.imageData = _fileReference.data;		
+			
+			diagramModel.addSDObjectModel(_currModelForImageLoad);			
 				
 			var remoteSharedObjectEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LOAD_IMAGE, true, true);
 			remoteSharedObjectEvent.imageData = _fileReference.data;
+			remoteSharedObjectEvent.imageName = _fileReference.name;
 			remoteSharedObjectEvent.sdImageModel = _currModelForImageLoad;
 			Swiz.dispatchEvent(remoteSharedObjectEvent);	
 		}

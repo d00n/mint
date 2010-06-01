@@ -254,16 +254,16 @@ package com.simplediagrams.controllers
 		{
 			Logger.info("dispatchUpdate_LoadImage()",this);
 			
-			_netConnection.call("sendJPG", null, rsoEvent.imageData, 
-				rsoEvent.sdImageModel.sdID,
-				rsoEvent.sdImageModel.x,
-				rsoEvent.sdImageModel.y,
-				rsoEvent.sdImageModel.width,
-				rsoEvent.sdImageModel.height,
-				rsoEvent.sdImageModel.zIndex,
-				rsoEvent.sdImageModel.origHeight,
-				rsoEvent.sdImageModel.origWidth,
-				rsoEvent.sdImageModel.styleName);
+			_netConnection.call("sendImage", null, rsoEvent.imageData, 
+				rsoEvent.imageName);
+//				rsoEvent.sdImageModel.x,
+//				rsoEvent.sdImageModel.y,
+//				rsoEvent.sdImageModel.width,
+//				rsoEvent.sdImageModel.height,
+//				rsoEvent.sdImageModel.zIndex,
+//				rsoEvent.sdImageModel.origHeight,
+//				rsoEvent.sdImageModel.origWidth,
+//				rsoEvent.sdImageModel.styleName);
 		}		
 
 		[Mediate(event="RemoteSharedObjectEvent.RESET")]

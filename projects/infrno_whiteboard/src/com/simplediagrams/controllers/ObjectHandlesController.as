@@ -53,6 +53,7 @@ package com.simplediagrams.controllers
 			//remoteSharedObjectController.dispatchUpdate_ObjectChanged(cmd)			
 				
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.transformCommand = cmd;
 			Swiz.dispatchEvent(rsoEvent);
 		}
 		
@@ -114,6 +115,7 @@ package com.simplediagrams.controllers
 				
 			//remoteSharedObjectController.dispatchUpdate_ObjectChanged(cmd)
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.transformCommand = cmd;
 			Swiz.dispatchEvent(rsoEvent);
 
 		}

@@ -62,6 +62,7 @@ package com.simplediagrams.controllers
 					
 				//remoteSharedObjectController.dispatchUpdate_CutEvent(cmd);	
 				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.CUT);	
+				rsoEvent.cutCommand = cmd;
 				Swiz.dispatchEvent(rsoEvent);
 			}
 			else
@@ -140,6 +141,7 @@ package com.simplediagrams.controllers
 					
 //				remoteSharedObjectController.dispatchUpdate_PasteEvent(cmd);
 				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.PASTE);	
+				rsoEvent.pasteCommand = cmd;
 				Swiz.dispatchEvent(rsoEvent);
 
 			}

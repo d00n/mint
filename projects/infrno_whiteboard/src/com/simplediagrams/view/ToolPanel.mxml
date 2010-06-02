@@ -19,6 +19,8 @@
 			import com.simplediagrams.events.PositionEvent;
 			import com.simplediagrams.events.StyleEvent;
 			import com.simplediagrams.events.ToolPanelEvent;
+			import com.simplediagrams.events.LoadImageEvent;
+			import com.simplediagrams.events.UndoRedoEvent;
 			import com.simplediagrams.model.DiagramModel;
 			import com.simplediagrams.model.DiagramStyleManager;
 			import com.simplediagrams.util.Logger;
@@ -49,8 +51,7 @@
 			
 			[Bindable]		
 			[Embed(source='assets/img/icons/picture_add.png')]
-			private var addPictureIcon:Class
-			
+			private var addPictureIcon:Class			
 			
 			[Bindable]		
 			[Embed(source='assets/img/icons/T_icon.png')]
@@ -77,7 +78,15 @@
 			[Bindable]
 			[Embed(source='assets/img/icons/move_forward.png')]
 			private var moveForward:Class
-								
+			
+			[Bindable]
+			[Embed(source='assets/img/icons/arrow_rotate_left.png')]
+			private var undoIcon:Class
+			
+			[Bindable]
+			[Embed(source='assets/img/icons/arrow_rotate_right.png')]
+			private var redoIcon:Class
+			
 			[Bindable]
 			[Embed(source='assets/img/icons/zoom.png')]
 			private var magnifier:Class
@@ -114,6 +123,24 @@
 			{
 				var evt:ToolPanelEvent = new ToolPanelEvent(ToolPanelEvent.TOOL_SELECTED, true)
 				evt.toolTypeSelected = DiagramModel.PENCIL_TOOL
+				dispatchEvent(evt)
+			}
+			
+			protected function onUndoIcon():void
+			{
+				var undoEvent:UndoRedoEvent = new UndoRedoEvent(UndoRedoEvent.UNDO, true)		
+				Swiz.dispatchEvent(undoEvent)
+			}
+			
+			protected function onRedoIcon():void
+			{
+				var redoEvent:UndoRedoEvent = new UndoRedoEvent(UndoRedoEvent.REDO, true)		
+				Swiz.dispatchEvent(redoEvent)
+			}
+			
+			protected function onAddPictureIcon():void
+			{
+				var evt:LoadImageEvent = new LoadImageEvent(LoadImageEvent.ADD_IMAGE_FROM_MENU, true)
 				dispatchEvent(evt)
 			}
 			
@@ -188,6 +215,12 @@
 		<mx:Button icon="{lineIcon}" click="onLineTool()" width="30" height="30"  toolTip="Line tool"/>		
 								
 		<mx:Button icon="{textIcon}" click="onTextTool()" width="30" height="30" toolTip="Text tool"/>	
+		
+		<mx:Button icon="{addPictureIcon}" click="onAddPictureIcon()" width="30" height="30" toolTip="Add picture"/>
+		
+		<mx:Button icon="{undoIcon}" click="onUndoIcon()" width="30" height="30" toolTip="Undo"/>
+		
+		<mx:Button icon="{redoIcon}" click="onRedoIcon()" width="30" height="30" toolTip="Redo"/>
 		
 		<mx:Button icon="{magnifier}" click="onZoomTool()" width="30" height="30" toolTip="Zoom In/Out"/>	
 		

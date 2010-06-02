@@ -19,7 +19,7 @@ package com.infrno.chat.controller
 		
 		override public function execute():void
 		{
-			trace(event.type);
+			trace("AudioVideoControlCommand.execute() " +event.type);
 			switch(event.type){
 				case VideoPresenseEvent.AUDIO_LEVEL:
 					if(deviceProxy.mic)

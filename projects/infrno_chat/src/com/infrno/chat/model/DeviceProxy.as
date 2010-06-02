@@ -86,14 +86,14 @@ package com.infrno.chat.model
 				_camera.setMotionLevel(0);
 //				_camera.setLoopback(true);
 				_camera.addEventListener(StatusEvent.STATUS, function(evt:StatusEvent):void{
-					trace(evt.code);
+					trace("DeviceProxy.initCam() " + evt.code);
 					if(evt.code=="Camera.Muted"){
-						trace("no access to the camera");
+						trace("DeviceProxy.initCam() no access to the camera");
 					}
 				})
 				
 				_camera.addEventListener(ActivityEvent.ACTIVITY, function(evt:ActivityEvent):void{
-					trace("camera active "+evt.activating)
+					trace("DeviceProxy.initCam() camera active "+evt.activating)
 					camera_active=evt.activating;
 					dispatch(new DeviceEvent(DeviceEvent.CAMERA_ACTIVITY,evt.activating));
 				})
@@ -123,9 +123,9 @@ package com.infrno.chat.model
 				}
 			});
 			_mic.addEventListener(StatusEvent.STATUS, function(evt:StatusEvent):void{
-				trace(evt.code);
+				trace("DeviceProxy.initCam() " + evt.code);
 				if(evt.code=="Microphone.Muted"){
-					trace("no access to the mic");
+					trace("DeviceProxy.initCam() no access to the mic");
 				}
 			});
 			
@@ -175,7 +175,7 @@ package com.infrno.chat.model
         }
         
 		public function updateCamQuality(n_valIn:int):void{
-//			trace("cam quality updated to: "+n_valIn);
+			trace("DeviceProxy.initCam() cam quality updated to: "+n_valIn);
 			_camera_quality = n_valIn;
 			_camera.setQuality(0,n_valIn);
 		}

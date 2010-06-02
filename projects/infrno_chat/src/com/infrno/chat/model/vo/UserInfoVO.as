@@ -50,7 +50,7 @@ package com.infrno.chat.model.vo
 		
 		private function handleNetStatus(e:NetStatusEvent):void
 		{
-			trace(uname+": "+e.info.code);
+			trace("UserInfoVO.handleNetStatus() uname=" +uname+" : "+e.info.code);
 		}
 	}
 }

@@ -43,9 +43,9 @@ package com.simplediagrams.view.SDComponents
 			super();
 			
 			//this.doubleClickEnabled = true
-			this.addEventListener(DragEvent.DRAG_ENTER, onDragEnter, false, 0, true)
-			this.addEventListener(DragEvent.DRAG_DROP, onDragDrop, false, 0, true)
-			this.addEventListener(DragEvent.DRAG_EXIT, onDragExit, false, 0, true)
+//			this.addEventListener(DragEvent.DRAG_ENTER, onDragEnter, false, 0, true)
+//			this.addEventListener(DragEvent.DRAG_DROP, onDragDrop, false, 0, true)
+//			this.addEventListener(DragEvent.DRAG_EXIT, onDragExit, false, 0, true)
 			//this.addEventListener(Event.COPY, onCopy, false, 0, true)
 			
 			//add all operations available to SDComponents' right click menu here

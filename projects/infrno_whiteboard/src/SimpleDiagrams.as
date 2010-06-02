@@ -50,37 +50,47 @@ protected function onAppComplete():void
 		
 	var loader_info:LoaderInfo = this.loaderInfo;
 	var flash_vars:Object = loader_info.parameters;
-	
+
+	var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LOAD_FLASHVARS);
+
 	try{
 		Logger.debug("SimpleDiagrams.as onAppComplete() parent load parameters");
 		flash_vars = loader_info.loader.loaderInfo.parameters;
 	}catch(e:Object){
 		Logger.debug("SimpleDiagrams.as onAppComplete() not loaded by another movie");
+
+		// To facilitate dev work, rsoEvent has default values set for auth_key and room_id. 
+		// Wowza will accept these values for specified hosts.
+		Swiz.dispatchEvent(rsoEvent);
+		return;
 	}
 		
-	var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LOAD_FLASHVARS);
-	
+
 	try{
 		rsoEvent.auth_key = flash_vars.auth_key;
 	}catch(e:Object){
+		rsoEvent.auth_key = "not_set"
 		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.auth_key not set");
 	}
 
 	try{
 		rsoEvent.room_id = flash_vars.room_id;
 	}catch(e:Object){
+		rsoEvent.room_id = "not_set"
 		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.room_id not set");
 	}
 	
 	try{
 		rsoEvent.room_name = flash_vars.room_name;
 	}catch(e:Object){
+		rsoEvent.room_name = "not_set"
 		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.room_name not set");
 	}
 	
 	try{
 		rsoEvent.user_name = flash_vars.user_name;
 	}catch(e:Object){
+		rsoEvent.user_name = "not_set"
 		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.username not set");
 	}
 

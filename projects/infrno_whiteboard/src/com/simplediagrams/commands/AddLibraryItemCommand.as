@@ -4,6 +4,8 @@ package com.simplediagrams.commands
 	import com.simplediagrams.model.LibraryManager;
 	import com.simplediagrams.model.SDSymbolModel;
 	import com.simplediagrams.util.Logger;
+	import com.simplediagrams.events.RemoteSharedObjectEvent;
+	import org.swizframework.Swiz;
 	
 	import mx.core.UIComponent;
 
@@ -69,6 +71,10 @@ package com.simplediagrams.commands
 			
 			Logger.debug("after adding sdID: " + _sdID,this)
 			UIComponent(newSymbolModel.sdComponent).focusManager.getFocus()
+				
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.ADD_SD_OBJECT_MODEL);	
+			rsoEvent.addLibraryItemCommand = this;
+			Swiz.dispatchEvent(rsoEvent);
 		}
 		
 		protected function setProperties(sdSymbolModel:SDSymbolModel):void

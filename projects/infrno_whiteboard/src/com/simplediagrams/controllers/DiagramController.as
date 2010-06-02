@@ -334,6 +334,7 @@ package com.simplediagrams.controllers
 			undoRedoManager.push(cmd);
 			
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.DELETE_SELECTED_SD_OBJECT_MODEL);	
+			rsoEvent.sdIDArray = sdIDArray;
 			Swiz.dispatchEvent(rsoEvent);
 		}
 		
@@ -750,7 +751,11 @@ package com.simplediagrams.controllers
 			cmd.execute()
 			undoRedoManager.push(cmd)
 				
-			//remoteSharedObjectController.dispatchUpdate_ObjectChanged(cmd);											
+			//remoteSharedObjectController.dispatchUpdate_ObjectChanged(cmd);	
+				
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.transformCommand = cmd;
+			Swiz.dispatchEvent(rsoEvent);
 		}
 		
 		

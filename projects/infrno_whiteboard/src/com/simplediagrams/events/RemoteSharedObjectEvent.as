@@ -1,5 +1,6 @@
 package com.simplediagrams.events
 {
+	import com.simplediagrams.commands.*;
 	import com.simplediagrams.model.SDImageModel;
 	import com.simplediagrams.model.SDObjectModel;
 	import com.simplediagrams.model.mementos.TransformMemento;
@@ -43,6 +44,11 @@ package com.simplediagrams.events
 		public var sdID:Number;
 		public var memento:TransformMemento;
 		public var sdObjectModel:SDObjectModel;
+		public var addLibraryItemCommand:AddLibraryItemCommand;
+		public var transformCommand:TransformCommand;
+		public var cutCommand:CutCommand;
+		public var pasteCommand:PasteCommand;
+		public var sdIDArray:Array;
 		
 		// Wowza will accept these values for specified hosts.
 		public var auth_key:String = "test_key";

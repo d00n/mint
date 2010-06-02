@@ -49,6 +49,7 @@ package com.simplediagrams.events
 		public var cutCommand:CutCommand;
 		public var pasteCommand:PasteCommand;
 		public var sdIDArray:Array;
+		public var changedSDObjectModelArray:Array;
 		
 		// Wowza will accept these values for specified hosts.
 		public var auth_key:String = "test_key";

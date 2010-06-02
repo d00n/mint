@@ -238,12 +238,12 @@ package com.simplediagrams.model
 		
 			isDirty = true;
 			
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.ADD_SD_OBJECT_MODEL);
-//			rsoEvent.sdObjectModel = newSDObjectModel;
-//			Swiz.dispatchEvent(rsoEvent);		
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.ADD_SD_OBJECT_MODEL);
+			rsoEvent.sdObjectModel = newSDObjectModel;
+			Swiz.dispatchEvent(rsoEvent);		
 		}
 		
-		protected function addComponentForModel(sdModel:SDObjectModel, setSelected:Boolean = true):Object
+		public function addComponentForModel(sdModel:SDObjectModel, setSelected:Boolean = true):Object
 		{
 			//create visual object and add to ObjectHandles		
 			var newSDComponent:ISDComponent = sdModel.createSDComponent()

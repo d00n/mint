@@ -111,8 +111,6 @@ package com.simplediagrams.controllers
 				
 			cmd.execute()
 			undoRedoManager.push(cmd)		
-				
-//			remoteSharedObjectController.dispatchUpdate_AddLibraryItemCommand(cmd)
 		}
 		
 		
@@ -218,8 +216,8 @@ package com.simplediagrams.controllers
 			cmd.execute()			
 			undoRedoManager.push(cmd)		
 				
-//			remoteSharedObjectController.dispatchUpdate_TextWidgetAdded(cmd);
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_WIDGET_ADDED);	
+			rsoEvent.sdObjectModel = diagramModel.getModelByID(cmd.sdID);
 			Swiz.dispatchEvent(rsoEvent);				
 		}
 				
@@ -243,6 +241,7 @@ package com.simplediagrams.controllers
 			
 //			remoteSharedObjectController.dispatchUpdate_TextAreaCreated(cmd);
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_WIDGET_CREATED);	
+			rsoEvent.sdObjectModel = diagramModel.getModelByID(cmd.sdID);
 			Swiz.dispatchEvent(rsoEvent);				
 		}
 		
@@ -263,6 +262,7 @@ package com.simplediagrams.controllers
 				
 //			remoteSharedObjectController.dispatchUpdate_PencilDrawingCreated(cmd);
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.PENCIL_DRAWING_CREATED);	
+			rsoEvent.sdObjectModel = diagramModel.getModelByID(cmd.sdID);
 			Swiz.dispatchEvent(rsoEvent);				
 		}
 			
@@ -284,8 +284,9 @@ package com.simplediagrams.controllers
 			undoRedoManager.push(cmd)
 			Logger.debug("onCreateLineComponent() finished" , this)	
 				
-//			remoteSharedObjectController.dispatchUpdate_CreateLineComponent(cmd);
+//			remoteSharedObjectController.dispatchUpdate_CreateLineComponent(cmd);			
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.CREATE_LINE_COMPONENT);	
+			rsoEvent.sdObjectModel = diagramModel.getModelByID(cmd.sdID);
 			Swiz.dispatchEvent(rsoEvent);				
 		}
 		
@@ -484,14 +485,9 @@ package com.simplediagrams.controllers
 				var cmd:ChangeColorCommand = new ChangeColorCommand(diagramModel, objModel);
 				cmd.color = event.color;
 				cmd.execute();
-				undoRedoManager.push(cmd);
-				
-				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.CHANGE_COLOR, true, true);
-				Swiz.dispatchEvent(rsoEvent);
-			}
-			
-			
-			
+				undoRedoManager.push(cmd);			
+			}			
+			throw_ObjectChanged_RSOEvent(selectedArr);
   		}
   		
   		protected var _currModelForImageLoad:SDImageModel
@@ -754,7 +750,7 @@ package com.simplediagrams.controllers
 			//remoteSharedObjectController.dispatchUpdate_ObjectChanged(cmd);	
 				
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-			rsoEvent.transformCommand = cmd;
+			rsoEvent.changedSDObjectModelArray = sdObjectsArr;
 			Swiz.dispatchEvent(rsoEvent);
 		}
 		
@@ -789,9 +785,11 @@ package com.simplediagrams.controllers
 			//don't execute command since transformation has already happened
 			undoRedoManager.push(cmd)
 				
-//			remoteSharedObjectController.dispatchUpdate_ChangeLinePosition(cmd)
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.CHANGE_LINE_POSITION);	
-			Swiz.dispatchEvent(rsoEvent);
+//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.CHANGE_LINE_POSITION);
+
+			var changedSDObjectArray:Array = new Array();
+			changedSDObjectArray.push(diagramModel.getModelByID(cmd.sdID));
+			throw_ObjectChanged_RSOEvent(changedSDObjectArray);
 		}
 		
 		[Mediate(event='ChangeDepthEvent.MOVE_TO_BACK')]		
@@ -811,9 +809,8 @@ package com.simplediagrams.controllers
 					sdObjectModel.depth ++
 				}
 			}					
-//			remoteSharedObjectController.dispatchUpdate_RefreshZOrder();
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.REFRESH_Z_ORDER);	
-			Swiz.dispatchEvent(rsoEvent);
+
+			throw_ObjectChanged_RSOEvent(diagramModel.sdObjectModelsAC.toArray());
 		}
 		
 		[Mediate(event='ChangeDepthEvent.MOVE_TO_FRONT')]		
@@ -833,9 +830,8 @@ package com.simplediagrams.controllers
 					sdObjectModel.depth --
 				}				
 			}				
-//			remoteSharedObjectController.dispatchUpdate_RefreshZOrder();			
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.REFRESH_Z_ORDER);	
-			Swiz.dispatchEvent(rsoEvent);
+
+			throw_ObjectChanged_RSOEvent(diagramModel.sdObjectModelsAC.toArray());
 		}
 		
 
@@ -855,13 +851,10 @@ package com.simplediagrams.controllers
 					target_sdObjectModel.depth --;
 					sdObjectModel.depth ++;
 						
-//					remoteSharedObjectController.dispatchUpdate_RefreshZOrder();		
-					var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.REFRESH_Z_ORDER);	
-					Swiz.dispatchEvent(rsoEvent);
+					throw_ObjectChanged_RSOEvent(diagramModel.sdObjectModelsAC.toArray());
 					break
 				}				
 			}		
-
 		}
 		
 		[Mediate(event='ChangeDepthEvent.MOVE_FORWARD')]		
@@ -881,13 +874,16 @@ package com.simplediagrams.controllers
 					target_sdObjectModel.depth ++;
 					sdObjectModel.depth --;
 					
-//					remoteSharedObjectController.dispatchUpdate_RefreshZOrder();		
-					var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.REFRESH_Z_ORDER);	
-					Swiz.dispatchEvent(rsoEvent);
+					throw_ObjectChanged_RSOEvent(diagramModel.sdObjectModelsAC.toArray());
 					break
 				}				
-			}		
-			
+			}			
+		}
+		
+		public function throw_ObjectChanged_RSOEvent(sdObjectModelArray:Array):void{
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);
+			rsoEvent.changedSDObjectModelArray = sdObjectModelArray;
+			Swiz.dispatchEvent(rsoEvent);
 		}
 		
 		

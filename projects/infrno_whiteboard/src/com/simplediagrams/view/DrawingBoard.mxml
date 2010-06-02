@@ -20,6 +20,7 @@
 	<fx:Script>
 		<![CDATA[
 			import com.roguedevelopment.objecthandles.constraints.*;
+			import com.simplediagrams.controllers.DiagramController;
 			import com.simplediagrams.controllers.RemoteSharedObjectController;
 			import com.simplediagrams.events.*;
 			import com.simplediagrams.model.DefaultToolsManager;
@@ -677,13 +678,14 @@
 					
 				if (event.target == symbolTextArea) return
 				
-				SDSymbolModel(diagramModel.selectedArray[0]).text = symbolTextArea.text
+				var sdSymbolModel:SDSymbolModel = SDSymbolModel(diagramModel.selectedArray[0]);
+				sdSymbolModel.text = symbolTextArea.text
 					
-//				remoteSharedObjectController.dispatchUpdate_SymbolTextEdit(diagramModel.selectedArray[0]);
-				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.SYMBOL_TEXT_EDIT);	
+				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+				rsoEvent.changedSDObjectModelArray = new Array;				
+				rsoEvent.changedSDObjectModelArray.push(sdSymbolModel);
 				Swiz.dispatchEvent(rsoEvent);
-				
-				
+
 				symbolTextArea.visible = false
 				symbolTextArea.text = ""
 					

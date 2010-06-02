@@ -52,7 +52,7 @@
 					   includeDate="true"
 					   includeTime="true"
 					   includeLevel="true"
-					   level="{LogEventLevel.INFO}"
+					   level="{LogEventLevel.DEBUG}"
 					   />
 		
 		<swiz:SwizConfig

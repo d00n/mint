@@ -22,6 +22,7 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.model.SDImageModel;
 	import com.simplediagrams.model.SDLineModel;
 	import com.simplediagrams.model.SDObjectModel;
+	import com.simplediagrams.model.SDPencilDrawingModel;
 	import com.simplediagrams.model.SDSymbolModel;
 	import com.simplediagrams.model.SDTextAreaModel;
 	import com.simplediagrams.model.SettingsModel;
@@ -212,8 +213,8 @@ package com.simplediagrams.controllers
 		private function routeChange(changeObject:Object) : void 
 		{
 			switch (changeObject.commandName) {
-				case "AddLibraryItemCommand": {
-					processUpdate_AddLibraryItemCommand(changeObject);
+				case "AddSDObjectModel": {
+					processUpdate_AddSDObjectModel(changeObject);
 					break;
 				}
 				case "DeleteSelectedSDObjectModel": {
@@ -224,38 +225,10 @@ package com.simplediagrams.controllers
 					processUpdate_ObjectChanged(changeObject);
 					break;
 				}
-//				case "ClearDiagram": {
-//					processUpdate_ClearDiagram(event);
-//					break;
-//				}
-//				case "CutEvent": {
-//					processUpdate_CutEvent(changeObject);
-//					break;
-//				}
-				case "PasteEvent": {
-					processUpdate_PasteEvent(changeObject);
-					break;
-				}
-//				case "RefreshZOrder": {
-//					processUpdate_RefreshZOrder(event);
-//					break;
-//				}
-//				case "TextWidgetAdded": {
-//					processUpdate_TextWidgetAdded(event);
-//					break;
-//				}
-//				case "TextAreaCreated": {
-//					processUpdate_TextAreaCreated(event);
-//					break;
-//				}
-//				case "PencilDrawingCreated": {
-//					processUpdate_PencilDrawingCreated(event);
-//					break;
-//				}
-//				case "CreateLineComponent": {
-//					processUpdate_CreateLineComponent(event);
-//					break;
-//				}
+					
+					
+
+					
 //				case "RefreshZoom": {
 //					processUpdate_RefreshZoom(event);
 //					break;
@@ -280,10 +253,12 @@ package com.simplediagrams.controllers
 //					processUpdate_ChangeAllShapesToDefaultColor(event);
 //					break;
 //				}
-//				case "ChangeColor": {
-//					processUpdate_ChangeColor(event);
+//				case "ClearDiagram": {
+//					processUpdate_ClearDiagram(event);
 //					break;
 //				}
+					
+					
 			}
 		}
 
@@ -305,13 +280,8 @@ package com.simplediagrams.controllers
 //		[Mediate(event="RemoteSharedObjectEvent.DISPATCH_TEXT_AREA_CHANGE")]
 		[Mediate(event="CreateNewDiagramEvent.NEW_DIAGRAM_CREATED")]
 		[Mediate(event="RemoteSharedObjectEvent.CHANGE_ALL_SHAPES_TO_DEFAULT_COLOR")]
-		[Mediate(event="RemoteSharedObjectEvent.CHANGE_COLOR")]
 		[Mediate(event="RemoteSharedObjectEvent.DISPATCH_TEXT_AREA_CHANGE")]
 		[Mediate(event="RemoteSharedObjectEvent.REFRESH_Z_ORDER")]
-		[Mediate(event="RemoteSharedObjectEvent.TEXT_WIDGET_ADDED")]
-		[Mediate(event="RemoteSharedObjectEvent.TEXT_WIDGET_CREATED")]
-		[Mediate(event="RemoteSharedObjectEvent.PENCIL_DRAWING_CREATED")]
-		[Mediate(event="RemoteSharedObjectEvent.CREATE_LINE_COMPONENT")]
 		[Mediate(event="RemoteSharedObjectEvent.REFRESH_ZOOM")]
 		[Mediate(event="RemoteSharedObjectEvent.CHANGE_LINE_POSITION")]
 		[Mediate(event="RemoteSharedObjectEvent.SYMBOL_TEXT_EDIT")]
@@ -386,49 +356,157 @@ package com.simplediagrams.controllers
 			connect();
 		}
 		
+		[Mediate(event="RemoteSharedObjectEvent.CREATE_LINE_COMPONENT")]
+		[Mediate(event="RemoteSharedObjectEvent.TEXT_WIDGET_ADDED")]
+		[Mediate(event="RemoteSharedObjectEvent.TEXT_WIDGET_CREATED")]
+		[Mediate(event="RemoteSharedObjectEvent.PENCIL_DRAWING_CREATED")]
 		[Mediate(event="RemoteSharedObjectEvent.ADD_SD_OBJECT_MODEL")]
-		public function dispatchUpdate_AddLibraryItemCommand(event:RemoteSharedObjectEvent) : void 
+		public function dispatchUpdate_AddSDObjectModel(event:RemoteSharedObjectEvent) : void 
 		{
-			Logger.info("dispatchUpdate_AddLibraryItemCommand()",this);
+			Logger.info("dispatchUpdate_AddSDObjectModel()",this);
 
-			var cmd:AddLibraryItemCommand = event.addLibraryItemCommand;			
-			
 			var sd_obj:Object = {};
-			sd_obj.commandName = "AddLibraryItemCommand";
-			sd_obj.libraryName = cmd.libraryName				
-			sd_obj.symbolName = cmd.symbolName;							
-			sd_obj.sdID = cmd.sdID;							
+			sd_obj.commandName 	= "AddSDObjectModel";
+			sd_obj.sdID 		= event.sdObjectModel.sdID;							
+			sd_obj.x 			= event.sdObjectModel.x;
+			sd_obj.y 			= event.sdObjectModel.y;		
+			sd_obj.height 		= event.sdObjectModel.height;		
+			sd_obj.width 		= event.sdObjectModel.width;		
+			sd_obj.color 		= event.sdObjectModel.color;	
+			sd_obj.depth 		= event.sdObjectModel.depth;	
 			
-			sd_obj.x = cmd.x;
-			sd_obj.y = cmd.y;
-			sd_obj.textAlign = cmd.textAlign;
-			sd_obj.fontSize = cmd.fontSize;
-			sd_obj.fontWeight = cmd.fontWeight;
-			sd_obj.textPosition = cmd.textPosition;			
-			sd_obj.color = cmd.color;	
-			
-			_remoteSharedObject.setProperty(cmd.sdID.toString(), sd_obj);
+			if (event.sdObjectModel is SDSymbolModel){
+				var sdSymbolModel:SDSymbolModel = event.sdObjectModel as SDSymbolModel;
+				
+				sd_obj.sdObjectModelType 	= "SDSymbolModel";
+				sd_obj.libraryName 			= sdSymbolModel.libraryName;				
+				sd_obj.symbolName 			= sdSymbolModel.symbolName;		
+				sd_obj.textAlign 			= sdSymbolModel.textAlign;
+				sd_obj.fontSize 			= sdSymbolModel.fontSize;
+				sd_obj.fontWeight 			= sdSymbolModel.fontWeight;
+				sd_obj.textPosition			= sdSymbolModel.textPosition;	
+			}
+			else if (event.sdObjectModel is SDImageModel){
+				var sdImageModel:SDImageModel = event.sdObjectModel as SDImageModel;
+				sd_obj.sdObjectModelType = "SDImageModel";
+			}
+			else if (event.sdObjectModel is SDLineModel){
+				var sdLineModel:SDLineModel = event.sdObjectModel as SDLineModel;
+				
+				sd_obj.sdObjectModelType 	= "SDLineModel";
+				sd_obj.endX 				= sdLineModel.endX;
+				sd_obj.endY 				= sdLineModel.endY;	
+				sd_obj.bendX 				= sdLineModel.bendX;
+				sd_obj.bendY 				= sdLineModel.bendY;
+				sd_obj.startLineStyle 		= sdLineModel.startLineStyle;
+				sd_obj.endLineStyle 		= sdLineModel.endLineStyle;
+				sd_obj.lineWeight 			= sdLineModel.lineWeight;
+			}
+			else if (event.sdObjectModel is SDPencilDrawingModel){
+				var sdPencilDrawingModel:SDPencilDrawingModel = event.sdObjectModel as SDPencilDrawingModel;
+
+				sd_obj.sdObjectModelType 	= "SDPencilDrawingModel";
+				sd_obj.linePath 			= sdPencilDrawingModel.linePath;
+				sd_obj.lineWeight 			= sdPencilDrawingModel.lineWeight;
+			}
+			else if (event.sdObjectModel is SDTextAreaModel){
+				var sdTextAreaModel:SDTextAreaModel = event.sdObjectModel as SDTextAreaModel;
+				
+				sd_obj.sdObjectModelType 	= "SDTextAreaModel";
+				sd_obj.styleName 			= sdTextAreaModel.styleName;
+				sd_obj.maintainProportion 	= sdTextAreaModel.maintainProportion;		
+				sd_obj.textAlign 			= sdTextAreaModel.textAlign;
+				sd_obj.fontSize 			= sdTextAreaModel.fontSize;
+				sd_obj.fontWeight 			= sdTextAreaModel.fontWeight;				
+			}
+
+			_remoteSharedObject.setProperty(sd_obj.sdID.toString(), sd_obj);
 		}
 		
-		private function processUpdate_AddLibraryItemCommand(changeObject:Object) : void 
+		private function processUpdate_AddSDObjectModel(changeObject:Object) : void 
 		{			
-			Logger.info("processUpdate_AddLibraryItemCommand()",this);
-
-			var libraryName:String = changeObject.libraryName;
-			var symbolName:String = changeObject.symbolName;
-					
-			var newSDSymbolModel:SDSymbolModel = libraryManager.getSDObject(libraryName, symbolName) as SDSymbolModel;
+			Logger.info("processUpdate_AddSDObjectModel()",this);
 			
-			newSDSymbolModel.sdID		= parseInt(changeObject.sdID);
-			newSDSymbolModel.fontSize 	= parseInt(changeObject.fontSize);
-			newSDSymbolModel.color	 	= parseInt(changeObject.color);
-			newSDSymbolModel.x 			= parseFloat(changeObject.x);
-			newSDSymbolModel.y 			= parseFloat(changeObject.y);
-			newSDSymbolModel.textAlign 	= changeObject.textAlign;
-			newSDSymbolModel.fontWeight = changeObject.fontWeight;
-			newSDSymbolModel.textPosition = changeObject.textPosition;
+			var sdID:Number = parseInt(changeObject.sdID);
+			var sdObjectModel:SDObjectModel = diagramModel.getModelByID(sdID);
+			if (sdObjectModel != null) {
+				Logger.error("processUpdate_AddLibraryItemCommand() found existing sdObjectModel for sdID " + sdID,this);
+				return;	
+			}
+			
+			var newSDObjectModel:SDObjectModel;
+			switch ( changeObject.sdObjectModelType) {
+				case "SDSymbolModel": {
+					var libraryName:String = changeObject.libraryName;
+					var symbolName:String = changeObject.symbolName;
+					
+					var newSDSymbolModel:SDSymbolModel = libraryManager.getSDObject(libraryName, symbolName) as SDSymbolModel;
+					
+					newSDSymbolModel.textAlign 	= changeObject.textAlign;
+					newSDSymbolModel.fontWeight = changeObject.fontWeight;
+					newSDSymbolModel.fontSize 	= parseInt(changeObject.fontSize);
+					newSDSymbolModel.textPosition = changeObject.textPosition;
+					
+					newSDObjectModel = newSDSymbolModel;
+					break;
+				}
+				case "SDImageModel": {
+					var newSDImageModel:SDImageModel = new SDImageModel();
+					
+					newSDObjectModel = newSDImageModel;
+					break;
+				}
+				case "SDLineModel": {
+					var newSDLineModel:SDLineModel = new SDLineModel();
+					
+					newSDLineModel.endX 			= changeObject.endX;
+					newSDLineModel.endY 			= changeObject.endY;	
+					newSDLineModel.bendX 			= changeObject.bendX;
+					newSDLineModel.bendY 			= changeObject.bendY;
+					newSDLineModel.startLineStyle 	= changeObject.startLineStyle;
+					newSDLineModel.endLineStyle 	= changeObject.endLineStyle;
+					newSDLineModel.lineWeight 		= changeObject.lineWeight;
+					
+					newSDObjectModel = newSDLineModel;
+					break;
+				}
+				case "SDPencilDrawingModel": {
+					var newSDPencilDrawingModel:SDPencilDrawingModel = new SDPencilDrawingModel();
+					newSDPencilDrawingModel.linePath = changeObject.linePath;
+					newSDPencilDrawingModel.lineWeight = changeObject.lineWeight;
+					
+					newSDObjectModel = newSDPencilDrawingModel;
+					break;
+				}
+				case "SDTextAreaModel": {
+					var newSDTextAreaModel:SDTextAreaModel = new SDTextAreaModel();	
+	
+					newSDTextAreaModel.styleName 			= changeObject.styleName;
+					newSDTextAreaModel.maintainProportion 	= changeObject.maintainProportion;		
+					newSDTextAreaModel.textAlign 			= changeObject.textAlign;
+					newSDTextAreaModel.fontSize 			= changeObject.fontSize;
+					newSDTextAreaModel.fontWeight 			= changeObject.fontWeight;
+					
+					newSDObjectModel = newSDTextAreaModel;
+					break;
+				}
+			}
+			
+			newSDObjectModel.sdID		= parseInt(changeObject.sdID);
+			newSDObjectModel.color	 	= parseInt(changeObject.color);
+			newSDObjectModel.x 			= parseFloat(changeObject.x);
+			newSDObjectModel.y 			= parseFloat(changeObject.y);
+			newSDObjectModel.width 		= parseFloat(changeObject.width);
+			newSDObjectModel.height		= parseFloat(changeObject.height);
+			newSDObjectModel.depth 		= parseInt(changeObject.depth);
 
-			diagramModel.addSDObjectModel(newSDSymbolModel);			
+			
+			// TODO Clean this up. The coupling is too tight.
+			// To prevent throwing an RSOEvent from within diagramModel.addSDObjectModel()
+			// we perform those actions here.
+			//diagramModel.addSDObjectModel(newSDSymbolModel);			
+			diagramModel.sdObjectModelsAC.addItem(newSDObjectModel);
+			diagramModel.addComponentForModel(newSDObjectModel, false);
 		}		
 		
 		[Mediate(event="RemoteSharedObjectEvent.DELETE_SELECTED_SD_OBJECT_MODEL")]
@@ -442,7 +520,7 @@ package com.simplediagrams.controllers
 				var sd_obj:Object = {};
 				sd_obj.commandName = "DeleteSelectedSDObjectModel";
 				sd_obj.sdID = sdID;						
-				_remoteSharedObject.setProperty(sdID.toString(), sd_obj);
+				_remoteSharedObject.setProperty(sd_obj.sdID.toString(), sd_obj);
 			}			
 		}	
 
@@ -458,24 +536,22 @@ package com.simplediagrams.controllers
 		{
 			Logger.info("dispatchUpdate_ObjectChanged()",this)
 			
-			var i:Number = 0;
-			for each (var obj:Object in event.transformCommand.TransformedObjectsArray)
+			for each (var sdObjectModel:SDObjectModel in event.changedSDObjectModelArray)
 			{
 				var sd_obj:Object = {};
-				var transformMemento:TransformMemento = obj.toState;
 				
-				sd_obj.sdID = obj.sdID;
+				sd_obj.sdID = sdObjectModel.sdID;
 				sd_obj.commandName = "ObjectChanged";
-				sd_obj.color = transformMemento.color;
-				sd_obj.height = transformMemento.height;
-				sd_obj.width = transformMemento.width;
-				sd_obj.rotation = transformMemento.rotation;
-				sd_obj.x = transformMemento.x;
-				sd_obj.y = transformMemento.y;
+				sd_obj.color = sdObjectModel.color;
+				sd_obj.height = sdObjectModel.height;
+				sd_obj.width = sdObjectModel.width;
+				sd_obj.rotation = sdObjectModel.rotation;
+				sd_obj.x = sdObjectModel.x;
+				sd_obj.y = sdObjectModel.y;
+				sd_obj.depth = sdObjectModel.depth;
+				sd_obj.text = sdObjectModel.text;
 				
-				_remoteSharedObject.setProperty(obj.sdID.toString(), sd_obj);
-				
-				i++;
+				_remoteSharedObject.setProperty(sd_obj.sdID.toString(), sd_obj);
 			}
 		}
 		
@@ -507,7 +583,10 @@ package com.simplediagrams.controllers
 			transformedObjectsArr.push(o);
 
 			var cmd:TransformCommand = new TransformCommand(diagramModel, transformedObjectsArr);
-			cmd.execute();				
+			cmd.execute();		
+			
+			// this should become part of TransformCommand
+			sdObjectModel.depth = parseFloat(changeObject.depth);
 		}	
 		
 //		//[Mediate(event="CreateNewDiagramEvent.NEW_DIAGRAM_CREATED")]
@@ -541,7 +620,7 @@ package com.simplediagrams.controllers
 				var sd_obj:Object = {};
 				sd_obj.commandName = "DeleteSelectedSDObjectModel";
 				sd_obj.sdID = sdObjectModel.sdID;						
-				_remoteSharedObject.setProperty(sdObjectModel.sdID.toString(), sd_obj);
+				_remoteSharedObject.setProperty(sd_obj.sdID.toString(), sd_obj);
 			}		
 			
 		}
@@ -558,7 +637,7 @@ package com.simplediagrams.controllers
 //			}
 //		}
 		
-		[Mediate(event="RemoteSharedObjectEvent.PASTE")]
+//		[Mediate(event="RemoteSharedObjectEvent.PASTE")]
 		public function dispatchUpdate_PasteEvent(event:RemoteSharedObjectEvent) : void
 		{
 			Logger.info("dispatchUpdate_PasteEvent()",this);
@@ -587,13 +666,22 @@ package com.simplediagrams.controllers
 				sd_obj.x = sdObjectModel.x;
 				sd_obj.y = sdObjectModel.y;
 
-				_remoteSharedObject.setProperty(sdObjectModel.sdID.toString(), sd_obj);
+				_remoteSharedObject.setProperty(sd_obj.sdID.toString(), sd_obj);
 			}		
 		}
 		
 		public function processUpdate_PasteEvent(changeObject:Object):void
 		{
 			Logger.info("processUpdate_PasteEvent()",this);
+			
+			var sdID:Number = parseInt(changeObject.sdID);
+			var sdObjectModel:SDObjectModel = diagramModel.getModelByID(sdID);
+			
+			// this sort of error catching should not fire after persitence is completed
+			if (sdObjectModel != null) {
+				Logger.error("processUpdate_PasteEvent() found sdObjectModel for sdID " + sdID,this);
+				return;	
+			}
 
 			if (changeObject.is_LibraryItem == "true")
 			{
@@ -616,46 +704,6 @@ package com.simplediagrams.controllers
 			}			
 		}
 		
-//		public function dispatchUpdate_RefreshZOrder() : void
-//		{
-//			Logger.info("dispatchUpdate_RefreshZOrder()",this);
-//			
-//			var zOrderArray:Array = new Array();
-//			var numElements:uint = diagramModel.sdObjectModelsAC.length;
-//			for (var i:uint = 0; i<numElements; i++)
-//			{
-//				var sdObjectModel:SDObjectModel = diagramModel.sdObjectModelsAC.getItemAt(i) as SDObjectModel;
-//
-//				zOrderArray[i] = new Array();
-//				
-//				if (sdObjectModel != null) {
-//					zOrderArray[i]["sdID"] = sdObjectModel.sdID;
-//					zOrderArray[i]["depth"] = sdObjectModel.depth;
-//				}
-//			}
-//			
-//			_remoteSharedObject.setProperty("commandName", "RefreshZOrder");			
-//			_remoteSharedObject.setProperty("zOrderArray", zOrderArray);			
-//		}
-//		
-//		public function processUpdate_RefreshZOrder(event:SyncEvent) : void
-//		{
-//			Logger.info("processUpdate_RefreshZOrder()",this);			
-//			
-//			var zOrderArray:Array = event.target.data["zOrderArray"];
-//			for each (var zOrder:Array in zOrderArray)
-//			{
-//				var sdID:Number = parseInt(zOrder["sdID"]);
-//				var depth:Number = parseInt(zOrder["depth"]);
-//				
-//				var sdObjectModel:SDObjectModel = diagramModel.getModelByID(sdID);
-//								
-//				if (sdObjectModel != null) {
-//					Logger.info("processUpdate_RefreshZOrder() sdObjectModel.depth = " + sdObjectModel.depth.toString(),this);	
-//					sdObjectModel.depth = depth;	
-//				}				
-//			}			
-//		}
 //		
 //		public function dispatchUpdate_TextWidgetAdded(cmd:AddTextWidgetCommand) : void
 //		{
@@ -905,6 +953,11 @@ package com.simplediagrams.controllers
 //			diagramStyleManager.changeStyle(event.target.data["styleName"])
 //		}
 //		
+		
+		
+		// DEPRECATED
+		
+		
 ////		[Mediate(event="RemoteSharedObjectEvent.CHANGE_ALL_SHAPES_TO_DEFAULT_COLOR")]
 //		public function dispatchUpdate_ChangeAllShapesToDefaultColor():void
 //		{
@@ -916,27 +969,67 @@ package com.simplediagrams.controllers
 //			diagramModel.changeAllShapesToDefaultColor();
 //		}
 //		
-//		//[Mediate(event="RemoteSharedObjectEvent.CHANGE_COLOR")]
+//		[Mediate(event="RemoteSharedObjectEvent.CHANGE_COLOR")]
 //		public function dispatchUpdate_ChangeColor(event:RemoteSharedObjectEvent):void
 //		{
-//			Logger.info("dispatchUpdate_ChangeColor()",this);		
-//			
+//			Logger.info("dispatchUpdate_ChangeColor()",this);	
+//					
 //			_remoteSharedObject.setProperty("commandName", "ChangeColor");
 //			_remoteSharedObject.setProperty("sdID", event.sdID);
 //			_remoteSharedObject.setProperty("color", event.color);
 //		}
 //		
-//		public function processUpdate_ChangeColor(event:SyncEvent):void
+//		public function processUpdate_ChangeColor(changeObject:Object):void
 //		{
 //			Logger.info("processUpdate_ChangeColor()",this);		
-//			
-//			var sdID:Number = parseInt(event.target.data["sdID"]);
-//			var sdObjectModel:SDObjectModel = diagramModel.getModelByID(sdID);
+//
 //			
 //			var cmd:ChangeColorCommand = new ChangeColorCommand(diagramModel, sdObjectModel);
 //			cmd.color = event.target.data["color"];	
 //			cmd.execute();
 //		}		
+		
+//		public function dispatchUpdate_RefreshZOrder() : void
+//		{
+//			Logger.info("dispatchUpdate_RefreshZOrder()",this);
+//			
+//			var zOrderArray:Array = new Array();
+//			var numElements:uint = diagramModel.sdObjectModelsAC.length;
+//			for (var i:uint = 0; i<numElements; i++)
+//			{
+//				var sdObjectModel:SDObjectModel = diagramModel.sdObjectModelsAC.getItemAt(i) as SDObjectModel;
+//
+//				zOrderArray[i] = new Array();
+//				
+//				if (sdObjectModel != null) {
+//					zOrderArray[i]["sdID"] = sdObjectModel.sdID;
+//					zOrderArray[i]["depth"] = sdObjectModel.depth;
+//				}
+//			}
+//			
+//			_remoteSharedObject.setProperty("commandName", "RefreshZOrder");			
+//			_remoteSharedObject.setProperty("zOrderArray", zOrderArray);			
+//		}
+//		
+//		public function processUpdate_RefreshZOrder(event:SyncEvent) : void
+//		{
+//			Logger.info("processUpdate_RefreshZOrder()",this);			
+//			
+//			var zOrderArray:Array = event.target.data["zOrderArray"];
+//			for each (var zOrder:Array in zOrderArray)
+//			{
+//				var sdID:Number = parseInt(zOrder["sdID"]);
+//				var depth:Number = parseInt(zOrder["depth"]);
+//				
+//				var sdObjectModel:SDObjectModel = diagramModel.getModelByID(sdID);
+//								
+//				if (sdObjectModel != null) {
+//					Logger.info("processUpdate_RefreshZOrder() sdObjectModel.depth = " + sdObjectModel.depth.toString(),this);	
+//					sdObjectModel.depth = depth;	
+//				}				
+//			}			
+//		}
+		
 	}	
 }
 

@@ -72,9 +72,9 @@ package com.simplediagrams.commands
 			Logger.debug("after adding sdID: " + _sdID,this)
 			UIComponent(newSymbolModel.sdComponent).focusManager.getFocus()
 				
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.ADD_SD_OBJECT_MODEL);	
-			rsoEvent.addLibraryItemCommand = this;
-			Swiz.dispatchEvent(rsoEvent);
+//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.ADD_SD_OBJECT_MODEL);	
+//			rsoEvent.sdObjectModel = newSymbolModel;
+//			Swiz.dispatchEvent(rsoEvent);
 		}
 		
 		protected function setProperties(sdSymbolModel:SDSymbolModel):void

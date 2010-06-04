@@ -260,17 +260,25 @@ package com.simplediagrams.controllers
 		[Mediate(event="RemoteSharedObjectEvent.LOAD_IMAGE")]
 		public function dispatchUpdate_LoadImage(rsoEvent:RemoteSharedObjectEvent):void
 		{
-			Logger.info("dispatchUpdate_LoadImage()",this);
+			Logger.info("dispatchUpdate_LoadImage() rsoEvent.sdImageModel.sdID = " + rsoEvent.sdImageModel.sdID,this);
 			
-			var f:Function = function(imageDetails:Object):void
+			var returnValueFunction:Function = function(imageDetails:Object):void
 			{
-				Logger.info("dispatchUpdate_LoadImage() responder.result()",this);
+				Logger.info("dispatchUpdate_LoadImage() responder.result() imageDetails[sdID] = " + imageDetails["sdID"],this);
 				
-				var sdID:int = parseInt(imageDetails["sdID"]);
-				var imageURL:String = imageDetails["imageURL"];
+//				var sdID:int = imageDetails["sdID"];
+//				var imageURL:String = imageDetails["imageURL"];
+				
+				var sdImageModel:SDImageModel = diagramModel.getModelByID(imageDetails["sdID"]) as SDImageModel;
+				sdImageModel.imageURL = imageDetails["imageURL"];
+				
+				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+				rsoEvent.changedSDObjectModelArray = new Array;				
+				rsoEvent.changedSDObjectModelArray.push(sdImageModel);
+				Swiz.dispatchEvent(rsoEvent);	
 			}
 			
-			var responder:Responder = new Responder(f);
+			var responder:Responder = new Responder(returnValueFunction);
 								
 
 			
@@ -390,7 +398,8 @@ package com.simplediagrams.controllers
 				else if (sdObjectModel is SDImageModel){
 					var sdImageModel:SDImageModel = sdObjectModel as SDImageModel;
 					
-					sd_obj.sdObjectModelType = "SDImageModel";
+					sd_obj.sdObjectModelType 	= "SDImageModel";					
+					sd_obj.imageURL				= sdImageModel.imageURL;
 				}
 				else if (sdObjectModel is SDLineModel){
 					var sdLineModel:SDLineModel = sdObjectModel as SDLineModel;
@@ -464,6 +473,7 @@ package com.simplediagrams.controllers
 					
 					if (sdImageModel == null){
 						sdImageModel = new SDImageModel();
+						sdImageModel.imageURL = changeObject.imageURL;
 
 						// TODO Clean this up. The coupling is too tight.
 						// To prevent throwing an RSOEvent from within diagramModel.addSDObjectModel()

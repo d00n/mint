@@ -138,12 +138,6 @@ package com.simplediagrams.controllers
 				cmd.pastedObjectsArr = clonesArr as Array
 				cmd.execute()
 				undoRedoManager.push(cmd)	
-					
-//				remoteSharedObjectController.dispatchUpdate_PasteEvent(cmd);
-//				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.PASTE);	
-//				rsoEvent.pasteCommand = cmd;
-//				Swiz.dispatchEvent(rsoEvent);
-
 			}
 			else
 			{

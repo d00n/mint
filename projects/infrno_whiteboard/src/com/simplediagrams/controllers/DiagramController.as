@@ -546,6 +546,8 @@ package com.simplediagrams.controllers
 			
 			diagramModel.addSDObjectModel(_currModelForImageLoad);			
 				
+			Logger.debug("onLoadComplete() about to dispatch RemoteSharedObjectEvent.LOAD_IMAGE, _currModelForImageLoad.sdID=" + _currModelForImageLoad.sdID,this)
+				
 			var remoteSharedObjectEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LOAD_IMAGE, true, true);
 			remoteSharedObjectEvent.imageData = _fileReference.data;
 			remoteSharedObjectEvent.imageName = _fileReference.name;

@@ -10,6 +10,9 @@ package com.simplediagrams.model
     import com.simplediagrams.view.SDComponents.SDImage;
     
     import flash.utils.ByteArray;
+	import flash.net.URLRequest;
+	import flash.display.Loader;
+	import flash.events.ProgressEvent;
 
 
 	[Bindable]
@@ -30,7 +33,7 @@ package com.simplediagrams.model
 		
 		private var _startState:SDImageMemento
 		
-		public var imageURL:String;
+		private var _imageURL:String;
 		
 		public function SDImageModel()
 		{
@@ -52,15 +55,44 @@ package com.simplediagrams.model
 		{
 			return _imageData;
 		}
-
+				
 		public function set imageData(v:ByteArray):void
 		{
 			_imageData = v;
-			
-//			var remoteSharedObjectEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LOAD_IMAGE, true, true);
-//			remoteSharedObjectEvent.imageData = v;
-//			dispatchEvent(remoteSharedObjectEvent);			 						
 		}
+		
+		public function get imageURL():String{
+			return _imageURL;			
+		}
+		
+		public function set imageURL(value:String):void{
+			_imageURL = value;
+			
+			// If the user loaded the image locally, don't bother pulling it down
+			if (_imageData == null) {
+				var urlRequest:URLRequest = new URLRequest(_imageURL);
+				var loader:Loader = new Loader();
+				loader.load(urlRequest);
+				
+				loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, loadProgress);
+				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadComplete);
+			}
+		}
+		
+		private function loadProgress(event:ProgressEvent):void
+		{   
+			// TODO loading bar in the image frame for extra credit
+			var percentLoaded:Number = Math.round((event.bytesLoaded/event.bytesTotal) * 100);
+			trace("Loading: "+percentLoaded+"%");
+		}
+		
+		function loadComplete(event:Event):void
+		{
+			trace("Complete");
+			// TODO: ....and where's Johnny?
+			//			addChild(loader);
+		}
+
 		
 		public function get styleName():String
 		{

@@ -140,9 +140,9 @@ package com.simplediagrams.controllers
 				undoRedoManager.push(cmd)	
 					
 //				remoteSharedObjectController.dispatchUpdate_PasteEvent(cmd);
-				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.PASTE);	
-				rsoEvent.pasteCommand = cmd;
-				Swiz.dispatchEvent(rsoEvent);
+//				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.PASTE);	
+//				rsoEvent.pasteCommand = cmd;
+//				Swiz.dispatchEvent(rsoEvent);
 
 			}
 			else

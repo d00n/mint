@@ -48,6 +48,7 @@ package com.simplediagrams.controllers
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
 	import flash.net.ObjectEncoding;
+	import flash.net.Responder;
 	import flash.net.SharedObject;
 	import flash.utils.ByteArray;
 	import flash.utils.describeType;
@@ -125,6 +126,19 @@ package com.simplediagrams.controllers
 			{
 				// NOP
 			}
+				
+			clientObj.updateSDImageModel = function(params) : void {
+				
+				var sdImageModel:SDImageModel = diagramModel.getModelByID(parseInt(params["sdID"])) as SDImageModel;
+				sdImageModel.imageURL = params["imageURL"];
+				
+				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+				rsoEvent.changedSDObjectModelArray = new Array;				
+				rsoEvent.changedSDObjectModelArray.push(sdImageModel);
+				Swiz.dispatchEvent(rsoEvent);	
+				
+			}
+				
 				
 //			clientObj.receiveJPG = function(params) : void
 //			{
@@ -213,10 +227,6 @@ package com.simplediagrams.controllers
 		private function routeChange(changeObject:Object) : void 
 		{
 			switch (changeObject.commandName) {
-//				case "AddSDObjectModel": {
-//					processUpdate_AddSDObjectModel(changeObject);
-//					break;
-//				}
 				case "DeleteSelectedSDObjectModel": {
 					processUpdate_DeleteSelectedSDObjectModel(changeObject);
 					break;
@@ -225,24 +235,9 @@ package com.simplediagrams.controllers
 					processUpdate_ObjectChanged(changeObject);
 					break;
 				}
-					
-					
-
-					
+										
 //				case "RefreshZoom": {
 //					processUpdate_RefreshZoom(event);
-//					break;
-//				}
-//				case "ChangeLinePosition": {
-//					processUpdate_ChangeLinePosition(event);
-//					break;
-//				}
-//				case "SymbolTextEdit": {
-//					processUpdate_SymbolTextEdit(event);
-//					break;
-//				}
-//				case "SDTextAreaModel_Text": {
-//					processUpdate_SDTextAreaModel_Text(event);
 //					break;
 //				}
 //				case "StyleChanged": {
@@ -262,60 +257,26 @@ package com.simplediagrams.controllers
 			}
 		}
 
-//		public function processUpdate_sdChange():void
-//		{
-//			Logger.info("processUpdate_xmlDiagram()",this);		
-//			
-//			var xmlDiagram:XML = new XML(_remoteSharedObject.data.xmlDiagram);
-//			if (xmlDiagram != null ) {
-//				diagramModel.initDiagramModel();
-//				fileManager.loadXMLIntoDiagramModel(xmlDiagram);
-//				var evt:LoadDiagramEvent = new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_LOADED, true)							
-//				evt.success = true
-//				Swiz.dispatchEvent(evt)		
-//			}	
-//		}
-		
-//		[Mediate(event="StyleEvent.CHANGE_STYLE")]
-//		[Mediate(event="RemoteSharedObjectEvent.DISPATCH_TEXT_AREA_CHANGE")]
-		[Mediate(event="CreateNewDiagramEvent.NEW_DIAGRAM_CREATED")]
-		[Mediate(event="RemoteSharedObjectEvent.CHANGE_ALL_SHAPES_TO_DEFAULT_COLOR")]		
-		[Mediate(event="RemoteSharedObjectEvent.REFRESH_Z_ORDER")]
-		[Mediate(event="RemoteSharedObjectEvent.REFRESH_ZOOM")]
-		[Mediate(event="RemoteSharedObjectEvent.CHANGE_LINE_POSITION")]
-		[Mediate(event="RemoteSharedObjectEvent.SYMBOL_TEXT_EDIT")]
-		public function dispatchUpdate_xmlDiagram(event:RemoteSharedObjectEvent):void
-		{
-//			Logger.info("dispatchUpdate_xmlDiagram()",this);		
-//			
-//			var xmlDiagram:XML = fileManager.convertDiagramToXML();
-//			
-//			Logger.info("_remoteSharedObject.size = " + _remoteSharedObject.size ,this);
-//			_remoteSharedObject.setProperty("xmlDiagram", xmlDiagram.toString());
-//			Logger.info("_remoteSharedObject.size = " + _remoteSharedObject.size ,this);			
-		}
-		
-//		public function processUpdate_xmlDiagram():void
-//		{
-//			Logger.info("processUpdate_xmlDiagram()",this);		
-//			
-//			var xmlDiagram:XML = new XML(_remoteSharedObject.data.xmlDiagram);
-//			if (xmlDiagram != null ) {
-//				diagramModel.initDiagramModel();
-//				fileManager.loadXMLIntoDiagramModel(xmlDiagram);
-//				var evt:LoadDiagramEvent = new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_LOADED, true)							
-//				evt.success = true
-//				Swiz.dispatchEvent(evt)		
-//			}	
-//		}
-		
 		[Mediate(event="RemoteSharedObjectEvent.LOAD_IMAGE")]
 		public function dispatchUpdate_LoadImage(rsoEvent:RemoteSharedObjectEvent):void
 		{
 			Logger.info("dispatchUpdate_LoadImage()",this);
 			
-			_netConnection.call("sendImage", null, rsoEvent.imageData, 
-				rsoEvent.imageName);
+			var f:Function = function(imageDetails:Object):void
+			{
+				Logger.info("dispatchUpdate_LoadImage() responder.result()",this);
+				
+				var sdID:int = parseInt(imageDetails["sdID"]);
+				var imageURL:String = imageDetails["imageURL"];
+			}
+			
+			var responder:Responder = new Responder(f);
+								
+
+			
+			_netConnection.call("sendImage", responder, rsoEvent.imageData, 
+				rsoEvent.imageName,
+				rsoEvent.sdImageModel.sdID.toString());
 //				rsoEvent.sdImageModel.x,
 //				rsoEvent.sdImageModel.y,
 //				rsoEvent.sdImageModel.width,
@@ -598,36 +559,22 @@ package com.simplediagrams.controllers
 				diagramModel.sdObjectModelsAC.addItem(sdObjectModel);
 				diagramModel.addComponentForModel(sdObjectModel, false);
 			}
-			
-//			var sdID:Number = parseInt(changeObject.sdID);
-//			var sdObjectModel:SDObjectModel = diagramModel.getModelByID(sdID);
-//			
-//			// this sort of error catching should not fire after persitence is completed
-//			if (sdObjectModel == null) {
-//				Logger.error("processUpdate_ObjectChanged() found no sdObjectModel for sdID " + sdID,this);
-//				return;	
-//			}
-//			
-//			var to:TransformMemento = new TransformMemento();
-//			to.color  	= parseInt(changeObject.color);
-//			to.height 	= parseFloat(changeObject.height);
-//			to.width 	= parseFloat(changeObject.width);
-//			to.rotation = parseFloat(changeObject.rotation);
-//			to.x 		= parseFloat(changeObject.x);
-//			to.y 		= parseFloat(changeObject.y);	
-//				
-//			//var from:TransformMemento = to.clone();
-//			// from state is not relevant, because we're not pushing this command on the redo stack
-//			var o:Object = {sdID:sdObjectModel.sdID, fromState:to, toState:to};
-//			var transformedObjectsArr:Array = new Array;
-//			transformedObjectsArr.push(o);
-//
-//			var cmd:TransformCommand = new TransformCommand(diagramModel, transformedObjectsArr);
-//			cmd.execute();		
-//			
-//			// this should become part of TransformCommand
-//			sdObjectModel.depth = parseFloat(changeObject.depth);
 		}	
+		
+		[Mediate(event="RemoteSharedObjectEvent.CUT")]
+		public function dispatchUpdate_CutEvent(event:RemoteSharedObjectEvent) : void
+		{
+			Logger.info("dispatchUpdate_CutEvent()",this);
+						
+			for each (var sdObjectModel:SDObjectModel in event.cutCommand.clonesArr) 
+			{
+				var sd_obj:Object = {};
+				sd_obj.commandName = "DeleteSelectedSDObjectModel";
+				sd_obj.sdID = sdObjectModel.sdID;						
+				_remoteSharedObject.setProperty(sd_obj.sdID.toString(), sd_obj);
+			}		
+			
+		}
 		
 //		//[Mediate(event="CreateNewDiagramEvent.NEW_DIAGRAM_CREATED")]
 //		public function dispatchUpdate_ClearDiagram(event:CreateNewDiagramEvent) : void
@@ -641,97 +588,6 @@ package com.simplediagrams.controllers
 //			Logger.info("processUpdate_ClearDiagram()",this);
 //			diagramModel.initDiagramModel();		
 //		}
-		
-		[Mediate(event="RemoteSharedObjectEvent.CUT")]
-		public function dispatchUpdate_CutEvent(event:RemoteSharedObjectEvent) : void
-		{
-			Logger.info("dispatchUpdate_CutEvent()",this);
-			
-//			_remoteSharedObject.setProperty("commandName", "CutEvent");
-//			var sdIDArray:Array = new Array();
-//			for each (var sdObjectModel:SDObjectModel in cmd.clonesArr)
-//			{			
-//				sdIDArray.push(sdObjectModel.sdID);
-//			}
-//			_remoteSharedObject.setProperty("sdIDArray", sdIDArray);
-			
-			for each (var sdObjectModel:SDObjectModel in event.cutCommand.clonesArr) 
-			{
-				var sd_obj:Object = {};
-				sd_obj.commandName = "DeleteSelectedSDObjectModel";
-				sd_obj.sdID = sdObjectModel.sdID;						
-				_remoteSharedObject.setProperty(sd_obj.sdID.toString(), sd_obj);
-			}		
-			
-		}
-
-		
-//		[Mediate(event="RemoteSharedObjectEvent.PASTE")]
-		public function dispatchUpdate_PasteEvent(event:RemoteSharedObjectEvent) : void
-		{
-			Logger.info("dispatchUpdate_PasteEvent()",this);
-			
-			for each (var sdObjectModel:SDObjectModel in event.pasteCommand.pastedObjectsArr)
-			{			
-				var sd_obj:Object = {};
-
-				var sdSymbolModel:SDSymbolModel = sdObjectModel as SDSymbolModel;
-				if (sdSymbolModel != null) {
-					sd_obj.is_LibraryItem = "true";
-					sd_obj.libraryName = sdSymbolModel.libraryName;
-					sd_obj.symbolName = sdSymbolModel.symbolName;								
-					sd_obj.text = sdSymbolModel.text;
-					sd_obj.textAlign = sdSymbolModel.textAlign;
-					sd_obj.textPosition = sdSymbolModel.textPosition;
-				}
-				
-				sd_obj.commandName = "PasteEvent";
-				sd_obj.classInfo = describeType(sdObjectModel);
-				sd_obj.sdID = sdObjectModel.sdID;
-				sd_obj.color = sdObjectModel.color;
-				sd_obj.height = sdObjectModel.height;
-				sd_obj.width = sdObjectModel.width;
-				sd_obj.rotation = sdObjectModel.rotation;
-				sd_obj.x = sdObjectModel.x;
-				sd_obj.y = sdObjectModel.y;
-
-				_remoteSharedObject.setProperty(sd_obj.sdID.toString(), sd_obj);
-			}		
-		}
-		
-		public function processUpdate_PasteEvent(changeObject:Object):void
-		{
-			Logger.info("processUpdate_PasteEvent()",this);
-			
-			var sdID:Number = parseInt(changeObject.sdID);
-			var sdObjectModel:SDObjectModel = diagramModel.getModelByID(sdID);
-			
-			// this sort of error catching should not fire after persitence is completed
-			if (sdObjectModel != null) {
-				Logger.error("processUpdate_PasteEvent() found sdObjectModel for sdID " + sdID,this);
-				return;	
-			}
-
-			if (changeObject.is_LibraryItem == "true")
-			{
-				var libraryName:String = changeObject.libraryName;
-				var symbolName:String = changeObject.symbolName;
-				
-				var cmd:AddLibraryItemCommand = new AddLibraryItemCommand(diagramModel, libraryManager, libraryName, symbolName);	
-				
-				cmd.sdID			= parseInt(changeObject.sdID);
-				cmd.fontSize 		= parseInt(changeObject.fontSize);
-				//cmd.color		 	= parseInt(changeObject.color);
-				cmd.x 				= parseFloat(changeObject.x);
-				cmd.y	 			= parseFloat(changeObject.y);
-				cmd.fontWeight 		= changeObject.fontWeight;
-				//cmd.text		 	= changeObject.text;
-				cmd.textAlign		= changeObject.textAlign;
-				cmd.textPosition	= changeObject.textPosition;
-				
-				cmd.execute();
-			}			
-		}
 		
 //		public function dispatchUpdate_RefreshZoom(): void
 //		{
@@ -749,105 +605,6 @@ package com.simplediagrams.controllers
 //			diagramModel.scaleY = parseFloat(event.target.data["scaleY"]);			
 //		}
 //		
-//		public function dispatchUpdate_ChangeLinePosition(cmd:ChangeLinePositionCommand):void
-//		{
-//			Logger.info("dispatchUpdate_ChangeLinePosition()",this);
-//			
-//			_remoteSharedObject.setProperty("commandName", "ChangeLinePosition");
-//			
-//			//SDObjectMemento attributes
-//			_remoteSharedObject.setProperty("sdID", cmd.toState.sdID);
-//			_remoteSharedObject.setProperty("x", cmd.toState.x);
-//			_remoteSharedObject.setProperty("y", cmd.toState.y);
-//			_remoteSharedObject.setProperty("height", cmd.toState.height);
-//			_remoteSharedObject.setProperty("width", cmd.toState.width);
-//			_remoteSharedObject.setProperty("rotation", cmd.toState.rotation);
-//			_remoteSharedObject.setProperty("zIndex", cmd.toState.zIndex);
-//			_remoteSharedObject.setProperty("color", cmd.toState.color);
-//			
-//			// SDLineMemento attributes
-//			_remoteSharedObject.setProperty("startLineStyle", cmd.toState.startLineStyle);
-//			_remoteSharedObject.setProperty("endLineStyle", cmd.toState.endLineStyle);
-//			_remoteSharedObject.setProperty("lineWeight", cmd.toState.lineWeight);
-//			_remoteSharedObject.setProperty("startX", cmd.toState.startX);
-//			_remoteSharedObject.setProperty("startY", cmd.toState.startY);
-//			_remoteSharedObject.setProperty("endX", cmd.toState.endX);
-//			_remoteSharedObject.setProperty("endY", cmd.toState.endY);
-//			_remoteSharedObject.setProperty("bendX", cmd.toState.bendX);
-//			_remoteSharedObject.setProperty("bendY", cmd.toState.bendY);			
-//		}
-//		
-//		public function processUpdate_ChangeLinePosition(event:SyncEvent):void
-//		{
-//			Logger.info("processUpdate_ChangeLinePosition()",this);		
-//						
-//			var toState:SDLineMemento = new SDLineMemento();	
-//			toState.sdID 		= parseInt(event.target.data["sdID"]);
-//			toState.x 			= parseInt(event.target.data["x"]);
-//			toState.y 			= parseInt(event.target.data["y"]);
-//			toState.height 		= parseFloat(event.target.data["height"]);
-//			toState.width 		= parseFloat(event.target.data["width"]);
-//			toState.rotation 	= parseInt(event.target.data["rotation"]);
-//			toState.zIndex 		= parseInt(event.target.data["zIndex"]);
-//			toState.color 		= parseInt(event.target.data["color"]);
-//			
-//			toState.startLineStyle 	= parseInt(event.target.data["startLineStyle"]);
-//			toState.endLineStyle 	= parseInt(event.target.data["endLineStyle"]);
-//			toState.lineWeight 		= parseInt(event.target.data["lineWeight"]);			
-//			toState.startX 			= parseInt(event.target.data["startX"]);
-//			toState.startY 			= parseInt(event.target.data["startY"]);
-//			toState.endX 			= parseInt(event.target.data["endX"]);
-//			toState.endY 			= parseInt(event.target.data["endY"]);
-//			toState.bendX 			= parseInt(event.target.data["bendX"]);
-//			toState.bendY 			= parseInt(event.target.data["bendY"]);
-//			
-//			var cmd:ChangeLinePositionCommand = new ChangeLinePositionCommand(diagramModel)
-//			cmd.sdID 			= parseInt(event.target.data["sdID"]);
-//			cmd.toState = toState;
-//			
-//			var sdLineModel:SDLineModel = diagramModel.getModelByID(cmd.sdID) as SDLineModel;
-//			cmd.fromState = sdLineModel.getMemento() as SDLineMemento;
-//			
-//			cmd.execute();
-//		}
-//		
-//		public function dispatchUpdate_SymbolTextEdit(sdSymbolModel:SDSymbolModel):void
-//		{
-//			Logger.info("dispatchUpdate_SymbolTextEdit()",this);		
-//			
-//			_remoteSharedObject.setProperty("commandName", "SymbolTextEdit");
-//			_remoteSharedObject.setProperty("sdID", sdSymbolModel.sdID);
-//			_remoteSharedObject.setProperty("text", sdSymbolModel.text);
-//		}
-//		
-//		public function processUpdate_SymbolTextEdit(event:SyncEvent):void
-//		{
-//			Logger.info("processUpdate_SymbolTextEdit()",this);		
-//			
-//			var sdID:Number = parseInt(event.target.data["sdID"]);
-//			var sdObjectModel:SDObjectModel = diagramModel.getModelByID(sdID);
-//			SDSymbolModel(sdObjectModel).text = event.target.data["text"];			
-//		}
-//
-//		//[Mediate(event="RemoteSharedObjectEvent.DISPATCH_TEXT_AREA_CHANGE")]
-//		public function dispatchUpdate_SDTextAreaModel_Text(event:RemoteSharedObjectEvent):void
-//		{
-//			Logger.info("dispatchUpdate_SDTextAreaModel_Text()",this);		
-//			
-//			_remoteSharedObject.setProperty("commandName", "SDTextAreaModel_Text");
-//			_remoteSharedObject.setProperty("sdID", event.sdID);
-//			_remoteSharedObject.setProperty("text", event.text);
-//		}
-//		
-//		public function processUpdate_SDTextAreaModel_Text(event:SyncEvent):void
-//		{
-//			Logger.info("processUpdate_SDTextAreaModel_Text()",this);		
-//			
-//			var sdID:Number = parseInt(event.target.data["sdID"]);
-//			var sdObjectModel:SDObjectModel = diagramModel.getModelByID(sdID);
-//			(sdObjectModel as SDTextAreaModel).text = event.target.data["text"];	
-//		}
-//		
 //		//[Mediate(event="StyleEvent.CHANGE_STYLE")]
 //		public function dispatchUpdate_StyleChanged(event:StyleEvent):void
 //		{
@@ -863,6 +620,218 @@ package com.simplediagrams.controllers
 		
 		
 		// DEPRECATED
+		
+		//		[Mediate(event="RemoteSharedObjectEvent.PASTE")]
+		//		public function dispatchUpdate_PasteEvent(event:RemoteSharedObjectEvent) : void
+		//		{
+		//			Logger.info("dispatchUpdate_PasteEvent()",this);
+		//			
+		//			for each (var sdObjectModel:SDObjectModel in event.pasteCommand.pastedObjectsArr)
+		//			{			
+		//				var sd_obj:Object = {};
+		//
+		//				var sdSymbolModel:SDSymbolModel = sdObjectModel as SDSymbolModel;
+		//				if (sdSymbolModel != null) {
+		//					sd_obj.is_LibraryItem = "true";
+		//					sd_obj.libraryName = sdSymbolModel.libraryName;
+		//					sd_obj.symbolName = sdSymbolModel.symbolName;								
+		//					sd_obj.text = sdSymbolModel.text;
+		//					sd_obj.textAlign = sdSymbolModel.textAlign;
+		//					sd_obj.textPosition = sdSymbolModel.textPosition;
+		//				}
+		//				
+		//				sd_obj.commandName = "PasteEvent";
+		//				sd_obj.classInfo = describeType(sdObjectModel);
+		//				sd_obj.sdID = sdObjectModel.sdID;
+		//				sd_obj.color = sdObjectModel.color;
+		//				sd_obj.height = sdObjectModel.height;
+		//				sd_obj.width = sdObjectModel.width;
+		//				sd_obj.rotation = sdObjectModel.rotation;
+		//				sd_obj.x = sdObjectModel.x;
+		//				sd_obj.y = sdObjectModel.y;
+		//
+		//				_remoteSharedObject.setProperty(sd_obj.sdID.toString(), sd_obj);
+		//			}		
+		//		}
+		//		
+		//		public function processUpdate_PasteEvent(changeObject:Object):void
+		//		{
+		//			Logger.info("processUpdate_PasteEvent()",this);
+		//			
+		//			var sdID:Number = parseInt(changeObject.sdID);
+		//			var sdObjectModel:SDObjectModel = diagramModel.getModelByID(sdID);
+		//			
+		//			// this sort of error catching should not fire after persitence is completed
+		//			if (sdObjectModel != null) {
+		//				Logger.error("processUpdate_PasteEvent() found sdObjectModel for sdID " + sdID,this);
+		//				return;	
+		//			}
+		//
+		//			if (changeObject.is_LibraryItem == "true")
+		//			{
+		//				var libraryName:String = changeObject.libraryName;
+		//				var symbolName:String = changeObject.symbolName;
+		//				
+		//				var cmd:AddLibraryItemCommand = new AddLibraryItemCommand(diagramModel, libraryManager, libraryName, symbolName);	
+		//				
+		//				cmd.sdID			= parseInt(changeObject.sdID);
+		//				cmd.fontSize 		= parseInt(changeObject.fontSize);
+		//				//cmd.color		 	= parseInt(changeObject.color);
+		//				cmd.x 				= parseFloat(changeObject.x);
+		//				cmd.y	 			= parseFloat(changeObject.y);
+		//				cmd.fontWeight 		= changeObject.fontWeight;
+		//				//cmd.text		 	= changeObject.text;
+		//				cmd.textAlign		= changeObject.textAlign;
+		//				cmd.textPosition	= changeObject.textPosition;
+		//				
+		//				cmd.execute();
+		//			}			
+		//		}
+		
+		
+		//		public function dispatchUpdate_ChangeLinePosition(cmd:ChangeLinePositionCommand):void
+		//		{
+		//			Logger.info("dispatchUpdate_ChangeLinePosition()",this);
+		//			
+		//			_remoteSharedObject.setProperty("commandName", "ChangeLinePosition");
+		//			
+		//			//SDObjectMemento attributes
+		//			_remoteSharedObject.setProperty("sdID", cmd.toState.sdID);
+		//			_remoteSharedObject.setProperty("x", cmd.toState.x);
+		//			_remoteSharedObject.setProperty("y", cmd.toState.y);
+		//			_remoteSharedObject.setProperty("height", cmd.toState.height);
+		//			_remoteSharedObject.setProperty("width", cmd.toState.width);
+		//			_remoteSharedObject.setProperty("rotation", cmd.toState.rotation);
+		//			_remoteSharedObject.setProperty("zIndex", cmd.toState.zIndex);
+		//			_remoteSharedObject.setProperty("color", cmd.toState.color);
+		//			
+		//			// SDLineMemento attributes
+		//			_remoteSharedObject.setProperty("startLineStyle", cmd.toState.startLineStyle);
+		//			_remoteSharedObject.setProperty("endLineStyle", cmd.toState.endLineStyle);
+		//			_remoteSharedObject.setProperty("lineWeight", cmd.toState.lineWeight);
+		//			_remoteSharedObject.setProperty("startX", cmd.toState.startX);
+		//			_remoteSharedObject.setProperty("startY", cmd.toState.startY);
+		//			_remoteSharedObject.setProperty("endX", cmd.toState.endX);
+		//			_remoteSharedObject.setProperty("endY", cmd.toState.endY);
+		//			_remoteSharedObject.setProperty("bendX", cmd.toState.bendX);
+		//			_remoteSharedObject.setProperty("bendY", cmd.toState.bendY);			
+		//		}
+		//		
+		//		public function processUpdate_ChangeLinePosition(event:SyncEvent):void
+		//		{
+		//			Logger.info("processUpdate_ChangeLinePosition()",this);		
+		//						
+		//			var toState:SDLineMemento = new SDLineMemento();	
+		//			toState.sdID 		= parseInt(event.target.data["sdID"]);
+		//			toState.x 			= parseInt(event.target.data["x"]);
+		//			toState.y 			= parseInt(event.target.data["y"]);
+		//			toState.height 		= parseFloat(event.target.data["height"]);
+		//			toState.width 		= parseFloat(event.target.data["width"]);
+		//			toState.rotation 	= parseInt(event.target.data["rotation"]);
+		//			toState.zIndex 		= parseInt(event.target.data["zIndex"]);
+		//			toState.color 		= parseInt(event.target.data["color"]);
+		//			
+		//			toState.startLineStyle 	= parseInt(event.target.data["startLineStyle"]);
+		//			toState.endLineStyle 	= parseInt(event.target.data["endLineStyle"]);
+		//			toState.lineWeight 		= parseInt(event.target.data["lineWeight"]);			
+		//			toState.startX 			= parseInt(event.target.data["startX"]);
+		//			toState.startY 			= parseInt(event.target.data["startY"]);
+		//			toState.endX 			= parseInt(event.target.data["endX"]);
+		//			toState.endY 			= parseInt(event.target.data["endY"]);
+		//			toState.bendX 			= parseInt(event.target.data["bendX"]);
+		//			toState.bendY 			= parseInt(event.target.data["bendY"]);
+		//			
+		//			var cmd:ChangeLinePositionCommand = new ChangeLinePositionCommand(diagramModel)
+		//			cmd.sdID 			= parseInt(event.target.data["sdID"]);
+		//			cmd.toState = toState;
+		//			
+		//			var sdLineModel:SDLineModel = diagramModel.getModelByID(cmd.sdID) as SDLineModel;
+		//			cmd.fromState = sdLineModel.getMemento() as SDLineMemento;
+		//			
+		//			cmd.execute();
+		//		}
+		//		
+		//		public function dispatchUpdate_SymbolTextEdit(sdSymbolModel:SDSymbolModel):void
+		//		{
+		//			Logger.info("dispatchUpdate_SymbolTextEdit()",this);		
+		//			
+		//			_remoteSharedObject.setProperty("commandName", "SymbolTextEdit");
+		//			_remoteSharedObject.setProperty("sdID", sdSymbolModel.sdID);
+		//			_remoteSharedObject.setProperty("text", sdSymbolModel.text);
+		//		}
+		//		
+		//		public function processUpdate_SymbolTextEdit(event:SyncEvent):void
+		//		{
+		//			Logger.info("processUpdate_SymbolTextEdit()",this);		
+		//			
+		//			var sdID:Number = parseInt(event.target.data["sdID"]);
+		//			var sdObjectModel:SDObjectModel = diagramModel.getModelByID(sdID);
+		//			SDSymbolModel(sdObjectModel).text = event.target.data["text"];			
+		//		}
+		//
+		//		//[Mediate(event="RemoteSharedObjectEvent.DISPATCH_TEXT_AREA_CHANGE")]
+		//		public function dispatchUpdate_SDTextAreaModel_Text(event:RemoteSharedObjectEvent):void
+		//		{
+		//			Logger.info("dispatchUpdate_SDTextAreaModel_Text()",this);		
+		//			
+		//			_remoteSharedObject.setProperty("commandName", "SDTextAreaModel_Text");
+		//			_remoteSharedObject.setProperty("sdID", event.sdID);
+		//			_remoteSharedObject.setProperty("text", event.text);
+		//		}
+		//		
+		//		public function processUpdate_SDTextAreaModel_Text(event:SyncEvent):void
+		//		{
+		//			Logger.info("processUpdate_SDTextAreaModel_Text()",this);		
+		//			
+		//			var sdID:Number = parseInt(event.target.data["sdID"]);
+		//			var sdObjectModel:SDObjectModel = diagramModel.getModelByID(sdID);
+		//			(sdObjectModel as SDTextAreaModel).text = event.target.data["text"];	
+		//		}
+		//		
+		
+		//		public function processUpdate_sdChange():void
+		//		{
+		//			Logger.info("processUpdate_xmlDiagram()",this);		
+		//			
+		//			var xmlDiagram:XML = new XML(_remoteSharedObject.data.xmlDiagram);
+		//			if (xmlDiagram != null ) {
+		//				diagramModel.initDiagramModel();
+		//				fileManager.loadXMLIntoDiagramModel(xmlDiagram);
+		//				var evt:LoadDiagramEvent = new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_LOADED, true)							
+		//				evt.success = true
+		//				Swiz.dispatchEvent(evt)		
+		//			}	
+		//		}
+		
+		//		[Mediate(event="StyleEvent.CHANGE_STYLE")]
+		//		[Mediate(event="CreateNewDiagramEvent.NEW_DIAGRAM_CREATED")]
+		//		[Mediate(event="RemoteSharedObjectEvent.CHANGE_ALL_SHAPES_TO_DEFAULT_COLOR")]		
+		//		[Mediate(event="RemoteSharedObjectEvent.REFRESH_Z_ORDER")]
+		//		[Mediate(event="RemoteSharedObjectEvent.REFRESH_ZOOM")]
+		//		public function dispatchUpdate_xmlDiagram(event:RemoteSharedObjectEvent):void
+		//		{
+		//			Logger.info("dispatchUpdate_xmlDiagram()",this);		
+		//			
+		//			var xmlDiagram:XML = fileManager.convertDiagramToXML();
+		//			
+		//			Logger.info("_remoteSharedObject.size = " + _remoteSharedObject.size ,this);
+		//			_remoteSharedObject.setProperty("xmlDiagram", xmlDiagram.toString());
+		//			Logger.info("_remoteSharedObject.size = " + _remoteSharedObject.size ,this);			
+		//		}
+		//		
+		//		public function processUpdate_xmlDiagram():void
+		//		{
+		//			Logger.info("processUpdate_xmlDiagram()",this);		
+		//			
+		//			var xmlDiagram:XML = new XML(_remoteSharedObject.data.xmlDiagram);
+		//			if (xmlDiagram != null ) {
+		//				diagramModel.initDiagramModel();
+		//				fileManager.loadXMLIntoDiagramModel(xmlDiagram);
+		//				var evt:LoadDiagramEvent = new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_LOADED, true)							
+		//				evt.success = true
+		//				Swiz.dispatchEvent(evt)		
+		//			}	
+		//		}
 		
 
 		//		
@@ -989,77 +958,77 @@ package com.simplediagrams.controllers
 		//		
 		
 		
-////		[Mediate(event="RemoteSharedObjectEvent.CHANGE_ALL_SHAPES_TO_DEFAULT_COLOR")]
-//		public function dispatchUpdate_ChangeAllShapesToDefaultColor():void
-//		{
-//			_remoteSharedObject.setProperty("commandName", "ChangeAllShapesToDefaultColor");			
-//		}
-//		
-//		public function processUpdate_ChangeAllShapesToDefaultColor(event:SyncEvent):void
-//		{
-//			diagramModel.changeAllShapesToDefaultColor();
-//		}
-//		
-//		[Mediate(event="RemoteSharedObjectEvent.CHANGE_COLOR")]
-//		public function dispatchUpdate_ChangeColor(event:RemoteSharedObjectEvent):void
-//		{
-//			Logger.info("dispatchUpdate_ChangeColor()",this);	
-//					
-//			_remoteSharedObject.setProperty("commandName", "ChangeColor");
-//			_remoteSharedObject.setProperty("sdID", event.sdID);
-//			_remoteSharedObject.setProperty("color", event.color);
-//		}
-//		
-//		public function processUpdate_ChangeColor(changeObject:Object):void
-//		{
-//			Logger.info("processUpdate_ChangeColor()",this);		
-//
-//			
-//			var cmd:ChangeColorCommand = new ChangeColorCommand(diagramModel, sdObjectModel);
-//			cmd.color = event.target.data["color"];	
-//			cmd.execute();
-//		}		
+		////		[Mediate(event="RemoteSharedObjectEvent.CHANGE_ALL_SHAPES_TO_DEFAULT_COLOR")]
+		//		public function dispatchUpdate_ChangeAllShapesToDefaultColor():void
+		//		{
+		//			_remoteSharedObject.setProperty("commandName", "ChangeAllShapesToDefaultColor");			
+		//		}
+		//		
+		//		public function processUpdate_ChangeAllShapesToDefaultColor(event:SyncEvent):void
+		//		{
+		//			diagramModel.changeAllShapesToDefaultColor();
+		//		}
+		//		
+		//		[Mediate(event="RemoteSharedObjectEvent.CHANGE_COLOR")]
+		//		public function dispatchUpdate_ChangeColor(event:RemoteSharedObjectEvent):void
+		//		{
+		//			Logger.info("dispatchUpdate_ChangeColor()",this);	
+		//					
+		//			_remoteSharedObject.setProperty("commandName", "ChangeColor");
+		//			_remoteSharedObject.setProperty("sdID", event.sdID);
+		//			_remoteSharedObject.setProperty("color", event.color);
+		//		}
+		//		
+		//		public function processUpdate_ChangeColor(changeObject:Object):void
+		//		{
+		//			Logger.info("processUpdate_ChangeColor()",this);		
+		//
+		//			
+		//			var cmd:ChangeColorCommand = new ChangeColorCommand(diagramModel, sdObjectModel);
+		//			cmd.color = event.target.data["color"];	
+		//			cmd.execute();
+		//		}		
 		
-//		public function dispatchUpdate_RefreshZOrder() : void
-//		{
-//			Logger.info("dispatchUpdate_RefreshZOrder()",this);
-//			
-//			var zOrderArray:Array = new Array();
-//			var numElements:uint = diagramModel.sdObjectModelsAC.length;
-//			for (var i:uint = 0; i<numElements; i++)
-//			{
-//				var sdObjectModel:SDObjectModel = diagramModel.sdObjectModelsAC.getItemAt(i) as SDObjectModel;
-//
-//				zOrderArray[i] = new Array();
-//				
-//				if (sdObjectModel != null) {
-//					zOrderArray[i]["sdID"] = sdObjectModel.sdID;
-//					zOrderArray[i]["depth"] = sdObjectModel.depth;
-//				}
-//			}
-//			
-//			_remoteSharedObject.setProperty("commandName", "RefreshZOrder");			
-//			_remoteSharedObject.setProperty("zOrderArray", zOrderArray);			
-//		}
-//		
-//		public function processUpdate_RefreshZOrder(event:SyncEvent) : void
-//		{
-//			Logger.info("processUpdate_RefreshZOrder()",this);			
-//			
-//			var zOrderArray:Array = event.target.data["zOrderArray"];
-//			for each (var zOrder:Array in zOrderArray)
-//			{
-//				var sdID:Number = parseInt(zOrder["sdID"]);
-//				var depth:Number = parseInt(zOrder["depth"]);
-//				
-//				var sdObjectModel:SDObjectModel = diagramModel.getModelByID(sdID);
-//								
-//				if (sdObjectModel != null) {
-//					Logger.info("processUpdate_RefreshZOrder() sdObjectModel.depth = " + sdObjectModel.depth.toString(),this);	
-//					sdObjectModel.depth = depth;	
-//				}				
-//			}			
-//		}
+		//		public function dispatchUpdate_RefreshZOrder() : void
+		//		{
+		//			Logger.info("dispatchUpdate_RefreshZOrder()",this);
+		//			
+		//			var zOrderArray:Array = new Array();
+		//			var numElements:uint = diagramModel.sdObjectModelsAC.length;
+		//			for (var i:uint = 0; i<numElements; i++)
+		//			{
+		//				var sdObjectModel:SDObjectModel = diagramModel.sdObjectModelsAC.getItemAt(i) as SDObjectModel;
+		//
+		//				zOrderArray[i] = new Array();
+		//				
+		//				if (sdObjectModel != null) {
+		//					zOrderArray[i]["sdID"] = sdObjectModel.sdID;
+		//					zOrderArray[i]["depth"] = sdObjectModel.depth;
+		//				}
+		//			}
+		//			
+		//			_remoteSharedObject.setProperty("commandName", "RefreshZOrder");			
+		//			_remoteSharedObject.setProperty("zOrderArray", zOrderArray);			
+		//		}
+		//		
+		//		public function processUpdate_RefreshZOrder(event:SyncEvent) : void
+		//		{
+		//			Logger.info("processUpdate_RefreshZOrder()",this);			
+		//			
+		//			var zOrderArray:Array = event.target.data["zOrderArray"];
+		//			for each (var zOrder:Array in zOrderArray)
+		//			{
+		//				var sdID:Number = parseInt(zOrder["sdID"]);
+		//				var depth:Number = parseInt(zOrder["depth"]);
+		//				
+		//				var sdObjectModel:SDObjectModel = diagramModel.getModelByID(sdID);
+		//								
+		//				if (sdObjectModel != null) {
+		//					Logger.info("processUpdate_RefreshZOrder() sdObjectModel.depth = " + sdObjectModel.depth.toString(),this);	
+		//					sdObjectModel.depth = depth;	
+		//				}				
+		//			}			
+		//		}
 		
 	}	
 }

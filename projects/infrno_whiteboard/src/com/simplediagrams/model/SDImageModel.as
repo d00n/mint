@@ -30,6 +30,8 @@ package com.simplediagrams.model
 		
 		private var _startState:SDImageMemento
 		
+		public var imageURL:String;
+		
 		public function SDImageModel()
 		{
 			super();

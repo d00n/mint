@@ -239,7 +239,8 @@ package com.simplediagrams.model
 			isDirty = true;
 			
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.ADD_SD_OBJECT_MODEL);
-			rsoEvent.sdObjectModel = newSDObjectModel;
+			rsoEvent.changedSDObjectModelArray = new Array;
+			rsoEvent.changedSDObjectModelArray.push(newSDObjectModel);
 			Swiz.dispatchEvent(rsoEvent);		
 		}
 		

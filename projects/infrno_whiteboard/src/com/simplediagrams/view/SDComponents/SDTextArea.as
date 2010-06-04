@@ -203,20 +203,23 @@ package com.simplediagrams.view.SDComponents
 		
 		protected function onFocusOut(event:Event):void
 		{
-			Logger.info("onTextAreaMouseOut",this);
+			Logger.info("onFocusOut",this);			
 		}
 		
 		protected function onTextAreaChange(event:Event):void
 		{
-			_model.text = mainTextArea.text;
+			Logger.info("onTextAreaChange",this);
+			_model.text = mainTextArea.text;		
+			
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.DISPATCH_TEXT_AREA_CHANGE);
-			rsoEvent.sdID = this.sdID;
-			rsoEvent.text = this.text;
-			dispatchEvent(rsoEvent);
+			rsoEvent.sdID = _model.sdID;
+			//			rsoEvent.text = this.text;
+			Swiz.dispatchEvent(rsoEvent);			
 		}
 
 		protected function onTextAreaMouseOut(event:Event):void
 		{
+			Logger.info("onTextAreaMouseOut",this);
 			/*
 			if (mainTextArea.focusManager)
 			{

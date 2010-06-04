@@ -217,7 +217,8 @@ package com.simplediagrams.controllers
 			undoRedoManager.push(cmd)		
 				
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_WIDGET_ADDED);	
-			rsoEvent.sdObjectModel = diagramModel.getModelByID(cmd.sdID);
+			rsoEvent.changedSDObjectModelArray = new Array;
+			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
 			Swiz.dispatchEvent(rsoEvent);				
 		}
 				
@@ -241,7 +242,8 @@ package com.simplediagrams.controllers
 			
 //			remoteSharedObjectController.dispatchUpdate_TextAreaCreated(cmd);
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_WIDGET_CREATED);	
-			rsoEvent.sdObjectModel = diagramModel.getModelByID(cmd.sdID);
+			rsoEvent.changedSDObjectModelArray = new Array;
+			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
 			Swiz.dispatchEvent(rsoEvent);				
 		}
 		
@@ -262,7 +264,8 @@ package com.simplediagrams.controllers
 				
 //			remoteSharedObjectController.dispatchUpdate_PencilDrawingCreated(cmd);
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.PENCIL_DRAWING_CREATED);	
-			rsoEvent.sdObjectModel = diagramModel.getModelByID(cmd.sdID);
+			rsoEvent.changedSDObjectModelArray = new Array;
+			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
 			Swiz.dispatchEvent(rsoEvent);				
 		}
 			
@@ -284,10 +287,12 @@ package com.simplediagrams.controllers
 			undoRedoManager.push(cmd)
 			Logger.debug("onCreateLineComponent() finished" , this)	
 				
-//			remoteSharedObjectController.dispatchUpdate_CreateLineComponent(cmd);			
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.CREATE_LINE_COMPONENT);	
-			rsoEvent.sdObjectModel = diagramModel.getModelByID(cmd.sdID);
-			Swiz.dispatchEvent(rsoEvent);				
+//			remoteSharedObjectController.dispatchUpdate_CreateLineComponent(cmd);	
+				
+//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.CREATE_LINE_COMPONENT);	
+//			rsoEvent.changedSDObjectModelArray = new Array;
+//			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
+//			Swiz.dispatchEvent(rsoEvent);				
 		}
 		
 		
@@ -574,7 +579,7 @@ package com.simplediagrams.controllers
 			for each (var sdBase:SDBase in event.selectedArr)
 			{
 				var model:SDObjectModel = diagramModel.findModel(sdBase)
-				Logger.debug("adding model:"+ model, this)
+				Logger.debug("onMultiSelect() adding model:"+ model, this)
 				if( ! model ) { continue; }
 				diagramModel.addToSelected(model)
 			}			

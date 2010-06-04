@@ -113,7 +113,6 @@ package com.simplediagrams.controllers
 			cmd.execute()
 			undoRedoManager.push(cmd)
 				
-			//remoteSharedObjectController.dispatchUpdate_ObjectChanged(cmd)
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
 			rsoEvent.changedSDObjectModelArray = event.relatedObjects;
 			Swiz.dispatchEvent(rsoEvent);

@@ -41,10 +41,17 @@ package com.infrno.chat.view.mediators
 			
 			var msg:String = chat.chat_in.text;
 			
+			//
+			// pattern: [roll] <number of die>d<number of sides>
+			//
 			var dieRollRE:RegExp = /^(roll )?(?P<numOfDie>\d*)d(?P<numOfSides>\d+)$/i;
 			var result:Array = dieRollRE.exec(msg);
 			var numOfDie:int = 1;
 			var rollDice:Boolean = false;
+			
+			// 
+			// check to see if the pattern is a command for rolling the die
+			//
 			if (result != null && result.numOfSides != null && result.numOfSides > 0 && result.numOfSides < 101) {
 				if (result.numOfDie != null && result.numOfDie > 0 && result.numOfDie < 101) {
 					numOfDie = result.numOfDie;					

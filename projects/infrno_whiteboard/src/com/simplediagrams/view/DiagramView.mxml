@@ -167,12 +167,12 @@
 					
 			<view:DrawingBoard id="drawingBoard" height="100%" width="100%" />
 			
-			<view:ShapesPanel id="shapesPanel" height="100%" width="250" />	
+			<view:ShapesPanel id="shapesPanel" height="100%" width="150" />	
 		
 	</mx:HDividedBox>
 	
 	
-	<view:ToolPanel id="toolPanel" x="10" y="10" />
+	<view:ToolPanel id="toolPanel" x="10" y="30" />
 	
 	<view:PercentView id="percentView" x="{drawingBoard.width/2 - 45}" top="10"/>
 	

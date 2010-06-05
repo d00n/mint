@@ -127,17 +127,16 @@ package com.simplediagrams.controllers
 				// NOP
 			}
 				
-			clientObj.updateSDImageModel = function(params) : void {
-				
-				var sdImageModel:SDImageModel = diagramModel.getModelByID(parseInt(params["sdID"])) as SDImageModel;
-				sdImageModel.imageURL = params["imageURL"];
-				
-				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-				rsoEvent.changedSDObjectModelArray = new Array;				
-				rsoEvent.changedSDObjectModelArray.push(sdImageModel);
-				Swiz.dispatchEvent(rsoEvent);	
-				
-			}
+//			clientObj.updateSDImageModel = function(params) : void {
+//				
+//				var sdImageModel:SDImageModel = diagramModel.getModelByID(parseInt(params["sdID"])) as SDImageModel;
+//				sdImageModel.imageURL = params["imageURL"];
+//				
+//				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+//				rsoEvent.changedSDObjectModelArray = new Array;				
+//				rsoEvent.changedSDObjectModelArray.push(sdImageModel);
+//				Swiz.dispatchEvent(rsoEvent);					
+//			}
 				
 				
 //			clientObj.receiveJPG = function(params) : void
@@ -189,7 +188,7 @@ package com.simplediagrams.controllers
 			_netStream.client = this;    
 						
 			try {
-				_remoteSharedObject = SharedObject.getRemote(SHARED_OBJECT_NAME, _netConnection.uri);
+				_remoteSharedObject = SharedObject.getRemote(SHARED_OBJECT_NAME, _netConnection.uri, true);
 			} catch(error:Error) {
 				Logger.info("createSharedObject() could not create remote shared object: " + error.toString(),this);		
 			}

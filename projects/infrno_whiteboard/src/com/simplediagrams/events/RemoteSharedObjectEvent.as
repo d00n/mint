@@ -52,10 +52,10 @@ package com.simplediagrams.events
 		public var changedSDObjectModelArray:Array;
 		
 		// Wowza will accept these values for specified hosts.
-		public var auth_key:String = "test_key";
-		public var room_id:String= "test_room";
-		public var room_name:String;
-		public var user_name:String;
+		public var auth_key:String = "sample_auth_key";
+		public var room_id:String = "sample_room_id";
+		public var room_name:String = "sample_room_name";
+		public var user_name:String = "sample_user_name";
 
 		public function RemoteSharedObjectEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

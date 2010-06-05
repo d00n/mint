@@ -19,7 +19,7 @@ package com.simplediagrams.view.SDComponents
 					
 		private var _model:SDImageModel
 		
-		public var imageData:ByteArray		
+		public var imageSource:Object;
 		
 		[SkinPart(required="true")]		
 		public var imageHolder:Image;
@@ -55,8 +55,13 @@ package com.simplediagrams.view.SDComponents
 			this.width = _model.width
 			this.height = _model.height  
 			this.rotation = _model.rotation
-			this.imageData = _model.imageData
 			this.depth = _model.depth;
+			
+			if (_model.imageURL != null && _model.imageURL.length != 0)
+				this.imageSource = _model.imageURL;
+			else
+				this.imageSource = _model.imageData;
+					
             
             _model.addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );
         			
@@ -74,16 +79,20 @@ package com.simplediagrams.view.SDComponents
 			super.onModelChange(event)
 				
 			switch(event.property)
-			{    
-				
+			{    			
 				case "imageData":
 					Logger.debug("imageData changed", this)
-					imageData = _model.imageData
+					imageSource = _model.imageData
 					this.invalidateProperties()
 					break
-							
-			}
-			
+				case "imageURL":
+					Logger.debug("imageURL changed", this)
+					if (imageSource == null){
+						imageSource = _model.imageURL
+						this.invalidateProperties()
+					}
+					break							
+			}		
 			
 		}        
        

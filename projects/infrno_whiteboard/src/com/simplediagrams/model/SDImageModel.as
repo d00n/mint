@@ -67,16 +67,6 @@ package com.simplediagrams.model
 		
 		public function set imageURL(value:String):void{
 			_imageURL = value;
-			
-			// If the user loaded the image locally, don't bother pulling it down
-			if (_imageData == null) {
-				var urlRequest:URLRequest = new URLRequest(_imageURL);
-				var loader:Loader = new Loader();
-				loader.load(urlRequest);
-				
-				loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, loadProgress);
-				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadComplete);
-			}
 		}
 		
 		private function loadProgress(event:ProgressEvent):void

@@ -58,7 +58,7 @@
     </s:Graphic>
     
     <mx:Image x="10" y="10" id="imageHolder" 
-    	source="{hostComponent.imageData}" 
+    	source="{hostComponent.imageSource}" 
     	width="{hostComponent.width-20}" 
     	height="{hostComponent.height-20}"
         enabled="false" 
@@ -82,10 +82,5 @@
           </s:fill>
      	</s:Rect>
     </s:Graphic>
-    
-    <mx:LinkButton label="Click to add image" 
-    	visible="{hostComponent.imageData==null}"
-    	click="hostComponent.onAddImageClick()" 
-    	horizontalCenter="0" verticalCenter="0" />
-   	    
+       	    
 </s:SparkSkin>

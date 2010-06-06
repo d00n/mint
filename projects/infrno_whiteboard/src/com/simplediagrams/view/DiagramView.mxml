@@ -151,7 +151,20 @@
 				var selectAllEvent:SelectionEvent = new SelectionEvent(SelectionEvent.SELECT_ALL, true)
 				Swiz.dispatchEvent(selectAllEvent)				
 			}
-            
+			
+			public function onShapesPanelToggle(): void
+			{
+				if (shapesPanel.width > 0){
+					shapesPanel.width = 0;
+					hdbHolder.setStyle("dividerThickness",0);
+					hdbHolder.invalidateProperties();
+				}
+				else{
+					shapesPanel.width = 250;
+					hdbHolder.setStyle("dividerThickness",6);
+					hdbHolder.invalidateProperties();
+				}
+			}           
            
             
 			  			
@@ -163,18 +176,19 @@
 	
 
 						
-	<mx:HDividedBox styleName="libraryDivider" height="100%" width="100%"  >
+	<mx:HDividedBox id="hdbHolder" styleName="libraryDivider" height="100%" width="100%"  >
 					
 			<view:DrawingBoard id="drawingBoard" height="100%" width="100%" />
 			
-			<view:ShapesPanel id="shapesPanel" height="100%" width="250" />	
+			<view:ShapesPanel id="shapesPanel" height="100%" width="0" />	
 		
 	</mx:HDividedBox>
 	
 	
-	<view:ToolPanel id="toolPanel" x="10" y="10" />
+	<view:ToolPanel id="toolPanel" x="10" y="30" />
 	
 	<view:PercentView id="percentView" x="{drawingBoard.width/2 - 45}" top="10"/>
 	
+	<s:Button id="btnToggleShapesPanel" height="10" width="10" right="30" top="3" click="onShapesPanelToggle()" />
 
 </s:Group>

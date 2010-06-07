@@ -72,8 +72,8 @@ package com.simplediagrams.controllers
 		/** A value of "change" means another client changed the object or the server resynchronized the object. */
 		private static const CHANGE : String = "change";
 		
-//		private static const WOWZA_SERVER:String = "rtmp://admin.infrno.net/whiteboard";
-		private static const WOWZA_SERVER:String = "rtmp://localhost/whiteboard";
+		private static const WOWZA_SERVER:String = "rtmp://admin.infrno.net/whiteboard";
+//		private static const WOWZA_SERVER:String = "rtmp://localhost/whiteboard";
 //		private static const WOWZA_SERVER:String = "rtmp://kai/whiteboard";
 		
 		private static const SHARED_OBJECT_NAME:String = "whiteboard_contents";
@@ -473,6 +473,8 @@ package com.simplediagrams.controllers
 					if (sdImageModel == null){
 						sdImageModel = new SDImageModel();
 						sdImageModel.imageURL = changeObject.imageURL;
+
+						Logger.info("processUpdate_ObjectChanged() changeObject.imageURL = " + changeObject.imageURL,this);
 
 						// TODO Clean this up. The coupling is too tight.
 						// To prevent throwing an RSOEvent from within diagramModel.addSDObjectModel()

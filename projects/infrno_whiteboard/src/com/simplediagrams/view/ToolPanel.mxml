@@ -21,6 +21,7 @@
 			import com.simplediagrams.events.ToolPanelEvent;
 			import com.simplediagrams.events.LoadImageEvent;
 			import com.simplediagrams.events.UndoRedoEvent;
+			import com.simplediagrams.events.ShapesPanelEvent;
 			import com.simplediagrams.model.DiagramModel;
 			import com.simplediagrams.model.DiagramStyleManager;
 			import com.simplediagrams.util.Logger;
@@ -193,6 +194,11 @@
 				dispatchEvent(new PositionEvent(PositionEvent.MOVE_BACKWARD, true))				
 			}
 			
+			protected function onToggleShapeDrawer():void
+			{
+				dispatchEvent(new ShapesPanelEvent(ShapesPanelEvent.TOGGLE_DISPLAY, true))				
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -218,11 +224,15 @@
 		
 		<mx:Button icon="{addPictureIcon}" click="onAddPictureIcon()" width="30" height="30" toolTip="Add picture"/>
 		
+		<mx:Button icon="{addPictureIcon}" click="onToggleShapeDrawer()" width="30" height="30" toolTip="Open/close shape drawer"/>
+		
+		<!--
 		<mx:Button icon="{undoIcon}" click="onUndoIcon()" width="30" height="30" toolTip="Undo"/>
 		
 		<mx:Button icon="{redoIcon}" click="onRedoIcon()" width="30" height="30" toolTip="Redo"/>
 		
-		<mx:Button icon="{magnifier}" click="onZoomTool()" width="30" height="30" toolTip="Zoom In/Out"/>	
+		<mx:Button icon="{magnifier}" click="onZoomTool()" width="30" height="30" toolTip="Zoom In/Out"/>			
+		-->
 		
 		<mx:Button icon="{moveForward}" click="onMoveForward()" width="30" height="30" toolTip="Move selected object forward"/>	
 		

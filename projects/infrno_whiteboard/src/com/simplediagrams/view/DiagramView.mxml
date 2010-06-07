@@ -152,17 +152,14 @@
 				Swiz.dispatchEvent(selectAllEvent)				
 			}
 			
+			[Mediate(event='ShapesPanelEvent.TOGGLE_DISPLAY')]
 			public function onShapesPanelToggle(): void
 			{
 				if (shapesPanel.width > 0){
 					shapesPanel.width = 0;
-					hdbHolder.setStyle("dividerThickness",0);
-					hdbHolder.invalidateProperties();
 				}
 				else{
 					shapesPanel.width = 250;
-					hdbHolder.setStyle("dividerThickness",6);
-					hdbHolder.invalidateProperties();
 				}
 			}           
            
@@ -189,6 +186,8 @@
 	
 	<view:PercentView id="percentView" x="{drawingBoard.width/2 - 45}" top="10"/>
 	
+	<!--
 	<s:Button id="btnToggleShapesPanel" height="10" width="10" right="30" top="3" click="onShapesPanelToggle()" />
-
+	-->
+	
 </s:Group>

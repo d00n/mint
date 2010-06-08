@@ -210,35 +210,35 @@
 		</s:fill>
 	</s:Rect>
 		
-	<s:VGroup width="24" height="100%" horizontalAlign="center" paddingTop="2" paddingBottom="2" >
+	<s:VGroup width="24" height="100%" horizontalAlign="center" paddingTop="2" paddingBottom="2" gap="2">
 		
 
-		<mx:Button icon="{arrowIcon}" click="onPointerTool()" width="20" height="20" paddingBottom="1" paddingTop="1" toolTip="Pointer tool"/>
+		<mx:Button icon="{arrowIcon}" click="onPointerTool()" width="20" height="20"  toolTip="Pointer tool"/>
 		
-		<mx:Button icon="{pencilIcon}" click="onPencilTool()" width="20" height="20" paddingBottom="1" paddingTop="1" toolTip="Pencil tool"/>
+		<mx:Button icon="{pencilIcon}" click="onPencilTool()" width="20" height="20" toolTip="Pencil tool"/>
 	
-		<mx:Button icon="{lineIcon}" click="onLineTool()" width="20" height="20" paddingBottom="1" paddingTop="1"  toolTip="Line tool"/>		
+		<mx:Button icon="{lineIcon}" click="onLineTool()" width="20" height="20" toolTip="Line tool"/>		
 								
-		<mx:Button icon="{textIcon}" click="onTextTool()" width="20" height="20" paddingBottom="1" paddingTop="1" toolTip="Text tool"/>	
+		<mx:Button icon="{textIcon}" click="onTextTool()" width="20" height="20" toolTip="Text tool"/>	
 		
-		<mx:Button icon="{addPictureIcon}" click="onAddPictureIcon()" width="20" height="20" paddingBottom="1" paddingTop="1" toolTip="Add picture"/>
+		<mx:Button icon="{addPictureIcon}" click="onAddPictureIcon()" width="20" height="20" toolTip="Add picture"/>
 		
-		<mx:Button icon="{addPictureIcon}" click="onToggleShapeDrawer()" width="20" height="20" paddingBottom="1" paddingTop="1" toolTip="Open/close shape drawer"/>
+		<mx:Button icon="{addPictureIcon}" click="onToggleShapeDrawer()" width="20" height="20" toolTip="Open/close shape drawer"/>
 		
 		<!--
-		<mx:Button icon="{undoIcon}" click="onUndoIcon()" width="20" height="20" paddingBottom="1" paddingTop="1" toolTip="Undo"/>
+		<mx:Button icon="{undoIcon}" click="onUndoIcon()" width="20" height="20" toolTip="Undo"/>
 		
-		<mx:Button icon="{redoIcon}" click="onRedoIcon()" width="20" height="20" paddingBottom="1" paddingTop="1" toolTip="Redo"/>
+		<mx:Button icon="{redoIcon}" click="onRedoIcon()" width="20" height="20" toolTip="Redo"/>
 		
-		<mx:Button icon="{magnifier}" click="onZoomTool()" width="20" height="20" paddingBottom="1" paddingTop="1" toolTip="Zoom In/Out"/>			
+		<mx:Button icon="{magnifier}" click="onZoomTool()" width="20" height="20" toolTip="Zoom In/Out"/>			
 		-->
 		
-		<mx:Button icon="{moveForward}" click="onMoveForward()" width="20" height="20" paddingBottom="1" paddingTop="1" toolTip="Move selected object forward"/>	
+		<mx:Button icon="{moveForward}" click="onMoveForward()" width="20" height="20" toolTip="Move selected object forward"/>	
 		
-		<mx:Button icon="{moveBackward}" click="onMoveBackward()" width="20" height="20" paddingBottom="1" paddingTop="1" toolTip="Move selected object backward"/>	
+		<mx:Button icon="{moveBackward}" click="onMoveBackward()" width="20" height="20" toolTip="Move selected object backward"/>	
 
 		
-		<mx:ColorPicker id="cp" width="20" height="20" paddingBottom="1" paddingTop="1"  close="onColorChange()" doubleClickEnabled="true" doubleClick="onColorChange()" color="0xFFFFFF"/>
+		<mx:ColorPicker id="cp" width="20" height="20"  close="onColorChange()" doubleClickEnabled="true" doubleClick="onColorChange()" color="0xFFFFFF"/>
 
 		<components:AlignButtonPopUp 
 					id="alignButtonPopUp"

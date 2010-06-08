@@ -182,7 +182,7 @@
 	</mx:HDividedBox>
 	
 	
-	<view:ToolPanel id="toolPanel" x="5" y="5" />
+	<view:ToolPanel id="toolPanel" x="2" y="2" />
 	
 	<view:PercentView id="percentView" x="{drawingBoard.width/2 - 45}" top="10"/>
 	

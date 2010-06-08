@@ -159,7 +159,7 @@
 					shapesPanel.width = 0;
 				}
 				else{
-					shapesPanel.width = 250;
+					shapesPanel.width = 124;
 				}
 			}           
            
@@ -182,7 +182,7 @@
 	</mx:HDividedBox>
 	
 	
-	<view:ToolPanel id="toolPanel" x="10" y="30" />
+	<view:ToolPanel id="toolPanel" x="5" y="5" />
 	
 	<view:PercentView id="percentView" x="{drawingBoard.width/2 - 45}" top="10"/>
 	

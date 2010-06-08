@@ -64,16 +64,9 @@
         enabled="false" 
         focusEnabled="false"
         mouseEnabled="false"
+		trustContent="true" 
     	/>
-      	   
-    
-    <mx:Image id="tapeGraphic"
-    	x="{hostComponent.width/2}" y="-20"
-    	source="{PieceOfTape}"
-        enabled="false" 
-        focusEnabled="false"
-        mouseEnabled="false"
-       />  	   
+      	      
              
     <s:Graphic id="hack_because_image_when_clicked_eats_keyup_events">
     	<s:Rect width="{this.width}" height="{this.height}" >

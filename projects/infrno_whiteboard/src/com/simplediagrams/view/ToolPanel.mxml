@@ -6,8 +6,7 @@
 	mouseDown="onMouseDown(event)"
 	mouseUp="onMouseUp(event)"
 	creationComplete="onCC()"
-
-	width="45" >
+	width="30" >
 	
 	<s:layout>
 		<s:BasicLayout/>
@@ -205,38 +204,38 @@
 	
 	
 
-	<s:Rect radiusX="5" radiusY="5" width="100%" height="100%">
+	<s:Rect radiusX="5" radiusY="5" width="30" height="100%">
 		<s:fill>
 			<s:SolidColor id="backgroundColor" alpha=".3" color="{_backgroundColor}"/>
 		</s:fill>
 	</s:Rect>
 		
-	<s:VGroup width="100%" height="100%" horizontalAlign="center" paddingTop="15" paddingBottom="15">
+	<s:VGroup width="30" height="100%" horizontalAlign="center" paddingTop="5" paddingBottom="5">
 		
 
-		<mx:Button icon="{arrowIcon}" click="onPointerTool()" width="30" height="30" toolTip="Pointer tool"/>
+		<mx:Button icon="{arrowIcon}" click="onPointerTool()" width="20" height="20" toolTip="Pointer tool"/>
 		
-		<mx:Button icon="{pencilIcon}" click="onPencilTool()" width="30" height="30" toolTip="Pencil tool"/>
+		<mx:Button icon="{pencilIcon}" click="onPencilTool()" width="20" height="20" toolTip="Pencil tool"/>
 	
-		<mx:Button icon="{lineIcon}" click="onLineTool()" width="30" height="30"  toolTip="Line tool"/>		
+		<mx:Button icon="{lineIcon}" click="onLineTool()" width="20" height="20"  toolTip="Line tool"/>		
 								
-		<mx:Button icon="{textIcon}" click="onTextTool()" width="30" height="30" toolTip="Text tool"/>	
+		<mx:Button icon="{textIcon}" click="onTextTool()" width="20" height="20" toolTip="Text tool"/>	
 		
-		<mx:Button icon="{addPictureIcon}" click="onAddPictureIcon()" width="30" height="30" toolTip="Add picture"/>
+		<mx:Button icon="{addPictureIcon}" click="onAddPictureIcon()" width="20" height="20" toolTip="Add picture"/>
 		
-		<mx:Button icon="{addPictureIcon}" click="onToggleShapeDrawer()" width="30" height="30" toolTip="Open/close shape drawer"/>
+		<mx:Button icon="{addPictureIcon}" click="onToggleShapeDrawer()" width="20" height="20" toolTip="Open/close shape drawer"/>
 		
 		<!--
-		<mx:Button icon="{undoIcon}" click="onUndoIcon()" width="30" height="30" toolTip="Undo"/>
+		<mx:Button icon="{undoIcon}" click="onUndoIcon()" width="20" height="20" toolTip="Undo"/>
 		
-		<mx:Button icon="{redoIcon}" click="onRedoIcon()" width="30" height="30" toolTip="Redo"/>
+		<mx:Button icon="{redoIcon}" click="onRedoIcon()" width="20" height="20" toolTip="Redo"/>
 		
-		<mx:Button icon="{magnifier}" click="onZoomTool()" width="30" height="30" toolTip="Zoom In/Out"/>			
+		<mx:Button icon="{magnifier}" click="onZoomTool()" width="20" height="20" toolTip="Zoom In/Out"/>			
 		-->
 		
-		<mx:Button icon="{moveForward}" click="onMoveForward()" width="30" height="30" toolTip="Move selected object forward"/>	
+		<mx:Button icon="{moveForward}" click="onMoveForward()" width="20" height="20" toolTip="Move selected object forward"/>	
 		
-		<mx:Button icon="{moveBackward}" click="onMoveBackward()" width="30" height="30" toolTip="Move selected object backward"/>	
+		<mx:Button icon="{moveBackward}" click="onMoveBackward()" width="20" height="20" toolTip="Move selected object backward"/>	
 
 		
 		<components:AlignButtonPopUp 
@@ -244,7 +243,7 @@
 					skinClass="com.simplediagrams.view.skins.AlignButtonPopUpSkin"
 					/>
 		
-		<mx:ColorPicker id="cp" width="30" height="30" close="onColorChange()" doubleClickEnabled="true" doubleClick="onColorChange()" color="0xFFFFFF"/>
+		<mx:ColorPicker id="cp" width="20" height="20" close="onColorChange()" doubleClickEnabled="true" doubleClick="onColorChange()" color="0xFFFFFF"/>
 		
 		
 	</s:VGroup>

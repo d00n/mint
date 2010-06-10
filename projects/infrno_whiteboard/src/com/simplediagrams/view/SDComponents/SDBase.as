@@ -14,6 +14,8 @@ package com.simplediagrams.view.SDComponents
 	import flash.filters.GlowFilter;
 	import flash.ui.ContextMenu;
 	import flash.ui.ContextMenuItem;
+	import flash.system.Capabilities;
+ 	import flash.system.System;
 	
 	import mx.core.UIComponent;
 	import mx.events.DragEvent;
@@ -30,7 +32,8 @@ package com.simplediagrams.view.SDComponents
 	public class SDBase extends SkinnableComponent implements IFocusManagerComponent 
 	{	
 		
-		
+		public static const VERSION			:String		= "Infrno Whiteboard v0.1.3";
+
 		private var moveToBackCMI:ContextMenuItem
 		private var moveBackwardCMI:ContextMenuItem
 		private var moveForwardCMI:ContextMenuItem
@@ -60,13 +63,23 @@ package com.simplediagrams.view.SDComponents
 			
 			moveToFrontCMI = new ContextMenuItem("Move to front ",false, true);
 			moveToFrontCMI.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, moveToFrontSelected);
+
+			var app_version:ContextMenuItem = new ContextMenuItem(VERSION);
+			app_version.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyToClipboard);
 			
 			var cm:ContextMenu = new ContextMenu()
 			
-			cm.customItems = [moveToBackCMI, moveBackwardCMI, moveForwardCMI, moveToFrontCMI]
+			cm.hideBuiltInItems();
+			cm.customItems = [moveToBackCMI, moveBackwardCMI, moveForwardCMI, moveToFrontCMI, app_version]
 		
 			this.contextMenu = cm
 			
+		}
+		
+		private function copyToClipboard(event:ContextMenuEvent):void
+		{
+			Logger.debug("setting content to the clipboard: "+ VERSION+" "+Capabilities.version+ (Capabilities.isDebugger?" -D":""), this);
+			System.setClipboard(VERSION+" "+Capabilities.version+ (Capabilities.isDebugger?" -D":"") );
 		}
 		
 		public function get sdID():Number

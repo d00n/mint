@@ -37,13 +37,13 @@ package com.infrno.chat.model
         {
 			camera_array = Camera.names;
 			mic_array = Microphone.names;
-			
-            initTimers();
-            initDevices();
         }
         
         private function initTimers():void
         {
+        	if(_mic_level_timer != null)
+        		return;
+        		
         	_mic_level_timer = new Timer(50);
         	_mic_level_timer.addEventListener(TimerEvent.TIMER,function(e:TimerEvent):void{
         		mic_level = _mic.activityLevel;
@@ -51,17 +51,17 @@ package com.infrno.chat.model
         	});
         }
         
-        private function initDevices():void //camera/mic init
-		{ 
-			initMic();
-			initCam();
-		}
-        
         private function initCam(nameIn:String=null):void 
 		{
 			camera_active = false;
 			
+			if(Camera.names.length == 0){
+				//no cameras installed at all
+				trace("no cameras installed at all");
+			}
+			
         	_camera = Camera.getCamera(nameIn);
+        	
 			if(_camera!=null){
 				
 				for(var i:String in camera_array){
@@ -72,19 +72,10 @@ package com.infrno.chat.model
 				}
 				
 				updateCamQuality(_camera_quality); //default to low quality
-//				_camera.setMode(160,120,10); //original 320,240,15
-//				_camera.setMode(213,160,10); //original 320,240,15
-//				_camera.setMode(320,240,12); //original 320,240,15
 				_camera.setMode(_camera_width,_camera_height,_camera_fps);
 				
-//				trace("setting camera width: "+_camera_width);
-//				trace("setting camera height: "+_camera_height);
-//				trace("setting camera fps: "+_camera_fps);
-				
-//				_camera.setKeyFrameInterval(30); //original 48.. default is 15
 				_camera.setKeyFrameInterval(12); //original 48.. default is 15
 				_camera.setMotionLevel(0);
-//				_camera.setLoopback(true);
 				_camera.addEventListener(StatusEvent.STATUS, function(evt:StatusEvent):void{
 					trace("DeviceProxy.initCam() " + evt.code);
 					if(evt.code=="Camera.Muted"){
@@ -103,6 +94,10 @@ package com.infrno.chat.model
 		{
 			_mic = Microphone.getMicrophone(micIn);
 			
+			if(_mic == null){
+				trace("mic not accessible");
+			}
+			
 			for(var i:String in mic_array){
 				if(_mic.name == mic_array[i]){
 					mic_index = int(i);
@@ -112,7 +107,6 @@ package com.infrno.chat.model
 			
 			_mic.codec = SoundCodec.SPEEX;
 			_mic.framesPerPacket = 1;
-			
 			_mic.setSilenceLevel(0);
 			_mic.rate=11;
 			_mic.setUseEchoSuppression(true);
@@ -128,19 +122,18 @@ package com.infrno.chat.model
 					trace("DeviceProxy.initCam() no access to the mic");
 				}
 			});
-			
 			if(_mic!=null){
 				_mic_level_timer.start();
 			} else {
 				_mic_level_timer.reset();
 			}
-			
 			return _mic;
 		}
 		
 		//public methods
 		public function get camera():Camera
         {
+        	initCam();
         	return _camera;
         }
         
@@ -160,6 +153,9 @@ package com.infrno.chat.model
         
         public function get mic():Microphone
         {
+        	initTimers();
+        	initMic();
+        	
         	return _mic;
         }
         

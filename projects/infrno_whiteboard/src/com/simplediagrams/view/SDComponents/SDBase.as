@@ -32,7 +32,7 @@ package com.simplediagrams.view.SDComponents
 	public class SDBase extends SkinnableComponent implements IFocusManagerComponent 
 	{	
 		
-		public static const VERSION			:String		= "Infrno Whiteboard v0.1.1";
+		public static const VERSION			:String		= "Infrno Whiteboard v0.1.3";
 
 		private var moveToBackCMI:ContextMenuItem
 		private var moveBackwardCMI:ContextMenuItem

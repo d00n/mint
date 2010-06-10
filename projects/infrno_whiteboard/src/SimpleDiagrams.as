@@ -46,7 +46,7 @@ isFirstRun = event.target.isFirstRun
 
 protected function onAppComplete():void
 {
-	Security.loadPolicyFile("http://admin.infrno.net/crossdomain.xml");
+//	Security.loadPolicyFile("http://admin.infrno.net/crossdomain.xml");
 	
 	Swiz.dispatchEvent(new ApplicationEvent(ApplicationEvent.INIT_APP, true));
 		

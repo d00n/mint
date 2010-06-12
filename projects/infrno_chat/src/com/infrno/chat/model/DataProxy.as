@@ -30,9 +30,10 @@ package com.infrno.chat.model
 		public var peer_server_key			:String		= "4b9d915ef5ee88cfd38eb359-abf46599bf1f";
 		public var peer_server				:String		= "rtmfp://stratus.adobe.com";
 		
-//		public var media_server				:String		= "rtmp://gearsandcogs.com/chat";
-//		public var media_server				:String		= "rtmp://localhost/chat";
-		public var media_server				:String		= "rtmp://admin.infrno.net/chat";
+//		public var media_server				:String		= "rtmp://gearsandcogs.com";
+		public var media_server				:String		= "rtmp://localhost";
+//		public var media_server				:String		= "rtmp://admin.infrno.net";
+		public var media_app				:String		= "chat";
 		
 		
 		public var my_info					:UserInfoVO = new UserInfoVO({"uname":"user"+Math.round(Math.random()*1000)});

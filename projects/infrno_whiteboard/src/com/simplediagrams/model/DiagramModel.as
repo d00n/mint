@@ -420,7 +420,6 @@ package com.simplediagrams.model
 			{
 				objModel.color = _currColor
 			}
-			Swiz.dispatchEvent(new RemoteSharedObjectEvent(RemoteSharedObjectEvent.CHANGE_ALL_SHAPES_TO_DEFAULT_COLOR))
 		}
 		
 		

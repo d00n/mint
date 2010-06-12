@@ -82,11 +82,13 @@ package com.infrno.chat.services
 		
 		public function getUserStats():void
 		{
-			_nc.call("MSService.connect() getUserStats",null);
+			trace("MSService.getUserStats()");
+			_nc.call("getUserStats",null);
 		}
 		
 		public function reportUserStats(statsIn:Object):void
 		{
+			trace("MSService.reportUserStats()");
 			_nc.call("reportUserStats",null,statsIn);
 		}
 		

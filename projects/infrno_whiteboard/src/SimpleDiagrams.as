@@ -93,9 +93,31 @@ protected function onAppComplete():void
 		rsoEvent.user_name = flash_vars.user_name;
 	}catch(e:Object){
 		rsoEvent.user_name = "not_set"
-		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.username not set");
+		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.user_name not set");
+	}
+	
+	try{
+		rsoEvent.wowza_server = flash_vars.wowza_server;
+	}catch(e:Object){
+		rsoEvent.wowza_server = "not_set"
+		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.wowza_server not set");
+	}
+	
+	try{
+		rsoEvent.wowza_whiteboard_app = flash_vars.wowza_whiteboard_app;
+	}catch(e:Object){
+		rsoEvent.wowza_whiteboard_app = "not_set"
+		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.wowza_whiteboard_app not set");
 	}
 
+	try{
+		rsoEvent.image_server = flash_vars.image_server;
+	}catch(e:Object){
+		rsoEvent.image_server = "not_set"
+		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.image_server not set");
+	}
+	
+	
 	Swiz.dispatchEvent(rsoEvent);
 }
 

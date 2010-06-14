@@ -50,8 +50,10 @@ package com.simplediagrams.controllers
 	import flash.net.ObjectEncoding;
 	import flash.net.Responder;
 	import flash.net.SharedObject;
+	import flash.system.Capabilities;
 	import flash.utils.ByteArray;
 	import flash.utils.describeType;
+	import flash.system.Capabilities;
 	
 	import mx.collections.ArrayCollection;
 	import mx.core.UIComponent;
@@ -96,6 +98,7 @@ package com.simplediagrams.controllers
 		public function RemoteSharedObjectController() {			
 		}
 
+
 		[Mediate(event="RemoteSharedObjectEvent.START")]
 		private function connect():void{
 			_netConnection = new NetConnection();
@@ -106,6 +109,7 @@ package com.simplediagrams.controllers
 			_netConnection.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
 			_netConnection.addEventListener(AsyncErrorEvent.ASYNC_ERROR, asyncErrorHandler);
 			
+			
 			var clientObj:Object = new Object();
 			
 			clientObj.initUser = function(user_info:Object):void
@@ -113,15 +117,12 @@ package com.simplediagrams.controllers
 				// NOP
 			}
 				
-//			clientObj.updateSDImageModel = function(params) : void {
-//				
-//				var sdImageModel:SDImageModel = diagramModel.getModelByID(parseInt(params["sdID"])) as SDImageModel;
-//				sdImageModel.imageURL = params["imageURL"];
-//				
-//				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-//				rsoEvent.changedSDObjectModelArray = new Array;				
-//				rsoEvent.changedSDObjectModelArray.push(sdImageModel);
-//				Swiz.dispatchEvent(rsoEvent);					
+				
+			// TODO: Create/attach (?) a NetStream object, so we can tie it to a chair and ask awkward questions. 
+			// Look at ReportStatsCommand.execute for what to report
+//			clientObj.getUserStats = function():void
+//			{
+//				Logger.info("getUserStats", this);			
 //			}
 				
 				

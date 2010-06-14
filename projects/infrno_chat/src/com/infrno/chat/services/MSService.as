@@ -46,7 +46,7 @@ package com.infrno.chat.services
 		public function connect():void
 		{
 			trace("MSService.connect() connecting to media server: "
-				+dataProxy.media_server+"/"+dataProxy.room_id);
+				+dataProxy.media_server +"/"+ dataProxy.media_app +"/"+ dataProxy.room_id);
 			
 			trace("MSService.connect() dataProxy params available:" 
 				+ dataProxy.room_name 
@@ -55,7 +55,7 @@ package com.infrno.chat.services
 				+":"+ dataProxy.auth_key);
 		
 			dispatch(new MSEvent(MSEvent.NETCONNECTION_CONNECTING));
-			_nc.connect(dataProxy.media_server+"/"+dataProxy.room_id, 
+			_nc.connect(dataProxy.media_server +"/"+ dataProxy.media_app +"/"+ dataProxy.room_id, 
 				dataProxy.my_info, 
 				dataProxy.auth_key,
 				dataProxy.room_id,
@@ -82,11 +82,13 @@ package com.infrno.chat.services
 		
 		public function getUserStats():void
 		{
-			_nc.call("MSService.connect() getUserStats",null);
+			trace("MSService.getUserStats()");
+			_nc.call("getUserStats",null);
 		}
 		
 		public function reportUserStats(statsIn:Object):void
 		{
+			trace("MSService.reportUserStats()");
 			_nc.call("reportUserStats",null,statsIn);
 		}
 		

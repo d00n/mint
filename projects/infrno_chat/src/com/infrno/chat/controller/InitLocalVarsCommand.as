@@ -27,6 +27,8 @@ package com.infrno.chat.controller
 			dataProxy.room_id = flash_vars.room_id;
 			dataProxy.room_name = flash_vars.room_name;
 			dataProxy.user_name = flash_vars.user_name;
+			dataProxy.media_server = flash_vars.wowza_server;
+			dataProxy.media_app = flash_vars.wowza_chat_app;
 			
 			trace("InitLocalVarsCommand.execute() flashvars loaded:" + dataProxy.room_name +":"+ dataProxy.user_name +":"+ dataProxy.room_id +":"+ dataProxy.auth_key);
 			

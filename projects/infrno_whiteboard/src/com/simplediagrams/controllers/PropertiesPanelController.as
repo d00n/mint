@@ -4,6 +4,7 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.commands.ChangeLineStyleCommand;
 	import com.simplediagrams.events.LineStyleEvent;
 	import com.simplediagrams.events.MultiSelectEvent;
+	import com.simplediagrams.events.RemoteSharedObjectEvent;
 	import com.simplediagrams.events.SelectionEvent;
 	import com.simplediagrams.events.TextPropertyChangeEvent;
 	import com.simplediagrams.model.DiagramModel;
@@ -17,6 +18,7 @@ package com.simplediagrams.controllers
 	
 	import flash.events.Event;
 	
+	import org.swizframework.Swiz;
 	import org.swizframework.controller.AbstractController;
 
 	public class PropertiesPanelController extends AbstractController
@@ -181,8 +183,11 @@ package com.simplediagrams.controllers
 				}
   			}
 			
-			settingsModel.defaultFontSize = event.fontSize
-				
+			settingsModel.defaultFontSize = event.fontSize;
+			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
+			Swiz.dispatchEvent(rsoEvent);				
   		}
 		
 		[Mediate(event="TextPropertyChangeEvent.CHANGE_FONT_WEIGHT")]
@@ -204,6 +209,9 @@ package com.simplediagrams.controllers
 			
 			settingsModel.defaultFontWeight = event.fontWeight
 			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
+			Swiz.dispatchEvent(rsoEvent);				
 		}
 		
 		[Mediate(event="TextPropertyChangeEvent.CHANGE_TEXT_ALIGN")]
@@ -225,6 +233,9 @@ package com.simplediagrams.controllers
 			
 			settingsModel.defaultTextAlign=event.textAlign
 			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
+			Swiz.dispatchEvent(rsoEvent);				
 		}
 		
 		[Mediate(event="TextPropertyChangeEvent.CHANGE_TEXT_POSITION")]
@@ -243,6 +254,9 @@ package com.simplediagrams.controllers
 			
 			settingsModel.defaultTextPosition=event.textPosition
 			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
+			Swiz.dispatchEvent(rsoEvent);				
 		}
 		
 		

@@ -53,6 +53,10 @@
 			[Embed(source='assets/img/icons/picture_add.png')]
 			private var addPictureIcon:Class			
 			
+			[Bindable]
+			[Embed(source='assets/img/icons/add_shape_drawer.png')]
+			private var addShapeDrawerIcon:Class
+			
 			[Bindable]		
 			[Embed(source='assets/img/icons/T_icon.png')]
 			private var textIcon:Class
@@ -223,7 +227,7 @@
 		
 		<mx:Button icon="{addPictureIcon}" click="onAddPictureIcon()" width="20" height="20" toolTip="Add picture"/>
 		
-		<mx:Button icon="{addPictureIcon}" click="onToggleShapeDrawer()" width="20" height="20" toolTip="Open/close shape drawer"/>
+		<mx:Button icon="{addShapeDrawerIcon}" click="onToggleShapeDrawer()" width="20" height="20" toolTip="Open/close shape drawer"/>
 		
 		<!--
 		<mx:Button icon="{undoIcon}" click="onUndoIcon()" width="20" height="20" toolTip="Undo"/>

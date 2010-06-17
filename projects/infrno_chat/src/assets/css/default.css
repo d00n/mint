@@ -1,0 +1,17 @@
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+@namespace components "com.infrno.chat.view.components.*";
+
+components|ImageToggleButton{
+	skinClass: ClassReference("com.infrno.chat.view.components.skins.ImageToggleButtonSkin");
+}
+
+.videoToggleButton {
+	icon: Embed(source="assets/images/videoOn.png");
+	selectedIcon: Embed(source="assets/images/videoOff.png");
+}
+
+.audioToggleButton {
+	icon: Embed(source="/assets/images/microphoneOn.png");
+	selectedIcon: Embed(source="/assets/images/microphoneOff.png");
+}

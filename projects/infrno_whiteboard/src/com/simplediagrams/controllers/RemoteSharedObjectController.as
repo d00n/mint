@@ -50,8 +50,10 @@ package com.simplediagrams.controllers
 	import flash.net.ObjectEncoding;
 	import flash.net.Responder;
 	import flash.net.SharedObject;
+	import flash.system.Capabilities;
 	import flash.utils.ByteArray;
 	import flash.utils.describeType;
+	import flash.system.Capabilities;
 	
 	import mx.collections.ArrayCollection;
 	import mx.core.UIComponent;
@@ -72,10 +74,6 @@ package com.simplediagrams.controllers
 		/** A value of "change" means another client changed the object or the server resynchronized the object. */
 		private static const CHANGE : String = "change";
 		
-		private static const WOWZA_SERVER:String = "rtmp://admin.infrno.net/whiteboard";
-//		private static const WOWZA_SERVER:String = "rtmp://localhost/whiteboard";
-//		private static const WOWZA_SERVER:String = "rtmp://kai/whiteboard";
-		
 		private static const SHARED_OBJECT_NAME:String = "whiteboard_contents";
 		
 		private var _netConnection:NetConnection;
@@ -86,29 +84,20 @@ package com.simplediagrams.controllers
 		private var _room_id:String;
 		private var _room_name:String;
 		private var _user_name:String;
-
+		private var _wowza_server:String;
+		private var _wowza_whiteboard_app:String;
+		private var _image_server:String;
 		
 		
 		[Autowire(bean='diagramModel')]
 		public var diagramModel:DiagramModel
 
-		[Autowire(bean='fileManager')]
-		public var fileManager:FileManager;
-		
-//		[Autowire(bean='diagramController')]
-//		public var diagramController:DiagramController
-//		
-//		[Autowire(bean='objectHandlesController')]
-//		public var objectHandlesController:ObjectHandlesController
-		
 		[Autowire(bean='libraryManager')]
 		public var libraryManager:LibraryManager;
 		
-//		[Autowire(bean='diagramStyleManager')]
-//		public var diagramStyleManager:DiagramStyleManager
-		
 		public function RemoteSharedObjectController() {			
 		}
+
 
 		[Mediate(event="RemoteSharedObjectEvent.START")]
 		private function connect():void{
@@ -120,6 +109,7 @@ package com.simplediagrams.controllers
 			_netConnection.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
 			_netConnection.addEventListener(AsyncErrorEvent.ASYNC_ERROR, asyncErrorHandler);
 			
+			
 			var clientObj:Object = new Object();
 			
 			clientObj.initUser = function(user_info:Object):void
@@ -127,15 +117,12 @@ package com.simplediagrams.controllers
 				// NOP
 			}
 				
-//			clientObj.updateSDImageModel = function(params) : void {
-//				
-//				var sdImageModel:SDImageModel = diagramModel.getModelByID(parseInt(params["sdID"])) as SDImageModel;
-//				sdImageModel.imageURL = params["imageURL"];
-//				
-//				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-//				rsoEvent.changedSDObjectModelArray = new Array;				
-//				rsoEvent.changedSDObjectModelArray.push(sdImageModel);
-//				Swiz.dispatchEvent(rsoEvent);					
+				
+			// TODO: Create/attach (?) a NetStream object, so we can tie it to a chair and ask awkward questions. 
+			// Look at ReportStatsCommand.execute for what to report
+//			clientObj.getUserStats = function():void
+//			{
+//				Logger.info("getUserStats", this);			
 //			}
 				
 				
@@ -158,11 +145,11 @@ package com.simplediagrams.controllers
 				
 			_netConnection.client = clientObj;
 			
-			var wowza_server:String = WOWZA_SERVER +"/"+ _room_id;
-			Logger.info("connect() about to connect to " + wowza_server,this);
+			var ws:String = _wowza_server +"/"+ _wowza_whiteboard_app +"/"+ _room_id;
+			Logger.info("connect() about to connect to " + ws,this);
 			
 			var dummyUserInfoVO:DummyUserInfoVO = new DummyUserInfoVO();
-			_netConnection.connect(wowza_server, dummyUserInfoVO, _auth_key, _room_id, _room_name, _user_name);     
+			_netConnection.connect(ws, dummyUserInfoVO, _auth_key, _room_id, _room_name, _user_name);     
 		}
 		
 		public function onStatus( event : NetStatusEvent) : void {
@@ -174,6 +161,7 @@ package com.simplediagrams.controllers
 						createSharedObject();  
 						break;
 					case "NetConnection.Connect.Closed":  
+						// TODO: tell the user the connection failed
 						Logger.info("NetConnection.Connect.Closed", this);  
 						break;
 				}      
@@ -233,26 +221,7 @@ package com.simplediagrams.controllers
 				case "ObjectChanged": {
 					processUpdate_ObjectChanged(changeObject);
 					break;
-				}
-										
-//				case "RefreshZoom": {
-//					processUpdate_RefreshZoom(event);
-//					break;
-//				}
-//				case "StyleChanged": {
-//					processUpdate_StyleChanged(event);
-//					break;
-//				}
-//				case "ChangeAllShapesToDefaultColor": {
-//					processUpdate_ChangeAllShapesToDefaultColor(event);
-//					break;
-//				}
-//				case "ClearDiagram": {
-//					processUpdate_ClearDiagram(event);
-//					break;
-//				}
-					
-					
+				}			
 			}
 		}
 
@@ -264,10 +233,7 @@ package com.simplediagrams.controllers
 			var returnValueFunction:Function = function(imageDetails:Object):void
 			{
 				Logger.info("dispatchUpdate_LoadImage() responder.result() imageDetails[sdID] = " + imageDetails["sdID"],this);
-				
-//				var sdID:int = imageDetails["sdID"];
-//				var imageURL:String = imageDetails["imageURL"];
-				
+
 				var sdImageModel:SDImageModel = diagramModel.getModelByID(imageDetails["sdID"]) as SDImageModel;
 				sdImageModel.imageURL = imageDetails["imageURL"];
 				
@@ -278,20 +244,10 @@ package com.simplediagrams.controllers
 			}
 			
 			var responder:Responder = new Responder(returnValueFunction);
-								
-
 			
 			_netConnection.call("sendImage", responder, rsoEvent.imageData, 
 				rsoEvent.imageName,
 				rsoEvent.sdImageModel.sdID.toString());
-//				rsoEvent.sdImageModel.x,
-//				rsoEvent.sdImageModel.y,
-//				rsoEvent.sdImageModel.width,
-//				rsoEvent.sdImageModel.height,
-//				rsoEvent.sdImageModel.zIndex,
-//				rsoEvent.sdImageModel.origHeight,
-//				rsoEvent.sdImageModel.origWidth,
-//				rsoEvent.sdImageModel.styleName);
 		}		
 
 		[Mediate(event="RemoteSharedObjectEvent.RESET")]
@@ -315,10 +271,13 @@ package com.simplediagrams.controllers
 		[Mediate(event="RemoteSharedObjectEvent.LOAD_FLASHVARS")]
 		public function loadFlashvars(event:RemoteSharedObjectEvent):void
 		{
-			_auth_key = event.auth_key;
-			_room_id = event.room_id;			
-			_room_name = event.room_name;			
-			_user_name = event.user_name;
+			_auth_key 				= event.auth_key;
+			_room_id 				= event.room_id;			
+			_room_name 				= event.room_name;			
+			_user_name 				= event.user_name;
+			_wowza_server 			= event.wowza_server;
+			_wowza_whiteboard_app 	= event.wowza_whiteboard_app;
+			_image_server 			= event.image_server;
 			
 			connect();
 		}
@@ -360,7 +319,6 @@ package com.simplediagrams.controllers
 		}		
 			
 		[Mediate(event="RemoteSharedObjectEvent.OBJECT_CHANGED")]
-//		[Mediate(event="RemoteSharedObjectEvent.CREATE_LINE_COMPONENT")]
 		[Mediate(event="RemoteSharedObjectEvent.TEXT_WIDGET_ADDED")]
 		[Mediate(event="RemoteSharedObjectEvent.TEXT_WIDGET_CREATED")]
 		[Mediate(event="RemoteSharedObjectEvent.PENCIL_DRAWING_CREATED")]
@@ -450,12 +408,6 @@ package com.simplediagrams.controllers
 						var symbolName:String = changeObject.symbolName;
 						
 						sdSymbolModel = libraryManager.getSDObject(libraryName, symbolName) as SDSymbolModel;
-						
-						// TODO Clean this up. The coupling is too tight.
-						// To prevent throwing an RSOEvent from within diagramModel.addSDObjectModel()
-						// we perform those actions here:	
-//						diagramModel.sdObjectModelsAC.addItem(sdSymbolModel);
-//						diagramModel.addComponentForModel(sdSymbolModel, false);
 					}
 					
 					sdSymbolModel.textAlign 	= changeObject.textAlign;
@@ -475,12 +427,6 @@ package com.simplediagrams.controllers
 						sdImageModel.imageURL = changeObject.imageURL;
 
 						Logger.info("processUpdate_ObjectChanged() changeObject.imageURL = " + changeObject.imageURL,this);
-
-						// TODO Clean this up. The coupling is too tight.
-						// To prevent throwing an RSOEvent from within diagramModel.addSDObjectModel()
-						// we perform those actions here:	
-//						diagramModel.sdObjectModelsAC.addItem(sdImageModel);
-//						diagramModel.addComponentForModel(sdImageModel, false);
 					}
 					
 					sdObjectModel = sdImageModel;
@@ -491,12 +437,6 @@ package com.simplediagrams.controllers
 					
 					if (sdLineModel == null){						
 						sdLineModel = new SDLineModel();
-
-						// TODO Clean this up. The coupling is too tight.
-						// To prevent throwing an RSOEvent from within diagramModel.addSDObjectModel()
-						// we perform those actions here:	
-//						diagramModel.sdObjectModelsAC.addItem(sdLineModel);
-//						diagramModel.addComponentForModel(sdLineModel, false);
 					}
 					
 					sdLineModel.endX 			= changeObject.endX;
@@ -515,12 +455,6 @@ package com.simplediagrams.controllers
 					
 					if (sdPencilDrawingModel == null){
 						sdPencilDrawingModel = new SDPencilDrawingModel();						
-						
-						// TODO Clean this up. The coupling is too tight.
-						// To prevent throwing an RSOEvent from within diagramModel.addSDObjectModel()
-						// we perform those actions here:	
-//						diagramModel.sdObjectModelsAC.addItem(sdPencilDrawingModel);
-//						diagramModel.addComponentForModel(sdPencilDrawingModel, false);
 					}
 					
 					sdPencilDrawingModel.linePath = changeObject.linePath;
@@ -534,12 +468,6 @@ package com.simplediagrams.controllers
 					
 					if (sdTextAreaModel == null){
 						sdTextAreaModel = new SDTextAreaModel();
-						
-						// TODO Clean this up. The coupling is too tight.
-						// To prevent throwing an RSOEvent from within diagramModel.addSDObjectModel()
-						// we perform those actions here:	
-//						diagramModel.sdObjectModelsAC.addItem(sdTextAreaModel);
-//						diagramModel.addComponentForModel(sdTextAreaModel, false);
 					}
 					
 					sdTextAreaModel.styleName 			= changeObject.styleName;

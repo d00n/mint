@@ -97,9 +97,14 @@ package com.infrno.chat.view.mediators
 					trace("VideosMediator.updateVideos() this is my video.. so showing my camera");
 					video_presense.is_local = true;
 					video_presense.camera = deviceProxy.camera;
+<<<<<<< HEAD
 					video_presense.audio_level.value = deviceProxy.mic.gain;
 					video_presense.toggleAudio();
 					video_presense.toggleVideo();
+=======
+//					video_presense.audio_level.value = deviceProxy.mic.gain;
+					video_presense.audioLevel = deviceProxy.mic.gain;
+>>>>>>> 3fc6ecbcdd5fe09b117def1c1c7169da8c1b12cd
 				} else {
 					//update/create netstream to play from
 					//start playing the suid

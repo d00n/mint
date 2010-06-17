@@ -6,6 +6,8 @@
 			   xmlns:components="com.infrno.chat.view.components.*"
 			   >
 	
+	<fx:Style source="assets/css/default.css"/>
+	
 	<fx:Declarations>
 		<chat:ApplicationContext contextView="{this}" />
 	</fx:Declarations>

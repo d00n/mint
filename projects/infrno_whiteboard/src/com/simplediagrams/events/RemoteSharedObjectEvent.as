@@ -11,19 +11,18 @@ package com.simplediagrams.events
 	
 	public class RemoteSharedObjectEvent extends Event
 	{
+		// Cutting locally appears as a delete to peers
+		public static const CUT:String = "rso_CutEvent";
 		
-		public static const CHANGE_ALL_SHAPES_TO_DEFAULT_COLOR:String = "rso_changeAllShapesToDefaultColor";
 		public static const RESET:String = "rso_reset";
 		public static const STOP:String = "rso_stop";
 		public static const START:String = "rso_start";
 		public static const LOAD_IMAGE:String = "rso_loadImage";
-		public static const CHANGE_COLOR:String = "rso_changeColor";
 		public static const DISPATCH_TEXT_AREA_CHANGE:String = "rso_dispatchTextAreaChange";
 		public static const ADD_SD_OBJECT_MODEL:String = "rso_addSDObjectModel";
 		public static const DELETE_SELECTED_SD_OBJECT_MODEL:String = "rso_DeleteSelectedSDObjectModel";
 		public static const OBJECT_CHANGED:String = "rso_ObjectChanged";
-		public static const CUT:String = "rso_CutEvent";
-		public static const PASTE:String = "rso_PasteEvent";
+		
 		public static const REFRESH_Z_ORDER:String = "rso_refreshZOrder";
 		public static const TEXT_WIDGET_ADDED:String = "rso_TextWidgetAdded";
 		public static const TEXT_WIDGET_CREATED:String = "rso_TextWidgetCreated";
@@ -39,15 +38,10 @@ package com.simplediagrams.events
 		public var imageName:String;
 		public static const STYLE_PHOTO:String = "photoStyle";
 		public var sdImageModel:SDImageModel;
-		public var text:String;
-		public var color:Number;
 		public var sdID:Number;
-		public var memento:TransformMemento;
 		public var sdObjectModel:SDObjectModel;
 		public var addLibraryItemCommand:AddLibraryItemCommand;
-		public var transformCommand:TransformCommand;
 		public var cutCommand:CutCommand;
-		public var pasteCommand:PasteCommand;
 		public var sdIDArray:Array;
 		public var changedSDObjectModelArray:Array;
 		
@@ -56,6 +50,9 @@ package com.simplediagrams.events
 		public var room_id:String = "sample_room_id";
 		public var room_name:String = "sample_room_name";
 		public var user_name:String = "sample_user_name";
+		public var wowza_server:String = "rtmp://localhost";
+		public var wowza_whiteboard_app:String = "whiteboard";
+		public var image_server:String = "http://localhost";
 
 		public function RemoteSharedObjectEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

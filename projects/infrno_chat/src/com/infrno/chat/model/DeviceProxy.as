@@ -20,6 +20,8 @@ package com.infrno.chat.model
 		public var mic_array:Array;
 		
         public var camera_active:Boolean;
+        public var mic_active:Boolean;
+
         public var cam_index:int;
         public var mic_index:int;
         public var mic_level:int;
@@ -92,6 +94,8 @@ package com.infrno.chat.model
 		}
 		private function initMic(micIn:int=-1):Microphone
 		{
+			mic_active = false;
+			
 			_mic = Microphone.getMicrophone(micIn);
 			
 			if(_mic == null){
@@ -112,6 +116,7 @@ package com.infrno.chat.model
 			_mic.setUseEchoSuppression(true);
 			_mic.addEventListener(ActivityEvent.ACTIVITY, function(evt:ActivityEvent):void{
 //				trace(evt.toString());
+				mic_active = evt.activating;
 				if(evt.activating){
 					dispatch(new DeviceEvent(DeviceEvent.MIC_ACTIVITY,evt.activating));
 				}
@@ -170,7 +175,8 @@ package com.infrno.chat.model
 	        }
         }
         
-		public function updateCamQuality(n_valIn:int):void{
+		public function updateCamQuality(n_valIn:int):void
+		{
 			trace("DeviceProxy.initCam() cam quality updated to: "+n_valIn);
 			_camera_quality = n_valIn;
 			_camera.setQuality(0,n_valIn);

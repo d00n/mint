@@ -31,28 +31,76 @@
 				_data = info;
 			}
 			
+			public function set is_local(b:Boolean):void
+			{
+				_is_local = b;
+			}
+			
 			public function set camera(cam:Camera):void
 			{
 				if(_camera == cam)
 					return;
 				
-				_is_local = true;
 				_camera = cam;
-//				video.attachNetStream(null);
-//				video.attachCamera(cam);
-				
-				toggleAudio();
-				toggleVideo();
 			}
 			
 			public function set netstream(ns:NetStream):void
 			{
-				_is_local = false;
 				video.attachCamera(null);
 				video.attachNetStream(ns);
+			}
+			
+			public function toggleAudio():void
+			{
+				trace("hit toggleAudio");
+				trace(mute_audio.selected);
+				trace(_is_local);
 				
-				toggleAudio();
-				toggleVideo();
+				if(mute_audio.selected){
+					if(_is_local){
+						dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.AUDIO_MUTED,true))
+					} else {
+						if(_data.ns!=null){
+							setAudioLevel(0,true);
+							_data.ns.receiveAudio(false);
+						}
+					}
+				} else {
+					if(_is_local){
+						dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.AUDIO_UNMUTED,true))
+					} else {
+						if(_data.ns!=null){
+							setAudioLevel(audio_level.value);
+							_data.ns.receiveAudio(true);
+						}
+					}
+						
+				}
+			}
+			
+			public function toggleVideo():void
+			{
+				trace("hit toggleVideo");
+				//if using peer then we are unable to request a receiveAudio/Video false.. we'd just need to hide it
+				if(hide_video.selected){
+					if(_is_local){
+						dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.VIDEO_MUTED,true));
+						video.attachCamera(null)
+					} else {
+						if(_data.ns!=null)
+							_data.ns.receiveVideo(false);
+					}
+					video.visible = false;
+				} else {
+					if(_is_local){
+						dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.VIDEO_UNMUTED,true));
+						video.attachCamera(_camera);
+					} else {
+						if(_data.ns!=null)
+							_data.ns.receiveVideo(true);
+					}
+					video.visible = true;
+				}
 			}
 			
 			/**
@@ -61,49 +109,8 @@
 			
 			private function adjustVolume():void
 			{
-				setAudioLevel(audio_level.value);
-			}
-			
-			private function toggleAudio():void
-			{
-				if(mute_audio.selected){
-					if(_is_local){
-						dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.AUDIO_MUTED,true))
-					} else {
-						setAudioLevel(0,true);
-						_data.ns.receiveAudio(false);
-					}
-				} else {
-					if(_is_local){
-						dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.AUDIO_UNMUTED,true))
-					} else {
-						setAudioLevel(audio_level.value);
-						_data.ns.receiveAudio(true);
-					}
-						
-				}
-			}
-			
-			private function toggleVideo():void
-			{
-				//if using peer then we are unable to request a receiveAudio/Video false.. we'd just need to hide it
-				if(hide_video.selected){
-					if(_is_local){
-						dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.VIDEO_MUTED,true));
-						video.attachCamera(null)
-					} else {
-						_data.ns.receiveVideo(false);
-					}
-					video.visible = false;
-				} else {
-					if(_is_local){
-						dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.VIDEO_UNMUTED,true));
-						video.attachCamera(_camera);
-					} else {
-						_data.ns.receiveVideo(true);
-					}
-					video.visible = true;
-				}
+				if(_data.ns != null)
+					setAudioLevel(audio_level.value);
 			}
 			
 			private function setAudioLevel(levelIn:Number,force:Boolean=false):void

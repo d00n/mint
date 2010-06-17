@@ -62,14 +62,6 @@
 			
 			public function toggleAudio():void
 			{
-<<<<<<< HEAD
-				trace("hit toggleAudio");
-				trace(mute_audio.selected);
-				trace(_is_local);
-=======
-				return;
->>>>>>> 3fc6ecbcdd5fe09b117def1c1c7169da8c1b12cd
-				
 				if(mute_audio.selected){
 					if(_is_local){
 						dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.AUDIO_MUTED,true))
@@ -101,15 +93,8 @@
 						dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.VIDEO_MUTED,true));
 						video.attachCamera(null)
 					} else {
-<<<<<<< HEAD
 						if(_data.ns!=null)
 							_data.ns.receiveVideo(false);
-=======
-						if( hasNetStream( ) ) 
-						{
-							_data.ns.receiveVideo(false);  
-						}
->>>>>>> 3fc6ecbcdd5fe09b117def1c1c7169da8c1b12cd
 					}
 					video.visible = false;
 				} else {
@@ -117,22 +102,14 @@
 						dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.VIDEO_UNMUTED,true));
 						video.attachCamera(_camera);
 					} else {
-<<<<<<< HEAD
 						if(_data.ns!=null)
 							_data.ns.receiveVideo(true);
-=======
-						if( hasNetStream( ) ) 
-						{
-							_data.ns.receiveVideo(false);  
-						}
->>>>>>> 3fc6ecbcdd5fe09b117def1c1c7169da8c1b12cd
 					}
 					
 					video.visible = true;
 				}
 			}
 			
-<<<<<<< HEAD
 			/**
 			 * Private functions
 			 */
@@ -141,7 +118,8 @@
 			{
 				if(_data.ns != null)
 					setAudioLevel(audio_level.value);
-=======
+			}
+			
 			private function handleCreationComplete(event:Event):void
 			{
 				currentState="hideControls";
@@ -176,7 +154,6 @@
 			private function handleMouseOutControls(event:Event):void
 			{
 				currentState="showControls";
->>>>>>> 3fc6ecbcdd5fe09b117def1c1c7169da8c1b12cd
 			}
 			
 			private function setAudioLevel(levelIn:Number,force:Boolean=false):void

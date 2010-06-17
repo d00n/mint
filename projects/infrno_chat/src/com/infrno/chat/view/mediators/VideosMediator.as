@@ -96,7 +96,8 @@ package com.infrno.chat.view.mediators
 				if(curr_info.suid == dataProxy.my_info.suid){
 					trace("VideosMediator.updateVideos() this is my video.. so showing my camera");
 					video_presense.camera = deviceProxy.camera;
-					video_presense.audio_level.value = deviceProxy.mic.gain;
+//					video_presense.audio_level.value = deviceProxy.mic.gain;
+					video_presense.audioLevel = deviceProxy.mic.gain;
 				} else {
 					//update/create netstream to play from
 					//start playing the suid

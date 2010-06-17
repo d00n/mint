@@ -8,11 +8,7 @@ package com.infrno.chat.model
 	
 	public class DataProxy extends Actor
 	{
-<<<<<<< HEAD
 		public static const VERSION			:String		= "Infrno Chat v0.2.14";
-=======
-		public static const VERSION			:String		= "Infrno Chat v0.2.11";
->>>>>>> 3fc6ecbcdd5fe09b117def1c1c7169da8c1b12cd
 		
 		public var peer_enabled				:Boolean;
 		

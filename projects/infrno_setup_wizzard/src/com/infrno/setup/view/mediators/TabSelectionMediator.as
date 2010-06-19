@@ -1,7 +1,11 @@
 package com.infrno.setup.view.mediators
 {
+	import com.infrno.setup.model.DeviceProxy;
 	import com.infrno.setup.model.events.SettingsEvent;
 	import com.infrno.setup.view.components.TabSelection;
+	
+	import mx.core.UIComponent;
+	import flash.events.Event;
 	
 	import org.robotlegs.mvcs.Mediator;
 	
@@ -9,6 +13,9 @@ package com.infrno.setup.view.mediators
 	{
 		[Inject]
 		public var tab_selection	:TabSelection;
+		
+		[Inject]
+		public var deviceProxy		:DeviceProxy;
 		
 		public function TabSelectionMediator()
 		{

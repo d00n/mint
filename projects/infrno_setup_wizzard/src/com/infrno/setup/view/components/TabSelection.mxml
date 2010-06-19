@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx">
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:com.infrno.setup.view.components="com.infrno.setup.view.components.*">
 	
 	<fx:Script>
 		<![CDATA[
 			import com.infrno.setup.model.events.SettingsEvent;
+			import mx.core.UIComponent;
+			import flash.events.Event;
 			
 			private function showCameraSettings():void
 			{
@@ -21,39 +24,145 @@
 			{
 				dispatchEvent(new SettingsEvent(SettingsEvent.SHOW_SAVE_SETTINGS));
 			}
+			
+			public function handleNextFromVideo( event:Event ) : void 
+			{
+				dispatchEvent( new Event( "WIZZARD_NEXT_VIDEO", true, true ) );
+				myViewStack.selectedChild = mic;
+			}
+			
+			public function handleNextFromAudio( event:Event ) : void 
+			{
+				dispatchEvent( new Event( "WIZZARD_NEXT_AUDIO", true, true ) );
+				myViewStack.selectedChild = save;
+			}
+			
+			public function handleCloseWizzard( event:Event ) : void 
+			{
+				dispatchEvent( new Event( "WIZZARD_CLOSE", true, true ) );
+			}
 		]]>
 	</fx:Script>
 	
 	<s:layout>
-		<s:VerticalLayout />
+		<s:VerticalLayout paddingBottom="3" paddingLeft="5" paddingRight="3" paddingTop="3"/>
 	</s:layout>
 	
 	<s:TabBar dataProvider="{myViewStack}" />
 	
-	<mx:ViewStack id="myViewStack" borderStyle="none"> 
+	<mx:ViewStack 
+		id="myViewStack" 
+		borderStyle="none"
+		width="100%"
+		height="100%" > 
 		
-		<s:NavigatorContent id="camera" label="1. check webcam"> 
+		<s:NavigatorContent 
+			id="camera" 
+			label="Video"
+			width="100%"
+			height="100%"> 
 			<s:layout>
-				<s:VerticalLayout />
+				<s:BasicLayout />
 			</s:layout>
-			<s:Button label="select camera settings" click="showCameraSettings()" />
-			<mx:Text width="{width}" text="Some language here about clicking start and accepting the popup prompt... or to click the select camera button" />
+			<mx:Text 
+				width="100%" 
+				text="If you don't see your video, click here to select your camera:" />
+			<s:Group
+				height="100%"
+				width="100%" >
+				<s:layout>
+					<s:VerticalLayout
+						horizontalAlign="center"
+						verticalAlign="bottom" />
+				</s:layout>			
+				<s:Button 
+					label="camera settings" 
+					click="showCameraSettings()" />
+				<mx:Spacer
+					height="25" />
+			</s:Group>
+			<s:Button
+				label="next"
+				click="handleNextFromVideo(event);" 
+				bottom="5"
+				right="5" />
 		</s:NavigatorContent> 
 		
-		<s:NavigatorContent id="mic" label="2. check microphone"> 
+		<s:NavigatorContent 
+			id="mic" 
+			label="Audio"
+			width="100%"
+			height="100%"> 
 			<s:layout>
-				<s:VerticalLayout />
+				<s:BasicLayout />
 			</s:layout>
-			<s:Button label="select mic settings" click="showMicSettings()" />
-			<mx:Text width="{width}" text="Some language here about the volume indicator going up and down... or to click the select mic button" />
+			<s:Group
+				height="100%"
+				width="100%">
+			    <s:layout>
+			    	<s:VerticalLayout
+			    		horizontalAlign="left"
+			    		verticalAlign="top" />
+			    </s:layout>
+				<mx:Text 
+					width="100%" 
+					text="Say hello! If your sound meter doesn't move, click here to select and configure your microphone:" />
+				<com.infrno.setup.view.components:MicrophoneMeter
+					id="m_microphoneMeter" 
+					width="80%"
+					height="10" />
+			</s:Group>
+			<s:Group
+				height="100%"
+				width="100%" >
+				<s:layout>
+					<s:VerticalLayout
+						horizontalAlign="center"
+						verticalAlign="bottom" />
+				</s:layout>	
+				<s:Button 
+					label="audio settings" 
+					click="showMicSettings()" />
+				<mx:Spacer
+					height="25" />
+			</s:Group>									
+			<s:Button
+				label="next"
+				click="handleNextFromAudio(event);" 
+				bottom="5"
+				right="5" />
 		</s:NavigatorContent> 
 		
-		<s:NavigatorContent id="save" label="3. save settings"> 
+		<s:NavigatorContent 
+			id="save" 
+			label="Save settings"
+			width="100%"
+			height="100%"> 
 			<s:layout>
-				<s:VerticalLayout />
-			</s:layout>
-			<s:Button label="save settings" click="showSaveSettings()" />
-			<mx:Text width="{width}" text="Some language here about clicking allow radio button and then checking remember so that you only have to set it up once" />
+				<s:BasicLayout />
+			</s:layout>			
+			<mx:Text 
+				width="100%" 
+				text="To remember your settings, check 'Remember' here:" />
+			<s:Group				
+				height="100%"
+				width="100%" >
+				<s:layout>
+					<s:VerticalLayout 
+						horizontalAlign="center"
+						verticalAlign="bottom"/>
+				</s:layout>
+				<s:Button 
+					label="save settings" 
+					click="showSaveSettings()"/>
+				<mx:Spacer
+					height="25" />
+			</s:Group>
+			<s:Button
+				label="close"
+				click="handleCloseWizzard(event);" 
+				bottom="5"
+				right="5" />
 		</s:NavigatorContent> 
 	</mx:ViewStack>
 	

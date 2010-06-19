@@ -6,6 +6,7 @@ package com.infrno.load_manager
 	import com.infrno.load_manager.view.mediators.*;
 	
 	import flash.display.DisplayObjectContainer;
+	import flash.display.DisplayObject;
 	
 	import org.robotlegs.base.ContextEvent;
 	import org.robotlegs.mvcs.Context;
@@ -15,6 +16,7 @@ package com.infrno.load_manager
 		public function ApplicationContext()
 		{
 			super();
+			var a:DisplayObject;
 		}
 		
 		override public function startup():void

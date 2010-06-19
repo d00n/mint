@@ -4,7 +4,6 @@ package com.infrno.load_manager.view.mediators
 	import com.infrno.load_manager.view.components.Wizzard;
 	
 	import flash.events.Event;
-	import flash.events.MouseEvent;
 	
 	import org.robotlegs.mvcs.Mediator;
 	
@@ -20,15 +19,13 @@ package com.infrno.load_manager.view.mediators
 		
 		override public function onRegister():void
 		{
-			wizzard.addEventListener(MouseEvent.CLICK,closeWizzard);
+			wizzard.addEventListener( EventConstants.WIZZARD_CLOSE, closeWizzard );
 		}
 		
-		private function closeWizzard(e:MouseEvent):void
+		public function closeWizzard( event:Event ) : void
 		{
-			if(e.target != wizzard.close_btn)
-				return;
-			trace("WizzardMediator.closeWizzard() hit me");
-			dispatch(new Event(EventConstants.WIZZARD_COMPLETE));
+			trace( "WizzardMediator.closeWizzard( )" );
+			dispatch( new Event( EventConstants.WIZZARD_COMPLETE ) );
 		}
 		
 	}

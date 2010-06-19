@@ -62,6 +62,9 @@
 			
 			public function toggleAudio():void
 			{
+				////
+				// this could be null at creation time.
+				////
 				if(audioToggleButton.selected){
 					if(_is_local){
 						dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.AUDIO_MUTED,true))

@@ -2,6 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="handleCreationComplete(event);"
 		 >
 	
 	<fx:Script>
@@ -18,22 +19,31 @@
 				return _video; 
 			}
 			
+			protected function handleCreationComplete( event:Event ) : void 
+			{
+				dispatchEvent( new GenericEvent( GenericEvent.SHOW_VIDEO ) );
+			}
 			/**
 			 * Private methods
 			 */
 			
-			private function toggleVideo():void
-			{
-				if(toggle_btn.label != "hide video")
-					dispatchEvent(new GenericEvent(GenericEvent.SHOW_VIDEO));
-				else
-					dispatchEvent(new GenericEvent(GenericEvent.HIDE_VIDEO));
-			}
-			
 		]]>
 	</fx:Script>
-	
-	<mx:UIComponent id="video_container" />
-	<s:Button id="toggle_btn" label="click here to start" click="toggleVideo()" />
-	<s:Label id="cam_active" />
+	<s:BorderContainer
+		id="borderContainer"
+		backgroundColor="#ffffff" 
+		borderColor="#cecece"
+		width="100%" 
+		height="100%" >
+		<s:Rect 
+			id="background" 
+			width="100%" 
+			height="100%">
+	        <s:fill>
+	            <s:SolidColor color="#000000"/>
+	        </s:fill>
+	    </s:Rect>
+		<mx:UIComponent id="video_container" />
+		<s:Label id="cam_active" />
+	</s:BorderContainer>
 </s:Group>

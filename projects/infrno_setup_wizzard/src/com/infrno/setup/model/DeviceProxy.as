@@ -53,7 +53,15 @@ package com.infrno.setup.model
 				dispatch(new DeviceEvent(DeviceEvent.MIC_LEVEL,_mic.activityLevel));
         	});
         }
-        
+        public function get microphoneLevel( ) : int
+        {
+        	if( null == _mic ) 
+        	{
+        		return 0;
+        	}
+        	
+        	return _mic.activityLevel;
+        }
         private function initDevices():void //camera/mic init
 		{ 
 			initMic();
@@ -113,8 +121,9 @@ package com.infrno.setup.model
 			
 			_mic.codec = SoundCodec.SPEEX;
 			_mic.framesPerPacket = 1;
-			
-			_mic.setSilenceLevel(0);
+			_mic.setLoopBack(true);
+	
+//			_mic.setSilenceLevel(0);
 			_mic.rate=11;
 			_mic.setUseEchoSuppression(true);
 			_mic.addEventListener(ActivityEvent.ACTIVITY, function(evt:ActivityEvent):void{

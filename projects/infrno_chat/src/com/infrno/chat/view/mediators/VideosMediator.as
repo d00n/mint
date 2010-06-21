@@ -103,7 +103,7 @@ package com.infrno.chat.view.mediators
 					
 				} else {
 					video_presense = getElementbyName(videos.videos_holder,curr_info.suid.toString());
-					if(!video_presense.created)
+					if(!video_presense.isInitialized())
 						return;
 
 					video_presense.is_local = curr_info.suid == dataProxy.my_info.suid;
@@ -157,8 +157,8 @@ package com.infrno.chat.view.mediators
 			trace("VideosMediator.updateVideos() this is my video.. so showing my camera");
 			video_presense.is_local = true;
 			video_presense.camera = deviceProxy.camera;
-//			video_presense.audio_level.value = deviceProxy.mic.gain;
-			video_presense.audioLevel = deviceProxy.mic.gain;
+			video_presense.audio_level.value = deviceProxy.mic.gain;
+//			video_presense.audioLevel = deviceProxy.mic.gain;
 			video_presense.toggleAudio();
 			video_presense.toggleVideo();
 		}

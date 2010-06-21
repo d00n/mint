@@ -1,6 +1,7 @@
 package com.infrno.setup.model
 {
     import com.infrno.setup.model.events.DeviceEvent;
+    import com.infrno.setup.model.events.GenericEvent;
     
     import flash.events.ActivityEvent;
     import flash.events.StatusEvent;
@@ -53,6 +54,39 @@ package com.infrno.setup.model
 				dispatch(new DeviceEvent(DeviceEvent.MIC_LEVEL,_mic.activityLevel));
         	});
         }
+        
+        private function releaseMic( ) : void 
+        {
+        	if( null == _mic ) 
+			{
+				return;
+			} 
+			
+			_mic.setLoopBack( false );
+			_mic.removeEventListener(ActivityEvent.ACTIVITY, handleMicActivity );
+			_mic.removeEventListener(StatusEvent.STATUS, handleMicStatus );	
+			_mic = null;
+        }
+        
+        private function releaseCamera( ) : void 
+        {
+        	if( null == _camera ) 
+        	{
+        		return;
+        	}
+        	_camera.removeEventListener( StatusEvent.STATUS, handleCameraStatus );
+			_camera.removeEventListener( ActivityEvent.ACTIVITY, handleCameraActivity );
+			_camera = null;
+        }
+        
+        public function releaseResources( ) : void 
+		{
+			releaseMic( );
+			releaseCamera( );
+			_mic_level_timer.stop( );
+			dispatch( new GenericEvent(GenericEvent.REMOVE_VIDEO, true, false ) );
+		}
+		
         public function get microphoneLevel( ) : int
         {
         	if( null == _mic ) 
@@ -93,21 +127,40 @@ package com.infrno.setup.model
 				_camera.setKeyFrameInterval(12); //original 48.. default is 15
 				_camera.setMotionLevel(0);
 //				_camera.setLoopback(true);
-				_camera.addEventListener(StatusEvent.STATUS, function(evt:StatusEvent):void{
-					trace(evt.code);
-					if(evt.code=="Camera.Muted"){
-						trace("no access to the camera");
-						camera_active=false;
-					}
-				})
+//				_camera.addEventListener(StatusEvent.STATUS, function(evt:StatusEvent):void{
+//					trace(evt.code);
+//					if(evt.code=="Camera.Muted"){
+//						trace("no access to the camera");
+//						camera_active=false;
+//					}
+//				}, false, 0, true );
+//				
+//				_camera.addEventListener(ActivityEvent.ACTIVITY, function(evt:ActivityEvent):void{
+//					trace("camera active: "+evt.activating)
+//					camera_active=evt.activating;
+//					dispatch(new DeviceEvent(DeviceEvent.CAMERA_ACTIVITY,evt.activating));
+//				}, false, 0, true );
 				
-				_camera.addEventListener(ActivityEvent.ACTIVITY, function(evt:ActivityEvent):void{
-					trace("camera active: "+evt.activating)
-					camera_active=evt.activating;
-					dispatch(new DeviceEvent(DeviceEvent.CAMERA_ACTIVITY,evt.activating));
-				})
+				_camera.addEventListener( StatusEvent.STATUS, handleCameraStatus, false, 0, true );
+				_camera.addEventListener( ActivityEvent.ACTIVITY, handleCameraActivity, false, 0, true );
 			}
 		}
+		
+		public function handleCameraActivity(evt:ActivityEvent):void{
+			trace("camera active: "+evt.activating)
+			camera_active=evt.activating;
+			dispatch(new DeviceEvent(DeviceEvent.CAMERA_ACTIVITY,evt.activating));
+		}
+		
+		public function handleCameraStatus( evt:StatusEvent ) : void
+		{
+			trace(evt.code);
+			if(evt.code=="Camera.Muted"){
+				trace("no access to the camera");
+				camera_active=false;
+			}
+		}
+		
 		private function initMic(micIn:int=-1):Microphone
 		{
 			_mic = Microphone.getMicrophone(micIn);
@@ -126,20 +179,25 @@ package com.infrno.setup.model
 //			_mic.setSilenceLevel(0);
 			_mic.rate=11;
 			_mic.setUseEchoSuppression(true);
-			_mic.addEventListener(ActivityEvent.ACTIVITY, function(evt:ActivityEvent):void{
-//				trace(evt.toString());
-				if(evt.activating){
-					mic_active = evt.activating;
-					dispatch(new DeviceEvent(DeviceEvent.MIC_ACTIVITY,evt.activating));
-				}
-			});
-			_mic.addEventListener(StatusEvent.STATUS, function(evt:StatusEvent):void{
-				trace(evt.code);
-				if(evt.code=="Microphone.Muted"){
-					trace("no access to the mic");
-					mic_active = false;
-				}
-			});
+//			_mic.addEventListener(ActivityEvent.ACTIVITY, function(evt:ActivityEvent):void{
+////				trace(evt.toString());
+//				if(evt.activating){
+//					mic_active = evt.activating;
+//					dispatch(new DeviceEvent(DeviceEvent.MIC_ACTIVITY,evt.activating));
+//				}
+//			}, false, 0, true );
+
+			_mic.addEventListener(ActivityEvent.ACTIVITY, handleMicActivity, false, 0, true );
+			
+//			_mic.addEventListener(StatusEvent.STATUS, function(evt:StatusEvent):void{
+//				trace(evt.code);
+//				if(evt.code=="Microphone.Muted"){
+//					trace("no access to the mic");
+//					mic_active = false;
+//				}
+//			}, false, 0, true );
+
+			_mic.addEventListener(StatusEvent.STATUS, handleMicStatus, false, 0, true );
 			
 			if(_mic!=null){
 				_mic_level_timer.start();
@@ -148,6 +206,24 @@ package com.infrno.setup.model
 			}
 			
 			return _mic;
+		}
+		
+		
+		public function handleMicActivity( activityEvent:ActivityEvent ) : void
+		{
+			if( activityEvent.activating){
+				mic_active = activityEvent.activating;
+				dispatch(new DeviceEvent(DeviceEvent.MIC_ACTIVITY,activityEvent.activating));
+			}
+		}
+		
+		public function handleMicStatus( statusEvent:StatusEvent ) : void 
+		{
+			trace(statusEvent.code);
+			if(statusEvent.code=="Microphone.Muted"){
+				trace("no access to the mic");
+				mic_active = false;
+			}
 		}
 		
 		//public methods

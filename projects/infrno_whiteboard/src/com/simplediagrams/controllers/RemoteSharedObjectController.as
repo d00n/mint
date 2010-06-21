@@ -149,6 +149,13 @@ package com.simplediagrams.controllers
 			Logger.info("connect() about to connect to " + ws,this);
 			
 			var dummyUserInfoVO:DummyUserInfoVO = new DummyUserInfoVO();
+			
+			trace( "ws=" + ws );
+			trace( "dummyUserInfoVO=" + dummyUserInfoVO );
+			trace( "_auth_key=" + _auth_key );
+			trace( "_room_id=" + _room_id );
+			trace( "_room_name=" + _room_name );
+			trace( "_user_name=" + _user_name );
 			_netConnection.connect(ws, dummyUserInfoVO, _auth_key, _room_id, _room_name, _user_name);     
 		}
 		

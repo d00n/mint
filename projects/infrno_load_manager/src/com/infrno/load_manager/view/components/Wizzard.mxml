@@ -29,6 +29,13 @@
             public function handleWizzardClose( event:Event ) : void 
             {
             	trace( "wizzard close" );
+            	var displayObject:DisplayObject = setupWizzardSwfLoader.content;
+            	displayObject.removeEventListener( "WIZZARD_NEXT_VIDEO", handleWizzardNextVideo );
+            	displayObject.removeEventListener( "WIZZARD_NEXT_AUDIO", handleWizzardNextAudio );
+            	displayObject.removeEventListener( "WIZZARD_CLOSE", handleWizzardClose );
+            	
+            	var movieClip:MovieClip = displayObject as MovieClip;
+            	movieClip.stop( );
             	dispatchEvent( new Event( EventConstants.WIZZARD_CLOSE, true, true ) );
             }
         ]]>

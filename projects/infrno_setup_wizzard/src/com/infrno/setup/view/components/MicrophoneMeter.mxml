@@ -17,7 +17,6 @@
 			
 			public function set level( value:Number ) : void
 			{
-				trace( "m_bar.width=" + m_bar.width );
 				var percent:Number = value / 100;
 				m_mascara.width = m_bar.width * percent;
 			}
@@ -26,29 +25,35 @@
 	<s:layout>
 		<s:BasicLayout />
 	</s:layout>		
-	<s:Rect 
-		id="m_bar"
-		width="100%" 
-		height="15"
-		maskType="clip" >			  
-			<s:mask>
-                <s:Group>
-                      <s:Rect 
-                      	id="m_mascara"
-                      	width="0" 
-                      	height="15">
-                            <s:fill>
-                                  <s:SolidColor/>
-                            </s:fill>
-                      </s:Rect>
-                </s:Group>
-          </s:mask>	          
-          <s:fill>
-              <s:LinearGradient>
-                <s:GradientEntry color="#001199" ratio="0" alpha=".5"/>
-                <s:GradientEntry color="#ffff33" ratio=".33" alpha=".5"/>
-                <s:GradientEntry color="#ff1100" ratio=".66" alpha=".5"/>
-              </s:LinearGradient>
-         </s:fill>
-    </s:Rect>			
+	<s:BorderContainer
+		backgroundColor="#ddeeff"
+		borderVisible="false"
+		width="100%"
+		height="16">
+		<s:Rect 
+			id="m_bar"
+			width="100%" 
+			height="15"
+			maskType="clip" >			  
+				<s:mask>
+	                <s:Group>
+	                      <s:Rect 
+	                      	id="m_mascara"
+	                      	width="0" 
+	                      	height="15">
+	                            <s:fill>
+	                                  <s:SolidColor/>
+	                            </s:fill>
+	                      </s:Rect>
+	                </s:Group>
+	          </s:mask>	          
+	          <s:fill>
+	              <s:LinearGradient>
+	                <s:GradientEntry color="#001199" ratio="0" alpha=".5"/>
+	                <s:GradientEntry color="#ffff33" ratio=".33" alpha=".5"/>
+	                <s:GradientEntry color="#ff1100" ratio=".66" alpha=".5"/>
+	              </s:LinearGradient>
+	         </s:fill>
+	    </s:Rect>
+	</s:BorderContainer>			
 </s:Group>

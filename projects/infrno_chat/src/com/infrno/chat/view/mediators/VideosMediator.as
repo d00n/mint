@@ -89,16 +89,22 @@ package com.infrno.chat.view.mediators
 					video_presense = videos.videos_holder.addElement(new VideoPresense()) as VideoPresense;
 					video_presense.data = curr_info;
 					video_presense.name = curr_info.suid.toString();
+					return;
 				} else {
 					video_presense = getElementbyName(videos.videos_holder,curr_info.suid.toString());
+				}
+				
+				if( !video_presense.isInitialized( ) ) 
+				{
+					return;
 				}
 				
 				if(curr_info.suid == dataProxy.my_info.suid){
 					trace("VideosMediator.updateVideos() this is my video.. so showing my camera");
 					video_presense.is_local = true;
 					video_presense.camera = deviceProxy.camera;
-//					video_presense.audio_level.value = deviceProxy.mic.gain;
-					video_presense.audioLevel = deviceProxy.mic.gain;
+					video_presense.audio_level.value = deviceProxy.mic.gain;
+//					video_presense.audioLevel = deviceProxy.mic.gain;
 					video_presense.toggleAudio();
 					video_presense.toggleVideo();
 				} else {

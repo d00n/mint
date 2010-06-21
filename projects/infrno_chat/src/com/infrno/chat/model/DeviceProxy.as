@@ -92,8 +92,10 @@ package com.infrno.chat.model
 				})
 			}
 		}
+		
 		private function initMic(micIn:int=-1):Microphone
 		{
+			trace( "********** initMic ( " +micIn  + " ) " );
 			mic_active = false;
 			
 			_mic = Microphone.getMicrophone(micIn);
@@ -111,7 +113,8 @@ package com.infrno.chat.model
 			
 			_mic.codec = SoundCodec.SPEEX;
 			_mic.framesPerPacket = 1;
-			_mic.setSilenceLevel(0);
+			_mic.setLoopBack(true);
+//			_mic.setSilenceLevel(0);
 			_mic.rate=11;
 			_mic.setUseEchoSuppression(true);
 			_mic.addEventListener(ActivityEvent.ACTIVITY, function(evt:ActivityEvent):void{

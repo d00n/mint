@@ -38,7 +38,7 @@ package com.infrno.chat.controller
 					if(dataProxy.ns)
 					{
 						trace( "attaching mic." )
-						if( null == deviceProxy.mic ) 
+						if( deviceProxy.mic == null ) 
 						{
 							trace( "deviceProxy.mic is null" )
 						}

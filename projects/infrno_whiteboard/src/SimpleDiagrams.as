@@ -68,54 +68,26 @@ protected function onAppComplete():void
 	}
 		
 
-	try{
+	if (flash_vars.auth_key != null)
 		rsoEvent.auth_key = flash_vars.auth_key;
-	}catch(e:Object){
-		rsoEvent.auth_key = "not_set"
-		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.auth_key not set");
-	}
-
-	try{
+	
+	if (flash_vars.room_id != null)
 		rsoEvent.room_id = flash_vars.room_id;
-	}catch(e:Object){
-		rsoEvent.room_id = "not_set"
-		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.room_id not set");
-	}
 	
-	try{
+	if (flash_vars.room_name != null)
 		rsoEvent.room_name = flash_vars.room_name;
-	}catch(e:Object){
-		rsoEvent.room_name = "not_set"
-		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.room_name not set");
-	}
 	
-	try{
+	if (flash_vars.user_name != null)
 		rsoEvent.user_name = flash_vars.user_name;
-	}catch(e:Object){
-		rsoEvent.user_name = "not_set"
-		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.user_name not set");
-	}
 	
-	try{
+	if (flash_vars.wowza_server != null)
 		rsoEvent.wowza_server = flash_vars.wowza_server;
-	}catch(e:Object){
-		rsoEvent.wowza_server = "not_set"
-		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.wowza_server not set");
-	}
 	
-	try{
+	if (flash_vars.wowza_whiteboard_app != null)
 		rsoEvent.wowza_whiteboard_app = flash_vars.wowza_whiteboard_app;
-	}catch(e:Object){
-		rsoEvent.wowza_whiteboard_app = "not_set"
-		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.wowza_whiteboard_app not set");
-	}
-
-	try{
+	
+	if (flash_vars.image_server != null)
 		rsoEvent.image_server = flash_vars.image_server;
-	}catch(e:Object){
-		rsoEvent.image_server = "not_set"
-		Logger.debug("SimpleDiagrams.as onAppComplete() flash_vars.image_server not set");
-	}
 	
 	
 	Swiz.dispatchEvent(rsoEvent);

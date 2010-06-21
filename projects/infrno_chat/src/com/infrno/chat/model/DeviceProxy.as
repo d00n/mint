@@ -114,6 +114,7 @@ package com.infrno.chat.model
 			_mic.setSilenceLevel(0);
 			_mic.rate=11;
 			_mic.setUseEchoSuppression(true);
+			_mic.setLoopBack(false);
 			_mic.addEventListener(ActivityEvent.ACTIVITY, function(evt:ActivityEvent):void{
 //				trace(evt.toString());
 				mic_active = evt.activating;

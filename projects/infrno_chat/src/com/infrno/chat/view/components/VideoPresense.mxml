@@ -10,6 +10,8 @@
 			import com.infrno.chat.model.events.VideoPresenseEvent;
 			import com.infrno.chat.model.vo.UserInfoVO;
 			
+			public var created			:Boolean;
+			
 			private var m_audioLevel    :int;
 			private var _is_local		:Boolean;
 			private var _camera			:Camera;
@@ -28,9 +30,19 @@
 				return _video;
 			}
 			
+			public function get data():UserInfoVO
+			{
+				return _data;
+			}
+			
 			public function set data(info:UserInfoVO):void
 			{
 				_data = info;
+			}
+			
+			public function get is_local():Boolean
+			{
+				return _is_local;
 			}
 			
 			public function set is_local(b:Boolean):void
@@ -123,6 +135,7 @@
 			private function handleCreationComplete(event:Event):void
 			{
 				currentState="hideControls";
+				created = true;
 			}
 			
 			private function handleMouseOver(event:Event):void 

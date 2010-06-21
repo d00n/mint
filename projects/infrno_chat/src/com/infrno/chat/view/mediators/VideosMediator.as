@@ -12,9 +12,8 @@ package com.infrno.chat.view.mediators
 	import com.infrno.chat.view.components.VideoPresense;
 	import com.infrno.chat.view.components.Videos;
 	
-	import flash.display.DisplayObject;
-	
 	import mx.core.IVisualElement;
+	import mx.events.FlexEvent;
 	
 	import org.robotlegs.mvcs.Mediator;
 	
@@ -89,44 +88,69 @@ package com.infrno.chat.view.mediators
 					video_presense = videos.videos_holder.addElement(new VideoPresense()) as VideoPresense;
 					video_presense.data = curr_info;
 					video_presense.name = curr_info.suid.toString();
+					
+					video_presense.is_local = curr_info.suid == dataProxy.my_info.suid;
+					
+					video_presense.addEventListener(FlexEvent.CREATION_COMPLETE,function(e:FlexEvent):void
+					{
+						var curr_presense:VideoPresense = e.target as VideoPresense;
+						if(curr_presense.is_local){
+							setupMyPresenseComponent(curr_presense);
+						} else {
+							setupOtherPresenseComponent(curr_presense);
+						}
+					});
+					
 				} else {
 					video_presense = getElementbyName(videos.videos_holder,curr_info.suid.toString());
-				}
-				
-				if(curr_info.suid == dataProxy.my_info.suid){
-					trace("VideosMediator.updateVideos() this is my video.. so showing my camera");
-					video_presense.is_local = true;
-					video_presense.camera = deviceProxy.camera;
-//					video_presense.audio_level.value = deviceProxy.mic.gain;
-					video_presense.audioLevel = deviceProxy.mic.gain;
-					video_presense.toggleAudio();
-					video_presense.toggleVideo();
-				} else {
-					//update/create netstream to play from
-					//start playing the suid
-					video_presense.is_local = false;
+					if(!video_presense.created)
+						return;
+
+					video_presense.is_local = curr_info.suid == dataProxy.my_info.suid;
 					
-					if(dataProxy.use_peer_connection && curr_info.nearID && dataProxy.peer_capable && !(curr_info.ns is NetStreamPeer) ){
-						trace("VideosMediator.updateVideos() setting up and playing from the peer connection: "+curr_info.suid.toString());
-						curr_info.ns = peerService.getNewNetStream(curr_info.nearID);
-						curr_info.ns.play(curr_info.suid.toString());
-						video_presense.netstream = curr_info.ns;
-						video_presense.toggleAudio();
-						video_presense.toggleVideo();
-					} else if(!dataProxy.use_peer_connection && !(curr_info.ns is NetStreamMS) ){
-						trace("VideosMediator.updateVideos() setting up and playing from the stream server");
-						curr_info.ns = msService.getNewNetStream();
-						curr_info.ns.play(curr_info.suid.toString(),-1);
-						video_presense.netstream = curr_info.ns;
-						video_presense.toggleAudio();
-						video_presense.toggleVideo();
-					}
-					try{
-						video_presense.audio_level.value = curr_info.ns.soundTransform.volume*100
-					} catch(e:Object){
-						//something didn't initialze
+					if(curr_info.suid == dataProxy.my_info.suid){
+						setupMyPresenseComponent(video_presense);
+					} else {
+						setupOtherPresenseComponent(video_presense);
 					}
 				}
+			}
+		}
+		
+		private function setupMyPresenseComponent(video_presense:VideoPresense):void
+		{
+			trace("VideosMediator.updateVideos() this is my video.. so showing my camera");
+			video_presense.is_local = true;
+			video_presense.camera = deviceProxy.camera;
+//			video_presense.audio_level.value = deviceProxy.mic.gain;
+			video_presense.audioLevel = deviceProxy.mic.gain;
+			video_presense.toggleAudio();
+			video_presense.toggleVideo();
+		}
+		
+		private function setupOtherPresenseComponent(video_presense:VideoPresense):void
+		{
+			var curr_info:UserInfoVO = video_presense.data;
+			
+			if(dataProxy.use_peer_connection && curr_info.nearID && dataProxy.peer_capable && !(curr_info.ns is NetStreamPeer) ){
+				trace("VideosMediator.updateVideos() setting up and playing from the peer connection: "+curr_info.suid.toString());
+				curr_info.ns = peerService.getNewNetStream(curr_info.nearID);
+				curr_info.ns.play(curr_info.suid.toString());
+				video_presense.netstream = curr_info.ns;
+				video_presense.toggleAudio();
+				video_presense.toggleVideo();
+			} else if(!dataProxy.use_peer_connection && !(curr_info.ns is NetStreamMS) ){
+				trace("VideosMediator.updateVideos() setting up and playing from the stream server");
+				curr_info.ns = msService.getNewNetStream();
+				curr_info.ns.play(curr_info.suid.toString(),-1);
+				video_presense.netstream = curr_info.ns;
+				video_presense.toggleAudio();
+				video_presense.toggleVideo();
+			}
+			try{
+				video_presense.audio_level.value = curr_info.ns.soundTransform.volume*100
+			} catch(e:Object){
+				//something didn't initialze
 			}
 		}
 		

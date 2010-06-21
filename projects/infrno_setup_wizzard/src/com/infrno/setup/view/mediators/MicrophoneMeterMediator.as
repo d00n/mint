@@ -1,8 +1,9 @@
 package com.infrno.setup.view.mediators
 {
 	import com.infrno.setup.model.DeviceProxy;
+	import com.infrno.setup.model.events.DeviceEvent;
 	import com.infrno.setup.view.components.MicrophoneMeter;
-	import flash.events.Event;
+	
 	import org.robotlegs.mvcs.Mediator;
 	
 	public class MicrophoneMeterMediator extends Mediator
@@ -20,24 +21,18 @@ package com.infrno.setup.view.mediators
 		
 		override public function onRegister( ):void
 		{
-			microphoneMeter.addEventListener( Event.ENTER_FRAME, handleEnterFrame, false, 0, true );
+			eventMap.mapListener(eventDispatcher,DeviceEvent.MIC_LEVEL,micLevelUpdate);
 		}
 		
 		override public function onRemove( ):void
 		{
-			microphoneMeter.removeEventListener( Event.ENTER_FRAME, handleEnterFrame );
+			eventMap.unmapListener(eventDispatcher,DeviceEvent.MIC_LEVEL,micLevelUpdate);
+		}
+
+		private function micLevelUpdate(e:DeviceEvent):void
+		{
+			microphoneMeter.level = e.value as int;
 		}
 		
-		public function handleEnterFrame( event:Event ) : void 
-		{
-			if( null == deviceProxy ) 
-			{
-				return;
-			}
-			
-			var microphoneValue:int = deviceProxy.mic_level;
-			trace( "handleEnterFrame( ) microphoneValue=" + microphoneValue );
-			microphoneMeter.level = microphoneValue; 
-		}
 	}
 }

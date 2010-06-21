@@ -33,7 +33,7 @@ package com.infrno.chat.model
 		////
 		// possible values:
 		//
-		//  rtmp://gearsanddogs.com
+		//  rtmp://gearsandcogs.com
 		//  rtmp://admin.infrno.net
 		////
 		private var m_mediaServer			:String		= "rtmp://localhost";

@@ -34,8 +34,11 @@
             	displayObject.removeEventListener( "WIZZARD_NEXT_AUDIO", handleWizzardNextAudio );
             	displayObject.removeEventListener( "WIZZARD_CLOSE", handleWizzardClose );
             	
-            	var movieClip:MovieClip = displayObject as MovieClip;
-            	movieClip.stop( );
+            	setupWizzardSwfLoader.source = "";
+            	
+            	//var movieClip:MovieClip = displayObject as MovieClip;
+            	//movieClip.stop( );
+            	
             	dispatchEvent( new Event( EventConstants.WIZZARD_CLOSE, true, true ) );
             }
         ]]>

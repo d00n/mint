@@ -92,8 +92,10 @@ package com.infrno.chat.model
 				})
 			}
 		}
+		
 		private function initMic(micIn:int=-1):Microphone
 		{
+			trace( "********** initMic ( " +micIn  + " ) " );
 			mic_active = false;
 			
 			_mic = Microphone.getMicrophone(micIn);

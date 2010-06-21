@@ -10,9 +10,15 @@
 		<s:State name="chat" />
 	</s:states>
 	
-	<s:Panel title="Setup Wizzard" horizontalCenter="0" verticalCenter="0" includeIn="wizzard">
+	<s:BorderContainer horizontalCenter="0" verticalCenter="0" includeIn="wizzard">
+		<s:layout>
+			<s:VerticalLayout gap="0" />
+		</s:layout>
+			
+		<mx:Spacer
+			height="3" />
 		<components:Wizzard id="wizzard" />
-	</s:Panel>
+	</s:BorderContainer>
 	
 	<s:HGroup width="100%" height="100%" includeIn="chat">
 		<s:Scroller height="100%">

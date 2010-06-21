@@ -23,14 +23,23 @@ package com.infrno.chat.controller
 				trace("InitLocalVarsCommand.execute() not loaded by another movie");
 			}
 			
-			dataProxy.auth_key = flash_vars.auth_key;
-			dataProxy.room_id = flash_vars.room_id;
-			dataProxy.room_name = flash_vars.room_name;
-			dataProxy.user_name = flash_vars.user_name;
-			dataProxy.media_server = flash_vars.wowza_server;
-			dataProxy.media_app = flash_vars.wowza_chat_app;
+			if (flash_vars.auth_key != null)
+				dataProxy.auth_key = flash_vars.auth_key;
 			
-			dataProxy.my_info.uname = flash_vars.user_name;
+			if (flash_vars.room_id != null)
+				dataProxy.room_id = flash_vars.room_id;
+			
+			if (flash_vars.room_name != null)
+				dataProxy.room_name = flash_vars.room_name;
+			
+			if (flash_vars.user_name != null)
+				dataProxy.user_name = flash_vars.user_name;
+			
+			if (flash_vars.wowza_server != null)
+				dataProxy.media_server = flash_vars.wowza_server;
+			
+			if (flash_vars.wowza_chat_app != null)
+				dataProxy.media_app = flash_vars.wowza_chat_app;
 			
 			trace("InitLocalVarsCommand.execute() flashvars loaded:" + dataProxy.room_name +":"+ dataProxy.user_name +":"+ dataProxy.room_id +":"+ dataProxy.auth_key);
 			

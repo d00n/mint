@@ -4,6 +4,8 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   xmlns:setup="com.infrno.setup.*" 
 			   xmlns:components="com.infrno.setup.view.components.*"
+			   width="100%"
+			   height="100%"
 			   >
 	
 	<fx:Declarations>
@@ -11,10 +13,11 @@
 	</fx:Declarations>
 	
 	<s:layout>
-		<s:VerticalLayout />
+		<s:VerticalLayout horizontalAlign="center"/>
 	</s:layout>
 	
-	<components:VideoHolder width="320" height="240" />
-	<components:TabSelection height="120" />
+	
+	<components:VideoHolder width="320" height="240" />	
+	<components:TabSelection width="100%" height="100%" />
 	
 </s:Application>

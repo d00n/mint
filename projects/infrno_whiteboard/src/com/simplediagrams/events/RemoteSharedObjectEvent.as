@@ -50,9 +50,9 @@ package com.simplediagrams.events
 		public var room_id:String = "sample_room_id";
 		public var room_name:String = "sample_room_name";
 		public var user_name:String = "sample_user_name";
-		public var wowza_server:String = "rtmp://localhost";
+		public var wowza_server:String = "rtmp://romer.infrno.net";
 		public var wowza_whiteboard_app:String = "whiteboard";
-		public var image_server:String = "http://localhost";
+		public var image_server:String = "http://romer.infrno.net";
 
 		public function RemoteSharedObjectEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

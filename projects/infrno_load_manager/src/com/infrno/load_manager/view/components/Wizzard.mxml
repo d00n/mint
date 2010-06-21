@@ -1,9 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 horizontalAlign="right">
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
 	
-	<mx:SWFLoader source="InfrnoSetupWizzard.swf" />
-	<s:Button id="close_btn" label="close" click="dispatchEvent(event)" />
+	<fx:Script>
+        <![CDATA[
+        	import flash.display.DisplayObject;
+        	import com.infrno.load_manager.model.events.EventConstants;
+        	
+            public function handleSwfLoaderComplete( event:Event ) : void 
+            {
+            	var displayObject:DisplayObject = setupWizzardSwfLoader.content;
+            	displayObject.addEventListener( "WIZZARD_NEXT_VIDEO", handleWizzardNextVideo, false, 0, true );
+            	displayObject.addEventListener( "WIZZARD_NEXT_AUDIO", handleWizzardNextAudio, false, 0, true );
+            	displayObject.addEventListener( "WIZZARD_CLOSE", handleWizzardClose, false, 0, true );
+            }
+            
+            public function handleWizzardNextVideo( event:Event ) : void 
+            {
+            	trace( "wizzard next video" );
+            }
+            
+            public function handleWizzardNextAudio( event:Event ) : void 
+            {
+            	trace( "wizzard next audio" );
+            }
+            
+            public function handleWizzardClose( event:Event ) : void 
+            {
+            	trace( "wizzard close" );
+            	var displayObject:DisplayObject = setupWizzardSwfLoader.content;
+            	displayObject.removeEventListener( "WIZZARD_NEXT_VIDEO", handleWizzardNextVideo );
+            	displayObject.removeEventListener( "WIZZARD_NEXT_AUDIO", handleWizzardNextAudio );
+            	displayObject.removeEventListener( "WIZZARD_CLOSE", handleWizzardClose );
+            	
+            	setupWizzardSwfLoader.source = "";
+            	
+            	//var movieClip:MovieClip = displayObject as MovieClip;
+            	//movieClip.stop( );
+            	
+            	dispatchEvent( new Event( EventConstants.WIZZARD_CLOSE, true, true ) );
+            }
+        ]]>
+    </fx:Script>
+    
+	<mx:SWFLoader
+		id="setupWizzardSwfLoader" 
+		source="InfrnoSetupWizzard.swf"
+		width="360"
+		height="400" 
+		complete="handleSwfLoaderComplete(event);" />
 </s:VGroup>

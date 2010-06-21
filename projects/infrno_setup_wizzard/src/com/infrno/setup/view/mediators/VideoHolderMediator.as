@@ -5,7 +5,7 @@ package com.infrno.setup.view.mediators
 	import com.infrno.setup.model.events.GenericEvent;
 	import com.infrno.setup.view.components.VideoHolder;
 	
-	import flash.utils.setTimeout;
+	import flash.media.Video;
 	
 	import org.robotlegs.mvcs.Mediator;
 	
@@ -24,29 +24,25 @@ package com.infrno.setup.view.mediators
 		
 		override public function onRegister():void
 		{
-			videoHolder.addEventListener(GenericEvent.SHOW_VIDEO,toggleVideo);
-			videoHolder.addEventListener(GenericEvent.HIDE_VIDEO,toggleVideo);
-			
 			eventMap.mapListener(eventDispatcher,DeviceEvent.CAMERA_ACTIVITY,camActive);
+			eventMap.mapListener(eventDispatcher,GenericEvent.REMOVE_VIDEO,handleRemoveVideo, null, false, 0, true );
+			showVideo( null )
 		}
 		
 		private function camActive(e:DeviceEvent):void
 		{
-//			trace("is the cam active? "+deviceProxy.camera_active.toString());
 			videoHolder.video.visible = e.value;
 		}
 		
-		private function toggleVideo(e:GenericEvent):void
+		protected function showVideo( genericEvent:GenericEvent ) : void 
 		{
-			dispatch(new GenericEvent(e.type));
-			
-			if(e.type != GenericEvent.HIDE_VIDEO){
-				videoHolder.video.attachCamera(deviceProxy.camera);
-				videoHolder.toggle_btn.label = "hide video";
-			}else{
-				videoHolder.video.attachCamera(null);
-				videoHolder.toggle_btn.label = "show video";
-			}
+			dispatch( new GenericEvent( GenericEvent.SHOW_VIDEO ) );
+			videoHolder.video.attachCamera( deviceProxy.camera );
+		}
+		
+		public function handleRemoveVideo( genericEvent:GenericEvent ) : void 
+		{
+			videoHolder.removeVideo( );
 		}
 	}
 }

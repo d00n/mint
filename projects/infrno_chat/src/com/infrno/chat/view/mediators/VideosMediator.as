@@ -114,6 +114,41 @@ package com.infrno.chat.view.mediators
 						setupOtherPresenseComponent(video_presense);
 					}
 				}
+				
+//				if(curr_info.suid == dataProxy.my_info.suid){
+//					trace("VideosMediator.updateVideos() this is my video.. so showing my camera");
+//					video_presense.is_local = true;
+//					video_presense.camera = deviceProxy.camera;
+////					video_presense.audio_level.value = deviceProxy.mic.gain;
+//					video_presense.audioLevel = deviceProxy.mic.gain;
+//					video_presense.toggleAudio();
+//					video_presense.toggleVideo();
+//				} else {
+//					//update/create netstream to play from
+//					//start playing the suid
+//					video_presense.is_local = false;
+//					
+//					if(dataProxy.use_peer_connection && curr_info.nearID && dataProxy.peer_capable && !(curr_info.ns is NetStreamPeer) ){
+//						trace("VideosMediator.updateVideos() setting up and playing from the peer connection: "+curr_info.suid.toString());
+//						curr_info.ns = peerService.getNewNetStream(curr_info.nearID);
+//						curr_info.ns.play(curr_info.suid.toString());
+//						video_presense.netstream = curr_info.ns;
+//						video_presense.toggleAudio();
+//						video_presense.toggleVideo();
+//					} else if(!dataProxy.use_peer_connection && !(curr_info.ns is NetStreamMS) ){
+//						trace("VideosMediator.updateVideos() setting up and playing from the stream server");
+//						curr_info.ns = msService.getNewNetStream();
+//						curr_info.ns.play(curr_info.suid.toString(),-1);
+//						video_presense.netstream = curr_info.ns;
+//						video_presense.toggleAudio();
+//						video_presense.toggleVideo();
+//					}
+//					try{
+//						video_presense.audio_level.value = curr_info.ns.soundTransform.volume*100
+//					} catch(e:Object){
+//						//something didn't initialze
+//					}
+//				}
 			}
 		}
 		

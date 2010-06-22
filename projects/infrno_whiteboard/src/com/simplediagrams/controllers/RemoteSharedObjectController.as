@@ -427,14 +427,14 @@ package com.simplediagrams.controllers
 					break;
 				}
 				case "SDImageModel": {
+					Logger.info("processUpdate_ObjectChanged() changeObject.imageURL = " + changeObject.imageURL,this);
 					var sdImageModel:SDImageModel = diagramModel.getModelByID(sdID) as SDImageModel;
 					
 					if (sdImageModel == null){
 						sdImageModel = new SDImageModel();
-						sdImageModel.imageURL = changeObject.imageURL;
-
-						Logger.info("processUpdate_ObjectChanged() changeObject.imageURL = " + changeObject.imageURL,this);
 					}
+					
+					sdImageModel.imageURL = changeObject.imageURL;
 					
 					sdObjectModel = sdImageModel;
 					break;

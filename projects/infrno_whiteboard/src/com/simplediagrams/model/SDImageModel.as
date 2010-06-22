@@ -76,7 +76,7 @@ package com.simplediagrams.model
 			trace("Loading: "+percentLoaded+"%");
 		}
 		
-		function loadComplete(event:Event):void
+		public function loadComplete(event:Event):void
 		{
 			trace("Complete");
 			// TODO: ....and where's Johnny?

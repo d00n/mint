@@ -6,8 +6,6 @@
 	<s:layout>
 		<s:VerticalLayout/>
 	</s:layout>
-	
-	<s:Label text="chat" />
 	<s:TextArea id="chat_display" editable="false" width="100%" />
 	<s:TextInput id="chat_in" width="100%" />
 	

@@ -176,7 +176,6 @@
 			private function handleCreationComplete(event:Event):void
 			{
 				currentState="hideControls";
-				trace( "handleCreationComplete" );
 				m_initialized = true;
 			}
 			
@@ -187,27 +186,49 @@
 					return;
 				}
 
-				currentState="showControls";	
+				stateShowControls( );	
 			}
 			
 			private function handleMouseOut(event:Event):void
 			{
-				if( controlsContainer.contains( event.target as DisplayObject ) ) 
+				if( currentState == "usingControls" ) 
 				{
 					return;
 				}
 				
-				currentState="hideControls";
+				stateHideControls( );
+			}
+			
+			
+			private function stateShowControls( ) : void {
+				currentState = "showControls";
+				
+				audioToggleButton.alpha = 1
+				videoToggleButton.alpha = 1
+			}
+			
+			private function stateUsingControls( ) : void {
+				currentState = "usingControls";
+				
+				audioToggleButton.alpha = 1
+				videoToggleButton.alpha = 1
+			}
+			
+			private function stateHideControls( ) : void {
+				currentState = "hideControls";
+				
+				audioToggleButton.alpha = .2
+				videoToggleButton.alpha = .2
 			}
 			
 			private function handleMouseOverControls(event:Event):void 
 			{
-				currentState="usingControls"
+				stateUsingControls( );
 			}
 			
 			private function handleMouseOutControls(event:Event):void
 			{
-				currentState="showControls";
+				stateShowControls( );
 			}
 			
 			private function setAudioLevel(levelIn:Number,force:Boolean=false):void
@@ -262,7 +283,7 @@
 		backgroundColor="#ffffff" 
 		borderColor="#cecece"
 		width="162" 
-		height="146"
+		height="135"
 		mouseOver="handleMouseOver(event);"
 		mouseOut="handleMouseOut(event);">
 		<s:Rect 
@@ -279,9 +300,10 @@
 			height="120" />		
 		<s:HGroup 
 			id="controlsContainer"
-			bottom="3"
+			bottom="15"
 			height="20"
-			width="100%" 
+			width="100%"
+			paddingLeft="2" 
 			paddingTop="0"
 			paddingBottom="0"
 			gap="0"
@@ -295,7 +317,8 @@
 				click="toggleVideo( )"
 				toolTip="toggle video"
 				width="20"
-				height="20"/>
+				height="20"
+				alpha=".2"/>
 			<mx:Spacer width="2" />
 			<com.infrno.chat.view.components:ImageToggleButton
 				styleName="audioToggleButton"
@@ -303,16 +326,21 @@
 				click="toggleAudio()" 
 				toolTip="toggle mute"
 				width="20"
-				height="20" />			
+				height="20"
+				alpha=".2" />			
 			<mx:Spacer width="2" />
-			<s:HSlider
-				id="audio_level" 
-				showDataTip="false" 
-				value="90" 
-				maximum="100" 
-				width="100%"
-				change="adjustVolume( )"/>
 		</s:HGroup>
+		<s:HSlider
+			id="audio_level" 
+			showDataTip="false" 
+			value="90" 
+			maximum="100" 
+			width="100%"
+			height="10"
+			bottom="0"
+			left="0"
+			change="adjustVolume( )"/>
+		
 	</s:BorderContainer>
 	<mx:Spacer height="2" />
 </s:Group>

@@ -4,6 +4,6 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx">
 	<mx:SWFLoader 
 			source="InfrnoChat.swf" 
-			width="200"
+			width="162"
 			height="100%" />
 </s:Group>

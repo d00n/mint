@@ -36,7 +36,7 @@ package com.infrno.chat.model
 		//  rtmp://gearsandcogs.com
 		//  rtmp://admin.infrno.net
 		////
-		private var m_mediaServer			:String		= "rtmp://localhost";
+		private var m_mediaServer			:String		= "rtmp://gearsandcogs.com";
 		private var m_mediaApp				:String		= "chat";
 		
 		

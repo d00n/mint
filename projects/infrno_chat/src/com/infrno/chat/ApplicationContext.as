@@ -31,6 +31,7 @@ package com.infrno.chat
 			
 			commandMap.mapEvent(MSEvent.GET_USER_STATS, ReportStatsCommand);
 			commandMap.mapEvent(MSEvent.NETCONNECTION_CONNECTED,ConnectPeerServerCommand);
+			commandMap.mapEvent(MSEvent.USERS_OBJ_UPDATE,ContextMenuSetupCommand);
 			
 			commandMap.mapEvent(PeerEvent.PEER_DISABLE_VIDEO,VideoSourceCommand);
 			commandMap.mapEvent(PeerEvent.PEER_ENABLE_VIDEO,VideoSourceCommand);
@@ -56,7 +57,7 @@ package com.infrno.chat
 			mediatorMap.mapView(Chat,ChatMediator);
 			mediatorMap.mapView(Videos,VideosMediator);
 			
-			mediatorMap.mapView(ControlButtons,ControlButtonsMediator);
+//			mediatorMap.mapView(ControlButtons,ControlButtonsMediator);
 			
 			//Startup Commencing
 //			dispatchEvent(new ContextEvent(ContextEvent.STARTUP, StartupCommand));

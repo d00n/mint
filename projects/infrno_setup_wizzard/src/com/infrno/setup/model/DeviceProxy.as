@@ -121,27 +121,29 @@ package com.infrno.setup.model
 		{
 			_mic = Microphone.getMicrophone(micIn);
 			
-			for(var i:String in mic_array){
-				if(_mic.name == mic_array[i]){
-					mic_index = int(i);
-					break;
+			if(_mic != null){
+				for(var i:String in mic_array){
+					if(_mic.name == mic_array[i]){
+						mic_index = int(i);
+						break;
+					}
 				}
-			}
-			
-			var mic_transform:SoundTransform = _mic.soundTransform;
-			mic_transform.volume = 0;
-			_mic.soundTransform = mic_transform;
-			
-			_mic.setLoopBack(true);
-			_mic.setUseEchoSuppression(true);
-
-			_mic.addEventListener(ActivityEvent.ACTIVITY, handleMicActivity, false, 0, true );
-			_mic.addEventListener(StatusEvent.STATUS, handleMicStatus, false, 0, true );
-			
-			if(_mic!=null){
-				_mic_level_timer.start();
-			} else {
-				_mic_level_timer.reset();
+				
+				var mic_transform:SoundTransform = _mic.soundTransform;
+				mic_transform.volume = 0;
+				_mic.soundTransform = mic_transform;
+				
+				_mic.setLoopBack(true);
+				_mic.setUseEchoSuppression(true);
+	
+				_mic.addEventListener(ActivityEvent.ACTIVITY, handleMicActivity, false, 0, true );
+				_mic.addEventListener(StatusEvent.STATUS, handleMicStatus, false, 0, true );
+				
+				if(_mic!=null){
+					_mic_level_timer.start();
+				} else {
+					_mic_level_timer.reset();
+				}
 			}
 			
 			return _mic;

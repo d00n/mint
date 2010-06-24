@@ -36,9 +36,6 @@
             	
             	setupWizzardSwfLoader.source = "";
             	
-            	//var movieClip:MovieClip = displayObject as MovieClip;
-            	//movieClip.stop( );
-            	
             	dispatchEvent( new Event( EventConstants.WIZZARD_CLOSE, true, true ) );
             }
         ]]>

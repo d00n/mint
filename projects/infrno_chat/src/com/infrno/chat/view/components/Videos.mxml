@@ -5,7 +5,9 @@
 	<s:layout>
 		<s:VerticalLayout/>
 	</s:layout>
-	
-	<s:Label text="video" />
-	<s:VGroup id="videos_holder" />
+	<s:VGroup 
+		id="videos_holder" 
+		horizontalAlign="center"
+		verticalAlign="top"
+		width="100%" />
 </s:Group>

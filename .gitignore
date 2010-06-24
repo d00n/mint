@@ -1,8 +1,7 @@
-projects/infrno_load_manager/.settings
-projects/infrno_chat/bin-release
-projects/infrno_chat/bin-debug
-projects/infrno_load_manager/bin-debug
-projects/infrno_sharedobject/bin-debug
-projects/infrno_whiteboard/bin-debug
+.settings/
+bin-release/
+bin-debug/
+html-template/
 .actionScriptProperties
 .flexProperties
+.project

@@ -37,7 +37,6 @@ package com.simplediagrams.controllers
 			Logger.debug("onObjectChange() event: " + event.type,this)
 			Logger.debug("onObjectChange() event.relatedObjects.length: " + event.relatedObjects.length,this)
 			var transformedObjectsArr:Array = new Array();
-			var rsoEvent:RemoteSharedObjectEvent;
 			for each (var sdObjectModel:SDObjectModel in event.relatedObjects)
 			{
 				var from:TransformMemento = sdObjectModel.getStartTransformState()

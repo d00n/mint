@@ -47,6 +47,7 @@
 			{
 								
 				var cmd:String = event.item.data
+				var remoteSharedObjectEvent:RemoteSharedObjectEvent;
 				
 				switch(cmd)
 				{
@@ -267,16 +268,16 @@
 						break
 					
 					case "reset_rso":
-						var remoteSharedObjectEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.RESET, true)
+						remoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.RESET, true)
 						Swiz.dispatchEvent(remoteSharedObjectEvent)	
 						break
 
 					case "stop_rso":
-						var remoteSharedObjectEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.STOP, true)
+						remoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.STOP, true)
 						Swiz.dispatchEvent(remoteSharedObjectEvent)						
 						break
 					case "start_rso":
-						var remoteSharedObjectEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.START, true)
+						remoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.START, true)
 						Swiz.dispatchEvent(remoteSharedObjectEvent)						
 						break
 					

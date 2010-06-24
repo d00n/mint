@@ -102,39 +102,39 @@ package com.infrno.chat.model
 			
 			if(_mic == null){
 				trace("mic not accessible");
-			}
-			
-			for(var i:String in mic_array){
-				if(_mic.name == mic_array[i]){
-					mic_index = int(i);
-					break;
+				for(var i:String in mic_array){
+					if(_mic.name == mic_array[i]){
+						mic_index = int(i);
+						break;
+					}
+				}
+				
+				_mic.codec = SoundCodec.SPEEX;
+				_mic.framesPerPacket = 1;
+				_mic.setSilenceLevel(0);
+				_mic.rate=11;
+				_mic.setUseEchoSuppression(true);
+				_mic.setLoopBack(false);
+				_mic.addEventListener(ActivityEvent.ACTIVITY, function(evt:ActivityEvent):void{
+	//				trace(evt.toString());
+					mic_active = evt.activating;
+					if(evt.activating){
+						dispatch(new DeviceEvent(DeviceEvent.MIC_ACTIVITY,evt.activating));
+					}
+				});
+				_mic.addEventListener(StatusEvent.STATUS, function(evt:StatusEvent):void{
+					trace("DeviceProxy.initCam() " + evt.code);
+					if(evt.code=="Microphone.Muted"){
+						trace("DeviceProxy.initCam() no access to the mic");
+					}
+				});
+				if(_mic!=null){
+					_mic_level_timer.start();
+				} else {
+					_mic_level_timer.reset();
 				}
 			}
 			
-			_mic.codec = SoundCodec.SPEEX;
-			_mic.framesPerPacket = 1;
-			_mic.setSilenceLevel(0);
-			_mic.rate=11;
-			_mic.setUseEchoSuppression(true);
-			_mic.setLoopBack(false);
-			_mic.addEventListener(ActivityEvent.ACTIVITY, function(evt:ActivityEvent):void{
-//				trace(evt.toString());
-				mic_active = evt.activating;
-				if(evt.activating){
-					dispatch(new DeviceEvent(DeviceEvent.MIC_ACTIVITY,evt.activating));
-				}
-			});
-			_mic.addEventListener(StatusEvent.STATUS, function(evt:StatusEvent):void{
-				trace("DeviceProxy.initCam() " + evt.code);
-				if(evt.code=="Microphone.Muted"){
-					trace("DeviceProxy.initCam() no access to the mic");
-				}
-			});
-			if(_mic!=null){
-				_mic_level_timer.start();
-			} else {
-				_mic_level_timer.reset();
-			}
 			return _mic;
 		}
 		

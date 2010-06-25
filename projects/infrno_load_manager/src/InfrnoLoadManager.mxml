@@ -8,6 +8,20 @@
 		<load_manager:ApplicationContext contextView="{this}" />
 	</fx:Declarations>
 	
+	<fx:Script>
+		<![CDATA[
+			////
+			//  make sure POPUPMANAGER and DRAGMANAGER are owned by the loading application not
+			//  either of the child swfs.
+			////
+			import mx.managers.PopUpManager;
+			import mx.managers.DragManager;
+			private var popUpManager:PopUpManager;
+			private var dragManager:DragManager;
+
+		]]>
+	</fx:Script>
+	
 	<components:DisplayManager width="100%" height="100%" />
 	
 </s:Application>

@@ -24,6 +24,11 @@ package com.infrno.chat.model.vo
 			uname = infoObj.uname;
 		}
 		
+		public function set userName( value:String ) : void
+		{
+			uname = value;
+		} 
+
 		public function get ns():NetStream
 		{
 			return _ns;

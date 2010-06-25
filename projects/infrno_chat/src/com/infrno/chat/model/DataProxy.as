@@ -1,10 +1,9 @@
 package com.infrno.chat.model
 {
 	import com.infrno.chat.model.vo.UserInfoVO;
-	
-	import org.robotlegs.mvcs.Actor;
-	
+	import flash.events.NetStatusEvent;
 	import flash.net.NetStream;
+	import org.robotlegs.mvcs.Actor;
 	
 	public class DataProxy extends Actor
 	{
@@ -24,7 +23,8 @@ package com.infrno.chat.model
 		public var auth_key					:String;
 		public var room_id					:String;
 		public var room_name				:String;
-		public var user_name				:String;
+		
+		private var m_user_name				:String;
 		
 		//using personal stratus key for now
 		public var peer_server_key			:String		= "4b9d915ef5ee88cfd38eb359-abf46599bf1f";
@@ -42,11 +42,22 @@ package com.infrno.chat.model
 		
 		public var my_info					:UserInfoVO = new UserInfoVO({"uname":"user"+Math.round(Math.random()*1000)});
 		
-		public function DataProxy()
+		public function DataProxy( )
 		{
 			users_collection = new Object();
 		}
 	
+		public function get user_name( ) : String
+		{
+			return m_user_name;
+		}
+		
+		public function set user_name( value:String ) : void 
+		{
+			m_user_name = value;
+			my_info.userName = m_user_name;
+		}
+		
 		public function get media_server( ):String 
 		{
 			if( m_mediaServer != null ) 

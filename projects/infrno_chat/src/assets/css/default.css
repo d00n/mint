@@ -11,7 +11,13 @@ components|ImageToggleButton{
 	selectedIcon: Embed(source="assets/images/videoOff.png");
 }
 
+
 .audioToggleButton {
 	icon: Embed(source="/assets/images/microphoneOn.png");
 	selectedIcon: Embed(source="/assets/images/microphoneOff.png");
+}
+
+.wrenchToggleButton {
+	icon: Embed(source="/assets/images/wrench.png");
+	selectedIcon: Embed(source="/assets/images/wrench.png");
 }

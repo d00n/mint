@@ -8,6 +8,7 @@
 	<fx:Script>
 		<![CDATA[
 			import com.infrno.chat.model.events.VideoPresenseEvent;
+			import com.infrno.chat.model.events.SettingsEvent;
 			import com.infrno.chat.model.vo.UserInfoVO;
 			
 			private var m_audioLevel    :int;
@@ -46,6 +47,10 @@
 			
 			public function set is_local(b:Boolean):void
 			{
+				if( null != wrenchToggleButton ) 
+				{
+					wrenchToggleButton.visible = b;
+				}
 				_is_local = b;
 			}
 			
@@ -86,11 +91,6 @@
 			public function toggleAudio():void
 			{
 				trace( "toggelAudio" );
-				//if( null == audioToggleButton ) 
-				//{
-				//	return;
-				//}
-				
 				if(audioToggleButton.selected){
 					if(_is_local){
 						dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.AUDIO_MUTED,true))
@@ -177,6 +177,7 @@
 			{
 				currentState="hideControls";
 				m_initialized = true;
+				wrenchToggleButton.visible = _is_local;
 			}
 			
 			private function handleMouseOver(event:Event):void 
@@ -205,6 +206,7 @@
 				
 				audioToggleButton.alpha = 1
 				videoToggleButton.alpha = 1
+				wrenchToggleButton.alpha = 1
 			}
 			
 			private function stateUsingControls( ) : void {
@@ -212,6 +214,7 @@
 				
 				audioToggleButton.alpha = 1
 				videoToggleButton.alpha = 1
+				wrenchToggleButton.alpha = 1
 			}
 			
 			private function stateHideControls( ) : void {
@@ -219,6 +222,7 @@
 				
 				audioToggleButton.alpha = .2
 				videoToggleButton.alpha = .2
+				wrenchToggleButton.alpha = .2
 			}
 			
 			private function handleMouseOverControls(event:Event):void 
@@ -229,6 +233,11 @@
 			private function handleMouseOutControls(event:Event):void
 			{
 				stateShowControls( );
+			}
+			
+			public function handleShowSettings():void
+			{
+				dispatchEvent( new SettingsEvent( SettingsEvent.SHOW_SETTINGS ) );
 			}
 			
 			private function setAudioLevel(levelIn:Number,force:Boolean=false):void
@@ -328,6 +337,15 @@
 				width="20"
 				height="20"
 				alpha=".2" />			
+			<mx:Spacer width="2" />
+			<com.infrno.chat.view.components:ImageToggleButton
+				styleName="wrenchToggleButton"
+				id="wrenchToggleButton"
+				click="handleShowSettings()" 
+				toolTip="show settings"
+				width="20"
+				height="20"
+				alpha=".2" />
 			<mx:Spacer width="2" />
 		</s:HGroup>
 		<s:HSlider

@@ -24,7 +24,6 @@ package com.infrno.chat
 			//Controller
 			commandMap.mapEvent(ChatEvent.SEND_CHAT,SendChatCommand);
 
-//			commandMap.mapEvent(ContextEvent.STARTUP, StartupCommand);
 			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, InitLocalVarsCommand);
 			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, ContextMenuSetupCommand);
 			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, ConnectMediaServerCommand);
@@ -43,7 +42,8 @@ package com.infrno.chat
 			commandMap.mapEvent(VideoPresenseEvent.AUDIO_UNMUTED,AudioVideoControlCommand);
 			commandMap.mapEvent(VideoPresenseEvent.VIDEO_MUTED,AudioVideoControlCommand);
 			commandMap.mapEvent(VideoPresenseEvent.VIDEO_UNMUTED,AudioVideoControlCommand);
-			
+
+			commandMap.mapEvent(SettingsEvent.SHOW_SETTINGS,SettingsCommand);			
 			
 			//Model
 			injector.mapSingleton(DataProxy);

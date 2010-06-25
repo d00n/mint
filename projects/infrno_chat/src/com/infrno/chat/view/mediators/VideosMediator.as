@@ -3,6 +3,7 @@ package com.infrno.chat.view.mediators
 	import com.infrno.chat.model.DataProxy;
 	import com.infrno.chat.model.DeviceProxy;
 	import com.infrno.chat.model.events.MSEvent;
+	import com.infrno.chat.model.events.SettingsEvent;
 	import com.infrno.chat.model.events.VideoPresenseEvent;
 	import com.infrno.chat.model.vo.UserInfoVO;
 	import com.infrno.chat.services.MSService;
@@ -40,6 +41,7 @@ package com.infrno.chat.view.mediators
 		{
 			eventMap.mapListener(eventDispatcher,MSEvent.USERS_OBJ_UPDATE,usersUpdated);
 			
+			videos.addEventListener(SettingsEvent.SHOW_SETTINGS,handleShowSettings);
 			videos.addEventListener(VideoPresenseEvent.AUDIO_LEVEL,dispatchEventInSystem);
 			videos.addEventListener(VideoPresenseEvent.AUDIO_MUTED,dispatchEventInSystem);
 			videos.addEventListener(VideoPresenseEvent.AUDIO_UNMUTED,dispatchEventInSystem);
@@ -50,6 +52,11 @@ package com.infrno.chat.view.mediators
 		private function dispatchEventInSystem(e:VideoPresenseEvent):void
 		{
 			dispatch(new VideoPresenseEvent(e.type,e.bubbles,e.value));
+		}
+		
+		public function handleShowSettings( settingsEvent:SettingsEvent ):void
+		{
+			dispatch( new SettingsEvent( settingsEvent.type ) );
 		}
 		
 		private function usersUpdated(e:MSEvent):void

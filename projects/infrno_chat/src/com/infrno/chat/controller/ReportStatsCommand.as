@@ -29,10 +29,11 @@ package com.infrno.chat.controller
 			var curr_ns:NetStream = dataProxy.use_peer_connection ? peerService.ns : msService.ns;
 			var ns_info:NetStreamInfo = curr_ns.info;
 			
-			user_stats.user_name				= dataProxy.user_name;
 			user_stats.application_name			= dataProxy.media_app;
 			user_stats.room_name				= dataProxy.room_name;
 			user_stats.room_id					= dataProxy.room_id;
+			user_stats.user_name				= dataProxy.user_name;
+			user_stats.user_id					= dataProxy.user_id;
 
 			user_stats.wowza_protocol			= msService.nc.protocol;
 			user_stats.capabilities				= Capabilities.serverString;

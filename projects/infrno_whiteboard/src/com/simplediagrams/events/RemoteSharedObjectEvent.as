@@ -50,6 +50,7 @@ package com.simplediagrams.events
 		public var room_id:String = "sample_room_id";
 		public var room_name:String = "sample_room_name";
 		public var user_name:String = "sample_user_name";
+		public var user_id:String = "sample_user_id";
 		public var wowza_server:String = "rtmp://localhost";
 		public var wowza_whiteboard_app:String = "whiteboard";
 		public var wowza_whiteboard_port:String = "1936";

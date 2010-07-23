@@ -24,8 +24,8 @@ package com.infrno.chat.model
 		public var auth_key:String		= "sample_auth_key";
 		public var room_id:String 		= "sample_room_id";
 		public var room_name:String 	= "sample_room_name";
-		
 		private var m_user_name:String 	= "sample_user_name";
+		private var m_user_id:String 	= "sample_user_id";
 		
 		//using personal stratus key for now
 		public var peer_server_key			:String		= "4b9d915ef5ee88cfd38eb359-abf46599bf1f";
@@ -40,7 +40,6 @@ package com.infrno.chat.model
 		private var m_mediaServer			:String		= "rtmp://localhost";
 		private var m_mediaApp				:String		= "chat";
 		private var m_mediaPort				:String		= "1935";
-		
 		
 		public var my_info					:UserInfoVO = new UserInfoVO({"uname":"user"+Math.round(Math.random()*1000)});
 		
@@ -58,6 +57,16 @@ package com.infrno.chat.model
 		{
 			m_user_name = value;
 			my_info.userName = m_user_name;
+		}
+		
+		public function get user_id( ) : String
+		{
+			return m_user_id;
+		}
+		
+		public function set user_id( value:String ) : void 
+		{
+			m_user_id = value;
 		}
 		
 		public function get media_server( ):String 

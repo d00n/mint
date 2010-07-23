@@ -62,6 +62,7 @@ package com.infrno.chat.services
 				dataProxy.room_id,
 				dataProxy.room_name, 
 				dataProxy.user_name,
+				dataProxy.user_id,
 				dataProxy.media_app,
 				DataProxy.VERSION,
 				Capabilities.serverString);

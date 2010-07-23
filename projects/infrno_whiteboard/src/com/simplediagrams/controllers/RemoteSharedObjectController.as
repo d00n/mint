@@ -86,6 +86,7 @@ package com.simplediagrams.controllers
 		private var _room_id:String;
 		private var _room_name:String;
 		private var _user_name:String;
+		private var _user_id:String;
 		private var _wowza_server:String;
 		private var _wowza_whiteboard_app:String;
 		private var _wowza_whiteboard_port:String;
@@ -130,13 +131,13 @@ package com.simplediagrams.controllers
 				var user_stats:Object = new Object();
 				var ns_info:NetStreamInfo = _netStream.info;
 				
-				user_stats.user_name				= _user_name;
 				user_stats.application_name			= "whiteboard";
 				user_stats.room_name				= _room_name;
 				user_stats.room_id					= _room_id;
+				user_stats.user_name				= _user_name;
+				user_stats.user_id					= _user_id;
 				
 				user_stats.wowza_protocol			= _netConnection.protocol;
-				//user_stats.capabilities				= Capabilities.serverString;
 				user_stats.SRTT 					= ns_info.SRTT;
 				
 				user_stats.audioBytesPerSecond 		= int(ns_info.audioBytesPerSecond);
@@ -163,17 +164,8 @@ package com.simplediagrams.controllers
 			
 			var dummyUserInfoVO:DummyUserInfoVO = new DummyUserInfoVO();
 			
-			trace( "ws=" + ws );
-			trace( "dummyUserInfoVO=" + dummyUserInfoVO );
-			trace( "_auth_key=" + _auth_key );
-			trace( "_room_id=" + _room_id );
-			trace( "_room_name=" + _room_name );
-			trace( "_user_name=" + _user_name );
-			
-			ApplicationModel.VERSION;
-			
-			_netConnection.connect(ws, dummyUserInfoVO, _auth_key, _room_id, _room_name, _user_name, 
-				"whiteboard", 
+			_netConnection.connect(ws, dummyUserInfoVO, _auth_key, _room_id, _room_name, _user_name, _user_id,
+				_wowza_whiteboard_app, 
 				ApplicationModel.VERSION, 
 				Capabilities.serverString);     
 		}
@@ -301,6 +293,7 @@ package com.simplediagrams.controllers
 			_room_id 				= event.room_id;			
 			_room_name 				= event.room_name;			
 			_user_name 				= event.user_name;
+			_user_id 				= event.user_id;
 			_wowza_server 			= event.wowza_server;
 			_wowza_whiteboard_app 	= event.wowza_whiteboard_app;
 			_wowza_whiteboard_port 	= event.wowza_whiteboard_port;

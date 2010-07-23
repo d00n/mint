@@ -80,6 +80,9 @@ protected function onAppComplete():void
 	if (flash_vars.user_name != null)
 		rsoEvent.user_name = flash_vars.user_name;
 	
+	if (flash_vars.user_id != null)
+		rsoEvent.user_id = flash_vars.user_id;
+	
 	if (flash_vars.wowza_server != null)
 		rsoEvent.wowza_server = flash_vars.wowza_server;
 	

@@ -35,6 +35,9 @@ package com.infrno.chat.controller
 			if (flash_vars.user_name != null)
 				dataProxy.user_name = flash_vars.user_name;
 			
+			if (flash_vars.user_id != null)
+				dataProxy.user_id = flash_vars.user_id;
+			
 			if (flash_vars.wowza_server != null)
 				dataProxy.media_server = flash_vars.wowza_server;
 			

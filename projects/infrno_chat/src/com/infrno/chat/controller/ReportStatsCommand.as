@@ -30,6 +30,7 @@ package com.infrno.chat.controller
 			var ns_info:NetStreamInfo = curr_ns.info;
 			
 			user_stats.user_name				= dataProxy.user_name;
+			user_stats.application_name			= dataProxy.media_app;
 			user_stats.room_name				= dataProxy.room_name;
 			user_stats.room_id					= dataProxy.room_id;
 

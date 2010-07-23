@@ -7,7 +7,7 @@ package com.infrno.chat.model
 	
 	public class DataProxy extends Actor
 	{
-		public static const VERSION			:String		= "Infrno Chat v 0.2.15";
+		public static const VERSION			:String		= "v0.2.17";
 		
 		public var peer_enabled				:Boolean;
 		
@@ -20,11 +20,12 @@ package com.infrno.chat.model
 		
 		public var users_collection			:Object;
 		
-		public var auth_key					:String;
-		public var room_id					:String;
-		public var room_name				:String;
+		// Wowza will accept these values for specified hosts.
+		public var auth_key:String		= "sample_auth_key";
+		public var room_id:String 		= "sample_room_id";
+		public var room_name:String 	= "sample_room_name";
 		
-		private var m_user_name				:String;
+		private var m_user_name:String 	= "sample_user_name";
 		
 		//using personal stratus key for now
 		public var peer_server_key			:String		= "4b9d915ef5ee88cfd38eb359-abf46599bf1f";
@@ -38,6 +39,7 @@ package com.infrno.chat.model
 		////
 		private var m_mediaServer			:String		= "rtmp://localhost";
 		private var m_mediaApp				:String		= "chat";
+		private var m_mediaPort				:String		= "1935";
 		
 		
 		public var my_info					:UserInfoVO = new UserInfoVO({"uname":"user"+Math.round(Math.random()*1000)});
@@ -81,6 +83,16 @@ package com.infrno.chat.model
 			}
 			
 			return "chat";
+		}
+		
+		public function get media_port( ):String 
+		{
+			if( m_mediaPort != null ) 
+			{
+				return m_mediaPort;	
+			}
+			
+			return "1935";
 		}
 		
 		public function set media_app( value:String ):void 

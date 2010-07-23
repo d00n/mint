@@ -11,6 +11,7 @@ package com.infrno.chat.services
 	
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
+	import flash.system.Capabilities;
 	
 	import org.robotlegs.mvcs.Actor;
 	
@@ -43,7 +44,7 @@ package com.infrno.chat.services
 		
 		public function connect():void
 		{
-			var connection_uri:String = dataProxy.media_server +"/"+ dataProxy.media_app +"/"+ dataProxy.room_id;
+			var connection_uri:String = dataProxy.media_server +":"+ dataProxy.media_port +"/"+ dataProxy.media_app +"/"+ dataProxy.room_id;
 			
 			trace("MSService.connect() connecting to media server: "
 				+connection_uri);
@@ -60,7 +61,10 @@ package com.infrno.chat.services
 				dataProxy.auth_key,
 				dataProxy.room_id,
 				dataProxy.room_name, 
-				dataProxy.user_name);
+				dataProxy.user_name,
+				dataProxy.media_app,
+				DataProxy.VERSION,
+				Capabilities.serverString);
 		}
 		
 		public function get nc():NetConnection

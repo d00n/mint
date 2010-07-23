@@ -4,7 +4,7 @@ package com.infrno.setup.model
 	
 	public class DataProxy extends Actor
 	{
-		public static const VERSION				:String		= "Infrno Tester v 0.1.3";
+		public static const VERSION				:String		= "v 0.1.3";
 		
 		public var stream_connection_success	:Boolean;
 		public var stratus_connection_success	:Boolean;

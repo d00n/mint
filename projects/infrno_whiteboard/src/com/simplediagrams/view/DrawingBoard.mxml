@@ -136,14 +136,12 @@
 					grab the current drawing and turn it into an object before continuing
 					since an SDPencilDrawing can ony have one color 
 					*/
-					finishPencilDrawing()  
-					
-					drawingSurface.pencilColor = event.color
-					drawingSurface.lineColor = event.color
-					drawingSurface.clear()
-					
+					finishPencilDrawing()  					
+					drawingSurface.clear()					
 					diagramModel.clearSelection()	
 				}
+				drawingSurface.pencilColor = event.color
+				drawingSurface.lineColor = event.color
 				
             }
             

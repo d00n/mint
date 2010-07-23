@@ -3,6 +3,7 @@ package com.simplediagrams.view.SDComponents
 	import com.simplediagrams.controllers.RemoteSharedObjectController;
 	import com.simplediagrams.events.ChangeDepthEvent;
 	import com.simplediagrams.events.ConnectionEvent;
+	import com.simplediagrams.model.ApplicationModel;
 	import com.simplediagrams.model.SDObjectModel;
 	import com.simplediagrams.util.Logger;
 	
@@ -12,10 +13,10 @@ package com.simplediagrams.view.SDComponents
 	import flash.filters.BitmapFilter;
 	import flash.filters.BitmapFilterQuality;
 	import flash.filters.GlowFilter;
+	import flash.system.Capabilities;
+	import flash.system.System;
 	import flash.ui.ContextMenu;
 	import flash.ui.ContextMenuItem;
-	import flash.system.Capabilities;
- 	import flash.system.System;
 	
 	import mx.core.UIComponent;
 	import mx.events.DragEvent;
@@ -23,17 +24,14 @@ package com.simplediagrams.view.SDComponents
 	import mx.managers.DragManager;
 	import mx.managers.IFocusManagerComponent;
 	
+	import org.swizframework.Swiz;
+	
 	import spark.components.Group;
 	import spark.components.supportClasses.SkinnableComponent;
-	
-	import org.swizframework.Swiz;
 
 	[Bindable]
 	public class SDBase extends SkinnableComponent implements IFocusManagerComponent 
 	{	
-		
-		public static const VERSION			:String		= "Infrno Whiteboard v0.1.3";
-
 		private var moveToBackCMI:ContextMenuItem
 		private var moveBackwardCMI:ContextMenuItem
 		private var moveForwardCMI:ContextMenuItem
@@ -64,7 +62,8 @@ package com.simplediagrams.view.SDComponents
 			moveToFrontCMI = new ContextMenuItem("Move to front ",false, true);
 			moveToFrontCMI.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, moveToFrontSelected);
 
-			var app_version:ContextMenuItem = new ContextMenuItem(VERSION);
+			ApplicationModel.VERSION
+			var app_version:ContextMenuItem = new ContextMenuItem("Infrno Whiteboard " + ApplicationModel.VERSION);
 			app_version.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyToClipboard);
 			
 			var cm:ContextMenu = new ContextMenu()
@@ -78,8 +77,8 @@ package com.simplediagrams.view.SDComponents
 		
 		private function copyToClipboard(event:ContextMenuEvent):void
 		{
-			Logger.debug("setting content to the clipboard: "+ VERSION+" "+Capabilities.version+ (Capabilities.isDebugger?" -D":""), this);
-			System.setClipboard(VERSION+" "+Capabilities.version+ (Capabilities.isDebugger?" -D":"") );
+			Logger.debug("setting content to the clipboard: Infrno Whiteboard"+ ApplicationModel.VERSION+" "+Capabilities.version+ (Capabilities.isDebugger?" -D":""), this);
+			System.setClipboard("Infrno Whiteboard " +ApplicationModel.VERSION+" "+Capabilities.version+ (Capabilities.isDebugger?" -D":"") );
 		}
 		
 		public function get sdID():Number

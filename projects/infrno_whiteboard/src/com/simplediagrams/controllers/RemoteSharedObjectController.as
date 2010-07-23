@@ -30,6 +30,7 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.model.mementos.*;
 	import com.simplediagrams.model.mementos.SDLineMemento;
 	import com.simplediagrams.model.mementos.TransformMemento;
+	import com.simplediagrams.model.ApplicationModel;
 	import com.simplediagrams.util.Logger;
 	import com.simplediagrams.view.SDComponents.SDBase;
 	import com.simplediagrams.view.SDComponents.SDLine;
@@ -47,6 +48,7 @@ package com.simplediagrams.controllers
 	import flash.net.FileFilter;
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
+	import flash.net.NetStreamInfo;
 	import flash.net.ObjectEncoding;
 	import flash.net.Responder;
 	import flash.net.SharedObject;
@@ -86,6 +88,7 @@ package com.simplediagrams.controllers
 		private var _user_name:String;
 		private var _wowza_server:String;
 		private var _wowza_whiteboard_app:String;
+		private var _wowza_whiteboard_port:String;
 		private var _image_server:String;
 		
 		
@@ -120,32 +123,42 @@ package com.simplediagrams.controllers
 				
 			// TODO: Create/attach (?) a NetStream object, so we can tie it to a chair and ask awkward questions. 
 			// Look at ReportStatsCommand.execute for what to report
-//			clientObj.getUserStats = function():void
-//			{
-//				Logger.info("getUserStats", this);			
-//			}
+			clientObj.getUserStats = function():void
+			{
+				Logger.info("getUserStats", this);
 				
+				var user_stats:Object = new Object();
+				var ns_info:NetStreamInfo = _netStream.info;
 				
-//			clientObj.receiveJPG = function(params) : void
-//			{
-//				var sdImageModel:SDImageModel = new SDImageModel();
-//				sdImageModel.imageData	 	= params["image"];
-//				sdImageModel.sdID 			= parseInt(params["sdID"]);
-//				sdImageModel.x 				= parseInt(params["x"]);
-//				sdImageModel.y 				= parseInt(params["y"]);
-//				sdImageModel.width 			= parseInt(params["width"]);
-//				sdImageModel.height	 		= parseInt(params["height"]);
-//				sdImageModel.zIndex 		= parseInt(params["zIndex"]);
-////				sdImageModel.orig_height	= parseInt(params["orig_height"]);
-////				sdImageModel.orig_width 	= parseInt(params["orig_width"]);
-//				sdImageModel.styleName 		= params["styleName"];
-//
-//				diagramModel.addSDObjectModel(sdImageModel);
-//			}			
+				user_stats.user_name				= _user_name;
+				user_stats.application_name			= "whiteboard";
+				user_stats.room_name				= _room_name;
+				user_stats.room_id					= _room_id;
+				
+				user_stats.wowza_protocol			= _netConnection.protocol;
+				//user_stats.capabilities				= Capabilities.serverString;
+				user_stats.SRTT 					= ns_info.SRTT;
+				
+				user_stats.audioBytesPerSecond 		= int(ns_info.audioBytesPerSecond);
+				user_stats.videoBytesPerSecond 		= int(ns_info.videoBytesPerSecond);
+				user_stats.dataBytesPerSecond 		= int(ns_info.dataBytesPerSecond);
+				
+				user_stats.currentBytesPerSecond 	= int(ns_info.currentBytesPerSecond);
+				user_stats.maxBytesPerSecond 		= int(ns_info.maxBytesPerSecond);
+				user_stats.byteCount 				= ns_info.byteCount;
+				user_stats.dataByteCount 			= ns_info.dataByteCount;
+				user_stats.videoByteCount			= ns_info.videoByteCount;
+				
+				user_stats.audioLossRate 			= ns_info.audioLossRate;
+				user_stats.droppedFrames 			= ns_info.droppedFrames;
+				
+				_netConnection.call("reportUserStats",null,user_stats);
+			}
+						
 				
 			_netConnection.client = clientObj;
 			
-			var ws:String = _wowza_server +"/"+ _wowza_whiteboard_app +"/"+ _room_id;
+			var ws:String = _wowza_server +":"+ _wowza_whiteboard_port +"/"+ _wowza_whiteboard_app  +"/"+ _room_id;
 			Logger.info("connect() about to connect to " + ws,this);
 			
 			var dummyUserInfoVO:DummyUserInfoVO = new DummyUserInfoVO();
@@ -156,7 +169,13 @@ package com.simplediagrams.controllers
 			trace( "_room_id=" + _room_id );
 			trace( "_room_name=" + _room_name );
 			trace( "_user_name=" + _user_name );
-			_netConnection.connect(ws, dummyUserInfoVO, _auth_key, _room_id, _room_name, _user_name);     
+			
+			ApplicationModel.VERSION;
+			
+			_netConnection.connect(ws, dummyUserInfoVO, _auth_key, _room_id, _room_name, _user_name, 
+				"whiteboard", 
+				ApplicationModel.VERSION, 
+				Capabilities.serverString);     
 		}
 		
 		public function onStatus( event : NetStatusEvent) : void {
@@ -284,6 +303,7 @@ package com.simplediagrams.controllers
 			_user_name 				= event.user_name;
 			_wowza_server 			= event.wowza_server;
 			_wowza_whiteboard_app 	= event.wowza_whiteboard_app;
+			_wowza_whiteboard_port 	= event.wowza_whiteboard_port;
 			_image_server 			= event.image_server;
 			
 			connect();

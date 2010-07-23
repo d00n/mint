@@ -18,7 +18,7 @@ package com.simplediagrams.model
 	[Bindable]
 	public class ApplicationModel extends EventDispatcher
 	{
-		
+		public static const VERSION:String		= "v0.1.5";
 		public static const VIEW_REGISTRATION:String = "registrationView"
 		public static const VIEW_STARTUP:String = "startupView"
 		public static const VIEW_DIAGRAM:String = "diagramView";
@@ -75,7 +75,7 @@ package com.simplediagrams.model
 //			return appXML.air::version;
 //			//this.airApplicationName = appXML.air::name;
 			
-			return "Not an air app";
+			return VERSION;
 		
 		}
 				

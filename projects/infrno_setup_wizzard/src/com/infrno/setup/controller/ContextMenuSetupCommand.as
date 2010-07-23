@@ -17,7 +17,7 @@ package com.infrno.setup.controller
         	var custom_menu:ContextMenu = new ContextMenu();
 			custom_menu.hideBuiltInItems();
 			
-			var app_version:ContextMenuItem = new ContextMenuItem(DataProxy.VERSION);
+			var app_version:ContextMenuItem = new ContextMenuItem("Infrno Tester " + DataProxy.VERSION);
 			app_version.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyToClipboard);
 
 			custom_menu.customItems.push(app_version);

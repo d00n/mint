@@ -8,7 +8,6 @@ package com.infrno.chat.services
 	import com.infrno.chat.model.vo.UserInfoVO;
 	
 	import flash.events.NetStatusEvent;
-	
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
 	import flash.system.Capabilities;
@@ -80,7 +79,12 @@ package com.infrno.chat.services
 		
 		public function getNewNetStream():NetStreamMS
 		{
+			var ns_client:Object = new Object();
+			ns_client.onPlayStatus = function(e:Object):void{};
+			ns_client.onMetaData = function(e:Object):void{};
+			
 			var ns:NetStreamMS = new NetStreamMS(_nc);
+			ns.client = ns_client;
 			ns.addEventListener(NetStatusEvent.NET_STATUS,function(e:NetStatusEvent):void{}); //provided to avoid runtime error
 			return ns;
 		}

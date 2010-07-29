@@ -159,12 +159,18 @@ package com.simplediagrams.controllers
 				
 			_netConnection.client = clientObj;
 			
-			var ws:String = _wowza_server +":"+ _wowza_whiteboard_port +"/"+ _wowza_whiteboard_app  +"/"+ _room_id;
-			Logger.info("connect() about to connect to " + ws,this);
+			var connection_uri:String = _wowza_server +":"+ _wowza_whiteboard_port +"/"+ _wowza_whiteboard_app  +"/"+ _room_id;
+			Logger.info("connect() about to connect to " + connection_uri,this);
 			
 			var dummyUserInfoVO:DummyUserInfoVO = new DummyUserInfoVO();
 			
-			_netConnection.connect(ws, dummyUserInfoVO, _auth_key, _room_id, _room_name, _user_name, _user_id,
+			_netConnection.connect(connection_uri, 
+				dummyUserInfoVO, 
+				_auth_key, 
+				_room_id, 
+				_room_name, 
+				_user_name, 
+				_user_id,
 				_wowza_whiteboard_app, 
 				ApplicationModel.VERSION, 
 				Capabilities.serverString);     

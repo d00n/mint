@@ -43,7 +43,7 @@
     
 	<mx:SWFLoader
 		id="setupWizzardSwfLoader" 
-		source="InfrnoSetupWizzard.swf"
+		source="InfrnoSetupWizzard-1.swf"
 		width="360"
 		height="400" 
 		complete="handleSwfLoaderComplete(event);" />

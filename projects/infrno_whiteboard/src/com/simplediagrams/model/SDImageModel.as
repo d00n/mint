@@ -24,7 +24,7 @@ package com.simplediagrams.model
 		public static const STYLE_PHOTO:String = "photoStyle"
 		
 		private var _imageData:ByteArray
-		private var _styleName:String = STYLE_PHOTO;
+		private var _styleName:String = STYLE_NONE;
 		
 		[Transient]
 		public var origWidth:int
@@ -38,8 +38,8 @@ package com.simplediagrams.model
 		public function SDImageModel()
 		{
 			super();
-			this.width = 350
-			this.height = 250
+			this.width = 50
+			this.height = 50
 		}
 	
 		public override function createSDComponent():ISDComponent

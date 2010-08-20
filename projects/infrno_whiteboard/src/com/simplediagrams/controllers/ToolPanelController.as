@@ -97,14 +97,18 @@ package com.simplediagrams.controllers
 			//get current selection
 			var selectedArr:Array = diagramModel.selectedArray;
 			
+			
+			// The change position buttons should be disabled if no object is selected
+			// Let's just avoid the error message for now
 			if (selectedArr.length==0) 
 			{
-				Alert.show("No object selected.")
+				//Alert.show("No object selected.")
+				return
 			}
 			
 			if (selectedArr.length>1 || selectedArr.length == 0)
 			{
-				Alert.show("You must select exactly one object.")
+				//Alert.show("You must select exactly one object.")
 				return
 			}
 			

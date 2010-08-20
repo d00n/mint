@@ -40,14 +40,13 @@
         <s:State name="selected" />
     </s:states>
     
-    <s:Graphic id="frame">
+<!--    <s:Graphic id="frame">
     	<s:Rect width="{this.width}" height="{this.height}" >
           <s:fill>
              <s:SolidColor color="0xF9F9F9"/>
           </s:fill>
      	</s:Rect>
     </s:Graphic>
-    
     
     <s:Graphic id="imageBG">
     	<s:Rect x="10" y="10" width="{this.width-20}" height="{this.height-20}" >
@@ -57,15 +56,34 @@
      	</s:Rect>
     </s:Graphic>
     
-    <mx:Image x="10" y="10" id="imageHolder" 
-    	source="{hostComponent.imageSource}" 
-    	width="{hostComponent.width-20}" 
-    	height="{hostComponent.height-20}"
-        enabled="false" 
-        focusEnabled="false"
-        mouseEnabled="false"
-		trustContent="true" 
-    	/>
+	<mx:Image x="10" y="10" id="imageHolder" 
+			  source="{hostComponent.imageSource}" 
+			  width="{hostComponent.width-20}" 
+			  height="{hostComponent.height-20}"
+			  enabled="false" 
+			  focusEnabled="false"
+			  mouseEnabled="false"
+			  trustContent="true" 
+			  />
+	
+	<s:Graphic id="imageBG">
+		<s:Rect x="10" y="10" width="{this.width}" height="{this.height}" >
+			<s:fill>
+				<s:SolidColor color="0xEEEEEE"/>
+			</s:fill>
+		</s:Rect>
+	</s:Graphic>
+	-->		
+
+	<mx:Image x="0" y="0" id="imageHolder" 
+			  source="{hostComponent.imageSource}" 
+			  width="{hostComponent.width}" 
+			  height="{hostComponent.height}"
+			  enabled="false" 
+			  focusEnabled="false"
+			  mouseEnabled="false"
+			  trustContent="true" 
+			  />
       	      
              
     <s:Graphic id="hack_because_image_when_clicked_eats_keyup_events">

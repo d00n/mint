@@ -33,7 +33,9 @@ package com.simplediagrams.view.SDComponents
 		protected function onImageLoaded(event:Event):void
 		{
 			_model.origWidth = imageHolder.content.width
+			_model.width = imageHolder.content.width
 			_model.origHeight = imageHolder.content.height
+			_model.height = imageHolder.content.height
 		}
 	
 		public function onAddImageClick():void

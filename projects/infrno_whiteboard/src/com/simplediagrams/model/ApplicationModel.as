@@ -18,7 +18,7 @@ package com.simplediagrams.model
 	[Bindable]
 	public class ApplicationModel extends EventDispatcher
 	{
-		public static const VERSION:String		= "v0.1.5-1";
+		public static const VERSION:String		= "v0.1.5-2";
 		public static const VIEW_REGISTRATION:String = "registrationView"
 		public static const VIEW_STARTUP:String = "startupView"
 		public static const VIEW_DIAGRAM:String = "diagramView";

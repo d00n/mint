@@ -7,7 +7,7 @@ package com.infrno.chat.model
 	
 	public class DataProxy extends Actor
 	{
-		public static const VERSION			:String		= "v0.2.18-2";
+		public static const VERSION			:String		= "v0.2.18-3";
 		
 		public var peer_enabled				:Boolean;
 		

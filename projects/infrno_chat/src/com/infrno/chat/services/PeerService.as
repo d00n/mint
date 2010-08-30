@@ -94,6 +94,11 @@ package com.infrno.chat.services
 				case "NetConnection.Connect.Rejected":
 					dispatch(new PeerEvent(PeerEvent.PEER_NETCONNECTION_DISCONNECTED));
 					break;
+				case "NetStream.Connect.Closed":
+					trace("PeerService.handleNetStatus() someone disconnected from me");
+					//their farID = e.info.stream.farID;
+					//dataProxy.users_collection has a reference for this
+					break;
 				
 			}
 		}

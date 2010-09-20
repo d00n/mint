@@ -124,7 +124,7 @@ package com.infrno.chat.services
 		
 		public function updateUserInfo():void
 		{
-			_nc.call("updateUserInfo",null,dataProxy.my_info);
+			_nc.call("updateUserInfo",null,dataProxy);
 		}
 		
 		/**

@@ -7,7 +7,7 @@ package com.infrno.chat.model
 	
 	public class DataProxy extends Actor
 	{
-		public static const VERSION			:String		= "v0.2.18-4";
+		public static const VERSION			:String		= "v0.2.18-5";
 		
 		public var peer_enabled				:Boolean;
 		
@@ -24,10 +24,7 @@ package com.infrno.chat.model
 		public var auth_key:String		= "sample_auth_key";
 		public var room_id:String 		= "sample_room_id";
 		public var room_name:String 	= "sample_room_name";
-		public var user_id:String 		= "sample_user_id";
 
-		private var m_user_name:String 	= "sample_user_name";
-		
 		//using personal stratus key for now
 		public var peer_server_key			:String		= "4b9d915ef5ee88cfd38eb359-abf46599bf1f";
 		public var peer_server				:String		= "rtmfp://stratus.adobe.com";
@@ -42,24 +39,13 @@ package com.infrno.chat.model
 		private var m_mediaApp				:String		= "chat";
 		private var m_mediaPort				:String		= "1935";
 		
-		public var my_info					:UserInfoVO = new UserInfoVO({"uname":"user"+Math.round(Math.random()*1000)});
+		public var my_info					:UserInfoVO = new UserInfoVO({user_name:"user"+Math.round(Math.random()*1000),user_id:"sample_user_id"});
 		
 		public function DataProxy( )
 		{
 			users_collection = new Object();
 		}
 	
-		public function get user_name( ) : String
-		{
-			return m_user_name;
-		}
-		
-		public function set user_name( value:String ) : void 
-		{
-			m_user_name = value;
-			my_info.userName = m_user_name;
-		}
-		
 		public function get media_server( ):String 
 		{
 			if( m_mediaServer != null ) 

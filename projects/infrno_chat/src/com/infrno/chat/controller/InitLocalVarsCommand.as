@@ -33,10 +33,10 @@ package com.infrno.chat.controller
 				dataProxy.room_name = flash_vars.room_name;
 			
 			if (flash_vars.user_name != null)
-				dataProxy.user_name = flash_vars.user_name;
+				dataProxy.my_info.user_name = flash_vars.user_name;
 			
 			if (flash_vars.user_id != null)
-				dataProxy.user_id = flash_vars.user_id;
+				dataProxy.my_info.user_id = flash_vars.user_id;
 			
 			if (flash_vars.wowza_server != null)
 				dataProxy.media_server = flash_vars.wowza_server;
@@ -44,7 +44,7 @@ package com.infrno.chat.controller
 			if (flash_vars.wowza_chat_app != null)
 				dataProxy.media_app = flash_vars.wowza_chat_app;
 			
-			trace("InitLocalVarsCommand.execute() flashvars loaded:" + dataProxy.room_name +":"+ dataProxy.user_name +":"+ dataProxy.room_id +":"+ dataProxy.auth_key);
+			trace("InitLocalVarsCommand.execute() flashvars loaded:" + dataProxy.room_name +":"+ dataProxy.my_info.user_name +":"+ dataProxy.room_id +":"+ dataProxy.auth_key);
 			
 			try{
 				dataProxy.peer_enabled = flash_vars.peer_enabled=="false"?false:true;

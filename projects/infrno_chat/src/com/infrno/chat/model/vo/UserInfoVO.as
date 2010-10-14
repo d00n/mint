@@ -13,7 +13,8 @@ package com.infrno.chat.model.vo
 		public var suid						:int;
 		
 		public var peer_connection_status	:String;
-		public var uname					:String;
+		public var user_name				:String;
+		public var user_id					:String;
 		public var nearID					:String;
 
 		private var _ns						:NetStream;
@@ -23,14 +24,10 @@ package com.infrno.chat.model.vo
 //			peer_capable = infoObj.peer_capable;
 			peer_connection_status = PeerEvent.PEER_NETCONNECTION_CONNECTING;
 			suid = infoObj.suid;
-			uname = infoObj.uname;
+			user_id = infoObj.user_id;
+			user_name = infoObj.user_name;
 		}
 		
-		public function set userName( value:String ) : void
-		{
-			uname = value;
-		} 
-
 		public function get ns():NetStream
 		{
 			return _ns;
@@ -57,7 +54,7 @@ package com.infrno.chat.model.vo
 		
 		private function handleNetStatus(e:NetStatusEvent):void
 		{
-			trace("UserInfoVO.handleNetStatus() uname=" +uname+" : "+e.info.code);
+			trace("UserInfoVO.handleNetStatus() user_name=" +user_name+" : "+e.info.code);
 		}
 	}
 }

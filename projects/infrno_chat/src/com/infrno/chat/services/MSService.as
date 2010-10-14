@@ -50,7 +50,7 @@ package com.infrno.chat.services
 			
 			trace("MSService.connect() dataProxy params available:" 
 				+ dataProxy.room_name 
-				+":"+ dataProxy.user_name 
+				+":"+ dataProxy.my_info.user_name 
 				+":"+ dataProxy.room_id 
 				+":"+ dataProxy.auth_key);
 		
@@ -60,8 +60,6 @@ package com.infrno.chat.services
 				dataProxy.auth_key,
 				dataProxy.room_id,
 				dataProxy.room_name, 
-				dataProxy.user_name,
-				dataProxy.user_id,
 				dataProxy.media_app,
 				DataProxy.VERSION,
 				Capabilities.serverString);
@@ -124,7 +122,8 @@ package com.infrno.chat.services
 		
 		public function updateUserInfo():void
 		{
-			_nc.call("updateUserInfo",null,dataProxy);
+			trace(typeof(dataProxy));
+			_nc.call("updateUserInfo",null,dataProxy.my_info);
 		}
 		
 		/**

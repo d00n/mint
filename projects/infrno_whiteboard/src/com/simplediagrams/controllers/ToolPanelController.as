@@ -118,7 +118,7 @@ package com.simplediagrams.controllers
 			switch(event.type)
 			{
 				case PositionEvent.MOVE_BACKWARD:
-					eventChangeDepth new ChangeDepthEvent(ChangeDepthEvent.MOVE_BACKWARD);
+					eventChangeDepth = new ChangeDepthEvent(ChangeDepthEvent.MOVE_BACKWARD);
 					eventChangeDepth.sdID = sdObjectModel.sdID;
 					Swiz.dispatchEvent(eventChangeDepth);
 					break

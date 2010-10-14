@@ -20,6 +20,8 @@ package com.infrno.chat.controller
 		
 		override public function execute():void
 		{
+			dataProxy.my_info.report_connection_status = !(dataProxy.peer_capable == (event.type == PeerEvent.PEER_NETCONNECTION_CONNECTED));
+			
 			if(dataProxy.peer_enabled){
 				dataProxy.my_info.nearID = event.value;
 				dataProxy.my_info.peer_connection_status = event.type;

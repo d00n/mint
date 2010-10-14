@@ -238,7 +238,7 @@ package com.simplediagrams.model
 		
 			isDirty = true;
 		
-			// This is how add/delete/modify/cut/copy/paste actions to hit the RSO
+			// This is how add/delete/modify/cut/copy/paste actions hit the RSO
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.ADD_SD_OBJECT_MODEL);
 			rsoEvent.changedSDObjectModelArray = new Array;
 			rsoEvent.changedSDObjectModelArray.push(newSDObjectModel);

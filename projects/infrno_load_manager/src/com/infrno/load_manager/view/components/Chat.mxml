@@ -3,7 +3,7 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx">
 	<mx:SWFLoader 
-			source="InfrnoChat-4.swf" 
+			source="InfrnoChat.swf" 
 			width="162"
 			height="100%" />
 </s:Group>

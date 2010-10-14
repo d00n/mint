@@ -413,6 +413,8 @@ package com.simplediagrams.controllers
 					sd_obj.fontSize 			= sdTextAreaModel.fontSize;
 					sd_obj.fontWeight 			= sdTextAreaModel.fontWeight;				
 					sd_obj.text					= sdTextAreaModel.text;	
+					
+					Logger.info("dispatchUpdate_ObjectChanged() sdTextAreaModel.text=" + sdTextAreaModel.text + ", depth=" + sdTextAreaModel.depth.toString() + ", zIndex=" + sdTextAreaModel.zIndex.toString(), this);
 				}
 				
 				_remoteSharedObject.setProperty(sd_obj.sdID.toString(), sd_obj);
@@ -504,6 +506,8 @@ package com.simplediagrams.controllers
 					sdTextAreaModel.text			 	= changeObject.text;
 					
 					sdObjectModel = sdTextAreaModel;
+					
+					Logger.info("processUpdate_ObjectChanged() sdTextAreaModel.text=" + sdTextAreaModel.text + ", depth=" + sdTextAreaModel.depth.toString() + ", zIndex=" + sdTextAreaModel.zIndex.toString(), this);
 					break;
 				}
 			}

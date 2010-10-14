@@ -8,6 +8,8 @@ package com.infrno.chat.model.vo
 	public class UserInfoVO
 	{
 //		public var peer_capable				:Boolean;
+		public var report_connection_status	:Boolean;
+
 		public var suid						:int;
 		
 		public var peer_connection_status	:String;

@@ -102,6 +102,8 @@ package com.infrno.chat.model
 			
 			if(_mic == null){
 				trace("mic not accessible");
+				_mic_level_timer.reset();
+			} else {
 				for(var i:String in mic_array){
 					if(_mic.name == mic_array[i]){
 						mic_index = int(i);
@@ -115,27 +117,35 @@ package com.infrno.chat.model
 				_mic.rate=11;
 				_mic.setUseEchoSuppression(true);
 				_mic.setLoopBack(false);
-				_mic.addEventListener(ActivityEvent.ACTIVITY, function(evt:ActivityEvent):void{
-	//				trace(evt.toString());
-					mic_active = evt.activating;
-					if(evt.activating){
-						dispatch(new DeviceEvent(DeviceEvent.MIC_ACTIVITY,evt.activating));
-					}
-				});
-				_mic.addEventListener(StatusEvent.STATUS, function(evt:StatusEvent):void{
-					trace("DeviceProxy.initCam() " + evt.code);
-					if(evt.code=="Microphone.Muted"){
-						trace("DeviceProxy.initCam() no access to the mic");
-					}
-				});
-				if(_mic!=null){
-					_mic_level_timer.start();
-				} else {
-					_mic_level_timer.reset();
+				
+				if(!_mic.hasEventListener(ActivityEvent.ACTIVITY)){
+					_mic.addEventListener(ActivityEvent.ACTIVITY,micActivity);
 				}
+				
+				if(!_mic.hasEventListener(StatusEvent.STATUS)){
+					_mic.addEventListener(StatusEvent.STATUS,micStatus);
+				}
+				
+				_mic_level_timer.start();
 			}
 			
 			return _mic;
+		}
+		
+		private function micActivity(evt:ActivityEvent):void
+		{
+			mic_active = evt.activating;
+			if(evt.activating){
+				dispatch(new DeviceEvent(DeviceEvent.MIC_ACTIVITY,evt.activating));
+			}
+		}
+		
+		private function micStatus(evt:StatusEvent):void
+		{
+			trace("DeviceProxy.initCam() " + evt.code);
+			if(evt.code=="Microphone.Muted"){
+				trace("DeviceProxy.initCam() no access to the mic");
+			}
 		}
 		
 		//public methods

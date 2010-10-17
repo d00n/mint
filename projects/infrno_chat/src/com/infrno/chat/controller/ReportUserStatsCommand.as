@@ -11,7 +11,7 @@ package com.infrno.chat.controller
 	
 	import org.robotlegs.mvcs.Command;
 	
-	public class ReportStatsCommand extends Command
+	public class ReportUserStatsCommand extends Command
 	{
 		[Inject]
 		public var dataProxy		:DataProxy;
@@ -32,8 +32,8 @@ package com.infrno.chat.controller
 			user_stats.application_name			= dataProxy.media_app;
 			user_stats.room_name				= dataProxy.room_name;
 			user_stats.room_id					= dataProxy.room_id;
-			user_stats.user_name				= dataProxy.my_info.user_name;
-			user_stats.user_id					= dataProxy.my_info.user_id;
+			user_stats.user_name				= dataProxy.userInfoVO.user_name;
+			user_stats.user_id					= dataProxy.userInfoVO.user_id;
 
 			user_stats.wowza_protocol			= msService.nc.protocol;
 			user_stats.capabilities				= Capabilities.serverString;

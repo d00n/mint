@@ -36,7 +36,7 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.view.SDComponents.SDLine;
 	import com.simplediagrams.view.SDComponents.SDTextArea;
 	import com.simplediagrams.view.dialogs.DiagramPropertiesDialog;
-	import com.simplediagrams.vo.DummyUserInfoVO;
+	import com.simplediagrams.vo.UserInfoVO;
 	
 	import flash.display.BitmapData;
 	import flash.events.AsyncErrorEvent;
@@ -162,10 +162,15 @@ package com.simplediagrams.controllers
 			var connection_uri:String = _wowza_server +":"+ _wowza_whiteboard_port +"/"+ _wowza_whiteboard_app  +"/"+ _room_id;
 			Logger.info("connect() about to connect to " + connection_uri,this);
 			
-			var dummyUserInfoVO:DummyUserInfoVO = new DummyUserInfoVO();
+			
+			var userInfoObj:Object = new Object();
+			userInfoObj.user_name = "whiteboard_default";
+			userInfoObj.user_id = "whiteboard_default";
+			var userInfoVO:UserInfoVO = new UserInfoVO(userInfoObj);
+			
 			
 			_netConnection.connect(connection_uri, 
-				dummyUserInfoVO, 
+				userInfoVO, 
 				_auth_key, 
 				_room_id, 
 				_room_name, 

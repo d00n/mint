@@ -60,13 +60,13 @@ package com.infrno.chat.services
 			
 			if(dataProxy.use_peer_connection){
 				if(!_publishing){
-					trace(">>> publishing my group stream with name: "+dataProxy.my_info.suid.toString());
+					trace(">>> publishing my group stream with name: "+dataProxy.userInfoVO.suid.toString());
 					setupNetStream();
 					if(dataProxy.pubishing_audio)
 						_ns.attachAudio(deviceProxy.mic);
 					if(dataProxy.pubishing_video)
 						_ns.attachCamera(deviceProxy.camera);
-					_ns.publish(dataProxy.my_info.suid.toString());
+					_ns.publish(dataProxy.userInfoVO.suid.toString());
 					
 					dataProxy.ns = _ns;
 				} else {

@@ -96,7 +96,7 @@ package com.infrno.chat.view.mediators
 					video_presense.data = curr_info;
 					video_presense.name = curr_info.suid.toString();
 					
-					video_presense.is_local = curr_info.suid == dataProxy.my_info.suid;
+					video_presense.is_local = curr_info.suid == dataProxy.userInfoVO.suid;
 					
 					video_presense.addEventListener(FlexEvent.CREATION_COMPLETE,function(e:FlexEvent):void
 					{
@@ -113,9 +113,9 @@ package com.infrno.chat.view.mediators
 					if(!video_presense.isInitialized())
 						return;
 
-					video_presense.is_local = curr_info.suid == dataProxy.my_info.suid;
+					video_presense.is_local = curr_info.suid == dataProxy.userInfoVO.suid;
 					
-					if(curr_info.suid == dataProxy.my_info.suid){
+					if(curr_info.suid == dataProxy.userInfoVO.suid){
 						setupMyPresenseComponent(video_presense);
 					} else {
 						setupOtherPresenseComponent(video_presense);

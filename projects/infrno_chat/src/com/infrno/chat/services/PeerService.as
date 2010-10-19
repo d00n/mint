@@ -58,13 +58,13 @@ package com.infrno.chat.services
 			
 			if(dataProxy.use_peer_connection){
 				if(!_publishing){
-					trace("PeerService.updatePublishStream() >>> publishing my peer stream with name: "+dataProxy.userInfoVO.suid.toString());
+					trace("PeerService.updatePublishStream() >>> publishing my peer stream with name: "+dataProxy.my_info.suid.toString());
 					setupOutgoingNetStream();
 					if(dataProxy.pubishing_audio)
 						_ns_outgoing.attachAudio(deviceProxy.mic);
 					if(dataProxy.pubishing_video)
 						_ns_outgoing.attachCamera(deviceProxy.camera);
-					_ns_outgoing.publish(dataProxy.userInfoVO.suid.toString());
+					_ns_outgoing.publish(dataProxy.my_info.suid.toString());
 					
 					dataProxy.ns = _ns_outgoing;
 				} else {

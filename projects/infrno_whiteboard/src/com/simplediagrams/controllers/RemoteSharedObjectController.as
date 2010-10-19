@@ -87,10 +87,10 @@ package com.simplediagrams.controllers
 		private var _room_name:String;
 		private var _user_name:String;
 		private var _user_id:String;
+		private var _image_server:String;
 		private var _wowza_server:String;
 		private var _wowza_whiteboard_app:String;
 		private var _wowza_whiteboard_port:String;
-		private var _image_server:String;
 		
 		
 		[Autowire(bean='diagramModel')]
@@ -274,9 +274,11 @@ package com.simplediagrams.controllers
 			
 			var responder:Responder = new Responder(returnValueFunction);
 			
-			_netConnection.call("sendImage", responder, rsoEvent.imageData, 
+			_netConnection.call("sendImage", responder, 
+				rsoEvent.imageData, 
 				rsoEvent.imageName,
-				rsoEvent.sdImageModel.sdID.toString());
+				rsoEvent.sdImageModel.sdID.toString(),
+				_image_server);
 		}		
 
 		[Mediate(event="RemoteSharedObjectEvent.RESET")]
@@ -305,10 +307,10 @@ package com.simplediagrams.controllers
 			_room_name 				= event.room_name;			
 			_user_name 				= event.user_name;
 			_user_id 				= event.user_id;
+			_image_server 			= event.image_server;
 			_wowza_server 			= event.wowza_server;
 			_wowza_whiteboard_app 	= event.wowza_whiteboard_app;
 			_wowza_whiteboard_port 	= event.wowza_whiteboard_port;
-			_image_server 			= event.image_server;
 			
 			connect();
 		}
@@ -452,14 +454,14 @@ package com.simplediagrams.controllers
 					sdObjectModel = sdSymbolModel;
 					break;
 				}
-				case "SDImageModel": {
-					Logger.info("processUpdate_ObjectChanged() changeObject.imageURL = " + changeObject.imageURL,this);
+				case "SDImageModel": {					
 					var sdImageModel:SDImageModel = diagramModel.getModelByID(sdID) as SDImageModel;
 					
 					if (sdImageModel == null){
 						sdImageModel = new SDImageModel();
 					}
 					
+					Logger.info("processUpdate_ObjectChanged() changeObject.imageURL = " + changeObject.imageURL,this);
 					sdImageModel.imageURL = changeObject.imageURL;
 					
 					sdObjectModel = sdImageModel;

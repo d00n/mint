@@ -19,13 +19,13 @@ package com.infrno.chat.model.vo
 
 		private var _ns						:NetStream;
 		
-		public function UserInfoVO(userInfoObj:Object=null)
+		public function UserInfoVO(infoObj:Object=null)
 		{
-//			peer_capable = userInfoObj.peer_capable;
+//			peer_capable = infoObj.peer_capable;
 			peer_connection_status = PeerEvent.PEER_NETCONNECTION_CONNECTING;
-			suid = userInfoObj.suid;
-			user_id = userInfoObj.user_id;
-			user_name = userInfoObj.user_name;
+			suid = infoObj.suid;
+			user_id = infoObj.user_id;
+			user_name = infoObj.user_name;
 		}
 		
 		public function get ns():NetStream
@@ -48,10 +48,7 @@ package com.infrno.chat.model.vo
 		{
 			for(var i:String in info){
 				if(info[i]!=null)
-				{
 					this[i] = info[i];
-					trace("UserInfoVO.updateInfo()" +i+" = "+info[i]);
-				}
 			}
 		}
 		

@@ -7,7 +7,7 @@ package com.infrno.chat.model
 	
 	public class DataProxy extends Actor
 	{
-		public static const VERSION			:String		= "v0.2.18-6";
+		public static const VERSION			:String		= "v0.2.18-8";
 		
 		public var peer_enabled				:Boolean;
 		
@@ -20,7 +20,7 @@ package com.infrno.chat.model
 		
 		public var users_collection			:Object;
 		
-		// Wowza will accept this auth_key for specified hosts.
+		// Wowza will accept these values for specified hosts.
 		public var auth_key:String		= "sample_auth_key";
 		
 		public var room_id:String 		= "chat_default";
@@ -40,16 +40,11 @@ package com.infrno.chat.model
 		private var m_mediaApp				:String		= "chat";
 		private var m_mediaPort				:String		= "1935";
 		
-		public var userInfoVO	:UserInfoVO;
+		public var my_info					:UserInfoVO = new UserInfoVO({user_name:"user"+Math.round(Math.random()*1000),user_id:"sample_user_id"});
 		
 		public function DataProxy( )
 		{
 			users_collection = new Object();
-			
-			var userInfoObj:Object = new Object();
-			userInfoObj.user_name = "chat_default";
-			userInfoObj.user_id = "chat_default";
-			userInfoVO	= new UserInfoVO(userInfoObj);
 		}
 	
 		public function get media_server( ):String 

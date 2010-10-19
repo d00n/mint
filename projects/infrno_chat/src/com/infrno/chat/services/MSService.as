@@ -50,13 +50,13 @@ package com.infrno.chat.services
 			
 			trace("MSService.connect() dataProxy params available:" 
 				+ dataProxy.room_name 
-				+":"+ dataProxy.userInfoVO.user_name 
+				+":"+ dataProxy.my_info.user_name 
 				+":"+ dataProxy.room_id 
 				+":"+ dataProxy.auth_key);
 		
 			dispatch(new MSEvent(MSEvent.NETCONNECTION_CONNECTING));
 			_nc.connect(connection_uri, 
-				dataProxy.userInfoVO, 
+				dataProxy.my_info, 
 				dataProxy.auth_key,
 				dataProxy.room_id,
 				dataProxy.room_name, 
@@ -99,22 +99,16 @@ package com.infrno.chat.services
 			_nc.call("reportUserStats",null,statsIn);
 		}
 		
-		public function reportPeerConnectionStatus(statsIn:Object):void
-		{
-			trace("MSService.reportPeerConnectionStatus()");
-			_nc.call("reportPeerConnectionStatus",null,statsIn);
-		}
-		
 		public function updatePublishStream():void
 		{
 			if(!dataProxy.use_peer_connection){
 				if(!_publishing){
-					trace("MSService.updatePublishStream() ### publishing my server stream with name: "+dataProxy.userInfoVO.suid.toString());
+					trace("MSService.updatePublishStream() ### publishing my server stream with name: "+dataProxy.my_info.suid.toString());
 					if(dataProxy.pubishing_audio)
 						_ns.attachAudio(deviceProxy.mic);
 					if(dataProxy.pubishing_video)
 						_ns.attachCamera(deviceProxy.camera);
-					_ns.publish(dataProxy.userInfoVO.suid.toString());
+					_ns.publish(dataProxy.my_info.suid.toString());
 					
 					dataProxy.ns = _ns;
 				} else {
@@ -129,7 +123,7 @@ package com.infrno.chat.services
 		public function updateUserInfo():void
 		{
 			trace(typeof(dataProxy));
-			_nc.call("updateUserInfo",null,dataProxy.userInfoVO);
+			_nc.call("updateUserInfo",null,dataProxy.my_info);
 		}
 		
 		/**
@@ -169,7 +163,8 @@ package com.infrno.chat.services
 			_nc_client = new Object();
 			_nc_client.initUser = function(user_info:Object):void
 			{
-				dataProxy.userInfoVO.updateInfo(user_info);
+//				dataProxy.my_info = new UserInfoVO(user_info);
+				dataProxy.my_info.updateInfo(user_info);
 			}
 			_nc_client.chatToUser = function(msgIn:String):void
 			{

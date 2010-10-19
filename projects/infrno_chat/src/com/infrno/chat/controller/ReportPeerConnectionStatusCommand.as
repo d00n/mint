@@ -20,23 +20,16 @@ package com.infrno.chat.controller
 		
 		override public function execute():void
 		{
-			dataProxy.userInfoVO.report_connection_status = !(dataProxy.peer_capable == (event.type == PeerEvent.PEER_NETCONNECTION_CONNECTED));
+			dataProxy.my_info.report_connection_status = !(dataProxy.peer_capable == (event.type == PeerEvent.PEER_NETCONNECTION_CONNECTED));
 			
 			if(dataProxy.peer_enabled){
-				dataProxy.userInfoVO.nearID = event.value;
-				dataProxy.userInfoVO.peer_connection_status = event.type;
+				dataProxy.my_info.nearID = event.value;
+				dataProxy.my_info.peer_connection_status = event.type;
 				dataProxy.peer_capable = event.type == PeerEvent.PEER_NETCONNECTION_CONNECTED;
 			} else {
-				dataProxy.userInfoVO.peer_connection_status = PeerEvent.PEER_NETCONNECTION_DISCONNECTED; //force server connection
+				dataProxy.my_info.peer_connection_status = PeerEvent.PEER_NETCONNECTION_DISCONNECTED; //force server connection
 			}
-			
-			var user_stats:Object 				= new Object();
-			user_stats.application_name			= dataProxy.media_app;
-			user_stats.user_name				= dataProxy.userInfoVO.user_name;
-			user_stats.user_id					= dataProxy.userInfoVO.user_id;
-			user_stats.peer_connection_status	= dataProxy.userInfoVO.peer_connection_status;
-			
-			msService.reportPeerConnectionStatus(user_stats);
+			msService.updateUserInfo();
 		}
 	}
 }

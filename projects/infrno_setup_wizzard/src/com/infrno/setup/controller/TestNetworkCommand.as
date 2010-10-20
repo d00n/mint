@@ -31,6 +31,15 @@ package com.infrno.setup.controller
 			netConnection.eventDispatcher.addEventListener(NetConnectionEvent.NETCONNECTION_CONNECTING,serverConnectionStatus);
 			netConnection.eventDispatcher.addEventListener(NetConnectionEvent.NETCONNECTION_DISCONNECTED,serverConnectionStatus);
 			netConnection.connect(dataProxy.media_server);
+			
+			netConnection.connect(dataProxy.connectionUri, 
+				dataProxy.my_info, 
+				dataProxy.auth_key,
+				dataProxy.room_id,
+				dataProxy.room_name, 
+				dataProxy.media_app,
+				DataProxy.VERSION);
+
 		}
 		
 		private function runStratusConnectionTest():void
@@ -43,7 +52,7 @@ package com.infrno.setup.controller
 		
 		private function peerConnectionStatus(e:StratusConnectionEvent):void
 		{
-			trace("peer: "+e.type);
+			trace("TestNetworkCommand.peerConnectionStatus(): "+e.type);
 			var cleanup_listeners:Boolean;
 			if(e.type == StratusConnectionEvent.STRATUSCONNECTION_CONNECTED){
 				cleanup_listeners = true;
@@ -62,7 +71,7 @@ package com.infrno.setup.controller
 		
 		private function serverConnectionStatus(e:NetConnectionEvent):void
 		{
-			trace("server: "+e.type);
+			trace("TestNetworkCommand.serverConnectionStatus(): "+e.type);
 			var cleanup_listeners:Boolean;
 			if(e.type == NetConnectionEvent.NETCONNECTION_CONNECTED){
 				runStratusConnectionTest();

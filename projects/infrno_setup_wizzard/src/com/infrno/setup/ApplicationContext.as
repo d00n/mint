@@ -25,6 +25,7 @@ package com.infrno.setup
 			//controller setup
 //			commandMap.mapEvent(GenericEvent.SHOW_VIDEO,ToggleVideoCommand);
 
+			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, InitLocalVarsCommand);
 			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE,ContextMenuSetupCommand);
 			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE,TestNetworkCommand);
 			

@@ -148,13 +148,13 @@ package com.simplediagrams.util
 	   			trace("couldn't delete log file! Error: " + err)
 	   		}
 			
-			if (logToFile && logFile) //&& lvl> LogEventLevel.DEBUG)
-			{					
-				if (logFileStream==null) logFileStream = new FileStream()
-				logFileStream.open(logFile, FileMode.APPEND)
-				logFileStream.writeUTFBytes( File.lineEnding + type + o)
-				logFileStream.close()
-			}
+//			if (logToFile && logFile) //&& lvl> LogEventLevel.DEBUG)
+//			{					
+//				if (logFileStream==null) logFileStream = new FileStream()
+//				logFileStream.open(logFile, FileMode.APPEND)
+//				logFileStream.writeUTFBytes( File.lineEnding + type + o)
+//				logFileStream.close()
+//			}
 				
 		}
 	

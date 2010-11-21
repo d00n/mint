@@ -212,7 +212,6 @@ package com.simplediagrams.view.SDComponents
 			
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.DISPATCH_TEXT_AREA_CHANGE);
 			rsoEvent.sdID = _model.sdID;
-			//			rsoEvent.text = this.text;
 			Swiz.dispatchEvent(rsoEvent);			
 		}
 

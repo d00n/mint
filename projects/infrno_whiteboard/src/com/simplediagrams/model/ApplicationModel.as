@@ -68,12 +68,12 @@ package com.simplediagrams.model
 		public var txtStatus:String = "" //status messages for startup dialog
 		public var app:SimpleDiagrams = FlexGlobals.topLevelApplication as SimpleDiagrams
 						
-		public var defaultFileDirectory:File
+//		public var defaultFileDirectory:File
 		public var diagramLoaded:Boolean = false
 		
 		public var fontsAC:ArrayCollection 
 		
-		//protected var _viewing:String = VIEW_STARTUP
+		protected var _viewing:String = VIEW_STARTUP
 		
 		
 		//protected static var _baseStorageDir:File	
@@ -95,17 +95,17 @@ package com.simplediagrams.model
 			
 			
 			
-			menuObj =	{ label:"File", id:"file", children:[
-				{ label:"New", id:"new_diagram", data:"new_diagram", controlKey:true, keyEquivalent:"n"},
-				{ label:"Open File...", id:"open_diagram", data:"open_diagram", keyEquivalent:"o", controlKey:true},
-				{ type:"separator", id:"separator"},
-				{ label:"Save", id:"save_diagram",  data:"save_diagram", enabled:false, keyEquivalent:"s", controlKey:true},
-				{ label:"Save As...", id:"save_diagram_as",  data:"save_diagram_as", enabled:false},
-				{ type:"separator", id:"separator"},
-				{ label:"Close", id:"close_diagram", data:"close_diagram", enabled:false, keyEquivalent:"w", controlKey:true}
-			]
-			}
-			ApplicationModel.menuDataArr.push(menuObj)
+//			menuObj =	{ label:"File", id:"file", children:[
+//				{ label:"New", id:"new_diagram", data:"new_diagram", controlKey:true, keyEquivalent:"n"},
+//				{ label:"Open File...", id:"open_diagram", data:"open_diagram", keyEquivalent:"o", controlKey:true},
+//				{ type:"separator", id:"separator"},
+//				{ label:"Save", id:"save_diagram",  data:"save_diagram", enabled:false, keyEquivalent:"s", controlKey:true},
+//				{ label:"Save As...", id:"save_diagram_as",  data:"save_diagram_as", enabled:false},
+//				{ type:"separator", id:"separator"},
+//				{ label:"Close", id:"close_diagram", data:"close_diagram", enabled:false, keyEquivalent:"w", controlKey:true}
+//			]
+//			}
+//			ApplicationModel.menuDataArr.push(menuObj)
 			
 			
 			menuObj =	{ label:"Diagram", id:"diagram",  enabled:false, children:[
@@ -189,15 +189,15 @@ package com.simplediagrams.model
 			
 			
 			
-			defaultFileDirectory = File.userDirectory.resolvePath("SimpleDiagrams")
-						
-			if (!defaultFileDirectory.exists)
-			{
-				defaultFileDirectory.createDirectory()
-			}			
+//			defaultFileDirectory = File.userDirectory.resolvePath("SimpleDiagrams")
+//						
+//			if (!defaultFileDirectory.exists)
+//			{
+//				defaultFileDirectory.createDirectory()
+//			}			
 			
-			nagWindowTimer = new Timer(1000 * 60 * 5) 			
-			nagWindowTimer.addEventListener(TimerEvent.TIMER, onNagWindowTimer)
+//			nagWindowTimer = new Timer(1000 * 60 * 5) 			
+//			nagWindowTimer.addEventListener(TimerEvent.TIMER, onNagWindowTimer)
 				
 			// Read in fonts available on the user's machine and make available to controls 
 			var fonts:Array = Font.enumerateFonts(true)
@@ -267,8 +267,10 @@ package com.simplediagrams.model
 		
 		public function get firstInstallDate():Date
 		{
-			var dateBA:ByteArray = EncryptedLocalStore.getItem("firstInstallDate")
-			return new Date(Number(dateBA.readUTFBytes(dateBA.length)))
+			//doon
+			return null
+//			var dateBA:ByteArray = EncryptedLocalStore.getItem("firstInstallDate")
+//			return new Date(Number(dateBA.readUTFBytes(dateBA.length)))
 		}
 		
 		public function fontAvailable(fontName:String):Boolean

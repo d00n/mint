@@ -4,13 +4,13 @@ package com.simplediagrams.business
 	import com.simplediagrams.model.*;
 	import com.simplediagrams.util.Logger;
 	
-	import flash.data.SQLConnection;
-	import flash.data.SQLStatement;
-	import flash.errors.SQLError;
+//	import flash.data.SQLConnection;
+//	import flash.data.SQLStatement;
+//	import flash.errors.SQLError;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
-	import flash.events.SQLErrorEvent;
-	import flash.events.SQLEvent;
+//	import flash.events.SQLErrorEvent;
+//	import flash.events.SQLEvent;
 //	import flash.filesystem.File;
 	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;
@@ -43,14 +43,14 @@ package com.simplediagrams.business
 		private var _dbLocation:String = "db/simplediagram.sqlite"	
 		
 		private var _map:Object = new Object()
-		private var _sqlConnection:SQLConnection
+//		private var _sqlConnection:SQLConnection
 //		private var _dbFile:File
 		
 		//custom SQL commands
-		private var findByForeignKeyStmt:SQLStatement
-		private var getDBVersionStmt:SQLStatement
-		private var setDBVersionStmt:SQLStatement
-		private var removeAllSymbolsFromDiagramStmt:SQLStatement
+//		private var findByForeignKeyStmt:SQLStatement
+//		private var getDBVersionStmt:SQLStatement
+//		private var setDBVersionStmt:SQLStatement
+//		private var removeAllSymbolsFromDiagramStmt:SQLStatement
 		
 		public function DBManager()
 		{
@@ -59,13 +59,14 @@ package com.simplediagrams.business
 		
 		public function close():void
 		{
-			if (sqlConnection.connected)
-				sqlConnection.close()
+//			if (sqlConnection.connected)
+//				sqlConnection.close()
 		}
 		
 		public function get isConnected():Boolean
 		{
-			return sqlConnection.connected
+//			return sqlConnection.connected
+			return false
 		}
 				
 		public function get dbLocation():String
@@ -75,11 +76,11 @@ package com.simplediagrams.business
 		
 		public function set dbLocation(value:String):void
 		{
-			if (sqlConnection.connected)
-			{
-				throw new Error("Can't change dbLocation after sqlConnection has been made")
-			}
-			_dbLocation = value
+//			if (sqlConnection.connected)
+//			{
+//				throw new Error("Can't change dbLocation after sqlConnection has been made")
+//			}
+//			_dbLocation = value
 		}
 		
 		
@@ -103,474 +104,492 @@ package com.simplediagrams.business
 		
 		public function findByID(c:Class, id:Number):Object
 		{
-			if (id==0) throw new Error("ID cannot be 0")
-	
-			if (!_map[c]) loadMetadata(c);
-			var stmt:SQLStatement = _map[c].findStmt
-			var identity:Object = _map[c].identity;
-		
-			stmt.parameters[":id"] = id
-			stmt.execute()
-			var result:Object = stmt.getResult().data
-			if (result==null) return null
-			var o:Object = typeObject(result[0],c)
-			return o
+			//doon
+			return null
+
 			
+//			if (id==0) throw new Error("ID cannot be 0")
+//	
+//			if (!_map[c]) loadMetadata(c);
+//			var stmt:SQLStatement = _map[c].findStmt
+//			var identity:Object = _map[c].identity;
+//		
+//			stmt.parameters[":id"] = id
+//			stmt.execute()
+//			var result:Object = stmt.getResult().data
+//			if (result==null) return null
+//			var o:Object = typeObject(result[0],c)
+//			return o
+						
 		}
 		
 		public function findByName(c:Class, name:String):Object
 		{
-			if (name=="") throw new Error("Name cannot be empty")
-	
-			if (!_map[c]) loadMetadata(c);
-			var stmt:SQLStatement = _map[c].findByNameStmt
-			var identity:Object = _map[c].identity;
+			//doon
+			return null
 			
-			stmt.parameters[":name"] = name
-			Logger.debug(" findByName stmt" + stmt.text)
-			stmt.execute()
-			
-			// Return array typed objects
-			var result:Array = stmt.getResult().data;
-			Logger.debug(" findAll stmt: " + stmt.text.toString())
-			if (result==null) return new ArrayCollection()
-			return typeArray(result, c);
+//			if (name=="") throw new Error("Name cannot be empty")
+//	
+//			if (!_map[c]) loadMetadata(c);
+//			var stmt:SQLStatement = _map[c].findByNameStmt
+//			var identity:Object = _map[c].identity;
+//			
+//			stmt.parameters[":name"] = name
+//			Logger.debug(" findByName stmt" + stmt.text)
+//			stmt.execute()
+//			
+//			// Return array typed objects
+//			var result:Array = stmt.getResult().data;
+//			Logger.debug(" findAll stmt: " + stmt.text.toString())
+//			if (result==null) return new ArrayCollection()
+//			return typeArray(result, c);
 			
 		}
 		
 		public function findFirstByName(c:Class, name:String):Object
 		{
-			//Logger.debug(" findByName c:" + c + " name: " + name)
-			if (name=="") throw new Error("Name cannot be empty")
-	
-			if (!_map[c]) loadMetadata(c);
-			var stmt:SQLStatement = _map[c].findByNameStmt
-			var identity:Object = _map[c].identity;
+			//doon
+			return null
 			
-			stmt.parameters[":name"] = name
-			Logger.debug(" findByName stmt" + stmt.text)
-			stmt.execute()
-			
-			// Return first typed object in results
-			var o:Object = stmt.getResult().data
-			if (o==null) return null
-			return typeObject(o[0],c)
+//			//Logger.debug(" findByName c:" + c + " name: " + name)
+//			if (name=="") throw new Error("Name cannot be empty")
+//	
+//			if (!_map[c]) loadMetadata(c);
+//			var stmt:SQLStatement = _map[c].findByNameStmt
+//			var identity:Object = _map[c].identity;
+//			
+//			stmt.parameters[":name"] = name
+//			Logger.debug(" findByName stmt" + stmt.text)
+//			stmt.execute()
+//			
+//			// Return first typed object in results
+//			var o:Object = stmt.getResult().data
+//			if (o==null) return null
+//			return typeObject(o[0],c)
 		}
 		
 				
 		public function findByForeignKey(c:Class, foreignKeyColumnName:String, foreignKeyID:int):ArrayCollection
 		{
-			if (foreignKeyColumnName=="") throw new Error("foreignKeyColumnName cannot be empty")
-			if (foreignKeyID<1) throw new Error("foreignKey must be greater than 0")
+			//doon
+			return null
 			
-			if (!_map[c]) loadMetadata(c);
-						
-			var tableName:String = _map[c].table
-			var stmt:SQLStatement = new SQLStatement()
-			stmt.sqlConnection = sqlConnection
-			stmt.text = "SELECT * FROM "+ tableName +" WHERE " + foreignKeyColumnName +"=:foreignKeyID"	
-			//stmt.parameters[":foreignKeyColumnName"] = foreignKeyColumnName	
-			stmt.parameters[":foreignKeyID"] = foreignKeyID		
-			
-			stmt.execute()	
-						
-			var result:Array = stmt.getResult().data;
-			if (result==null) return new ArrayCollection()
-			return typeArray(result, c);
+//			if (foreignKeyColumnName=="") throw new Error("foreignKeyColumnName cannot be empty")
+//			if (foreignKeyID<1) throw new Error("foreignKey must be greater than 0")
+//			
+//			if (!_map[c]) loadMetadata(c);
+//						
+//			var tableName:String = _map[c].table
+//			var stmt:SQLStatement = new SQLStatement()
+//			stmt.sqlConnection = sqlConnection
+//			stmt.text = "SELECT * FROM "+ tableName +" WHERE " + foreignKeyColumnName +"=:foreignKeyID"	
+//			//stmt.parameters[":foreignKeyColumnName"] = foreignKeyColumnName	
+//			stmt.parameters[":foreignKeyID"] = foreignKeyID		
+//			
+//			stmt.execute()	
+//						
+//			var result:Array = stmt.getResult().data;
+//			if (result==null) return new ArrayCollection()
+//			return typeArray(result, c);
 		}
 		
 		public function findFirst(c:Class):Object
 		{
-			//Logger.info("#DBM: findFirst c:" + c)
-			// If not yet done, load the metadata for this class
-			if (!_map[c]) loadMetadata(c);
-			var stmt:SQLStatement = _map[c].findFirstStmt;
-			stmt.execute();
-			// Return typed object
-			var o:Object = stmt.getResult().data
-			if (o==null) return null
-			return typeObject(o[0],c)
+			//doon
+			return null
+			
+//			//Logger.info("#DBM: findFirst c:" + c)
+//			// If not yet done, load the metadata for this class
+//			if (!_map[c]) loadMetadata(c);
+//			var stmt:SQLStatement = _map[c].findFirstStmt;
+//			stmt.execute();
+//			// Return typed object
+//			var o:Object = stmt.getResult().data
+//			if (o==null) return null
+//			return typeObject(o[0],c)
 		}
 		
 		public function findAll(c:Class):ArrayCollection
 		{
-			// If not yet done, load the metadata for this class
-			if (!_map[c]) loadMetadata(c);
-			var stmt:SQLStatement = _map[c].findAllStmt;
-			stmt.execute();
-			// Return typed objects
-			var result:Array = stmt.getResult().data;
-			if (result==null) return new ArrayCollection()
-			return typeArray(result, c);
+			//doon
+			return null
+			
+//			// If not yet done, load the metadata for this class
+//			if (!_map[c]) loadMetadata(c);
+//			var stmt:SQLStatement = _map[c].findAllStmt;
+//			stmt.execute();
+//			// Return typed objects
+//			var result:Array = stmt.getResult().data;
+//			if (result==null) return new ArrayCollection()
+//			return typeArray(result, c);
 		}
 		
 		/** @returns id of object saved */
 		
 		public function save(o:Object, createWithID:int=0):uint
 		{
-			Logger.debug(" save() o: " + o)
-			var c:Class = Class(getDefinitionByName(getQualifiedClassName(o)));
-			Logger.debug("c: " + c, this)
-			var objectID:uint //id of object being saved
-						
-			if (!_map[c] || _map[c].identity==null) loadMetadata(c);
-						
-			var identity:Object = _map[c].identity;
-											
-			// Check if the object has an identity
-			try
-			{
-				if (createWithID>0)
-				{
-					objectID = createItem(o,c, createWithID)	
-				}				
-				else if (o[identity.field]>0)
-				{
-					// If yes, we deal with an update
-					updateItem(o,c);
-					objectID = o.id
-				}
-				else
-				{
-					// If no, this is a new item
-					objectID = createItem(o,c);
-				}
-				return objectID
-			}
-			catch(err:Error)
-			{
-				Logger.error("database error on save: " + err + " " + err.message, this)
-				//if database locked, just show Alert
-				if (err.errorID == 3119)
-				{
-					Alert.show("Database is locked. Please close any programs using the database and try again.")
-					return null
-				}
-				throw err
-			}
+//			Logger.debug(" save() o: " + o)
+//			var c:Class = Class(getDefinitionByName(getQualifiedClassName(o)));
+//			Logger.debug("c: " + c, this)
+//			var objectID:uint //id of object being saved
+//						
+//			if (!_map[c] || _map[c].identity==null) loadMetadata(c);
+//						
+//			var identity:Object = _map[c].identity;
+//											
+//			// Check if the object has an identity
+//			try
+//			{
+//				if (createWithID>0)
+//				{
+//					objectID = createItem(o,c, createWithID)	
+//				}				
+//				else if (o[identity.field]>0)
+//				{
+//					// If yes, we deal with an update
+//					updateItem(o,c);
+//					objectID = o.id
+//				}
+//				else
+//				{
+//					// If no, this is a new item
+//					objectID = createItem(o,c);
+//				}
+//				return objectID
+//			}
+//			catch(err:Error)
+//			{
+//				Logger.error("database error on save: " + err + " " + err.message, this)
+//				//if database locked, just show Alert
+//				if (err.errorID == 3119)
+//				{
+//					Alert.show("Database is locked. Please close any programs using the database and try again.")
+//					return null
+//				}
+//				throw err
+//			}
 			return null
 		}
 		
 		
 		public function remove(o:Object):void
 		{
-			var c:Class = Class(getDefinitionByName(getQualifiedClassName(o)));
-			// If not yet done, load the metadata for this class
-			if (!_map[c]) loadMetadata(c)
-			var identity:Object = _map[c].identity
-			var stmt:SQLStatement = _map[c].deleteStmt
-			stmt.parameters[":"+identity.field] = o[identity.field]
-			stmt.execute()
+//			var c:Class = Class(getDefinitionByName(getQualifiedClassName(o)));
+//			// If not yet done, load the metadata for this class
+//			if (!_map[c]) loadMetadata(c)
+//			var identity:Object = _map[c].identity
+//			var stmt:SQLStatement = _map[c].deleteStmt
+//			stmt.parameters[":"+identity.field] = o[identity.field]
+//			stmt.execute()
 		}
 		
 		public function removeByName(o:Object, name:String):void
 		{
-			var c:Class = Class(getDefinitionByName(getQualifiedClassName(o)))
-			// If not yet done, load the metadata for this class
-			if (!_map[c]) loadMetadata(c)
-			var stmt:SQLStatement = _map[c].deleteByNameStmt
-			stmt.parameters[":name"] = name
-			stmt.execute();
+//			var c:Class = Class(getDefinitionByName(getQualifiedClassName(o)))
+//			// If not yet done, load the metadata for this class
+//			if (!_map[c]) loadMetadata(c)
+//			var stmt:SQLStatement = _map[c].deleteByNameStmt
+//			stmt.parameters[":name"] = name
+//			stmt.execute();
 		}
 		
-		public function removeByID(o:Object, id:uint):void
-		{
-			var c:Class = Class(getDefinitionByName(getQualifiedClassName(o)))
-			// If not yet done, load the metadata for this class
-			if (!_map[c]) loadMetadata(c)
-			var stmt:SQLStatement = _map[c].deleteByIDStmt
-			stmt.parameters[":id"] = id
-			stmt.execute();
+//		public function removeByID(o:Object, id:uint):void
+//			var c:Class = Class(getDefinitionByName(getQualifiedClassName(o)))
+//			// If not yet done, load the metadata for this class
+//			if (!_map[c]) loadMetadata(c)
+//			var stmt:SQLStatement = _map[c].deleteByIDStmt
+//			stmt.parameters[":id"] = id
+//			stmt.execute();
 		}
 		
 		/* ********************** */
 		/* Hard coded functions   */
 		/* ********************** */
 		
-		public function removeAllSymbolsFromDiagram(diagramID:int):void
-		{
-			Logger.debug(" removeAllSymbolsFromDiagram() diagramID: " + diagramID)
-			if (diagramID<1) throw new Error("diagramID must be greater than 0")
-									
-			removeAllSymbolsFromDiagramStmt.parameters[":diagramID"] = diagramID			
-			removeAllSymbolsFromDiagramStmt.execute()				
-		}
+//		public function removeAllSymbolsFromDiagram(diagramID:int):void
+//		{
+//			Logger.debug(" removeAllSymbolsFromDiagram() diagramID: " + diagramID)
+//			if (diagramID<1) throw new Error("diagramID must be greater than 0")
+//									
+//			removeAllSymbolsFromDiagramStmt.parameters[":diagramID"] = diagramID			
+//			removeAllSymbolsFromDiagramStmt.execute()				
+//		}
+//		
+//		/* *******************/
+//		/* Private function  */
+//		/* *******************/
+//		
+//		private function setupSQLCommands():void
+//		{
+////			Logger.debug(" setupSQLCommands()")
+//			
+//					
+//			/* Why won't air allow me to parameterize the table name? Can't use this stored query below */
+//			findByForeignKeyStmt = new SQLStatement()
+//			findByForeignKeyStmt.sqlConnection = sqlConnection
+//			findByForeignKeyStmt.text = "SELECT * FROM :tableName WHERE :foreignKeyColumnName=:foreignKeyID"
+//			
+//			getDBVersionStmt = new SQLStatement()
+//			getDBVersionStmt.sqlConnection = sqlConnection
+//			getDBVersionStmt.text = "SELECT version FROM schema_migrations ORDER BY version DESC limit 1" //get most recent version
+//			
+//			setDBVersionStmt = new SQLStatement()
+//			setDBVersionStmt.sqlConnection = sqlConnection
+//			setDBVersionStmt.text = "INSERT INTO schema_migrations (version) values (:version)" //set most recent version
+//			
+//			removeAllSymbolsFromDiagramStmt = new SQLStatement()
+//			removeAllSymbolsFromDiagramStmt.sqlConnection = sqlConnection
+//			removeAllSymbolsFromDiagramStmt.text = "DELETE FROM symbols WHERE diagram_id=:diagramID" //set most recent version
+//			
+//			
+//		}
+//		
+//		private function onConnectionOpen(event:SQLEvent):void
+//		{
+//			Logger.debug(" onConnectionOpen()", this)
+//			setupSQLCommands()
+//			dispatchEvent(event)
+//		}
+//		
+//		private function onConnectionError(event:SQLErrorEvent):void
+//		{
+//			Logger.debug(" onConnectionError()", this)
+//			dispatchEvent(event)				
+//		}
+//		
+//		private function createItem(o:Object, c:Class, createWithID:int = 0):uint
+//		{
+//			var stmt:SQLStatement
+//			
+//			if (createWithID>0)
+//			{
+//				stmt = _map[c].insertWithIDStmt
+//				stmt.parameters[":id"] = createWithID
+//			}	
+//			else
+//			{
+//				stmt = _map[c].insertStmt	
+//			}		
+//						
+//			var identity:Object = _map[c].identity
+//			var fields:ArrayCollection = _map[c].fields
+//			for (var i:int = 0; i<fields.length; i++)
+//			{
+//				var field:String = fields.getItemAt(i).field
+//				if (field != identity.field)
+//				{
+//					stmt.parameters[":" + field] = o[field]
+//				}
+//			}
+//			stmt.execute()
+//			o[identity.field] = stmt.getResult().lastInsertRowID
+//			return o[identity.field]
+//		}
+//		
+//		private function updateItem(o:Object, c:Class):void
+//		{
+//			var stmt:SQLStatement = _map[c].updateStmt;
+//			var fields:ArrayCollection = _map[c].fields;
+//			for (var i:int = 0; i<fields.length; i++)
+//			{
+//				var field:String = fields.getItemAt(i).field;
+//				stmt.parameters[":" + field] = o[field];
+//			}
+//			stmt.execute();
+//		}
+//		
+//		private function loadMetadata(c:Class):void
+//		{			
+//			_map[c] = new Object();
+//			var xml:XML = describeType(new c());
+//			var table:String = xml.metadata.(@name=="Table").arg.(@key=="name").@value;
+//			_map[c].table = table;
+//			
+//			_map[c].fields = new ArrayCollection();
+//			var variables:XMLList = xml.accessor;
+//
+//			var insertParams:String = "";
+//			var updateSQL:String = "UPDATE " + table + " SET ";
+//			var insertSQL:String = "INSERT INTO " + table + " (";
+//			var insertWithIDSQL:String = "INSERT INTO " + table + "(id,";
+//			
+//			//var createSQL:String = "CREATE TABLE IF NOT EXISTS " + table + " (";
+//						
+//            for (var i:int = 0 ; i < variables.length() ; i++) 
+//            {
+//            	var field:String = variables[i].@name.toString();
+//            					
+//				var column:String;
+//				//skip if labeled with Transient metadata
+//				
+//				if (variables[i].metadata.(@name=="Transient").length()>0)
+//				{
+//					continue
+//				}				            	
+//            	if (variables[i].metadata.(@name=="Column").length()>0)
+//            	{
+//            		column = variables[i].metadata.(@name=="Column").arg.(@key=="name").@value.toString(); 
+//            	} 
+//            	else
+//            	{
+//            		if (field.indexOf("_")==0)
+//            		{
+//            			column = field.slice(1)
+//            		}
+//            		else
+//            		{
+//						column = field;					
+//            		}
+//            	}
+//            	
+//        		_map[c].fields.addItem({field: field, column: column});
+//        		        		
+//            	if (variables[i].metadata.(@name=="Id").length()>0)
+//            	{
+//            		_map[c].identity = {field: field, column: column};            		
+//            	}
+//				else            	
+//				{
+//					insertSQL += column + ",";
+//					insertWithIDSQL += column + ",";
+//					insertParams += ":" + field + ",";
+//					updateSQL += column + "=:" + field + ",";	
+//				}
+//				
+//            }
+//            			            
+//            insertSQL = insertSQL.substring(0, insertSQL.length-1) + ") VALUES (" + insertParams
+//            insertSQL = insertSQL.substring(0, insertSQL.length-1) + ")"
+//            			
+//            insertWithIDSQL = insertWithIDSQL + ") VALUES (:id," + insertParams
+//            insertWithIDSQL = insertWithIDSQL.substring(0, insertWithIDSQL.length-1) + ")"
+//           			
+//			updateSQL = updateSQL.substring(0, updateSQL.length-1)
+//			updateSQL += " WHERE " + _map[c].identity.column + "=:" + _map[c].identity.field
+//			
+//			
+//			
+//			var deleteSQL:String = "DELETE FROM " + table + " WHERE " + _map[c].identity.column + "=:" + _map[c].identity.field
+//			var deleteByNameSQL:String = "DELETE FROM " + table + " WHERE name=:name"
+//			var deleteByIDSQL:String = "DELETE FROM " + table + " WHERE id=:id"
+//			var findSQL:String = "SELECT * FROM " + table + " WHERE id=:" + _map[c].identity.field
+//			var findByNameSQL:String = "SELECT * FROM " + table + " WHERE name=:name"
+//			var findFirstSQL:String = "SELECT * FROM " + table + " LIMIT 1"
+//			var findByForeignKeySQL:String = "SELECT * FROM " + table + " WHERE :foreignKeyColumnName=:foreignKeyID"
+//			
+//			var stmt:SQLStatement = new SQLStatement()
+//			stmt.sqlConnection = sqlConnection
+//			stmt.text = insertSQL
+//			_map[c].insertStmt = stmt
+//				
+//			Logger.debug("_map[c].insertStmt: " + _map[c].insertStmt, this)
+//			
+//			stmt = new SQLStatement()			
+//			stmt.sqlConnection = sqlConnection
+//			stmt.text = insertWithIDSQL
+//			_map[c].insertWithIDStmt = stmt
+//			
+//			stmt = new SQLStatement()
+//			stmt.sqlConnection = sqlConnection
+//			stmt.text = updateSQL
+//			_map[c].updateStmt = stmt
+//			
+//			stmt = new SQLStatement()
+//			stmt.sqlConnection = sqlConnection
+//			stmt.text = deleteSQL
+//			_map[c].deleteStmt = stmt
+//			
+//			stmt = new SQLStatement()
+//			stmt.sqlConnection = sqlConnection
+//			stmt.text = deleteByIDSQL
+//			_map[c].deleteByIDStmt = stmt
+//			
+//			stmt = new SQLStatement()
+//			stmt.sqlConnection = sqlConnection
+//			stmt.text = deleteByNameSQL
+//			_map[c].deleteByNameStmt = stmt
+//			
+//			stmt = new SQLStatement()
+//			stmt.sqlConnection = sqlConnection
+//			stmt.text = "SELECT * FROM " + table
+//			_map[c].findAllStmt = stmt
+//			
+//			stmt = new SQLStatement()
+//			stmt.sqlConnection = sqlConnection
+//			stmt.text = findSQL
+//			_map[c].findStmt = stmt
+//			
+//			stmt = new SQLStatement()
+//			stmt.sqlConnection = sqlConnection
+//			stmt.text = findByNameSQL
+//			_map[c].findByNameStmt = stmt
+//			
+//			stmt = new SQLStatement()
+//			stmt.sqlConnection = sqlConnection
+//			stmt.text = findFirstSQL
+//			_map[c].findFirstStmt = stmt
+//			
+//			stmt = new SQLStatement()
+//			stmt.sqlConnection = sqlConnection
+//			stmt.text = findByForeignKeySQL
+//			_map[c].findByForeignKeyStmt = stmt
+//			
+//			//stmt = new SQLStatement();
+//			//stmt.sqlConnection = sqlConnection;
+//			//stmt.text = createSQL;
+//			//stmt.execute();
+//		}
+//		
+//		protected function typeArray(a:Array, c:Class):ArrayCollection
+//		{
+//			if (a==null) return null;
+//			if (!_map[c]) loadMetadata(c);
+//			var ac:ArrayCollection = new ArrayCollection();
+//			var len:int = a.length
+//			for (var i:int=0; i<len; i++)
+//			{
+//				ac.addItem(typeObject(a[i],c));
+//			}
+//			return ac;			
+//		}
+//		
+//		protected function typeObject(o:Object, c:Class):Object
+//		{
+//			
+//			var instance:Object = new c();
+//			var fields:ArrayCollection = _map[c].fields;
+//			
+//			var len:int = fields.length
+//			for (var i:int; i<len; i++)
+//			{
+//				var item:Object = fields.getItemAt(i);
+//				instance[item.field] = o[item.column];	
+//			}
+//			return instance;
+//		}
+//		
+//		protected function getSQLType(asType:String):String
+//		{
+//			Logger.debug("astype: " + asType);
+//			if (asType == "int" || asType == "uint")
+//				return "INTEGER";
+//			else if (asType == "Number")
+//				return "REAL";
+//			else if (asType == "flash.utils::ByteArray")
+//				return "BLOB";
+//			else if (asType == "date")
+//				return "DATE"
+//			else
+//				return "TEXT";				
+//		}
 		
-		/* *******************/
-		/* Private function  */
-		/* *******************/
-		
-		private function setupSQLCommands():void
-		{
-			Logger.debug(" setupSQLCommands()")
-			
-					
-			/* Why won't air allow me to parameterize the table name? Can't use this stored query below */
-			findByForeignKeyStmt = new SQLStatement()
-			findByForeignKeyStmt.sqlConnection = sqlConnection
-			findByForeignKeyStmt.text = "SELECT * FROM :tableName WHERE :foreignKeyColumnName=:foreignKeyID"
-			
-			getDBVersionStmt = new SQLStatement()
-			getDBVersionStmt.sqlConnection = sqlConnection
-			getDBVersionStmt.text = "SELECT version FROM schema_migrations ORDER BY version DESC limit 1" //get most recent version
-			
-			setDBVersionStmt = new SQLStatement()
-			setDBVersionStmt.sqlConnection = sqlConnection
-			setDBVersionStmt.text = "INSERT INTO schema_migrations (version) values (:version)" //set most recent version
-			
-			removeAllSymbolsFromDiagramStmt = new SQLStatement()
-			removeAllSymbolsFromDiagramStmt.sqlConnection = sqlConnection
-			removeAllSymbolsFromDiagramStmt.text = "DELETE FROM symbols WHERE diagram_id=:diagramID" //set most recent version
-			
-			
-		}
-		
-		private function onConnectionOpen(event:SQLEvent):void
-		{
-			Logger.debug(" onConnectionOpen()", this)
-			setupSQLCommands()
-			dispatchEvent(event)
-		}
-		
-		private function onConnectionError(event:SQLErrorEvent):void
-		{
-			Logger.debug(" onConnectionError()", this)
-			dispatchEvent(event)				
-		}
-		
-		private function createItem(o:Object, c:Class, createWithID:int = 0):uint
-		{
-			var stmt:SQLStatement
-			
-			if (createWithID>0)
-			{
-				stmt = _map[c].insertWithIDStmt
-				stmt.parameters[":id"] = createWithID
-			}	
-			else
-			{
-				stmt = _map[c].insertStmt	
-			}		
-						
-			var identity:Object = _map[c].identity
-			var fields:ArrayCollection = _map[c].fields
-			for (var i:int = 0; i<fields.length; i++)
-			{
-				var field:String = fields.getItemAt(i).field
-				if (field != identity.field)
-				{
-					stmt.parameters[":" + field] = o[field]
-				}
-			}
-			stmt.execute()
-			o[identity.field] = stmt.getResult().lastInsertRowID
-			return o[identity.field]
-		}
-		
-		private function updateItem(o:Object, c:Class):void
-		{
-			var stmt:SQLStatement = _map[c].updateStmt;
-			var fields:ArrayCollection = _map[c].fields;
-			for (var i:int = 0; i<fields.length; i++)
-			{
-				var field:String = fields.getItemAt(i).field;
-				stmt.parameters[":" + field] = o[field];
-			}
-			stmt.execute();
-		}
-		
-		private function loadMetadata(c:Class):void
-		{			
-			_map[c] = new Object();
-			var xml:XML = describeType(new c());
-			var table:String = xml.metadata.(@name=="Table").arg.(@key=="name").@value;
-			_map[c].table = table;
-			
-			_map[c].fields = new ArrayCollection();
-			var variables:XMLList = xml.accessor;
-
-			var insertParams:String = "";
-			var updateSQL:String = "UPDATE " + table + " SET ";
-			var insertSQL:String = "INSERT INTO " + table + " (";
-			var insertWithIDSQL:String = "INSERT INTO " + table + "(id,";
-			
-			//var createSQL:String = "CREATE TABLE IF NOT EXISTS " + table + " (";
-						
-            for (var i:int = 0 ; i < variables.length() ; i++) 
-            {
-            	var field:String = variables[i].@name.toString();
-            					
-				var column:String;
-				//skip if labeled with Transient metadata
-				
-				if (variables[i].metadata.(@name=="Transient").length()>0)
-				{
-					continue
-				}				            	
-            	if (variables[i].metadata.(@name=="Column").length()>0)
-            	{
-            		column = variables[i].metadata.(@name=="Column").arg.(@key=="name").@value.toString(); 
-            	} 
-            	else
-            	{
-            		if (field.indexOf("_")==0)
-            		{
-            			column = field.slice(1)
-            		}
-            		else
-            		{
-						column = field;					
-            		}
-            	}
-            	
-        		_map[c].fields.addItem({field: field, column: column});
-        		        		
-            	if (variables[i].metadata.(@name=="Id").length()>0)
-            	{
-            		_map[c].identity = {field: field, column: column};            		
-            	}
-				else            	
-				{
-					insertSQL += column + ",";
-					insertWithIDSQL += column + ",";
-					insertParams += ":" + field + ",";
-					updateSQL += column + "=:" + field + ",";	
-				}
-				
-            }
-            			            
-            insertSQL = insertSQL.substring(0, insertSQL.length-1) + ") VALUES (" + insertParams
-            insertSQL = insertSQL.substring(0, insertSQL.length-1) + ")"
-            			
-            insertWithIDSQL = insertWithIDSQL + ") VALUES (:id," + insertParams
-            insertWithIDSQL = insertWithIDSQL.substring(0, insertWithIDSQL.length-1) + ")"
-           			
-			updateSQL = updateSQL.substring(0, updateSQL.length-1)
-			updateSQL += " WHERE " + _map[c].identity.column + "=:" + _map[c].identity.field
-			
-			
-			
-			var deleteSQL:String = "DELETE FROM " + table + " WHERE " + _map[c].identity.column + "=:" + _map[c].identity.field
-			var deleteByNameSQL:String = "DELETE FROM " + table + " WHERE name=:name"
-			var deleteByIDSQL:String = "DELETE FROM " + table + " WHERE id=:id"
-			var findSQL:String = "SELECT * FROM " + table + " WHERE id=:" + _map[c].identity.field
-			var findByNameSQL:String = "SELECT * FROM " + table + " WHERE name=:name"
-			var findFirstSQL:String = "SELECT * FROM " + table + " LIMIT 1"
-			var findByForeignKeySQL:String = "SELECT * FROM " + table + " WHERE :foreignKeyColumnName=:foreignKeyID"
-			
-			var stmt:SQLStatement = new SQLStatement()
-			stmt.sqlConnection = sqlConnection
-			stmt.text = insertSQL
-			_map[c].insertStmt = stmt
-				
-			Logger.debug("_map[c].insertStmt: " + _map[c].insertStmt, this)
-			
-			stmt = new SQLStatement()			
-			stmt.sqlConnection = sqlConnection
-			stmt.text = insertWithIDSQL
-			_map[c].insertWithIDStmt = stmt
-			
-			stmt = new SQLStatement()
-			stmt.sqlConnection = sqlConnection
-			stmt.text = updateSQL
-			_map[c].updateStmt = stmt
-			
-			stmt = new SQLStatement()
-			stmt.sqlConnection = sqlConnection
-			stmt.text = deleteSQL
-			_map[c].deleteStmt = stmt
-			
-			stmt = new SQLStatement()
-			stmt.sqlConnection = sqlConnection
-			stmt.text = deleteByIDSQL
-			_map[c].deleteByIDStmt = stmt
-			
-			stmt = new SQLStatement()
-			stmt.sqlConnection = sqlConnection
-			stmt.text = deleteByNameSQL
-			_map[c].deleteByNameStmt = stmt
-			
-			stmt = new SQLStatement()
-			stmt.sqlConnection = sqlConnection
-			stmt.text = "SELECT * FROM " + table
-			_map[c].findAllStmt = stmt
-			
-			stmt = new SQLStatement()
-			stmt.sqlConnection = sqlConnection
-			stmt.text = findSQL
-			_map[c].findStmt = stmt
-			
-			stmt = new SQLStatement()
-			stmt.sqlConnection = sqlConnection
-			stmt.text = findByNameSQL
-			_map[c].findByNameStmt = stmt
-			
-			stmt = new SQLStatement()
-			stmt.sqlConnection = sqlConnection
-			stmt.text = findFirstSQL
-			_map[c].findFirstStmt = stmt
-			
-			stmt = new SQLStatement()
-			stmt.sqlConnection = sqlConnection
-			stmt.text = findByForeignKeySQL
-			_map[c].findByForeignKeyStmt = stmt
-			
-			//stmt = new SQLStatement();
-			//stmt.sqlConnection = sqlConnection;
-			//stmt.text = createSQL;
-			//stmt.execute();
-		}
-		
-		protected function typeArray(a:Array, c:Class):ArrayCollection
-		{
-			if (a==null) return null;
-			if (!_map[c]) loadMetadata(c);
-			var ac:ArrayCollection = new ArrayCollection();
-			var len:int = a.length
-			for (var i:int=0; i<len; i++)
-			{
-				ac.addItem(typeObject(a[i],c));
-			}
-			return ac;			
-		}
-		
-		protected function typeObject(o:Object, c:Class):Object
-		{
-			
-			var instance:Object = new c();
-			var fields:ArrayCollection = _map[c].fields;
-			
-			var len:int = fields.length
-			for (var i:int; i<len; i++)
-			{
-				var item:Object = fields.getItemAt(i);
-				instance[item.field] = o[item.column];	
-			}
-			return instance;
-		}
-		
-		protected function getSQLType(asType:String):String
-		{
-			Logger.debug("astype: " + asType);
-			if (asType == "int" || asType == "uint")
-				return "INTEGER";
-			else if (asType == "Number")
-				return "REAL";
-			else if (asType == "flash.utils::ByteArray")
-				return "BLOB";
-			else if (asType == "date")
-				return "DATE"
-			else
-				return "TEXT";				
-		}
-		
-		public function set sqlConnection(sqlConnection:SQLConnection):void
-		{
-			_sqlConnection = sqlConnection;
-		}
-		
-		public function get sqlConnection():SQLConnection
-		{
+//		public function set sqlConnection(sqlConnection:SQLConnection):void
+//		{
+//			_sqlConnection = sqlConnection;
+//		}
+//		
+//		public function get sqlConnection():SQLConnection
+//		{
 //			if (!_sqlConnection)
 //			{
 //				var dbFile:File = File.applicationStorageDirectory.resolvePath("default.db");  
@@ -578,45 +597,45 @@ package com.simplediagrams.business
 //				_sqlConnection.open(dbFile);
 //			}
 //			return _sqlConnection;
-		}
-		
-		
-		public function getDBVersion():Number
-		{		
-			try
-			{
-				getDBVersionStmt.execute()
-				var result:Array = getDBVersionStmt.getResult().data
-				return result[0].version
-			}
-			catch(err:Error)
-			{
-				Logger.error("getDBVersion() couldn't get db version. Error:  "+ err, this)
-				
-			}
-			return NaN
-		}
-		
-		
-		public function setDBVersion(version:Number):void
-		{
-			
-			if (isNaN(version))
-			{
-				Logger.error("setDBVersion() version is NaN", this)
-				return
-			}
-			
-			try
-			{
-				setDBVersionStmt.parameters[":version"] = version
-				setDBVersionStmt.execute()
-			}
-			catch(err:Error)
-			{
-				Logger.error("setDBVersion() couldn't set db version to: " + version+ " Error:  "+ err, this)	
-			}
-		}
+//		}
+//		
+//		
+//		public function getDBVersion():Number
+//		{		
+//			try
+//			{
+//				getDBVersionStmt.execute()
+//				var result:Array = getDBVersionStmt.getResult().data
+//				return result[0].version
+//			}
+//			catch(err:Error)
+//			{
+//				Logger.error("getDBVersion() couldn't get db version. Error:  "+ err, this)
+//				
+//			}
+//			return NaN
+//		}
+//		
+//		
+//		public function setDBVersion(version:Number):void
+//		{
+//			
+//			if (isNaN(version))
+//			{
+//				Logger.error("setDBVersion() version is NaN", this)
+//				return
+//			}
+//			
+//			try
+//			{
+//				setDBVersionStmt.parameters[":version"] = version
+//				setDBVersionStmt.execute()
+//			}
+//			catch(err:Error)
+//			{
+//				Logger.error("setDBVersion() couldn't set db version to: " + version+ " Error:  "+ err, this)	
+//			}
+//		}
 		
 		
 

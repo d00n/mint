@@ -38,7 +38,7 @@ package com.simplediagrams.events
 		public var imageName:String;
 		public static const STYLE_PHOTO:String = "photoStyle";
 		public var sdImageModel:SDImageModel;
-		public var sdID:Number;
+		public var sdID:String;
 		public var sdObjectModel:SDObjectModel;
 		public var addLibraryItemCommand:AddLibraryItemCommand;
 		public var cutCommand:CutCommand;

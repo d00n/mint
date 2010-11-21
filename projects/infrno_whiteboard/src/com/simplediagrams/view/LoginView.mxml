@@ -22,7 +22,7 @@
 			import com.simplediagrams.util.Logger
 			import mx.events.DynamicEvent
 			import mx.validators.Validator
-			import org.swizframework.Swiz
+			
 
 			private var _validators:Array
 			

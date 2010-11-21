@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300"
+		 creationComplete="onCC()"
+		 
+		 >
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			
+			[Bindable]
+			public var text:String =""
+		
+			public var closeButtonVisible:Boolean = false
+				
+				
+			protected function onOK():void
+			{
+				PopUpManager.removePopUp(this)
+			}
+			
+			public function onCC():void
+			{
+				this.closeButton.visible=closeButtonVisible
+			}
+			
+			public function onGoToLibraries():void 
+			{
+				navigateToURL(new URLRequest('http://www.simplediagrams.com/libraries.html'), '_blank')
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:VGroup width="100%" height="100%" paddingTop="10" paddingBottom="10" paddingLeft="10" paddingRight="10">
+		
+		
+		<mx:TextArea htmlText="{text}"
+				width="100%" 
+				height="100%"
+				editable="false"
+			    selectable="false"
+			    borderVisible="false"
+			    contentBackgroundAlpha="0"
+				/>
+		
+		
+		
+		<s:VGroup horizontalAlign="center" width="100%" height="30">
+			<s:Button label="OK" click="onOK()" styleName="blueButton" height="30" width="90"/>
+		</s:VGroup>
+		
+	</s:VGroup>
+	
+	
+</s:TitleWindow>

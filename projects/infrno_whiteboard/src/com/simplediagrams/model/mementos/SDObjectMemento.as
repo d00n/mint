@@ -3,13 +3,13 @@ package com.simplediagrams.model.mementos
 	public class SDObjectMemento implements ITransformMemento
 	{
 		
-		private var _sdID:Number = 0
+		private var _sdID:String = ""
 		private var _x:Number
 		private var _y:Number
 		private var _height:Number
 		private var _width:Number
 		private var _rotation:Number
-		private var _zIndex:int
+		private var _depth:int
 		private var _color:Number
 		
 		public function SDObjectMemento()
@@ -17,12 +17,12 @@ package com.simplediagrams.model.mementos
 		}
 
 		
-		public function get sdID():Number
+		public function get sdID():String
 		{
 			return _sdID;
 		}
 		
-		public function set sdID(value:Number):void
+		public function set sdID(value:String):void
 		{
 			_sdID = value;
 		}
@@ -37,14 +37,14 @@ package com.simplediagrams.model.mementos
 			_color = value;
 		}
 
-		public function get zIndex():int
+		public function get depth():int
 		{
-			return _zIndex;
+			return _depth;
 		}
 
-		public function set zIndex(value:int):void
+		public function set depth(value:int):void
 		{
-			_zIndex = value;
+			_depth = value;
 		}
 
 		public function get rotation():Number
@@ -104,7 +104,7 @@ package com.simplediagrams.model.mementos
 			memento.width = _width
 			memento.height = _height
 			memento.color = _color
-			memento.zIndex = _zIndex
+			memento.depth = _depth
 			memento.rotation = _rotation
 			return memento
 		}

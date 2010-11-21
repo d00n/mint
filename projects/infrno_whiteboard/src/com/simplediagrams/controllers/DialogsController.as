@@ -33,21 +33,26 @@ package com.simplediagrams.controllers
 			_dialogInfo[DownloadLibrariesDialog] = 				{ width:650, height:550 }
 			_dialogInfo[SimpleDiagramsLoginDialog] = 			{ width:450, height:280 }
 			_dialogInfo[BasecampLoginDialog] = 					{ width:450, height:250 }
-			_dialogInfo[FlickrLoginDialog] = 					{ width:450, height:250 }
+			_dialogInfo[YammerLoginDialog] = 					{ width:450, height:250 }
 			_dialogInfo[VerifyQuitDialog] = 					{ width:420, height:130 }
 			_dialogInfo[ExportDiagramToBasecampDialog] = 		{ width:650, height:660 }
-			_dialogInfo[ExportDiagramToFlickrDialog] =	 		{ width:650, height:550 }
+			_dialogInfo[ExportDiagramToYammerDialog] =	 		{ width:650, height:400 }
 			_dialogInfo[OpenDiagramDialog] = 					{ width:770, height:590 }
-			_dialogInfo[ManageLibrariesDialog] = 				{ width:400, height:500 }
-			_dialogInfo[NewDiagramDialog] = 					{ width:350, height:100 }
+			_dialogInfo[ManageLibrariesDialog] = 				{ width:650, height:400 }
+			_dialogInfo[MissingSymbolsDialog] = 				{ width:650, height:400 }
 			_dialogInfo[NewDiagramDialog] = 					{ width:350, height:150 }
 			_dialogInfo[AboutWindow] = 							{ width:620, height:360 }
 			_dialogInfo[PreferencesDialog] = 					{ width:400, height:500 }
 			_dialogInfo[LoadingLibraryPluginsDialog] = 			{ width:400, height:180 }
 			_dialogInfo[LoadingLibraryPluginProgressDialog] = 	{ width:400, height:180 }
 			_dialogInfo[LoadingFileDialog] = 					{ width:400, height:180 }
-		
+			_dialogInfo[UnavailableFontsDialog] = 				{ width:400, height:500 }
+			_dialogInfo[CreateCustomLibraryDialog] = 			{ width:450, height:200 }
+			_dialogInfo[RenameCustomLibraryItemDialog] = 		{ width:450, height:200 }
+			_dialogInfo[DeleteCustomSymbolDialog] =		 		{ width:450, height:200 }
+				
 			FlexGlobals.topLevelApplication.addEventListener(Event.RESIZE, onResize)
+			
 		}
 		
 		protected function onResize(event:Event):void
@@ -79,6 +84,27 @@ package com.simplediagrams.controllers
 			Logger.debug("_curr dialog is now : " + _currDialog, this)
 			return _currDialog 
 			
+		}
+		
+		
+		public function showDeleteCustomSymbolDialog():DeleteCustomSymbolDialog
+		{
+			return showDialog(DeleteCustomSymbolDialog) as DeleteCustomSymbolDialog
+		}
+		
+		public function showRenameCustomLibraryItemDialog():RenameCustomLibraryItemDialog
+		{
+			return showDialog(RenameCustomLibraryItemDialog) as RenameCustomLibraryItemDialog
+		}
+		
+		public function showMissingSymbolsDialog():MissingSymbolsDialog
+		{
+			return showDialog(MissingSymbolsDialog) as MissingSymbolsDialog
+		}
+		
+		public function showCreateCustomLibraryDialog():CreateCustomLibraryDialog
+		{
+			return showDialog(CreateCustomLibraryDialog) as CreateCustomLibraryDialog
 		}
 		
 		public function showLoadingFileDialog():LoadingFileDialog
@@ -121,9 +147,9 @@ package com.simplediagrams.controllers
 			return showDialog(BasecampLoginDialog) as BasecampLoginDialog
 		}
 		
-		public function showGetFlickrLoginDialog():FlickrLoginDialog
+		public function showGetYammerLoginDialog():YammerLoginDialog
 		{
-			return showDialog(FlickrLoginDialog) as FlickrLoginDialog
+			return showDialog(YammerLoginDialog) as YammerLoginDialog
 		}
 		
 		public function showVerifyQuitDialog():VerifyQuitDialog
@@ -136,9 +162,9 @@ package com.simplediagrams.controllers
 			return showDialog(ExportDiagramToBasecampDialog) as ExportDiagramToBasecampDialog
 		}	
 		
-		public function showExportDiagramToFlickrDialog():ExportDiagramToFlickrDialog
+		public function showExportDiagramToYammerDialog():ExportDiagramToYammerDialog
 		{			
-			return showDialog(ExportDiagramToFlickrDialog) as ExportDiagramToFlickrDialog
+			return showDialog(ExportDiagramToYammerDialog) as ExportDiagramToYammerDialog
 		}
 		
 		public function showOpenDiagramDialog():OpenDiagramDialog
@@ -164,6 +190,11 @@ package com.simplediagrams.controllers
 		public function showExportDiagramDialog():ExportDiagramDialog
 		{
 			return showDialog(ExportDiagramDialog) as ExportDiagramDialog
+		}
+		
+		public function showUnavailableFontsDialog():UnavailableFontsDialog
+		{
+			return showDialog(UnavailableFontsDialog) as UnavailableFontsDialog
 		}
 		
 		public function showDiagramPropertiesDialog():DiagramPropertiesDialog
@@ -192,7 +223,6 @@ package com.simplediagrams.controllers
 			}
 			else
 			{
-				Logger.debug("removing dialog: " + _currDialog,this)
 				PopUpManager.removePopUp(_currDialog)
 			}
 			

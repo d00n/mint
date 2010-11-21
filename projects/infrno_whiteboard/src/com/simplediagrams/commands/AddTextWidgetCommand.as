@@ -8,7 +8,7 @@ package com.simplediagrams.commands
 	public class AddTextWidgetCommand extends UndoRedoCommand
 	{
 		private var _diagramModel:DiagramModel
-		public var sdID:Number = 0
+		public var sdID:String = ""
 		public var x:Number
 		public var y:Number
 		public var styleName:String
@@ -37,7 +37,7 @@ package com.simplediagrams.commands
 			var newSDTextAreaModel:SDTextAreaModel = new SDTextAreaModel()			
 			setProperties(newSDTextAreaModel)
 			_diagramModel.addSDObjectModel(newSDTextAreaModel)
-			if (sdID!=0)
+			if (sdID!="")
 			{
 				newSDTextAreaModel.sdID = sdID
 			}

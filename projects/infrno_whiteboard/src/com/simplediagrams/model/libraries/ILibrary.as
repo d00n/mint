@@ -6,17 +6,14 @@ package com.simplediagrams.model.libraries
 
 	public interface ILibrary
 	{
-		function getSDObject(shapeID:String):SDObjectModel
+		function getSDObjectModel(shapeID:String):SDObjectModel
 		
 		function get libraryName():String
 		function set libraryName(value:String):void
 		
 		function get displayName():String
 		function set displayName(value:String):void
-			
-		function get fileName():String
-		function set fileName(value:String):void
-		
+					
 		function get sdLibraryObjectsAC():ArrayCollection
 		function set sdLibraryObjectsAC(ac:ArrayCollection):void
 			
@@ -25,10 +22,17 @@ package com.simplediagrams.model.libraries
 		
 		function get isPlugin():Boolean
 		function set isPlugin(value:Boolean):void
+		
+		function get isCustom():Boolean
+		function set isCustom(value:Boolean):void			
 			
 		function get isPremium():Boolean
 		function set isPremium(value:Boolean):void
+			
+		function get fileName():String
+		function set fileName(value:String):void
 		
-		function getSymbolClass(templateName:String):Class
+		function deleteLibrary():void
+		
 	}
 }

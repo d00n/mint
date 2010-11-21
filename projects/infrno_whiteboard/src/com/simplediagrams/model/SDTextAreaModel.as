@@ -22,8 +22,10 @@ package com.simplediagrams.model
 		private var _fontSize:Number = 12
 		private var _fontWeight:String = "normal"
 		private var _textAlign:String = "left"
+		private var _fontFamily:String = "Arial"
 			
-		private var _startState:SDTextAreaMemento	
+		private var _startState:SDTextAreaMemento
+		
 		
 		public function SDTextAreaModel()
 		{
@@ -58,8 +60,7 @@ package com.simplediagrams.model
 		
 	 	public function set text(value:String):void
 	 	{
-	 		_text = value;
-			Logger.debug("SDTextAreaModel.text value = " + value,this);
+	 		_text = value
 	 	}
 	 	
 	 	
@@ -85,6 +86,18 @@ package com.simplediagrams.model
 		{
 			_fontWeight = value
 		}
+		
+		
+		public function get fontFamily():String
+		{
+			return _fontFamily	
+		}
+		
+		public function set fontFamily(value:String):void
+		{
+			_fontFamily = value
+		}
+		
 		
 		
 		public function get textAlign():String
@@ -117,6 +130,7 @@ package com.simplediagrams.model
 			mem.textAlign = textAlign
 			mem.fontSize = fontSize
 			mem.fontWeight = fontWeight
+			mem.fontFamily = fontFamily
 			mem.styleName = styleName
 			
 			return memento 
@@ -134,6 +148,7 @@ package com.simplediagrams.model
 			textAlign = mem.textAlign
 			fontSize = mem.fontSize
 			fontWeight = mem.fontWeight
+			fontFamily = mem.fontFamily
 			styleName = mem.styleName 
 		}
 		

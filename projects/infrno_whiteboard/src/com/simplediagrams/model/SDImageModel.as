@@ -21,10 +21,12 @@ package com.simplediagrams.model
 	{
 		
 		public static const STYLE_NONE:String = "none"
-		public static const STYLE_PHOTO:String = "photoStyle"
+		public static const STYLE_BORDER:String = "border"
+		public static const STYLE_TAPE:String = "tape"
+		public static const STYLE_BORDER_AND_TAPE:String = "photoStyle";
 		
 		private var _imageData:ByteArray
-		private var _styleName:String = STYLE_NONE;
+		private var _styleName:String = STYLE_BORDER_AND_TAPE;
 		
 		[Transient]
 		public var origWidth:int
@@ -55,7 +57,7 @@ package com.simplediagrams.model
 		{
 			return _imageData;
 		}
-				
+
 		public function set imageData(v:ByteArray):void
 		{
 			_imageData = v;

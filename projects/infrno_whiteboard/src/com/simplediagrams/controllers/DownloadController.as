@@ -8,7 +8,7 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.model.LibraryManager;
 	import com.simplediagrams.model.RegistrationManager;
 	import com.simplediagrams.model.UserModel;
-	import com.simplediagrams.model.libraries.DownloadableLibraryVO;
+	import com.simplediagrams.model.vo.LibraryVO;
 	import com.simplediagrams.util.Logger;
 	import com.simplediagrams.view.dialogs.DownloadLibrariesDialog;
 	import com.simplediagrams.view.dialogs.SimpleDiagramsLoginDialog;
@@ -25,22 +25,22 @@ package com.simplediagrams.controllers
 	public class DownloadController extends AbstractController 
 	{
 		
-		[Autowire(name='downloadManager')]
+		[Inject]
 		public var downloadManager:DownloadManager
 		
-		[Autowire(name='registrationManager')]
+		[Inject]
 		public var registrationManager:RegistrationManager
 		
-		[Autowire(name='dialogsController')]
+		[Inject]
 		public var dialogsController:DialogsController
 		
-		[Autowire(name='libraryManager')]
+		[Inject]
 		public var libraryManager:LibraryManager
 		
-		[Autowire(name='simpleDiagramsDelegate')]
+		[Inject]
 		public var simpleDiagramsDelegate:SimpleDiagramsDelegate;
 		
-		[Autowire(bean="userModel")]
+		[Inject]
 		public var userModel:UserModel
 		
 		private var _loginDialog:SimpleDiagramsLoginDialog
@@ -90,7 +90,7 @@ package com.simplediagrams.controllers
 			
 			if (registrationManager.isLicensed==false)
 			{
-				Alert.show("Sorry. This feature is only available to Full Version users. Visit simpledigrams.com and upgrade to Full Version today!", "Full Version Only")					
+				Alert.show("This feature is only available to Full Version users. Visit simpledigrams.com and upgrade to Full Version today!", "Full Version Only")					
 				return
 			}
 			
@@ -209,7 +209,7 @@ package com.simplediagrams.controllers
 			for each (var library:XML in resultsXML.*)
 			{
 				Logger.debug("library downloadable --  id:" + library.id, this)
-				var lib:DownloadableLibraryVO = new DownloadableLibraryVO()
+				var lib:LibraryVO = new LibraryVO()
 				lib.id = library.id
 				lib.name = library.name
 				lib.description = library.description

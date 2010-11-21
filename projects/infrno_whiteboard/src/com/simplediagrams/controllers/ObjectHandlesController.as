@@ -11,19 +11,15 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.util.Logger;
 	
 	import org.swizframework.controller.AbstractController;
-	import org.swizframework.Swiz;
 
 	public class ObjectHandlesController extends AbstractController
 	{
-		[Autowire]
+		[Inject]
 		public var diagramModel:DiagramModel
 		
-		[Autowire]
+		[Inject]
 		public var undoRedoManager:UndoRedoManager
-
-		[Autowire]
-		public var remoteSharedObjectController:RemoteSharedObjectController
-
+		
 		
 		public function ObjectHandlesController()
 		{
@@ -34,18 +30,15 @@ package com.simplediagrams.controllers
 		[Mediate(event="ObjectChangedEvent.OBJECT_ROTATED")]
 		public function onObjectChanged(event:ObjectChangedEvent):void
 		{
-			Logger.debug("onObjectChange() event: " + event.type,this)
-			Logger.debug("onObjectChange() event.relatedObjects.length: " + event.relatedObjects.length,this)
-			var transformedObjectsArr:Array = new Array();
+			var transformedObjectsArr:Array = new Array()
 			for each (var sdObjectModel:SDObjectModel in event.relatedObjects)
 			{
 				var from:TransformMemento = sdObjectModel.getStartTransformState()
 				var to:TransformMemento = sdObjectModel.getTransformState()
 				var o:Object = {sdID:sdObjectModel.sdID, fromState:from, toState:to}
-				transformedObjectsArr.push(o);
-				
+				transformedObjectsArr.push(o)
 			}
-						
+			
 			var cmd:TransformCommand = new TransformCommand(diagramModel, transformedObjectsArr)
 			undoRedoManager.push(cmd)
 				
@@ -61,17 +54,11 @@ package com.simplediagrams.controllers
 		[Mediate(event="ObjectChangedEvent.OBJECT_START_MOVING")]
 		[Mediate(event="ObjectChangedEvent.OBJECT_START_RESIZING")]
 		public function onObjectChanging(event:ObjectChangedEvent):void			
-		{
-			Logger.debug("\n\nonObjectChanging()",this)
-				
+		{				
 			for each (var sdObjectModel:SDObjectModel in event.relatedObjects)
 			{
-				Logger.debug("object changing: " + sdObjectModel, this)
-				Logger.debug("object x: " + sdObjectModel.x, this)
-				Logger.debug("object rotation: " + sdObjectModel.rotation, this)
 				sdObjectModel.captureStartState()				
-			}
-			
+			}			
 		}
 		
 		[Mediate(event="MoveOnceEvent.MOVE_UP")]

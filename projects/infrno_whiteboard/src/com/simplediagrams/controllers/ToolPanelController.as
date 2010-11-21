@@ -1,10 +1,11 @@
 package com.simplediagrams.controllers
 {
 	
+	import com.simplediagrams.events.ChangeDepthEvent;
+	import com.simplediagrams.events.CloseDiagramEvent;
 	import com.simplediagrams.events.DrawingBoardEvent;
 	import com.simplediagrams.events.PositionEvent;
 	import com.simplediagrams.events.ToolPanelEvent;
-	import com.simplediagrams.events.ChangeDepthEvent;
 	import com.simplediagrams.model.*;
 	import com.simplediagrams.util.Logger;
 	import com.simplediagrams.view.SDComponents.SDBase;
@@ -16,13 +17,13 @@ package com.simplediagrams.controllers
 	import mx.core.FlexGlobals;
 	import mx.managers.CursorManager;
 	
-	import org.swizframework.controller.AbstractController;
-	import org.swizframework.Swiz;
 
-	public class ToolPanelController extends AbstractController
+	public class ToolPanelController
 	{
+		[Dispatcher]
+		public var dispatcher:IEventDispatcher;
 		
-		[Autowire(bean="diagramModel")]
+		[Inject]
 		public var diagramModel:DiagramModel;
 		
 		[Bindable]
@@ -75,6 +76,14 @@ package com.simplediagrams.controllers
 			}
 		}
 		
+		
+		[Mediate(event="CloseDiagramEvent.DIAGRAM_CLOSED")]
+		public function onDiagramClosed(event:CloseDiagramEvent):void
+		{			
+			CursorManager.removeAllCursors()
+		}
+		
+		
 		[Mediate(event="ToolPanelEvent.TOOL_SELECTED")]
 		public function setTool(event:ToolPanelEvent):void
 		{			
@@ -91,42 +100,36 @@ package com.simplediagrams.controllers
 		[Mediate(event="PositionEvent.MOVE_BACKWARD")]
 		[Mediate(event="PositionEvent.MOVE_FORWARD")]
 		public function changePosition(event:PositionEvent):void
-		{
-			
-			
+		{			
 			//get current selection
 			var selectedArr:Array = diagramModel.selectedArray;
 			
-			
-			// The change position buttons should be disabled if no object is selected
-			// Let's just avoid the error message for now
-			if (selectedArr.length==0) 
+			if (selectedArr.length==0)
 			{
-				//Alert.show("No object selected.")
+				Alert.show("No object selected.")
 				return
 			}
 			
-			if (selectedArr.length>1 || selectedArr.length == 0)
+			if (selectedArr.length>1)
 			{
-				//Alert.show("You must select exactly one object.")
+				Alert.show("You must select exactly one object.")
 				return
 			}
-			
-				
+						
 			var sdObjectModel:SDObjectModel = selectedArr[0]
-			var eventChangeDepth:ChangeDepthEvent;
+			var eventChangeDepth:ChangeDepthEvent
 			switch(event.type)
 			{
 				case PositionEvent.MOVE_BACKWARD:
 					eventChangeDepth = new ChangeDepthEvent(ChangeDepthEvent.MOVE_BACKWARD);
 					eventChangeDepth.sdID = sdObjectModel.sdID;
-					Swiz.dispatchEvent(eventChangeDepth);
+					dispatcher.dispatchEvent(eventChangeDepth);
 					break
 				
 				case PositionEvent.MOVE_FORWARD:
 					eventChangeDepth = new ChangeDepthEvent(ChangeDepthEvent.MOVE_FORWARD);
 					eventChangeDepth.sdID = sdObjectModel.sdID;
-					Swiz.dispatchEvent(eventChangeDepth);
+					dispatcher.dispatchEvent(eventChangeDepth);
 					break
 				
 			}
@@ -146,7 +149,6 @@ package com.simplediagrams.controllers
 		public function resumeCurrentTool(event:DrawingBoardEvent):void
 		{			
 			if (this._suspendedToolType =="") return
-			Logger.debug("resumeCurrentTool() _suspendedToolType: " + _suspendedToolType,this)
 			changeToolAction(this._suspendedToolType)
 			this._suspendedToolType  = ""
 		}

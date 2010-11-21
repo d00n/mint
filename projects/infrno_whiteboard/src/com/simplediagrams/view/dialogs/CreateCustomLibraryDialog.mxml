@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	xmlns:view="com.simplediagrams.view.*" 
+	xmlns:dialogs="com.mcquilleninteractive.comfen.view.dialogs.*" 
+	contentBackgroundColor="0xFFFFFF"
+	title="Custom Library"
+	creationComplete="onCC()"
+	>
+	
+	<fx:Metadata>
+		[Event(name="OK", type="flash.events.Event")]
+		[Event(name='cancel', event='flash.events.Event')]
+	</fx:Metadata>
+	
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="error"/>
+	</s:states>
+	
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import mx.controls.Alert;
+			
+			;
+			
+			protected function onCC():void
+			{
+				this.closeButton.visible=false
+				this.focusManager.setFocus(txtDisplayName)
+			}
+						
+			protected function onOK():void
+			{					
+				var evt:Event = new Event("OK", true)
+				dispatchEvent(evt)				
+			}
+			
+			
+			protected function onCancel():void
+			{			
+				var evt:Event = new Event(Event.CANCEL, true)
+				dispatchEvent(evt)				
+			}
+			
+			public function get displayName():String
+			{
+				return txtDisplayName.text
+			}
+			
+			public function get description():String
+			{
+				//return txtDescription.text
+				return ""
+			}
+						
+			
+			
+		]]>
+	</fx:Script>
+	
+	
+	
+	<s:layout>
+		<s:VerticalLayout  paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10"/>
+	</s:layout>
+	
+	
+	<s:VGroup width="100%" height="100%">
+		
+		<s:Label text="Create a new custom library." fontWeight="bold"/>
+		
+		<mx:Spacer width="10"/>
+		
+		<s:HGroup width="100%">
+			<s:Label text="Name:" width="100" paddingTop="8"/>
+			<s:TextInput id="txtDisplayName" width="100%" />
+		</s:HGroup>
+		<!--
+		<s:HGroup  width="100%">
+			<s:Label text="Description:" width="100"  paddingTop="8"/>
+			<s:TextArea id="txtDescription" height="70" width="100%" />
+		</s:HGroup>
+		-->
+	
+	</s:VGroup>
+	
+	<s:VGroup width="100%" horizontalAlign="right">
+		<s:HGroup>
+			<s:Button id="btnCancel" label="CANCEL" click="onCancel()"  styleName="blueButton" width="90" height="30" />	
+			<s:Button id="btnOK" label="OK" click="onOK()" styleName="blueButton" width="90" height="30"  />	
+		</s:HGroup>
+	</s:VGroup>
+	
+	
+	
+	
+</s:TitleWindow>

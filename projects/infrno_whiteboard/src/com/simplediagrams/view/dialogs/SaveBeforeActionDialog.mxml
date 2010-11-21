@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Panel 
+<s:TitleWindow 
 	xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	xmlns:mx="library://ns.adobe.com/flex/mx"
@@ -11,7 +11,6 @@
     borderAlpha="1" 
 	width="450" 
 	height="140"
-   
 	>
 	
 	<fx:Metadata>
@@ -22,31 +21,27 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.events.ValidationResultEvent;
+			import com.simplediagrams.business.DBManager;
+			import com.simplediagrams.business.FileManager;
 			import com.simplediagrams.events.LoadDiagramEvent;
 			import com.simplediagrams.model.DiagramModel;
-			import com.simplediagrams.business.DBManager;
-			import com.simplediagrams.model.dao.DiagramDAO
-			import com.simplediagrams.model.LibraryManager
+			import com.simplediagrams.model.LibraryManager;
+			import com.simplediagrams.util.Logger;
 			
-			import mx.managers.PopUpManager
-			import org.swizframework.Swiz
-			import com.simplediagrams.util.Logger	
+			import mx.events.ValidationResultEvent;
+			import mx.managers.PopUpManager;
 			import mx.utils.ObjectUtil;
 			
 			public static const SAVE:String = "save"
 			public static const DONT_SAVE:String = "do_not_save";
-						
-			public static const MODE_SAVE_BEFORE_NEW:String = "saveBeforeNewMode";
-			public static const MODE_SAVE_BEFORE_CLOSE:String = "saveBeforeCloseMode";
-			public static const MODE_SAVE_BEFORE_OPEN:String = "saveBeforeOpenMode";
+			
 				
 			
 			[Embed(source='assets/img/icons/bullet_error.png')]
 			[Bindable]
 			private var WarningIcon:Class	
 			
-			private var _mode:String = MODE_SAVE_BEFORE_NEW;
+			private var _mode:String = FileManager.MODE_SAVE_BEFORE_NEW;
 			
 			[Bindable]
 			private var _headerText:String
@@ -55,7 +50,8 @@
 			
 			public function onCC():void
 			{
-					
+				
+				this.closeButton.visible=false
 			}
 			
 			
@@ -63,13 +59,13 @@
 			{
 				switch (v)
 				{
-					case MODE_SAVE_BEFORE_NEW:
+					case FileManager.MODE_SAVE_BEFORE_NEW:
 						_headerText = "Save changes before starting new diagram?"
 						break
-					case MODE_SAVE_BEFORE_CLOSE:
+					case FileManager.MODE_SAVE_BEFORE_CLOSE:
 						_headerText = "Save changes before closing this diagram?"
 						break
-					case MODE_SAVE_BEFORE_OPEN:
+					case FileManager.MODE_SAVE_BEFORE_OPEN:
 						_headerText = "Save changes before opening a new diagram?"
 						break
 					default:
@@ -110,16 +106,14 @@
 		
 		<s:Label text="{_headerText}" paddingBottom="10" paddingTop="10"/>
 		
-		<s:VGroup horizontalAlign="right" width="100%" paddingRight="10" paddingTop="20">
-			<s:HGroup>
-				<s:Button label="Don't Save" styleName="blueButton" width="90" height="30" click="onDontSave()"/>
-				<mx:Spacer width="70" />
-				<s:Button label="Cancel" styleName="blueButton" width="90" height="30" click="onCancel()"/>
-				<s:Button label="Save" styleName="blueButton" width="90" height="30" click="onSave()"/>
-			</s:HGroup>
-		</s:VGroup>
+		<s:HGroup horizontalAlign="right" width="100%" paddingRight="10" paddingTop="20">
+			<s:Button label="Don't Save" styleName="blueButton" width="90" height="30" click="onDontSave()"/>
+			<mx:Spacer width="100%" />
+			<s:Button label="Cancel" styleName="blueButton" width="90" height="30" click="onCancel()"/>
+			<s:Button label="Save" styleName="blueButton" width="90" height="30" click="onSave()"/>
+		</s:HGroup>
 		
 	</s:VGroup>
 	
 	
-</s:Panel>
+</s:TitleWindow>

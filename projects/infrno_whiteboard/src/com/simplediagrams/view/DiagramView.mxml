@@ -16,40 +16,33 @@
 			import com.simplediagrams.events.ExportDiagramEvent;
 			import com.simplediagrams.events.ExportDiagramUserRequestEvent;
 			import com.simplediagrams.events.SaveDiagramEvent;
-			import com.simplediagrams.events.SelectionEvent;
 			import com.simplediagrams.events.UndoRedoEvent;
+			import com.simplediagrams.events.SelectionEvent;
 			import com.simplediagrams.model.ApplicationModel;
 			import com.simplediagrams.model.DiagramModel;
 			import com.simplediagrams.util.Logger;
 			
 			import flash.events.Event;
 			import flash.events.KeyboardEvent;
-			import flash.ui.Keyboard;
 			
 			import mx.core.FlexGlobals;
 			import mx.core.UITextField;
 			
-			import org.swizframework.Swiz;
 			
 			import spark.components.RichEditableText;
 		    
 			[Bindable]
-			[Autowire(bean="applicationModel")]
+			[Inject]
 			public var model:ApplicationModel;    
 			
 			[Bindable]
-			[Autowire(bean="diagramModel")]
+			[Inject]
 			public var diagramModel:DiagramModel;  	
 			
-			/* I'm catching most keyboard events here and dealing with them. Later these should be moved to a special manager */
-			
-			
+			/* This page catches all keyboard events not handled by menu controller. Later these should be moved to a special manager */			
 			public function onCC():void
 			{
-				Logger.debug("onCC()", this)
 				FlexGlobals.topLevelApplication.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown)	
-				FlexGlobals.topLevelApplication.addEventListener(Event.SELECT_ALL, onSelectAll)
-				//FlexGlobals.topLevelApplication.addEventListener(Event.CLOSE, onClose)
 			}
 			
 			
@@ -65,8 +58,8 @@
 						var evt:ExportDiagramEvent = new ExportDiagramEvent(ExportDiagramEvent.EXPORT_TO_BASECAMP, true)
 						break
 					
-					case ExportDiagramUserRequestEvent.DESTINATION_FLICKR:							
-						evt = new ExportDiagramEvent(ExportDiagramEvent.EXPORT_TO_FLICKR, true)
+					case ExportDiagramUserRequestEvent.DESTINATION_YAMMER:							
+						evt = new ExportDiagramEvent(ExportDiagramEvent.EXPORT_TO_YAMMER, true)
 						break
 					
 					case ExportDiagramUserRequestEvent.DESTINATION_FILE:							
@@ -85,86 +78,26 @@
 				
 			}
 							
-    			    			
+    		
+			/* Handle key combinations not covered via the native menu (native menu handles save, close, copy, cut, paste, select all, undo, redo) */			
     		public function onKeyDown(event:KeyboardEvent):void
             {   			
-				Logger.debug("onKeyDown() event:" + event.toString(),this)
             	if (event.target is UITextField) return //user is typing in a text component
            		if (event.target is RichEditableText) return //user is typing in a text area
-           		
-					
+           							
 				switch(event.keyCode)
 				{
 					case Keyboard.DELETE:
 					case Keyboard.BACKSPACE:
 						
 						var deleteEvent:DeleteSDObjectModelEvent = new DeleteSDObjectModelEvent(DeleteSDObjectModelEvent.DELETE_SELECTED_FROM_MODEL, true)
-						Swiz.dispatchEvent(deleteEvent)
-						break
-				
-					case (event.ctrlKey):
-						Logger.debug("onKeyDown() caught a ctrl key press. event.charCode=" + event.charCode, this)
-						Logger.debug("onKeyDown() caught a ctrl key press. event.keyCode=" + event.keyCode, this)
-//						if (event.charCode == "S")
-//						{
-//							var evt:SaveDiagramEvent = new SaveDiagramEvent(SaveDiagramEvent.SAVE_DIAGRAM, true)
-//							Swiz.dispatchEvent(evt)
-//						}
-//						
-						break;
-						
-//					case Keyboard.S:						
-//						if (event.ctrlKey || event.commandKey)
-//						{
-//							var evt:SaveDiagramEvent = new SaveDiagramEvent(SaveDiagramEvent.SAVE_DIAGRAM, true)
-//							Swiz.dispatchEvent(evt)
-//						}
-//						break
-//					
-//					case Keyboard.Z://undo		
-//						Logger.debug("Z()",this)	
-//						if (event.ctrlKey || event.commandKey)
-//						{
-//							Logger.debug("dispatching undo event...",this)
-//							var undoEvent:UndoRedoEvent = new UndoRedoEvent(UndoRedoEvent.UNDO, true)
-//							Swiz.dispatchEvent(undoEvent)
-//						}
-//						break
-//					
-//					case Keyboard.Y://redo			
-//						if (event.ctrlKey || event.commandKey)
-//						{
-//							Logger.debug("dispatching redo event...",this)
-//							var redoEvent:UndoRedoEvent = new UndoRedoEvent(UndoRedoEvent.REDO, true)
-//							Swiz.dispatchEvent(redoEvent)
-//						}
-//						break
-				
-					default:
-						//do nothing
+						dispatchEvent(deleteEvent)
+						FlexGlobals.topLevelApplication.appView.setFocus()
+						break					
 				}
             }
 			
-			public function onSelectAll(event:Event):void
-			{				
-				Logger.debug("dispatching select all event...",this)
-				var selectAllEvent:SelectionEvent = new SelectionEvent(SelectionEvent.SELECT_ALL, true)
-				Swiz.dispatchEvent(selectAllEvent)				
-			}
-			
-			[Mediate(event='ShapesPanelEvent.TOGGLE_DISPLAY')]
-			public function onShapesPanelToggle(): void
-			{
-				if (shapesPanel.width > 0){
-					shapesPanel.width = 0;
-				}
-				else{
-					shapesPanel.width = 124;
-				}
-			}           
-           
             
-			  			
     			    			
 		]]>
 
@@ -173,21 +106,18 @@
 	
 
 						
-	<mx:HDividedBox id="hdbHolder" styleName="libraryDivider" height="100%" width="100%"  >
+	<mx:HDividedBox styleName="libraryDivider" height="100%" width="100%"  >
 					
 			<view:DrawingBoard id="drawingBoard" height="100%" width="100%" />
 			
-			<view:ShapesPanel id="shapesPanel" height="100%" width="0" />	
+			<view:ShapesPanel id="shapesPanel" height="100%" width="250" />	
 		
 	</mx:HDividedBox>
 	
 	
-	<view:ToolPanel id="toolPanel" x="2" y="2" />
+	<view:ToolPanel id="toolPanel" x="50" y="100" />
 	
 	<view:PercentView id="percentView" x="{drawingBoard.width/2 - 45}" top="10"/>
 	
-	<!--
-	<s:Button id="btnToggleShapesPanel" height="10" width="10" right="30" top="3" click="onShapesPanelToggle()" />
-	-->
-	
+
 </s:Group>

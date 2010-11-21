@@ -17,6 +17,9 @@ package com.simplediagrams.events
 		public var dropY:Number
 		public var depth:Number
 		
+		public var isCustomSymbol:Boolean = false
+		public var customSymbolID:int = 0
+		
 		public function DrawingBoardItemDroppedEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
 			super(type, bubbles, cancelable);

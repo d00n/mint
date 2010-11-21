@@ -1,5 +1,7 @@
 package com.simplediagrams.events
 {
+	import com.simplediagrams.commands.UndoRedoCommand;
+	
 	import flash.events.Event;
 	
 	public class UndoRedoEvent extends Event

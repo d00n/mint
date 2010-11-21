@@ -8,6 +8,10 @@ package com.simplediagrams.events
 		public static const VALIDATE_LICENSE:String = "validateLicense"
 		public static const VALIDATE_LICENSE_RESULT:String = "validateLicenseResult"
 		public static const LICENSE_VALIDATED:String = "licenseValidated"
+		public static const LICENSE_KEY_NOT_FOUND:String = "licenseKeyNotFound"
+		public static const LICENSE_KEY_MAXED_OUT:String = "licenseKeyMaxedOut"
+		public static const LICENSE_KEY_REVOKED:String = "licenseKeyRevoked"
+		public static const UNRECOGNIZED_STATUS:String = "unrecognizedStatus"
 			
 		public static const ERROR_HTTP:String="httpError"
 		public static const ERROR_SECURITY:String="securityError"

@@ -1,11 +1,14 @@
 package com.simplediagrams.model
 {
 
+	import com.simplediagrams.errors.SDObjectModelNotFoundError;
 	import com.simplediagrams.model.libraries.*;
+	import com.simplediagrams.shapelibrary.communication.QuestionMark;
 	import com.simplediagrams.util.Logger;
 	import com.simplediagrams.vo.RecentFileVO;
 	
 	import flash.events.EventDispatcher;
+	import flash.utils.getDefinitionByName;
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.Sort;
@@ -16,15 +19,12 @@ package com.simplediagrams.model
 	public class LibraryManager extends EventDispatcher 
 	{		
 		
-		/*
-		[Autowire(bean="dbManager")]
-		public var db:DBManager;
-		*/
+		public static const LIBRARY_TYPE_CUSTOM:String = "Custom";
+		public static const LIBRARY_TYPE_PLUGIN:String = "Plugin";
 		
-		[Autowire(bean="diagramModel")]
+		[Inject]
 		public var diagramModel:DiagramModel;
 		
-		public static const PANEL_UPDATED:String="panelUpdated" //launched as event when the user manages the library
 		
 		public var diagramsAC:ArrayCollection = new ArrayCollection()
 		public var recentDiagramsAC:ArrayCollection = new ArrayCollection()
@@ -39,6 +39,20 @@ package com.simplediagrams.model
 		
 		public var availableForDownloadLibrariesAC:ArrayCollection = new ArrayCollection()
 		protected var rememberShowInPanelSettingsArr:Array = []	
+			
+		public var panelNeedsUpdating:Boolean = true //this flag helps the panel know to update if it missed the actual event (because it wasn't an active state and therefore wasn't wired)
+			
+		public static function getSymbolClass(fullyQualifiedSymbolName:String):Class
+		{
+			var symbolClass:Class = getDefinitionByName(fullyQualifiedSymbolName) as Class
+			if (symbolClass == null)
+			{
+				return QuestionMark
+			}
+			return symbolClass
+		}
+			
+			
 			
 		public function LibraryManager()
 		{					
@@ -64,54 +78,45 @@ package com.simplediagrams.model
 				if (library.libraryName == libraryName)
 				{
 					librariesAC.removeItemAt(i)
+					librariesAC.refresh()
+					return
 				}
 			}			
-			librariesAC.refresh()
 		}
+						
 		
-		public function hidePremiumLibraries():void
-		{
-			librariesAC.filterFunction = hidePremiumLibs
-			librariesAC.refresh()
-		}
-		
-		public function showPremiumLibraries():void
-		{
-			librariesAC.filterFunction = null
-			librariesAC.refresh()
-		}
-		
-		protected function hidePremiumLibs(item:Object):Boolean 
-		{			
-			return !item.isPremium
-		}
-		
-		public function getSDObject(libraryName:String, templateName:String):SDObjectModel
+		public function getSDObjectModel(libraryName:String, templateName:String):SDObjectModel
 		{
 			for each (var lib:ILibrary in librariesAC)
 			{				
 				if (libraryName==lib.libraryName)
 				{
-					return lib.getSDObject(templateName)
+					var sdObjectModel:SDObjectModel = lib.getSDObjectModel(templateName)					
+					return sdObjectModel
 				}
 			}
 			
 			Logger.warn("Couldn't find SDObject for libraryName: " + libraryName + " templateName: " + templateName)
-			return null
+			throw new SDObjectModelNotFoundError
 		}
 	
 		
-		public function getSymbolClass(libraryName:String, templateName:String):Class
+		/* Return the default "missing" object */
+		public function getDefaultSDObjectModel():SDObjectModel
 		{
-			for each (var lib:ILibrary in librariesAC)
-			{
-				if (libraryName==lib.libraryName)
-				{
-					return lib.getSymbolClass(templateName)
-				}
-			}
-			return null
+			var sdSymbolModel:SDSymbolModel = libraryBasic.getSDObjectModel("Square") as SDSymbolModel
+			sdSymbolModel.text = "?"
+			sdSymbolModel.colorizable = true
+			sdSymbolModel.color = diagramModel.getColor();
+			sdSymbolModel.textAlign = "center"
+			sdSymbolModel.fontSize = 12
+			sdSymbolModel.fontFamily = "Arial"
+			sdSymbolModel.textPosition = SDObjectModel.TEXT_POSITION_MIDDLE
+			sdSymbolModel.color = diagramModel.getColor();
+			return sdSymbolModel
 		}
+		
+	
 		
 		public function getLibraryByFileName(fileName:String):ILibrary
 		{
@@ -227,14 +232,40 @@ package com.simplediagrams.model
 			}
 		}
 		
-		public function updatePanel():void
-		{
-			dispatchEvent(new Event(PANEL_UPDATED, true))
-		}
 		
 		public function clearRecentDiagrams():void
 		{
 			this.recentDiagramsAC.removeAll()
+		}
+		
+		public function getCustomLibraryByID(libraryID:int):CustomLibrary
+		{
+			for each (var library:ILibrary in this.librariesAC)
+			{
+				if (library is CustomLibrary)
+				{
+					if (CustomLibrary(library).id==libraryID)
+					{
+						return library as CustomLibrary
+					}
+				}
+			}
+			return null
+		}
+		
+		public function getCustomLibraryByName(libraryName:String):CustomLibrary
+		{
+			for each (var library:ILibrary in this.librariesAC)
+			{
+				if (library is CustomLibrary)
+				{
+					if (CustomLibrary(library).libraryName==libraryName)
+					{
+						return library as CustomLibrary
+					}
+				}
+			}
+			return null
 		}
 		
 		

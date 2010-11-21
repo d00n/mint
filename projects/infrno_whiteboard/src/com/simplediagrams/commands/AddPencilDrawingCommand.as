@@ -8,7 +8,7 @@ package com.simplediagrams.commands
 	public class AddPencilDrawingCommand extends UndoRedoCommand
 	{
 		private var _diagramModel:DiagramModel
-		public var sdID:Number = 0
+		public var sdID:String = ""
 		public var x:Number
 		public var y:Number
 		public var width:Number
@@ -38,7 +38,7 @@ package com.simplediagrams.commands
 			setProperties(newPencilDrawingModel)
 			_diagramModel.addSDObjectModel(newPencilDrawingModel)
 			//on the first execution, we get a fresh id...on later executions, use old id
-			if (sdID!=0)
+			if (sdID!="")
 			{
 				newPencilDrawingModel.sdID = sdID
 			}

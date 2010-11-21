@@ -4,9 +4,9 @@ package com.simplediagrams.events
 	
 	public class DatabaseEvent extends Event
 	{
-		public static const DATABASE_LOADED:String = "databaseLoaded"
+		public static const DATABASE_READY:String = "databaseLoadedAndReady"
 		public static const DATABASE_LOAD_ERROR:String = "databaseLoadError"
-		
+					
 		public function DatabaseEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
 			super(type, bubbles, cancelable);

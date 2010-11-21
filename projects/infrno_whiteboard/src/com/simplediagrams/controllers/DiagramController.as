@@ -13,23 +13,28 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.commands.DeleteSDObjectModelCommand;
 	import com.simplediagrams.commands.DeleteSelectedSDObjectModelsCommand;
 	import com.simplediagrams.commands.TransformCommand;
+	import com.simplediagrams.errors.DiagramIncompleteDueToMissingSymbolsError;
+	import com.simplediagrams.errors.SymbolNotFoundError;
 	import com.simplediagrams.events.*;
 	import com.simplediagrams.model.DiagramModel;
 	import com.simplediagrams.model.LibraryManager;
 	import com.simplediagrams.model.SDImageModel;
 	import com.simplediagrams.model.SDLineModel;
 	import com.simplediagrams.model.SDObjectModel;
+	import com.simplediagrams.model.SDSymbolModel;
 	import com.simplediagrams.model.SDTextAreaModel;
 	import com.simplediagrams.model.SettingsModel;
 	import com.simplediagrams.model.UndoRedoManager;
 	import com.simplediagrams.model.mementos.SDLineMemento;
+	import com.simplediagrams.model.mementos.SDObjectMemento;
 	import com.simplediagrams.model.mementos.TransformMemento;
 	import com.simplediagrams.util.Logger;
 	import com.simplediagrams.view.SDComponents.SDBase;
 	import com.simplediagrams.view.dialogs.DiagramPropertiesDialog;
+	import com.simplediagrams.view.dialogs.UnavailableFontsDialog;
 	
 	import flash.display.BitmapData;
-	import flash.events.AsyncErrorEvent;
+	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.NetStatusEvent;
@@ -44,37 +49,39 @@ package com.simplediagrams.controllers
 	import flash.utils.ByteArray;
 	import flash.utils.setTimeout;
 	
-	import flashx.textLayout.operations.RedoOperation;
-	
+	import mx.controls.Alert;
+	import mx.core.FlexGlobals;
 	import mx.core.UIComponent;
+	import mx.events.CloseEvent;
 	import mx.graphics.codec.PNGEncoder;
 	
-	import org.swizframework.Swiz;
 	import org.swizframework.controller.AbstractController;
+	
+	import spark.components.Group;
 
 	public class DiagramController extends AbstractController 
 	{
-		
 		public function DiagramController()
 		{			
+  			
 		}
 		
-		[Autowire(bean='diagramModel')]
+		[Inject]
 		public var diagramModel:DiagramModel
 		
-		[Autowire(bean='libraryManager')]
+		[Inject]
 		public var libraryManager:LibraryManager
 		
-		[Autowire(bean='fileManager')]
+		[Inject]
 		public var fileManager:FileManager
 		
-		[Autowire(bean='undoRedoManager')]
+		[Inject]
 		public var undoRedoManager:UndoRedoManager
 		
-		[Autowire(bean='settingsModel')]
+		[Inject]
 		public var settingsModel:SettingsModel
 		
-		[Autowire(bean='dialogsController')]
+		[Inject]
 		public var dialogsController:DialogsController	
 
 		[Autowire(bean="remoteSharedObjectController")]
@@ -88,16 +95,30 @@ package com.simplediagrams.controllers
 		public function diagramBuilt(event:Event):void
 		{
 			dialogsController.removeDialog()
+				
+			//show warning and list fonts if some fonts aren't available			
+			var unavailableFontsArr:Array = fileManager.unavailableFontsArr
+			if (fileManager.unavailableFontsArr && fileManager.unavailableFontsArr.length>0)
+			{
+				var dialog:UnavailableFontsDialog = dialogsController.showUnavailableFontsDialog() 
+				dialog.setUnavailableFonts(fileManager.unavailableFontsArr)
+				dialog.addEventListener("OK", onUnavailableFontsDialogOK)
+			}
 			
 		}
+				
+		protected function onUnavailableFontsDialogOK(event:Event):void
+		{			
+			event.target.removeEventListener("OK", onUnavailableFontsDialogOK)
+			dialogsController.removeDialog(UIComponent(event.target) )			
+		}
+		
 			
 		
 		
 		[Mediate(event='DrawingBoardItemDroppedEvent.LIBRARY_ITEM_ADDED')]
 		public function onLibraryItemAdded(event:DrawingBoardItemDroppedEvent):void
-		{
-			Logger.debug("item added. symbolName: " + event.symbolName +" libraryName: " + event.libraryName, this)
-						
+		{						
 			returnToPointerTool()
 			
 			var cmd:AddLibraryItemCommand = new AddLibraryItemCommand(diagramModel, libraryManager, event.libraryName, event.symbolName)			
@@ -105,12 +126,12 @@ package com.simplediagrams.controllers
 			cmd.y = event.dropY
 			cmd.textAlign = settingsModel.defaultTextAlign
 			cmd.fontSize = settingsModel.defaultFontSize
+			cmd.fontFamily = settingsModel.defaultFontFamily
 			cmd.fontWeight = settingsModel.defaultFontWeight
-			cmd.textPosition = settingsModel.defaultTextPosition;
+			cmd.textPosition = settingsModel.defaultTextPosition
 			cmd.color = diagramModel.getColor();
-				
 			cmd.execute()
-			undoRedoManager.push(cmd)		
+			undoRedoManager.push(cmd)			
 		}
 		
 		
@@ -236,7 +257,8 @@ package com.simplediagrams.controllers
 			cmd.styleName = SDTextAreaModel.NO_BACKGROUND
 			cmd.textAlign = settingsModel.defaultTextAlign
 			cmd.fontSize = settingsModel.defaultFontSize
-			cmd.fontWeight = settingsModel.defaultFontWeight			
+			cmd.fontWeight = settingsModel.defaultFontWeight	
+			cmd.fontFamily = settingsModel.defaultFontFamily
 			cmd.execute()		
 			undoRedoManager.push(cmd)
 			
@@ -299,8 +321,7 @@ package com.simplediagrams.controllers
 		[Mediate(event="LoadImageEvent.LOAD_IMAGE_FILE")]
 		public function loadImageFromFile(event:LoadImageEvent):void 
 		{
-			// This needs to used FileReference, or some other strategy
-			Logger.debug("loadImageFromFile() DISABLED", this)			
+			Logger.debug("loadImageFromFile()", this)			
 							
 //			var file:File = event.file
 //			
@@ -324,8 +345,9 @@ package com.simplediagrams.controllers
 		[Mediate(event='DeleteSDObjectModelEvent.DELETE_SELECTED_FROM_MODEL')]
 		public function onDeleteSelectedSDObjectModel(event:DeleteSDObjectModelEvent):void
 		{
+			
 			Logger.info("onDeleteSelectedSDObjectModel()" , this)
-			var cmd:DeleteSelectedSDObjectModelsCommand = new DeleteSelectedSDObjectModelsCommand(diagramModel)
+			var cmd:DeleteSelectedSDObjectModelsCommand = new DeleteSelectedSDObjectModelsCommand(diagramModel, libraryManager)
 			
 			var sdIDArray:Array = new Array();	
 			for each (var sdObjectModel:SDObjectModel in diagramModel.selectedArray)
@@ -435,7 +457,7 @@ package com.simplediagrams.controllers
 		protected function onSaveDiagramProperties(event:Event):void
 		{
 			var evt:PropertiesEvent = new PropertiesEvent(PropertiesEvent.PROPERTIES_EDITED, true)
-			Swiz.dispatchEvent(evt)
+			dispatcher.dispatchEvent(evt)
 			dialogsController.removeDialog(_diagramPropertiesDialog)
 			_diagramPropertiesDialog.removeEventListener("OK", onSaveDiagramProperties)
 			_diagramPropertiesDialog.removeEventListener(Event.CANCEL, onCancelDiagramProperties)	
@@ -478,19 +500,19 @@ package com.simplediagrams.controllers
 			Swiz.dispatchEvent(rsoEvent);
   		}
   		
-  		[Mediate(event='ColorEvent.CHANGE_COLOR')]
+		[Mediate(event='ColorEvent.CHANGE_COLOR')]
 		public function onChangeColor(event:ColorEvent):void
-  		{	
-  			diagramModel.setColor(event.color);
-						
-			//update all selected symbols 
+		{
+			diagramModel.setColor(event.color);
+			
+			//update all selected symbols
 			var selectedArr:Array = diagramModel.selectedArray
 			for each (var objModel:SDObjectModel in selectedArr)
 			{
 				var cmd:ChangeColorCommand = new ChangeColorCommand(diagramModel, objModel);
 				cmd.color = event.color;
 				cmd.execute();
-				undoRedoManager.push(cmd);			
+				undoRedoManager.push(cmd);
 			}			
 			throw_ObjectChanged_RSOEvent(selectedArr);
   		}
@@ -548,6 +570,7 @@ package com.simplediagrams.controllers
 				
 			Logger.debug("onLoadComplete() about to dispatch RemoteSharedObjectEvent.LOAD_IMAGE, _currModelForImageLoad.sdID=" + _currModelForImageLoad.sdID,this)
 				
+			// TODO: Throw a SimpleDiagramsImageLoadCompleteEvent instead 	
 			var remoteSharedObjectEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LOAD_IMAGE, true, true);
 			remoteSharedObjectEvent.imageData = _fileReference.data;
 			remoteSharedObjectEvent.imageName = _fileReference.name;
@@ -567,7 +590,7 @@ package com.simplediagrams.controllers
 			{
 				var evt:ToolPanelEvent = new ToolPanelEvent(ToolPanelEvent.TOOL_SELECTED, true)
 				evt.toolTypeSelected = DiagramModel.POINTER_TOOL
-				Swiz.dispatchEvent(evt)	
+				dispatcher.dispatchEvent(evt)	
 			}	
 		}
 		
@@ -581,13 +604,13 @@ package com.simplediagrams.controllers
 			for each (var sdBase:SDBase in event.selectedArr)
 			{
 				var model:SDObjectModel = diagramModel.findModel(sdBase)
-				Logger.debug("onMultiSelect() adding model:"+ model, this)
+				Logger.debug("adding model:"+ model, this)
 				if( ! model ) { continue; }
 				diagramModel.addToSelected(model)
 			}			
 			
 			var evt:MultiSelectEvent = new MultiSelectEvent(MultiSelectEvent.DRAG_MULTI_SELECTION_FINISHED, true)
-			Swiz.dispatchEvent(evt)
+			dispatcher.dispatchEvent(evt)
 			
 		}
 		
@@ -860,8 +883,11 @@ package com.simplediagrams.controllers
 						
 					throw_ObjectChanged_RSOEvent(diagramModel.sdObjectModelsAC.toArray());
 					break
-				}				
-			}		
+				}
+			}
+			
+			dispatcher.dispatchEvent(new ChangeDepthEvent(ChangeDepthEvent.OBJECT_MOVED, true))
+			
 		}
 		
 		[Mediate(event='ChangeDepthEvent.MOVE_FORWARD')]		
@@ -884,16 +910,72 @@ package com.simplediagrams.controllers
 					throw_ObjectChanged_RSOEvent(diagramModel.sdObjectModelsAC.toArray());
 					break
 				}				
-			}			
+			}
+			dispatcher.dispatchEvent(new ChangeDepthEvent(ChangeDepthEvent.OBJECT_MOVED, true))			
 		}
 		
+
 		public function throw_ObjectChanged_RSOEvent(sdObjectModelArray:Array):void{
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);
 			rsoEvent.changedSDObjectModelArray = sdObjectModelArray;
 			Swiz.dispatchEvent(rsoEvent);
+		}	
+
+		
+		
+		[Mediate(event="LoadDiagramEvent.DIAGRAM_LOADED")]
+		public function onDiagramLoaded(event:Event):void
+		{
+			Logger.debug("onDiagramLoaded()....building diagram.",this)		
+			try
+			{
+				diagramModel.buildDiagram()				
+			}
+			catch(error:DiagramIncompleteDueToMissingSymbolsError)
+			{
+				//TODO: show custom dialog for symbols that can't be found
+				Alert.show("Some symbols could not be found and do not appear in diagram. Do you still want to edit the diagram?","Symbols Missing From Library", Alert.YES | Alert.NO, null, onContinueEditingHandler)
+			}
+			catch(error:Error)
+			{
+				Alert.show("Couldn't load diagram. Error: " + error, "Load Diagram Error")
+					
+			}
 		}
 		
+		protected function onContinueEditingHandler(event:CloseEvent):void
+		{
+			if (event.detail==Alert.YES)
+			{				
+				dispatcher.dispatchEvent(new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_BUILT))					
+			}
+			else
+			{				
+				dispatcher.dispatchEvent(new CloseDiagramEvent(CloseDiagramEvent.CLOSE_DIAGRAM))
+			}
+		}
 		
+		/* If a custom symbol is deleted from library, remove it from working diagram */		
+		[Mediate(event="DeleteItemFromCustomLibrary.ITEM_DELETED")]
+		public function onItemDeletedFromCustomLibrary(event:DeleteItemFromCustomLibrary):void
+		{
+			
+			//go backwards through arrayCollection so we can delete without messing up index
+			var len:uint=diagramModel.sdObjectModelsAC.length 
+			if (len==0) return
+			for (var i:uint=len;i>0;i--)
+			{
+				var sdObjectModel:SDObjectModel = diagramModel.sdObjectModelsAC.getItemAt(i-1) as SDObjectModel
+				if(sdObjectModel is SDSymbolModel)
+				{
+					var sdSymbolModel:SDSymbolModel = SDSymbolModel(sdObjectModel)
+					if (sdSymbolModel.libraryName==event.libraryName && sdSymbolModel.symbolName==event.symbolName)
+					{
+						diagramModel.deleteSDObjectModel(sdSymbolModel)
+					}
+				}
+			}
+		}
 		
 	}
 }

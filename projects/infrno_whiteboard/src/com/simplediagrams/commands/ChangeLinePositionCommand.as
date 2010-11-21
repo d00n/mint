@@ -12,7 +12,7 @@ package com.simplediagrams.commands
 		{
 			private var _diagramModel:DiagramModel
 			
-			public var sdID:Number
+			public var sdID:String = ""
 			public var fromState:SDLineMemento
 			public var toState:SDLineMemento
 			

@@ -6,7 +6,8 @@
 	mouseDown="onMouseDown(event)"
 	mouseUp="onMouseUp(event)"
 	creationComplete="onCC()"
-	width="24" >
+
+	width="45" >
 	
 	<s:layout>
 		<s:BasicLayout/>
@@ -25,21 +26,21 @@
 			import com.simplediagrams.model.DiagramStyleManager;
 			import com.simplediagrams.util.Logger;
 			
-			import flash.events.MouseEvent;
+			import flash.events.MouseEvent;				
 			
-			import org.swizframework.Swiz;
-			
-			[Bindable]
-			protected var _backgroundColor:Number = 0xFFFFFF;
-			
-			[Autowire(bean="diagramModel")]
+			[Dispatcher]
+			public var dispatcher:IEventDispatcher;
+						
+			[Inject]
 			[Bindable]
 			public var diagramModel:DiagramModel
 			
-			[Autowire(bean="diagramStyleManager")]
+			[Inject]
 			[Bindable]
 			public var diagramStyleManager:DiagramStyleManager
-			
+						
+			[Bindable]
+			protected var _backgroundColor:Number = 0xFFFFFF;
 	
 			[Bindable]		
 			[Embed(source='assets/img/icons/pencil.png')]
@@ -51,7 +52,7 @@
 			
 			[Bindable]		
 			[Embed(source='assets/img/icons/picture_add.png')]
-			private var addPictureIcon:Class			
+			private var addPictureIcon:Class
 			
 			[Bindable]
 			[Embed(source='assets/img/icons/add_shape_drawer.png')]
@@ -98,17 +99,17 @@
 			
 			protected function onCC():void
 			{
-				Swiz.addEventListener(StyleEvent.STYLE_CHANGED, onStyleChanged)
 				cp.selectedColor = diagramStyleManager.defaultSymbolColor
-				//backgroundColor.color = diagramStyleManager.toolBarBackgroundColor
+				backgroundColor.color = diagramStyleManager.toolBarBackgroundColor
 			}
 			
-			protected function onStyleChanged(event:StyleEvent):void
+			[Mediate(event="StyleEvent.STYLE_CHANGED")]
+			public function onStyleChanged(event:StyleEvent):void
 			{
 				cp.selectedColor = diagramStyleManager.defaultSymbolColor
 				cp.invalidateProperties()
-				//backgroundColor.color = diagramStyleManager.toolBarBackgroundColor
-				
+				backgroundColor.color = diagramStyleManager.toolBarBackgroundColor
+				onColorChange()
 			}
 			
 			protected function onMouseDown(event:MouseEvent):void
@@ -182,9 +183,8 @@
 			protected function onColorChange():void
 			{
 				var evt:ColorEvent = new ColorEvent(ColorEvent.CHANGE_COLOR, true)
-				Logger.debug("color: " + cp.selectedColor, this)
 				evt.color = cp.selectedColor
-				Swiz.dispatchEvent(evt)
+				dispatcher.dispatchEvent(evt)
 			}
 			
 			protected function onMoveForward():void

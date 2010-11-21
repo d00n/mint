@@ -58,7 +58,6 @@ package com.simplediagrams.model
 			var component:SDLine = new SDLine()
 			component.objectModel = this
 			this.sdComponent = component
-			Logger.debug("component: " + component, this)
 			return component
 		}
 	
@@ -150,7 +149,6 @@ package com.simplediagrams.model
 		
 		override public function setMemento(memento:SDObjectMemento):void
 		{
-			Logger.debug("setting memento. startLineStyle: " + SDLineMemento(memento).startLineStyle, this)
 			if (memento is SDLineMemento)
 			{
 				var mem:SDLineMemento = SDLineMemento(memento)

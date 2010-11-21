@@ -8,16 +8,21 @@ package com.simplediagrams.model
 	import com.simplediagrams.view.SDComponents.SDSymbol;
 	
 	import flash.text.engine.FontWeight;
+	import flash.utils.ByteArray;
 
 	[Bindable]
 	public class SDSymbolModel extends SDObjectModel implements ITransformMemento
 	{	
-		
+			
 						
 		public var libraryName:String	
 		public var symbolName:String
+		public var isCustom:Boolean = false
+			
+		public var imageData:ByteArray //this will only be set if this is a custom symbol
 		
 		protected var _fontWeight:String  = "normal";
+		protected var _fontFamily:String  = ApplicationModel.DEFAULT_SYSTEM_FAULT
 		protected var _textAlign:String  = "left";
 		private var _fontSize:Number = 12
 		protected var _textPosition:String = TEXT_POSITION_TOP
@@ -37,14 +42,10 @@ package com.simplediagrams.model
 		}
 		
 		public override function createSDComponent():ISDComponent
-		{
-			Logger.debug("creating sdComponent...",this)
-			//var component:SDSymbolComponent = new SDSymbolComponent()
+		{			
 			var component:SDSymbol = new SDSymbol()
-			component.objectModel = this
-			this.sdComponent = component
-				
-			Logger.debug("returning component: " + component,this)
+			component.objectModel = this			
+			this.sdComponent = component				
 			return component
 		}
 		
@@ -76,7 +77,6 @@ package com.simplediagrams.model
 		public function set textPosition(value:String):void
 		{
 			
-			Logger.debug("textPosition()  value: " + value, this)
 			if (value==TEXT_POSITION_ABOVE || value==TEXT_POSITION_TOP || value==TEXT_POSITION_MIDDLE || value==TEXT_POSITION_BOTTOM || value==TEXT_POSITION_BELOW)
 			{
 				_textPosition=value
@@ -104,6 +104,20 @@ package com.simplediagrams.model
 			return	_fontWeight 
 		}
 		
+		
+		
+		public function set fontFamily(family:String):void
+		{	
+			_fontFamily = family			
+		}
+		
+		public function get fontFamily():String
+		{			
+			return	_fontFamily 
+		}
+		
+		
+		
 		public function get fontSize():Number
 		{
 			return _fontSize	
@@ -114,6 +128,8 @@ package com.simplediagrams.model
 			if (fontSize<3) value = 3
 			_fontSize = value
 		}
+		
+		
 	
 		public function getTextYPosition():Number
 		{
@@ -153,6 +169,8 @@ package com.simplediagrams.model
 			var memento:SDSymbolMemento = new SDSymbolMemento()
 			captureBasePropertiesInMemento(memento)
 			
+			Logger.debug("color: " + memento.color, this)
+			
 			//now record SDSymbolModel's specific properties into memento
 			memento.symbolName = this.symbolName
 			memento.libraryName = this.libraryName
@@ -162,7 +180,11 @@ package com.simplediagrams.model
 			mem.libraryName = libraryName
 			mem.textAlign = textAlign
 			mem.text = text
+			mem.fontFamily = fontFamily
+			mem.fontSize = fontSize
+			mem.fontWeight = fontWeight
 			mem.textPosition = textPosition
+			mem.isCustom = isCustom
 				
 			return mem 
 		}
@@ -177,16 +199,16 @@ package com.simplediagrams.model
 			var mem:SDSymbolMemento = SDSymbolMemento(memento)
 			symbolName = mem.symbolName
 			libraryName = mem.libraryName
+			fontFamily = mem.fontFamily
 			textAlign = mem.textAlign
 			text = mem.text
 			textPosition = mem.textPosition
+			isCustom  = mem.isCustom 
+			fontSize = mem.fontSize 
+			fontWeight = mem.fontWeight
 			
 		}
-						
-		
-		
-		
-		
+				
 		
 		
 	}

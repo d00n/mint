@@ -6,9 +6,13 @@ package com.simplediagrams.model.mementos
 		public var libraryName:String
 		public var symbolName:String
 		
+		public var isCustom:Boolean
 		public var textAlign:String
 		public var text:String
 		public var textPosition:String
+		public var fontFamily:String
+		public var fontSize:Number
+		public var fontWeight:String
 		
 		
 		public function SDSymbolMemento()

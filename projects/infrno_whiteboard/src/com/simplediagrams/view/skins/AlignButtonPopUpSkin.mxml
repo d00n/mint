@@ -20,7 +20,7 @@
 		<components:IconButton id="openButton" 
 							   icon="@Embed('assets/img/icons/align_button.png')" 
 							   toolTip="Align selected objects"
-							   width="20" height="20"/>	
+							   width="30" height="30"/>	
 	</s:Group>  
 		
 	<s:PopUpAnchor id="popup"   

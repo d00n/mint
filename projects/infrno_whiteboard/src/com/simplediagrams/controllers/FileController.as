@@ -5,15 +5,20 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.model.ApplicationModel;
 	import com.simplediagrams.model.DiagramModel;
 	import com.simplediagrams.model.LibraryManager;
+	import com.simplediagrams.model.RegistrationManager;
+	import com.simplediagrams.model.libraries.MissingSymbolInfo;
 	import com.simplediagrams.util.Logger;
+	import com.simplediagrams.view.dialogs.MissingSymbolsDialog;
 	import com.simplediagrams.view.dialogs.NewDiagramDialog;
 	import com.simplediagrams.view.dialogs.SaveBeforeActionDialog;
+	import com.simplediagrams.view.dialogs.UnavailableFontsDialog;
 	import com.simplediagrams.vo.RecentFileVO;
 	
 	import flash.events.Event;
 //	import flash.filesystem.File;
 	
 	import mx.controls.Alert;
+	import mx.core.UIComponent;
 	
 	import org.swizframework.controller.AbstractController;
 
@@ -21,24 +26,28 @@ package com.simplediagrams.controllers
 	public class FileController extends AbstractController
 	{
 		[Bindable]
-		[Autowire(bean="libraryManager")]
+		[Inject]
 		public var libraryManager:LibraryManager;
 				
 		[Bindable]
-		[Autowire(bean="applicationModel")]
+		[Inject]
 		public var appModel:ApplicationModel;
 			
 		[Bindable]	
-		[Autowire(bean="diagramModel")]
+		[Inject]
 		public var diagramModel:DiagramModel
 		
 		[Bindable]	
-		[Autowire(bean="fileManager")]
+		[Inject]
 		public var fileManager:FileManager
 				
 		[Bindable]	
-		[Autowire(bean="dialogsController")]
+		[Inject]
 		public var dialogsController:DialogsController
+		
+		[Bindable]	
+		[Inject]
+		public var registrationManager:RegistrationManager
 		
 		private var _saveBeforeActionDialog:SaveBeforeActionDialog
 		
@@ -90,10 +99,12 @@ package com.simplediagrams.controllers
 		[Mediate(event="LoadDiagramEvent.DIAGRAM_LOADED")]
 		public function diagramLoaded(event:LoadDiagramEvent):void
 		{
-			Logger.debug("diagramLoaded()...",this)
 			libraryManager.addRecentFilePath(event.nativePath, event.fileName)	
-			//the loading dialog will be removed by the diagramController after the diagram is completely built
+			//the loading dialog will be removed by the diagramController after the diagram is completely built	
+			//we'll show any unavailable fonts at that point
 		}	
+		
+		
 		
 		
 		
@@ -109,7 +120,7 @@ package com.simplediagrams.controllers
 		{
 			Logger.debug("diagramLoadError()",this)
 			Alert.show(event.errorMessage, "Load Error")
-			dialogsController.removeDialog()
+			dialogsController.removeDialog()			
 		}					
 
 		
@@ -117,28 +128,37 @@ package com.simplediagrams.controllers
 		public function saveDiagramAs(event:SaveDiagramEvent):void
 		{
 			Logger.debug("saveDiagramAs()",this)
+			//make sure user is licensed
+			if (registrationManager.isLicensed==false && appModel.firstInstallDate!=null)
+			{
+				Alert.show("Only Full Version users have the ability to save files. Visit www.simpledigrams.com and upgrade to Full Version today!", "Full Version Only")
+				return
+			}			
 			fileManager.saveSimpleDiagramAs()		
 		}
 		
 		
 		[Mediate(event="SaveDiagramEvent.SAVE_DIAGRAM")]
 		public function saveDiagram(event:SaveDiagramEvent):void
-		{						
-			Logger.debug("saveDiagram()",this)
+		{			
+			//make sure user is licensed
+			if (registrationManager.isLicensed==false && appModel.firstInstallDate!=null)
+			{
+				Alert.show("Only Full Version users have the ability to save files. Visit www.simpledigrams.com and upgrade to Full Version today!", "Full Version Only")
+				return
+			}			
 			fileManager.saveSimpleDiagram()
 		}
 		
 		[Mediate(event="SaveDiagramEvent.DIAGRAM_SAVED")]
 		public function diagramSaved(event:SaveDiagramEvent):void
 		{	
-			Logger.debug("diagramSaved()",this)
 			libraryManager.addRecentFilePath(event.nativePath, event.fileName)
 			if (_actionAfterSave) performActionAfterSave()
 		}
 						
 		protected function onSaveNewDiagram(event:Event):void
 		{
-			Logger.debug("onSaveNewDiagram()", this)
 			fileManager.saveSimpleDiagramAs()
 			//TODO : Add to recently loaded list 			libraryManager.loadDiagrams()
 			
@@ -164,7 +184,6 @@ package com.simplediagrams.controllers
 		[Mediate(event="OpenDiagramEvent.OPEN_DIAGRAM_EVENT")]
 		public function openDiagram(event:OpenDiagramEvent):void
 		{							
-			Logger.debug("openDiagram() isDirty: " + diagramModel.isDirty.toString() , this)
 			if (diagramModel.isDirty)
 			{
 				checkSaveBeforeOpen()
@@ -178,7 +197,7 @@ package com.simplediagrams.controllers
 		
 		
 		[Mediate(event="CloseDiagramEvent.CLOSE_DIAGRAM")]
-		public function closeDiagram(event:CloseDiagramEvent):void
+		public function onCloseDiagram(event:CloseDiagramEvent):void
 		{			
 			
 			if (diagramModel.isDirty)
@@ -187,17 +206,23 @@ package com.simplediagrams.controllers
 			}
 			else
 			{
-				appModel.viewing = ApplicationModel.VIEW_STARTUP
-				diagramModel.initDiagramModel()
-				fileManager.clear()
+				closeDiagram()
 			}
+		}
+		
+		protected function closeDiagram():void
+		{
+			appModel.viewing = ApplicationModel.VIEW_STARTUP
+			diagramModel.initDiagramModel()
+			fileManager.clear()
+			appModel.diagramLoaded = false
+			dispatcher.dispatchEvent(new CloseDiagramEvent(CloseDiagramEvent.DIAGRAM_CLOSED, true))
 		}
 		
 		
 		[Mediate(event="CreateNewDiagramEvent.CREATE_NEW_DIAGRAM")]
 		public function createNewDiagram(event:CreateNewDiagramEvent):void
 		{				
-			Logger.debug("createNewDiagram. diagramModel.isDirty = " + diagramModel.isDirty.toString(),this)
 			if(diagramModel.isDirty)
 			{
 				checkSaveBeforeNew()
@@ -206,8 +231,7 @@ package com.simplediagrams.controllers
 			{
 				startNew()
 				fileManager.clear()
-			}
-			
+			}			
 			
 		}
 		
@@ -215,7 +239,7 @@ package com.simplediagrams.controllers
 		{
 			appModel.viewing = ApplicationModel.VIEW_DIAGRAM
 			diagramModel.createNew()		//this will launch an "new diagram created" event
-				
+			appModel.diagramLoaded = true
 		}
 			
 		
@@ -251,7 +275,6 @@ package com.simplediagrams.controllers
 		
 		public function checkSaveBeforeNew():void
 		{
-			Logger.debug("checkSaveBeforeNew() " , this)
 			if (_saveBeforeActionDialog)
 			{				
 				dialogsController.removeDialog(_saveBeforeActionDialog)
@@ -267,7 +290,6 @@ package com.simplediagrams.controllers
 		
 		public function onSaveBeforeAction(event:Event):void
 		{										
-			Logger.debug("onSaveBeforeAction() " , this)
 			_actionAfterSave = _saveBeforeActionDialog.mode
 			try
 			{				
@@ -284,7 +306,6 @@ package com.simplediagrams.controllers
 		
 		public function performActionAfterSave():void
 		{
-			Logger.debug("_saveBeforeActionDialog.mode: " + _saveBeforeActionDialog.mode, this)
 			switch (_actionAfterSave)		
 			{
 				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_NEW:
@@ -292,8 +313,7 @@ package com.simplediagrams.controllers
 					break
 					
 				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_CLOSE:					
-					appModel.viewing = ApplicationModel.VIEW_STARTUP
-					diagramModel.initDiagramModel()
+					closeDiagram()
 					break
 					
 				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_OPEN:
@@ -325,9 +345,7 @@ package com.simplediagrams.controllers
 					break
 					
 				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_CLOSE:
-					diagramModel.createNew()
-					Logger.debug("after save before action is canceled, diamgramMOdel.isDirty : " + diagramModel.isDirty.toString(), this)
-					appModel.viewing = ApplicationModel.VIEW_STARTUP
+					closeDiagram()
 					break
 					
 				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_OPEN:

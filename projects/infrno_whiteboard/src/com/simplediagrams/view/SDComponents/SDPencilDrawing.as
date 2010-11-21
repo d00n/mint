@@ -39,14 +39,14 @@ package com.simplediagrams.view.SDComponents
 
 		
 		public function set objectModel(objectModel:SDObjectModel):void
-		{
-			Logger.debug("set model() model: " + objectModel, this)         
+		{        
             _model = SDPencilDrawingModel(objectModel)
             
             x = _model.x;
             y = _model.y;         
-			this.depth = _model.depth;
-		  	            
+			depth = _model.depth;      
+		  	width = _model.width
+			height = _model.height
 			lineColor=_model.color
 			lineWeight=_model.lineWeight
 			linePath=_model.linePath  
@@ -79,7 +79,6 @@ package com.simplediagrams.view.SDComponents
                 
                 case "linePath":
                 	this.linePath = event.newValue as String
-					Logger.debug("changing path to : " + linePath)
 					break
 				
                 case "color":

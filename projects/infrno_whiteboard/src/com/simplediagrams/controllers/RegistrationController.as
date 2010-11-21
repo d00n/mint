@@ -5,6 +5,7 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.model.ApplicationModel;
 	import com.simplediagrams.model.LibraryManager;
 	import com.simplediagrams.model.RegistrationManager;
+	import com.simplediagrams.shapelibrary.communication.Dialog;
 	import com.simplediagrams.util.Logger;
 	
 	import flash.events.Event;
@@ -12,25 +13,35 @@ package com.simplediagrams.controllers
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
+	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	
-	import org.swizframework.Swiz;
+	import mx.rpc.AsyncToken;
+	
+	;
 	import org.swizframework.controller.AbstractController;
 
 	public class RegistrationController extends AbstractController
 	{
-		
-		[Autowire(bean="applicationModel")]
+		[Inject]
 		public var appModel:ApplicationModel;
 		
-		[Autowire(bean="registrationManager")]
+		[Inject]
 		public var registrationManager:RegistrationManager;		
-				
+		
+		[Inject]
+		public var dialogsController:DialogsController;		
+		
+		protected var _loader:URLLoader
 		
 		public function RegistrationController()
 		{
+			_loader = new URLLoader();
+			_loader.addEventListener( Event.COMPLETE, resultHandler)
+			_loader.addEventListener( IOErrorEvent.IO_ERROR, faultHandler)
+			_loader.addEventListener( SecurityErrorEvent.SECURITY_ERROR, faultHandler)					
 		}
 		
 		
@@ -43,21 +54,19 @@ package com.simplediagrams.controllers
 				
 		[Mediate(event="RegisterLicenseEvent.VALIDATE_LICENSE")]
 		public function validateLicense(event:RegisterLicenseEvent):void
-		{
+		{			
+			Logger.debug("validateLicense()",this)
 			registrationManager.registerViewing = RegistrationManager.REGISTER_VIEW_WAITING			
 			registrationManager.tryingToValidateWithKey = event.licenseKey				
-			var urlRequest:URLRequest = new URLRequest("http://simplediagrams.heroku.com/registrations/validate")
-				
-			// For testing:
-			//var urlRequest:URLRequest = new URLRequest("http://localhost:3000/registrations/validate")
-				
+			var urlRequest:URLRequest = new URLRequest(ApplicationModel.REGISTRATION_URL)
+								
 			urlRequest.method = URLRequestMethod.POST
 			var variables:URLVariables = new URLVariables();
 			variables.email = event.email
 			variables.key = event.licenseKey
 			urlRequest.data = variables;
 			
-			executeURLRequest(urlRequest, resultHandler, faultHandler,  progressHandler, httpStatusHandler);
+			_loader.load(urlRequest)
 			
 		}
 		
@@ -88,18 +97,21 @@ package com.simplediagrams.controllers
 					registrationManager.viewing = RegistrationManager.VIEW_REGISTER
 					registrationManager.registerViewing = RegistrationManager.REGISTER_VIEW_ERROR
 					registrationManager.errorMsg = "The entered email and/or license key was not found on the security server. Please try again or contact us for help."
+					dispatcher.dispatchEvent(new RegisterLicenseEvent(RegisterLicenseEvent.LICENSE_KEY_NOT_FOUND, true))
 					break;
 				
 				case RegistrationManager.STATUS_ERROR_MAXCOUNT:
 					registrationManager.viewing = RegistrationManager.VIEW_REGISTER
 					registrationManager.registerViewing = RegistrationManager.REGISTER_VIEW_ERROR 
 					registrationManager.errorMsg ="The entered key was already used for the alotted number of registrations. Please enter a key that has not been used yet or contact us for help."
+					dispatcher.dispatchEvent(new RegisterLicenseEvent(RegisterLicenseEvent.LICENSE_KEY_MAXED_OUT, true))
 					break;
 				
 				case RegistrationManager.STATUS_ERROR_KEY_REVOKED:
 					registrationManager.viewing = RegistrationManager.VIEW_REGISTER
 					registrationManager.registerViewing = RegistrationManager.REGISTER_VIEW_ERROR
 					registrationManager.errorMsg = "This key has been revoked, probably because it was used too many times. Please contact us for help."
+					dispatcher.dispatchEvent(new RegisterLicenseEvent(RegisterLicenseEvent.LICENSE_KEY_REVOKED, true))
 					break;
 											
 				case RegistrationManager.STATUS_REGISTRATION_OK:	
@@ -116,8 +128,8 @@ package com.simplediagrams.controllers
 						return							
 					}
 					registrationManager.registerApplication(licenseKey)	
-					registrationManager.viewing = RegistrationManager.VIEW_REGISTRATON_SUCCESS
-					Swiz.dispatchEvent(new RegisterLicenseEvent(RegisterLicenseEvent.LICENSE_VALIDATED, true))
+					registrationManager.viewing = RegistrationManager.VIEW_REGISTRATON_SUCCESS					
+					dispatcher.dispatchEvent(new RegisterLicenseEvent(RegisterLicenseEvent.LICENSE_VALIDATED, true))
 					break
 				
 				default:
@@ -125,6 +137,7 @@ package com.simplediagrams.controllers
 					registrationManager.viewing = RegistrationManager.VIEW_REGISTER
 					registrationManager.registerViewing = RegistrationManager.REGISTER_VIEW_ERROR
 					registrationManager.errorMsg = "There was an error contacting the license server. Please try again or contact us for help."
+					dispatcher.dispatchEvent(new RegisterLicenseEvent(RegisterLicenseEvent.UNRECOGNIZED_STATUS, true))
 			}
 			
 							
@@ -150,35 +163,52 @@ package com.simplediagrams.controllers
 			
 			registrationManager.viewing = RegistrationManager.VIEW_SERVER_UNAVALABLE
 		}
-		
-		protected function progressHandler(e:ProgressEvent):void
-		{
-			Logger.debug("progressHandler(): e: "+ e, this)
-		}
-		
-		protected function httpStatusHandler(e:HTTPStatusEvent):void
-		{
-			Logger.debug("httpStatusHandler(): e: "+ e, this)
-		}
-
-		      
+				      
         
         [Mediate(event="RegistrationViewEvent.USE_IN_FULL_MODE")]
         public function startUsingSD(event:RegistrationViewEvent):void
         {
 			//TODO : any kind of extra functionality that gets included with premium version can be activated here
-			Logger.debug("startUsingSD",this)			
-        	appModel.viewing = ApplicationModel.VIEW_STARTUP  
-        	appModel.menuEnabled = true  	
+			Logger.debug("startUsingSD",this)		
+        	
+			if (registrationManager.isDialog==false)
+			{
+				appModel.viewing = ApplicationModel.VIEW_STARTUP  
+				appModel.menuEnabled = true 
+			}
+			else
+			{
+				if (appModel.diagramLoaded)
+				{
+					appModel.viewing = ApplicationModel.VIEW_DIAGRAM 
+				}
+				else
+				{
+					appModel.viewing = ApplicationModel.VIEW_STARTUP 
+				}
+			}
         }
 		
 		
 		[Mediate(event="RegistrationViewEvent.USE_IN_FREE_MODE")]
 		public function startFreeVersion(event:RegistrationViewEvent):void
 		{
-			appModel.startNagWindow()
-			appModel.viewing = ApplicationModel.VIEW_STARTUP  
-			appModel.menuEnabled = true  	
+			if (registrationManager.isDialog==false)
+			{				
+				appModel.viewing = ApplicationModel.VIEW_STARTUP 
+				appModel.menuEnabled = true 
+			} 		
+			else
+			{
+				if (appModel.diagramLoaded)
+				{
+					appModel.viewing = ApplicationModel.VIEW_DIAGRAM 
+				}
+				else
+				{
+					appModel.viewing = ApplicationModel.VIEW_STARTUP 
+				}
+			}
 		}
 		
 		[Mediate(event="RegistrationViewEvent.TRY_REGISTERING_AGAIN")]
@@ -190,7 +220,28 @@ package com.simplediagrams.controllers
 		}
 		
         
-				
+		[Mediate(event="RegistrationViewEvent.SHOW_REGISTRATION_SCREEN")]
+		public function onShowRegistrationScreen(event:RegistrationViewEvent):void
+		{
+			registrationManager.isDialog = true
+			appModel.viewing = ApplicationModel.VIEW_REGISTRATION
+			registrationManager.viewing = RegistrationManager.VIEW_REGISTER
+		}
+		
+		[Mediate(event="RegistrationViewEvent.CANCEL_REGISTRATION_HTTP_REQUEST")]
+		public function onCancelRegistrationRequestAttempt(event:RegistrationViewEvent):void
+		{			
+			try
+			{
+				_loader.close()
+			}
+			catch(error:Error)
+			{
+				Logger.debug("onCancelRegistrationRequestAttempt() Error trying to close URLRequest",this)
+			}
+			registrationManager.viewing = RegistrationManager.VIEW_REGISTER
+		}
+		
 		
 		
 	}

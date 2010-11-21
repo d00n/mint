@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Panel 
+<s:TitleWindow 
 	xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	xmlns:mx="library://ns.adobe.com/flex/mx" 
@@ -39,6 +39,7 @@
 			
 			protected function onCC():void
 			{
+				this.closeButton.visible=false
 				_validatorsArr = [vldHeight, vldWidth]
 			}
 			
@@ -137,16 +138,6 @@
 				text="Some of your inputs are not valid. Please check the fields with a red border."/>
 	</s:Group>
 			
-	<s:Group >
-		<s:layout>
-			<s:HorizontalLayout  paddingTop="5" paddingBottom="5"  />			
-		</s:layout>
-		<mx:Label paddingLeft="5" text="Height:" width="80"/>
-		<s:TextInput id="txtHeight" text="{diagramModel.height}" 
-			restrict="0-9" maxChars="4"
-			width="80"
-			 />
-	</s:Group>
 	
 	
 	<s:Group  >
@@ -158,6 +149,17 @@
 			restrict="0-9" maxChars="4"
 			width="80"
 			/>
+	</s:Group>
+	
+	<s:Group >
+		<s:layout>
+			<s:HorizontalLayout  paddingTop="5" paddingBottom="5"  />			
+		</s:layout>
+		<mx:Label paddingLeft="5" text="Height:" width="80"/>
+		<s:TextInput id="txtHeight" text="{diagramModel.height}" 
+					 restrict="0-9" maxChars="4"
+					 width="80"
+					 />
 	</s:Group>
 	
 	
@@ -187,4 +189,4 @@
 
 	
 	
-</s:Panel>
+</s:TitleWindow>

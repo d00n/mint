@@ -5,6 +5,7 @@ package com.simplediagrams.model
 	import com.simplediagrams.view.SDComponents.SDLine;
 	
 	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	
@@ -17,17 +18,33 @@ package com.simplediagrams.model
 
 	public class SDObjectHandles extends ObjectHandles
 	{
-
-		[Autowire]
+		
+		
+		[Inject]
 		public var undoRedoManager:UndoRedoManager
 		
 		
+		[Dispatcher]
+		public function set dispatcher(value:IEventDispatcher):void
+		{
+			super._dispatcher = value
+			selectionManager.dispatcher = value
+		}
+	
+		
 		//public var objectConnectors:ObjectConnectors 
 		
-		public function SDObjectHandles( selectionManager:ObjectHandlesSelectionManager = null, handleFactory:IFactory = null)
+		/*
+		public function SDObjectHandles( dispatcher:IEventDispatcher, selectionManager:ObjectHandlesSelectionManager = null, handleFactory:IFactory = null)
 		{
 			//we pass in a blank sprite here since we'll set the container explicitly later on
-			super(new Group(), selectionManager, handleFactory)	
+			super(new Group(), dispatcher, selectionManager, handleFactory)	
+		}
+		*/
+		public function SDObjectHandles()
+		{
+			//we pass in a blank sprite here since we'll set the container explicitly later on
+			super(new Group())	
 		}
 		
 		public function setContainer(s:Group):void
@@ -43,7 +60,7 @@ package com.simplediagrams.model
 		/* Making a separate group to hold the handles so the don't get in the way of re-ordering the actual SD objects*/
 		public function setHandlesContainer(s:Group):void
 		{
-				handlesContainer = s
+			handlesContainer = s
 		}
 		
 		/** Overriding object handles registerComponent so we can apply some standard settings for different types of SDObjects */
@@ -74,17 +91,41 @@ package com.simplediagrams.model
 			return visualDisplay
 		}
 		
-				
         
         public function removeAll():void
 		{
 			selectionManager.clearSelection()			
-			//clear out all objects currently registered in ObjectHandles
-			for each (var obj:EventDispatcher in this.visuals)
+			//clear out all objects currently registered in ObjectHandles, except for the DragGeometry used for groups
+			for(var key:Object in this.visuals)
 			{
-				this.unregisterComponent(obj)
+				if (key is DragGeometry)
+				{
+					continue
+				}	
+				this.unregisterComponent(EventDispatcher(key))
 			}			
 		}
+		
+		[Mediate(event="SelectionEvent.ADDED_TO_SELECTION")]
+		public function onSelectionAdded( event:SelectionEvent ) : void
+		{
+			setupHandles();                 
+		}
+		
+		
+		[Mediate(event="SelectionEvent.REMOVED_FROM_SELECTION")]
+		public function onSelectionRemoved( event:SelectionEvent ) : void
+		{
+			setupHandles();            
+		}
+		
+		[Mediate(event="SelectionEvent.SELECTION_CLEARED")]
+		public function onSelectionCleared( event:SelectionEvent ) : void
+		{                       
+			setupHandles();
+			lastSelectedModel=null;
+		}
+		
 		
 		
 		

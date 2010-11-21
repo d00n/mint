@@ -6,11 +6,13 @@ package com.simplediagrams.business
 	import com.simplediagrams.model.*;
 	import com.simplediagrams.util.Logger;
 	
+	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 //	import flash.filesystem.*;
 	import flash.net.FileFilter;
-	import flash.display.Sprite
+	import flash.utils.ByteArray;
+	
 	import mx.controls.Alert;
 	import mx.core.FlexGlobals;
 	import mx.events.CloseEvent;

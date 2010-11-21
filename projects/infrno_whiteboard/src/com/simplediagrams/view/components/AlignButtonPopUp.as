@@ -7,28 +7,29 @@
 
 package com.simplediagrams.view.components
 {
-	import org.swizframework.Swiz
-	import com.simplediagrams.events.AlignEvent
 	
-	import flash.events.Event
+	import com.simplediagrams.events.AlignEvent;
+	
 	import flash.display.DisplayObject;
+	import flash.events.Event;
+	import flash.events.IEventDispatcher;
 	import flash.events.MouseEvent;
 	import flash.geom.ColorTransform;
 	import flash.geom.Point;
 	
 	import flashx.textLayout.formats.VerticalAlign;
+	
 	import mx.events.FlexEvent;
 	import mx.events.SandboxMouseEvent;
 	import mx.graphics.SolidColor;
 	
-	import spark.components.Group;
 	import spark.components.Button;
+	import spark.components.Group;
 	import spark.components.VGroup;
 	import spark.components.supportClasses.SkinnableComponent;
 	import spark.events.DropDownEvent;
 	import spark.primitives.Rect;
 	import spark.primitives.supportClasses.FilledElement;
-	
 	
 						
 	/**
@@ -45,6 +46,10 @@ package com.simplediagrams.view.components
 		
 	public class AlignButtonPopUp extends SkinnableComponent
 	{
+		
+		
+		[Dispatcher]
+		public var dispatcher:IEventDispatcher
 
 		/**
 		 * 
@@ -237,30 +242,30 @@ package com.simplediagrams.view.components
 			
 			if (event.target==btnAlignTop)
 			{
-				evt = new AlignEvent(AlignEvent.ALIGN_TOP)
+				evt = new AlignEvent(AlignEvent.ALIGN_TOP, true)
 			}
 			else if (event.target==btnAlignMiddle)
 			{
-				evt = new AlignEvent(AlignEvent.ALIGN_MIDDLE)
+				evt = new AlignEvent(AlignEvent.ALIGN_MIDDLE, true)
 			}
 			else if (event.target==btnAlignBottom)
 			{
-				evt = new AlignEvent(AlignEvent.ALIGN_BOTTOM)
+				evt = new AlignEvent(AlignEvent.ALIGN_BOTTOM, true)
 			}
 			else if (event.target==btnAlignLeft)
 			{
-				evt = new AlignEvent(AlignEvent.ALIGN_LEFT)
+				evt = new AlignEvent(AlignEvent.ALIGN_LEFT, true)
 			}
 			else if (event.target==btnAlignCenter)
 			{
-				evt = new AlignEvent(AlignEvent.ALIGN_CENTER)
+				evt = new AlignEvent(AlignEvent.ALIGN_CENTER, true)
 			}
 			else if (event.target==btnAlignRight)
 			{
-				evt = new AlignEvent(AlignEvent.ALIGN_RIGHT)
+				evt = new AlignEvent(AlignEvent.ALIGN_RIGHT, true)
 			}
 			
-			Swiz.dispatchEvent(evt)	
+			dispatcher.dispatchEvent(evt)	
 		}
 		
 		public function openDropDown():void

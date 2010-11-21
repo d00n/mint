@@ -10,7 +10,7 @@ package com.simplediagrams.commands
 	public class ChangeColorCommand extends UndoRedoCommand
 	{
 		private var _diagramModel:DiagramModel
-		protected var _sdID:Number = 0
+		protected var _sdID:String = ""
 		protected var _previous_color:int
 		public var color:Number
 		
@@ -23,16 +23,19 @@ package com.simplediagrams.commands
 		}
 		
 		override public function execute():void
-		{	
+		{
 			redo()
 		}
 		
 		override public function undo():void
-		{						
+		{
 			var sdObjectModel:SDObjectModel = _diagramModel.getModelByID(_sdID);
-			if (sdObjectModel) {
+			if (sdObjectModel) 
+			{
 				sdObjectModel.color = _previous_color;
-			} else {
+			} 
+			else 
+			{
 				Logger.error("Object lookup by sdID failed: " + _sdID, this);
 			}
 		}
@@ -40,9 +43,12 @@ package com.simplediagrams.commands
 		override public function redo():void
 		{
 			var sdObjectModel:SDObjectModel = _diagramModel.getModelByID(_sdID);
-			if (sdObjectModel) {
-				sdObjectModel.color = color;			
-			} else {
+			if (sdObjectModel) 
+			{
+				sdObjectModel.color = color;
+			} 
+			else 
+			{
 				Logger.error("Object lookup by sdID failed: " + _sdID, this);
 			}
 		}

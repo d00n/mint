@@ -6,6 +6,7 @@
     xmlns:myComps="*"
     doubleClickEnabled="true"
     doubleClick="onDoubleClick(event)"	
+    hitArea="{symbolHitArea}"
 	
     >
     
@@ -38,14 +39,23 @@
     <!-- states -->
     <s:states>
         <s:State name="normal" />
-        <s:State name="selected" />
+		<s:State name="customSymbol" />
     </s:states>
     
       
-    <mx:Image id="symbol" 
-    	source="{hostComponent.getStyle('symbol')}" 
+    <mx:Image id="imgLibrarySymbol" 
+		excludeFrom="customSymbol"
+    	source="{hostComponent.librarySymbolSource}" 
         maintainAspectRatio="false"
     	width="100%" height="100%"/>
+	
+	
+	<mx:Image id="imgCustomSymbol" 
+			  includeIn="customSymbol"
+			  source="{hostComponent.customSymbolSource}" 
+			  maintainAspectRatio="false"
+			  width="100%" height="100%"/>
+	
 	
 	<s:Label id="lblSymbolText"
 				x="5"
@@ -54,16 +64,17 @@
 				width="{hostComponent.width - 10}"
 		   		textAlign="{hostComponent.textAlign}"
 				fontSize="{hostComponent.fontSize}"
+				fontFamily="{hostComponent.fontFamily}"
 				y="{hostComponent.textYPos}"
 			    mouseEnabled="false"
 			   
 			/>
 	     
 	
-    <s:Graphic id="symbolHitArea" >
+    <s:Graphic id="symbolHitArea" visible="false" >
     	<s:Rect id="rect1" width="{this.width}" height="{this.height}" >
           <s:fill>
-             <s:SolidColor color="0x000000" alpha=".01" />
+             <s:SolidColor color="0xFF0000" />
           </s:fill>
      	</s:Rect>
     </s:Graphic>

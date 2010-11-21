@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Panel 
+<s:TitleWindow 
 	xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	xmlns:mx="library://ns.adobe.com/flex/mx" 
 	xmlns:dialogs="com.mcquilleninteractive.comfen.view.dialogs.*" 
     backgroundColor="0xFFFFFF"
-    creationComplete="onCC()"
+	creationComplete="{this.closeButton.visible=false }"
     title="Save Changes?"
 	>
 	
@@ -21,22 +21,15 @@
 			import com.simplediagrams.events.LoadDiagramEvent;
 			import com.simplediagrams.model.DiagramModel;
 			import com.simplediagrams.business.DBManager;
-			import com.simplediagrams.model.dao.DiagramDAO
 			import com.simplediagrams.model.LibraryManager
 			
 			import mx.managers.PopUpManager
-			import org.swizframework.Swiz
+			
 			import com.simplediagrams.util.Logger	
 			import mx.utils.ObjectUtil;
 			
 			
 			/** NOT IMPLEMENTED YET **/						
-			
-			public function onCC():void
-			{
-					
-			}
-					
 			
 			public function onExport():void
 			{
@@ -61,4 +54,4 @@
 		</s:HGroup>
 	</s:VGroup>
 	
-</s:Panel>
+</s:TitleWindow>

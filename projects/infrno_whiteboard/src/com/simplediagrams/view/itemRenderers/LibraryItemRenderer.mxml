@@ -1,15 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
-				xmlns:s="library://ns.adobe.com/flex/spark" toolTip="{data.displayName}">
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				dataChange="dataChangeHandler(event);">
 	
 	<fx:Script> 
 		<![CDATA[    
-			import mx.core.ByteArrayAsset;
+			import com.simplediagrams.events.DeleteItemFromCustomLibrary;
+			import com.simplediagrams.events.RenameItemInCustomLibrary;
+			import com.simplediagrams.model.SDCustomSymbolModel;
 			import com.simplediagrams.model.SDObjectModel;
-			import com.simplediagrams.util.Logger
+			import com.simplediagrams.model.SDSymbolModel;
+			import com.simplediagrams.util.Logger;
+			
+			import mx.core.ByteArrayAsset;
+				
+			[Bindable]
+			public var _imageSource:Object
+			
+			[Dispatcher]
+			public var dispatcher:IEventDispatcher
+			
+			override public function set data(value:Object):void
+			{
+				super.data = value
+				var model:SDSymbolModel = SDSymbolModel(data)
+				if (model)
+				{
+					this.toolTip = model.displayName
+					if (model.imageData)
+					{
+						_imageSource = model.imageData
+					}
+					else
+					{
+						_imageSource = new model.iconClass()
+					}
+				}
 				
 				
+			}
+			
+			
+			protected function dataChangeHandler(evt:Event):void 
+			{				
+				if (this.data is SDCustomSymbolModel)
+				{
+					// Create custom context menu. 
+					const cmi:ContextMenuItem = new ContextMenuItem("Rename Symbol");
+					cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onRenameSymbol);
+					const cmi2:ContextMenuItem = new ContextMenuItem("Delete Symbol from Library");
+					cmi2.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onDeleteFromLibrary);
+					
+					const cm:ContextMenu = new ContextMenu();
+					cm.hideBuiltInItems();
+					cm.customItems = [cmi, cmi2];
+					
+					contextMenu = cm;
+				}
+			}
+			
+			protected function onDeleteFromLibrary(event:ContextMenuEvent):void
+			{
+				var deleteEvt:DeleteItemFromCustomLibrary = new DeleteItemFromCustomLibrary(DeleteItemFromCustomLibrary.SHOW_DELETE_CUSTOM_SYMBOL_DIALOG, true)				
+				deleteEvt.libraryName = SDSymbolModel(data).libraryName
+				deleteEvt.symbolName = SDSymbolModel(data).symbolName
+				dispatcher.dispatchEvent(deleteEvt)
+			}
+			
+			protected function onRenameSymbol(event:ContextMenuEvent):void
+			{
+				var renameEvt:RenameItemInCustomLibrary = new RenameItemInCustomLibrary(RenameItemInCustomLibrary.SHOW_RENAME_CUSTOM_SYMBOL_DIALOG, true)
+				renameEvt.libraryName = SDSymbolModel(data).libraryName
+				renameEvt.oldSymbolName = SDSymbolModel(data).symbolName
+				dispatcher.dispatchEvent(renameEvt)
+			}
+			
+			
 		]]> 
 	</fx:Script>
 	
@@ -17,6 +84,6 @@
 		<s:State name="normal" />
 	</s:states>
 		
-	<mx:Image id="iconImage" source="{new data.iconClass()}" width="40" height="40" x="5" y="5" />
+	<mx:Image id="iconImage" source="{_imageSource}" width="40" height="40" x="5" y="5" />
 	
 </s:ItemRenderer>

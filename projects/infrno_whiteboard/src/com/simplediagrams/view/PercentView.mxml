@@ -18,7 +18,7 @@
 			import flash.events.TimerEvent
 			
 			//[Bindable]
-			[Autowire(bean="diagramModel")]
+			[Inject]
 			[Bindable]
 			public var diagramModel:DiagramModel
 				

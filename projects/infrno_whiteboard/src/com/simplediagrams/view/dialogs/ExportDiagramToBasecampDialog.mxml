@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 title="Export Diagram to Basecamp"		 
@@ -31,12 +31,12 @@
 			import flash.utils.ByteArray;
 			
 			import mx.controls.Alert;
-			
-			import org.swizframework.Swiz;
-			
+					
+			[Dispatcher]
+			public var dispatcher:IEventDispatcher
 			
 			[Bindable]
-			[Autowire(name="basecampModel")]
+			[Inject]
 			public var basecampModel:BasecampModel
 			
 			[Bindable]
@@ -72,14 +72,19 @@
 			
 			protected function onCC():void
 			{
+				
+				this.closeButton.visible=false
+					
 				_enableNotifications = basecampModel.enableNotifications
 					
 				if (basecampModel.projectsAC.length == 0)
 				{
 					Logger.debug("dispatching event" ,this)
 					var evt:BasecampEvent = new BasecampEvent(BasecampEvent.GET_PROJECTS, true)
-					Swiz.dispatchEvent(evt)
+					dispatcher.dispatchEvent(evt)
 				}
+				
+				cbxMsgIsPrivate.selected = basecampModel.defaultMessageToPrivate
 				
 			}
 			
@@ -89,9 +94,20 @@
 				
 			}
 			
+			public function get msgIsPrivate():Boolean
+			{
+				return cbxMsgIsPrivate.selected
+			}
+			
 			protected function onOK():void
 			{
 				Logger.debug("setting basecampModel.selectedProjectID: " + basecampModel.selectedProjectID, this)
+					
+				if (txtMessageTitle.text=="")
+				{
+					Alert.show("Message title cannot be blank")
+					return
+				}
 					
 				if (cbxProjects.selectedItem==null)
 				{
@@ -190,7 +206,7 @@
 					</s:HGroup>					
 				</s:Group>
 								
-				<s:Group width="250" height="100">
+				<s:Group width="250" height="80">
 					
 					<s:VGroup width="100%" height="100%" paddingLeft="0">
 						<s:List id="lstPeople" 
@@ -213,9 +229,10 @@
 									text="Hint: You can select people to notify when you post an image...just enable 'Notifications' in the SimpleDiagrams>Preferences menu." 
 									width="100%" height="100%"/>
 					</s:VGroup>
-					
+									
 				</s:Group>
 				
+				<s:CheckBox id="cbxMsgIsPrivate" label="message is private" toolTip="Select to mark message as private. You can change the default setting of this control in 'preferences'" />
 				
 			</s:VGroup>
 			
@@ -268,4 +285,4 @@
 		
 	
 		
-</s:Panel>
+</s:TitleWindow>

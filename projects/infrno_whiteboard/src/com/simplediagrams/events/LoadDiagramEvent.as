@@ -5,6 +5,7 @@ package com.simplediagrams.events
 	public class LoadDiagramEvent extends Event
 	{
 		public static const LOAD_DIAGRAM:String = "loadDiagram"
+		public static const DIAGRAM_PARSED:String = "diagramParsed" 				//the xml was loaded in but we haven't completed the load yet
 		public static const DIAGRAM_LOADED:String = "diagramLoaded"
 		public static const DIAGRAM_LOAD_ERROR:String = "diagramLoadedError"
 		public static const DIAGRAM_LOAD_CANCELED:String = "diagramLoadCanceled"

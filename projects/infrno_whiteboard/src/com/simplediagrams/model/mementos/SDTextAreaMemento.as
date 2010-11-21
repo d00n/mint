@@ -9,6 +9,7 @@ package com.simplediagrams.model.mementos
 		public var fontSize:Number
 		public var fontWeight:String 
 		public var textAlign:String
+		public var fontFamily:String
 			
 		
 		public function SDTextAreaMemento()
@@ -24,6 +25,7 @@ package com.simplediagrams.model.mementos
 			memento.text = text 
 			memento.fontSize = fontSize
 			memento.fontWeight = fontWeight 
+			memento.fontFamily = fontFamily 
 			memento.textAlign = textAlign
 			
 			return memento

@@ -22,8 +22,10 @@ package com.simplediagrams.model.libraries
 		ExclamationMark;
 		Lightbulb;
 		Monologue;
+		Monologue2;
 		QuestionMark;
 		ThoughtBubble;
+		ThoughtBubble2;
 		Sign;
 		Pencil;
 		Phone; 			
@@ -36,6 +38,29 @@ package com.simplediagrams.model.libraries
 		Cloud;
 		HappyFace;
 		SadFace;
+		//more by Kat
+		Phone2;
+		Mobile;
+		MobileWithHI;
+		ChatBox;
+		Memo;
+		Postcard;
+		GlobeWithMail;
+		Teacher;
+		Radio;
+		DoubleSquareSpeechBubbles;
+		SquareSpeechBubble;
+		SquareSpeechBubble2;
+		RoundSpeechBubble;
+		RoundSpeechBubble2;
+		SpeechBox3D;
+		SpeechBox3D2;
+		Facebook;
+		Twitter;
+		LinkedIn;
+		
+		
+		
 		
 				
 		public function LibraryCommunication()
@@ -48,10 +73,19 @@ package com.simplediagrams.model.libraries
 		override public function initShapes():void
 		{
 			addLibraryItem( new SDSymbolModel("Dialog"))
+			addLibraryItem( new SDSymbolModel("DoubleSquareSpeechBubbles"))
+			addLibraryItem( new SDSymbolModel("Monologue2"))
 			addLibraryItem( new SDSymbolModel("Monologue"))
+			addLibraryItem( new SDSymbolModel("SquareSpeechBubble")) 
+			addLibraryItem( new SDSymbolModel("SquareSpeechBubble2"))  
+			addLibraryItem( new SDSymbolModel("RoundSpeechBubble")) 
+			addLibraryItem( new SDSymbolModel("RoundSpeechBubble2")) 
+			addLibraryItem( new SDSymbolModel("ThoughtBubble2"))
+			addLibraryItem( new SDSymbolModel("ThoughtBubble"))
+			addLibraryItem( new SDSymbolModel("SpeechBox3D")) 
+			addLibraryItem( new SDSymbolModel("SpeechBox3D2")) 
 			addLibraryItem( new SDSymbolModel("Emission"))
 			addLibraryItem( new SDSymbolModel("Lightbulb"))
-			addLibraryItem( new SDSymbolModel("ThoughtBubble"))
 			addLibraryItem( new SDSymbolModel("Cloud"))
 			addLibraryItem( new SDSymbolModel("ExclamationMark", 30))
 			addLibraryItem( new SDSymbolModel("QuestionMark", 30))
@@ -60,13 +94,25 @@ package com.simplediagrams.model.libraries
 			addLibraryItem( new SDSymbolModel("Fax")) 		
 			addLibraryItem( new SDSymbolModel("Email")) 	
 			addLibraryItem( new SDSymbolModel("Phone")) 	
+			addLibraryItem( new SDSymbolModel("Phone2")) 
+			addLibraryItem( new SDSymbolModel("Mobile")) 
+			addLibraryItem( new SDSymbolModel("MobileWithHI")) 
 			addLibraryItem( new SDSymbolModel("Cell", 30))
 			addLibraryItem( new SDSymbolModel("Mail", 50,40)) 
+			addLibraryItem( new SDSymbolModel("ChatBox")) 
 			addLibraryItem( new SDSymbolModel("Bullhorn")) 
 			addLibraryItem( new SDSymbolModel("Stop")) 
 			addLibraryItem( new SDSymbolModel("HappyFace")) 
-			addLibraryItem( new SDSymbolModel("SadFace")) 
+			addLibraryItem( new SDSymbolModel("SadFace")) 			
+			addLibraryItem( new SDSymbolModel("Memo")) 
+			addLibraryItem( new SDSymbolModel("Postcard")) 
+			addLibraryItem( new SDSymbolModel("GlobeWithMail")) 
+			addLibraryItem( new SDSymbolModel("Teacher")) 
+			addLibraryItem( new SDSymbolModel("Facebook")) 
+			addLibraryItem( new SDSymbolModel("Twitter")) 
+			addLibraryItem( new SDSymbolModel("LinkedIn")) 
 			 
+			
 		}
 		
 		

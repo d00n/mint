@@ -6,20 +6,16 @@ package com.simplediagrams.util
 	import flash.events.IOErrorEvent;
 //	import flash.filesystem.*;
 	import flash.net.XMLSocket;
+	import flash.utils.getQualifiedClassName;
 	
 	import mx.logging.ILogger;
 	import mx.logging.Log;
 	import mx.logging.LogEventLevel;
-	
-	import org.spicefactory.lib.reflect.ClassInfo;
-	import org.swizframework.Swiz;
-	
+		
 	
 	public class Logger	
 	{
-						
-		public static var reportErrorsToCMS:Boolean = true
-		
+								
 		public static var enabled : Boolean = true;
 		public static var myLogger : ILogger
 		private static var socket : XMLSocket;
@@ -67,61 +63,68 @@ package com.simplediagrams.util
 		private static function _send(lvl:Number, o:Object, target:Object):void
 		{
 			
-			if (target!=null)
+			try
 			{
-				var ci:ClassInfo = ClassInfo.forInstance(target);
-				var targetName:String = ci.simpleName
+								
+				if (myLogger == null)
+				{
+					myLogger = Log.getLogger("com.simplediagrams") 
+				}
+											
+				var type:String
+				switch(lvl)
+	            {
+	            	case LogEventLevel.DEBUG:
+						type = "DEBUG:"
+	                	if (Log.isDebug()) 
+						{
+							var targetName:String = getTargetClassName(target)
+	                    	myLogger.debug(targetName + " : " + o.toString()) 
+	                    }
+	                    break;
+					case LogEventLevel.INFO:
+						type = "INFO:"
+						if (Log.isInfo()) 
+						{							
+							var targetName:String = getTargetClassName(target)
+							myLogger.info(targetName + " : " +o.toString()); 
+						}
+						break;
+					case LogEventLevel.WARN:
+						type = "WARN:"
+						if (Log.isWarn()) 
+						{							
+							var targetName:String = getTargetClassName(target)
+	                        myLogger.warn(targetName + " : " + o.toString());
+	                    }
+	                    break;
+	                case LogEventLevel.ERROR:
+						type = "ERROR:"
+	                    if (Log.isError()) 
+						{							
+							var targetName:String = getTargetClassName(target)
+	                        myLogger.error(targetName + " : " + o.toString());
+	                    }
+	                    break;
+	                case LogEventLevel.FATAL:
+						type = "FATAL:"
+	                    if (Log.isFatal()) 
+						{
+							var targetName:String = getTargetClassName(target)
+	                        myLogger.fatal(targetName + " : " + o.toString());
+	                    }
+	                    break;
+					case LogEventLevel.ALL:
+						type = "ALL:"
+						var targetName:String = getTargetClassName(target)
+						myLogger.log(lvl, targetName + " : " +  o.toString());
+						break;
+	            }
 			}
-			else
+			catch(error:Error)
 			{
-				targetName=""
+				//hmm...
 			}
-			
-			if (myLogger == null)
-			{
-				myLogger = Log.getLogger("com.simplediagrams") 
-			}
-						
-			
-			var type:String
-			switch(lvl)
-            {
-            	case LogEventLevel.DEBUG:
-					type = "DEBUG:"
-                	if (Log.isDebug()) {
-                    	myLogger.debug(targetName + " : " + o.toString()) 
-                    }
-                    break;
-				case LogEventLevel.INFO:
-					type = "INFO:"
-					if (Log.isInfo()) {
-						myLogger.info(targetName + " : " +o.toString()); 
-					}
-					break;
-				case LogEventLevel.WARN:
-					type = "WARN:"
-					if (Log.isWarn()) {
-                        myLogger.warn(targetName + " : " + o.toString());
-                    }
-                    break;
-                case LogEventLevel.ERROR:
-					type = "ERROR:"
-                    if (Log.isError()) {
-                        myLogger.error(targetName + " : " + o.toString());
-                    }
-                    break;
-                case LogEventLevel.FATAL:
-					type = "FATAL:"
-                    if (Log.isFatal()) {
-                        myLogger.fatal(targetName + " : " + o.toString());
-                    }
-                    break;
-				case LogEventLevel.ALL:
-					type = "ALL:"
-					myLogger.log(lvl, targetName + " : " +  o.toString());
-					break;
-            }
-            
            
             //log to file 
             try
@@ -142,11 +145,32 @@ package com.simplediagrams.util
             }
 	   		catch(err:Error)
 	   		{
-	   			trace("ERROR in logging to file! err: " + err)
+	   			trace("couldn't delete log file! Error: " + err)
 	   		}
+			
+			if (logToFile && logFile) //&& lvl> LogEventLevel.DEBUG)
+			{					
+				if (logFileStream==null) logFileStream = new FileStream()
+				logFileStream.open(logFile, FileMode.APPEND)
+				logFileStream.writeUTFBytes( File.lineEnding + type + o)
+				logFileStream.close()
+			}
 				
 		}
 	
+		protected static function getTargetClassName(target:Object):String
+		{
+			if (target!=null)
+			{
+				var targetName:String = getQualifiedClassName(target).split("::")[1]
+			}
+			else
+			{
+				targetName=""
+			}
+			return targetName
+		}
+		
 
 	}
 

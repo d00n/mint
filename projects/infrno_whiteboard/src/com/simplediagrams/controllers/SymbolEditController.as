@@ -14,7 +14,7 @@ package com.simplediagrams.controllers
 	public class SymbolEditController extends AbstractController
 	{
 		
-		[Autowire(bean="diagramModel")]
+		[Inject]
 		public var diagramModel:DiagramModel;
 		
 		

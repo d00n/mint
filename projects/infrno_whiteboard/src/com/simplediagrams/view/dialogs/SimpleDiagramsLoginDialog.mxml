@@ -27,7 +27,7 @@
 			public static const STATE_LOGIN_ERROR:String = "loginError";
 			
 			[Bindable]
-			[Autowire(name="userModel")]
+			[Inject]
 			public var userModel:UserModel
 			
 			[Bindable]

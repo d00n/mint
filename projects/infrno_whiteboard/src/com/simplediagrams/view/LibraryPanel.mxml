@@ -2,7 +2,6 @@
 <mx:Accordion xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	xmlns:mx="library://ns.adobe.com/flex/mx" 
-	creationComplete="onCC()"
 	addedToStage="onATS()"
 	horizontalScrollPolicy="off" 
 	paddingLeft="0" 
@@ -15,13 +14,18 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import com.simplediagrams.events.CreateCustomLibraryEvent;
 			import com.simplediagrams.model.ApplicationModel;
 			import com.simplediagrams.model.DiagramStyleManager;
 			import com.simplediagrams.model.LibraryManager;
-			import com.simplediagrams.model.SDObjectModel;
 			import com.simplediagrams.model.RegistrationManager;
+			import com.simplediagrams.model.SDObjectModel;
+			import com.simplediagrams.model.SDSymbolModel;
+			import com.simplediagrams.model.libraries.CustomLibrary;
 			import com.simplediagrams.model.libraries.ILibrary;
 			import com.simplediagrams.util.Logger;
+			import com.simplediagrams.view.components.BasicLibraryCanvas;
+			import com.simplediagrams.view.components.CustomLibraryCanvas;
 			import com.simplediagrams.view.itemRenderers.LibraryItemRenderer;
 			
 			import flash.events.Event;
@@ -38,58 +42,83 @@
 			import spark.components.List;
 			import spark.layouts.TileLayout;
 			
-			[Autowire(bean='applicationModel')]
+			[Inject]
 			[Bindable]
 			public var applicationModel:ApplicationModel;
 			
-			[Autowire(bean='registrationManager')]
+			[Inject]
 			[Bindable]
 			public var registrationManager:RegistrationManager;
-						
-			[Autowire(bean='libraryManager')]
+			
+			[Inject]
 			[Bindable]
 			public var libraryManager:LibraryManager;
 			
-			[Autowire(bean='diagramStyleManager')]
+			[Inject]
 			[Bindable]
 			public var diagramStyleManager:DiagramStyleManager;
 			
 			[Bindable]
 			private var _libraryItemsAC:ArrayCollection 
-						
-			protected function onCC():void
+			
+			[Mediate(event="CreateCustomLibraryEvent.CUSTOM_LIBRARY_CREATED")]
+			public function onCustomLibraryAdded(event:CreateCustomLibraryEvent):void
 			{
-				
-				//create a library panel for each library
-				
-				createLibraryPanel()
-				libraryManager.addEventListener(LibraryManager.PANEL_UPDATED, onUpdatePanel)
+				//make sure to open the custom library dialog so user can start adding symbols
+				this.selectedIndex = libraryManager.librariesAC.length-1
 				
 			}
 			
-			protected function onUpdatePanel(event:Event):void
+			[Mediate(event="LibraryEvent.LIBRARIES_UPDATED")]
+			public function updatePanel(event:Event):void
 			{
 				createLibraryPanel()
 			}
+			
+			
+			protected function onATS():void
+			{
+				Logger.debug("onATS()", this)
+				if (this.numChildren==0 || libraryManager.panelNeedsUpdating )
+				{
+					createLibraryPanel()
+					libraryManager.panelNeedsUpdating = false //I use this flag because if this state isn't active when a PANEL_UPDATED event is launched, we won't get a panel update
+				}
+			}
+			
 			
 			protected function createLibraryPanel():void
 			{
+				if (libraryManager==null) return
+					
 				this.removeAllChildren()
-				
-				for each (var library:ILibrary in libraryManager.librariesAC)
+				var len:uint = libraryManager.librariesAC.length
+				for (var i:uint=0;i<len;i++)
 				{
+					var library:ILibrary = libraryManager.librariesAC.getItemAt(i) as ILibrary
 					if (!library.showInPanel) continue
 					if (library.isPremium && registrationManager.isLicensed==false) continue						
 						
-					Logger.debug("adding library: "+ library.displayName, this)
-					var canvas:Canvas = new Canvas()
+					if (library.isCustom)
+					{
+						var canvas:BasicLibraryCanvas = new CustomLibraryCanvas()
+						CustomLibraryCanvas(canvas).libraryID = CustomLibrary(library).id
+						if (library.sdLibraryObjectsAC.length>0)
+						{
+							CustomLibraryCanvas(canvas).showDropHereMsg = false
+						}
+					}
+					else
+					{						
+						canvas = new BasicLibraryCanvas()
+					}
 					canvas.percentWidth = 100
 					canvas.percentHeight = 100
 					canvas.label = library.displayName
 					canvas.setStyle("backgroundAlpha", 0)
 										
-					var list:List = new List()
-					
+					var list:List = new List()					
+					list.id = "lstTileList"
 					list.styleName = "libraryTileList"
 					list.dataProvider = library.sdLibraryObjectsAC
 					list.itemRenderer = new ClassFactory(LibraryItemRenderer)
@@ -110,17 +139,12 @@
 					
 					list.layout = tl
 					
-					canvas.addChild(list)
+					BasicLibraryCanvas(canvas).addLibraryList(list)
 					this.addChild(canvas)
 					
 				}
 				
 				this.invalidateDisplayList()
-			}
-			
-			protected function onATS():void
-			{
-				Logger.debug("onATS()", this)
 			}
 			
 			
@@ -134,7 +158,6 @@
                                
 				var dragProxy:Image = new Image()
 				var sdObjectModel:SDObjectModel = SDObjectModel(event.currentTarget.selectedItem)
-				var iconClass:Class = sdObjectModel.iconClass
 				
 				//color drag image to fit style setting
 				var defaultColorMatrix:Array = diagramStyleManager.defaultColorMatrix
@@ -145,7 +168,15 @@
 					dragProxy.filters = [filter]				
 				}
 				
-				dragProxy.source = new iconClass()				
+				if (sdObjectModel is SDSymbolModel && SDSymbolModel(sdObjectModel).imageData)
+				{					
+					dragProxy.source = SDSymbolModel(sdObjectModel).imageData			
+				}
+				else
+				{			
+					var iconClass:Class = sdObjectModel.iconClass					
+					dragProxy.source = new iconClass()			
+				}	
 					
 				var xPos:Number = event.target.parent.mouseX
 				var yPos:Number = event.target.parent.mouseY

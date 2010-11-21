@@ -27,6 +27,17 @@ package com.simplediagrams.model.libraries
 		 Projector;
 		 Table;
 		 TV;
+		 //from Kat
+		 Handshake;
+		// ManAndWomanMeeting;
+		 Brainstorm;
+		 PieChart;
+		 GlobalComm;
+		 Presentation;
+		 TableMeeting;
+		 LaptopChat;
+		 MobileMeeting;
+		 Calendar;
 		
 				
 		public function LibraryMeetings()
@@ -52,6 +63,18 @@ package com.simplediagrams.model.libraries
 			addLibraryItem( new SDSymbolModel("Table"))
 			addLibraryItem( new SDSymbolModel("CoffeeBreak"))
 			addLibraryItem( new SDSymbolModel("TV"))
+			addLibraryItem( new SDSymbolModel("Handshake"))
+			//addLibraryItem( new SDSymbolModel("ManAndWomanMeeting"))
+			addLibraryItem( new SDSymbolModel("Brainstorm"))
+			addLibraryItem( new SDSymbolModel("PieChart"))
+			addLibraryItem( new SDSymbolModel("GlobalComm"))
+			addLibraryItem( new SDSymbolModel("Presentation"))
+			addLibraryItem( new SDSymbolModel("TableMeeting"))
+			addLibraryItem( new SDSymbolModel("LaptopChat"))
+			addLibraryItem( new SDSymbolModel("MobileMeeting"))
+			addLibraryItem( new SDSymbolModel("Calendar"))
+			
+			
 		}
 		
 		

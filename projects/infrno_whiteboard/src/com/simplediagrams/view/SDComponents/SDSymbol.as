@@ -1,7 +1,9 @@
 package com.simplediagrams.view.SDComponents
 {
 	
+	import com.simplediagrams.errors.SymbolNotFoundError;
 	import com.simplediagrams.events.EditSymbolTextEvent;
+	import com.simplediagrams.model.ApplicationModel;
 	import com.simplediagrams.model.LibraryManager;
 	import com.simplediagrams.model.SDObjectModel;
 	import com.simplediagrams.model.SDSymbolModel;
@@ -9,12 +11,11 @@ package com.simplediagrams.view.SDComponents
 	
 	import flash.events.MouseEvent;
 	import flash.filters.ColorMatrixFilter;
+	import flash.utils.ByteArray;
 	
 	import mx.controls.Image;
 	import mx.events.FlexEvent;
 	import mx.events.PropertyChangeEvent;
-	
-	import org.swizframework.Swiz;
 	
 	import spark.components.Label;
 	import spark.primitives.Graphic;
@@ -22,14 +23,17 @@ package com.simplediagrams.view.SDComponents
 
 
 	[SkinState("normal")]
-	[SkinState("selected")]
+	[SkinState("customSymbol")]
 	[Bindable]
 	public class SDSymbol extends SDBase implements ISDComponent
 	{	
 		
 		
 		[SkinPart(required="true")]		
-		public var symbol:Image		
+		public var imgLibrarySymbol:Image		
+		
+		[SkinPart(required="true")]		
+		public var imgCustomSymbol:Image		
 		
 		[SkinPart(required="true")]		
 		public var symbolHitArea:Graphic		
@@ -43,6 +47,11 @@ package com.simplediagrams.view.SDComponents
 		public var fontWeight:String 
 		public var textAlign:String 
 		public var textYPos:int		
+		public var fontFamily:String
+		
+		
+		public var librarySymbolSource:Object
+		public var customSymbolSource:Object
 		
 		private var _model:SDSymbolModel
 			
@@ -53,40 +62,54 @@ package com.simplediagrams.view.SDComponents
 		}
 			
 		public function set objectModel(objectModel:SDObjectModel):void
-		{
-			Logger.debug("set model() model: " + objectModel, this)         
+		{       
             _model = SDSymbolModel(objectModel)
             
-            //redraw();
-   			this.fontWeight = _model.fontWeight
-			this.text = _model.text
-			this.textAlign = _model.textAlign
-			this.fontSize = _model.fontSize
-			this.textYPos = getTextYPosition();
+			fontWeight = _model.fontWeight
+			fontFamily = _model.fontFamily
+			text = _model.text
+			textAlign = _model.textAlign
+			fontSize = _model.fontSize
+			textYPos = getTextYPosition();
 			
-			this.color = _model.color
+			color = _model.color
 			x = _model.x;
-			y = _model.y;         
-			this.width = _model.width
-			this.height = _model.height  
-			this.rotation = _model.rotation		
-			this.depth = _model.depth;
-            
-            _model.addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );
-        			
-            var library:LibraryManager= Swiz.getBean("libraryManager") as LibraryManager
-            var symbol:Class = library.getSymbolClass(_model.libraryName, _model.symbolName)
-            
-			if (symbol==null)
+			y = _model.y;
+			width = _model.width
+			height = _model.height
+			rotation = _model.rotation
+			depth = _model.depth;	
+			
+			if (ApplicationModel.testMode)
 			{
-				//couldn't find symbol so put in symbol missing symbol
-				symbol = library.getSymbolClass("com.simplediagrams.shapelibrary.communication","QuestionMark")
-			}	
+				toolTip = _model.sdID
+			}
 			
-			this.setStyle("symbol", new symbol())
+            _model.addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );
+        	
 			
+			if (_model.isCustom)
+			{
+				//if this is a customLibrary object, the image will just pick up the imageData property
+				customSymbolSource = _model.imageData
+			}
+			else
+			{					
+				var symbolClass:Class = LibraryManager.getSymbolClass(_model.libraryName + "." + _model.symbolName)
+				librarySymbolSource = new objectModel.symbolClass()
+			}
+            
 			
 			if (_model.colorizable) setSymbolColor(_model.color)
+							
+			this.invalidateSkinState()
+		}
+		
+		
+		override protected function getCurrentSkinState():String 
+		{
+			if (_model.isCustom) return "customSymbol"
+			return "normal"			
 		}
 		
 		public override function get objectModel():SDObjectModel
@@ -151,12 +174,10 @@ package com.simplediagrams.view.SDComponents
 					break
 				
 				case "fontWeight":
-					Logger.debug("setting fontWeight to: " + fontWeight, this)
 					this.fontWeight = event.newValue as String	
 					break
 				
 				case "color": 		
-					Logger.debug("\n\n\n\n&&&&&& changing color to : " + event.newValue, this)
 					if (_model.colorizable) setSymbolColor(event.newValue as Number);	
 					color = event.newValue as Number
 					invalidateSkinState()
@@ -175,6 +196,11 @@ package com.simplediagrams.view.SDComponents
 					this.textYPos = getTextYPosition()
 					break	
 				
+				
+				case "fontFamily": 						
+					fontFamily = event.newValue as String		
+					break	
+				
 				case "textPosition": 						
 					this.textYPos = getTextYPosition()
 					break	
@@ -184,7 +210,7 @@ package com.simplediagrams.view.SDComponents
 		override protected function partAdded(partName:String, instance:Object):void
 		{
 			super.partAdded(partName, instance);		 
-			if (instance == symbol && _model.colorizable)
+			if (instance == imgLibrarySymbol && _model.colorizable)
 			{
 				setSymbolColor(_model.color)	
 			}
@@ -233,7 +259,6 @@ package com.simplediagrams.view.SDComponents
 		
 		public function onSymbolDoubleClick(event:MouseEvent):void
 		{
-			Logger.debug("launching edit symbol text event", this)
 			var editSymbolTextEvent:EditSymbolTextEvent = new EditSymbolTextEvent(EditSymbolTextEvent.EDIT_SYMBOL_TEXT, true)
 			editSymbolTextEvent.sdSymbolModel = this._model		
 			dispatchEvent(editSymbolTextEvent)
@@ -248,6 +273,20 @@ package com.simplediagrams.view.SDComponents
 		}
 		
 		
+		/*
+		public function get imageSource():Object
+		{
+			if (_model.isCustom)
+			{
+				return _model.imageData
+			}
+			else
+			{
+				return getStyle('symbol')
+			}
+			return null		
+		}
+		*/
 	
 		
 		

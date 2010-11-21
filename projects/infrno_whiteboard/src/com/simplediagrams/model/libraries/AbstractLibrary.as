@@ -1,5 +1,6 @@
 package com.simplediagrams.model.libraries
 {
+	import com.simplediagrams.errors.SDObjectModelNotFoundError;
 	import com.simplediagrams.model.SDObjectModel;
 	import com.simplediagrams.model.SDSymbolModel;
 	import com.simplediagrams.util.Logger;
@@ -8,14 +9,17 @@ package com.simplediagrams.model.libraries
 	
 	import mx.collections.ArrayCollection;
 	
+	/* AbstractLibrary should be subclassed by each "Plug-In" library */	
 	public class AbstractLibrary implements ILibrary
 	{
 		
 		protected var _isPremium:Boolean = false 	//not to be shown in free versions
 		protected var _isPlugin:Boolean = false		//plugins will set this to true
+		protected var _isCustom:Boolean = false		//custom libraries will set this to true
 		protected var _libraryName:String 			//the fully qualified name, e.g. com.simplediagrams.shapelibrary.basicClean
 		protected var _fileName:String 				//the name of the file (same as last part of _libraryName)
 		protected var _displayName:String 			//to be shown in UI
+		protected var _description:String
 		protected var _showInPanel:Boolean = true;
 		
 		protected var _sdLibraryObjectsAC:ArrayCollection = new ArrayCollection()
@@ -42,10 +46,15 @@ package com.simplediagrams.model.libraries
 			//override this
 		}
 		
+		/* Override this for different types of libraries */
+		public function get canBeDeleted():Boolean
+		{
+			return _isPlugin || _isCustom
+		}
+		
 		
 		public function initLibrary():void
 		{	
-			Logger.debug("initLibrary() 		_sdLibraryObjectsAC.length: " + _sdLibraryObjectsAC.length, this)
 		
 			//attach actual graphic symbol to class
 			for each (var sdObj:SDSymbolModel in _sdLibraryObjectsAC)
@@ -66,6 +75,16 @@ package com.simplediagrams.model.libraries
 		public function set libraryName(value:String):void
 		{
 			_libraryName = value
+		}
+		
+		public function get description():String
+		{
+			return _description
+		}
+		
+		public function set description(value:String):void
+		{
+			_description = value
 		}
 		
 		public function get displayName():String
@@ -122,12 +141,17 @@ package com.simplediagrams.model.libraries
 		}
 		
 		
-		public function getSymbolClass(name:String):Class
+		public function get isCustom():Boolean
 		{
-			 return getDefinitionByName(_libraryName + "." + name) as Class
+			return _isCustom
+		}
+		
+		public function set isCustom(value:Boolean):void
+		{
+			_isCustom = value
 		}
 				
-		public function getSDObject(symbolName:String):SDObjectModel
+		public function getSDObjectModel(symbolName:String):SDObjectModel
 		{
 			for each (var obj:SDSymbolModel in sdLibraryObjectsAC)
 			{
@@ -136,16 +160,21 @@ package com.simplediagrams.model.libraries
 					var sdObj:SDSymbolModel = obj.clone() as SDSymbolModel
 					return sdObj
 				}
-			}
-			
-			Logger.warn("couldn't find symbolName: " + symbolName, this)
-			return null
-			
+			}			
+			throw new SDObjectModelNotFoundError()			
 		}
 		
 		public function addLibraryItem(obj:Object):void
 		{
 			_sdLibraryObjectsAC.addItem(obj)
+		}
+		
+		public function deleteLibrary():void
+		{
+			if (_sdLibraryObjectsAC)
+			{
+				_sdLibraryObjectsAC.removeAll()
+			}
 		}
 	}
 }

@@ -10,20 +10,23 @@ package com.simplediagrams.commands
 	import com.simplediagrams.model.SDTextAreaModel;
 	import com.simplediagrams.model.mementos.*;
 	
-	import org.swizframework.Swiz;
+	;
 	
 	public class DeleteSelectedSDObjectModelsCommand extends UndoRedoCommand
 	{
 		private var _diagramModel:DiagramModel
+		private var _libraryManager:LibraryManager
 		private var _mementosArr:Array = []
-			
-		public function get mementosArr():Array {
+		
+		public function get mementosArr():Array 
+		{
 			return _mementosArr;
 		}
-		
-		public function DeleteSelectedSDObjectModelsCommand(diagramModel:DiagramModel)
+			
+		public function DeleteSelectedSDObjectModelsCommand(diagramModel:DiagramModel, libraryManager:LibraryManager)
 		{
 			_diagramModel = diagramModel
+			_libraryManager = libraryManager
 			for each (var sdObjectModel:SDObjectModel in diagramModel.selectedArray)
 			{
 				_mementosArr.push(sdObjectModel.getMemento())
@@ -37,15 +40,12 @@ package com.simplediagrams.commands
 		}
 		
 		override public function undo():void
-		{						
-			//add back all the objects that were deleted
-			var libraryManager:LibraryManager = Swiz.getBean("libraryManager") as LibraryManager
-				
+		{										
 			for each (var memento:SDObjectMemento in _mementosArr)
 			{
 				if (memento is SDSymbolMemento)
 				{
-					var newSymbolModel:SDSymbolModel = libraryManager.getSDObject(SDSymbolMemento(memento).libraryName, SDSymbolMemento(memento).symbolName) as SDSymbolModel		
+					var newSymbolModel:SDSymbolModel = _libraryManager.getSDObjectModel(SDSymbolMemento(memento).libraryName, SDSymbolMemento(memento).symbolName) as SDSymbolModel		
 					if (newSymbolModel)
 					{
 						newSymbolModel.setMemento(memento)

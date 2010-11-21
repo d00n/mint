@@ -8,7 +8,7 @@ package com.simplediagrams.commands
 	public class AddTextAreaCommand extends UndoRedoCommand
 	{
 		private var _diagramModel:DiagramModel
-		public var sdID:Number = 0
+		public var sdID:String = ""
 		public var x:Number
 		public var y:Number
 		public var styleName:String
@@ -18,6 +18,7 @@ package com.simplediagrams.commands
 		public var textAlign:String
 		public var fontSize:int
 		public var fontWeight:String
+		public var fontFamily:String
 		
 		public function AddTextAreaCommand(diagramModel:DiagramModel)
 		{
@@ -38,10 +39,10 @@ package com.simplediagrams.commands
 		
 		override public function redo():void
 		{		
-			var newSDTextAreaModel:SDTextAreaModel = new SDTextAreaModel()			
+			var newSDTextAreaModel:SDTextAreaModel = new SDTextAreaModel()	
+			setProperties(newSDTextAreaModel)		
 			_diagramModel.addSDObjectModel(newSDTextAreaModel)
-			setProperties(newSDTextAreaModel)
-			if (sdID!=0)
+			if (sdID!="")
 			{
 				newSDTextAreaModel.sdID = sdID
 			}
@@ -65,6 +66,7 @@ package com.simplediagrams.commands
 			sdTextAreaModel.textAlign = textAlign
 			sdTextAreaModel.fontSize = fontSize
 			sdTextAreaModel.fontWeight = fontWeight
+			sdTextAreaModel.fontFamily = fontFamily
 		}
 	}
 }

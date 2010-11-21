@@ -14,7 +14,7 @@
 			import com.simplediagrams.events.RegistrationViewEvent
 			
 			[Bindable]
-			[Autowire(bean="registrationManager")]
+			[Inject]
 			public var registrationManager:RegistrationManager			
 			
 			

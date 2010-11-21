@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:components="com.simplediagrams.view.components.*"
+		 >
+	
+	<s:layout>
+		<s:HorizontalLayout paddingTop="3" paddingLeft="20" />
+	</s:layout>	
+	
+	<fx:Script>
+		<![CDATA[
+			import com.simplediagrams.events.ImageStyleEvent;
+			import com.simplediagrams.events.LineStyleEvent;
+			import com.simplediagrams.events.MultiSelectEvent;
+			import com.simplediagrams.events.SelectionEvent;
+			import com.simplediagrams.model.DiagramModel;
+			import com.simplediagrams.model.SDImageModel;
+			import com.simplediagrams.model.SDLineModel;
+			import com.simplediagrams.model.SDObjectModel;
+			import com.simplediagrams.model.SettingsModel;
+			import com.simplediagrams.model.mementos.SDImageMemento;
+			import com.simplediagrams.util.Logger;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.PropertyChangeEvent;
+			
+			
+			[Inject]
+			public var diagramModel:DiagramModel
+			
+			[Inject]
+			public var settingsModel:SettingsModel
+			
+			
+			[PreDestroy]
+			public function preDestroy():void
+			{
+				diagramModel = null					
+			}
+			
+			[PostConstruct]
+			public function postConstruct():void
+			{	
+				resetProperties()	
+			}
+			
+			
+			[Mediate(event="SelectionEvent.ADDED_TO_SELECTION")]
+			public function onAddedToSelection(event:SelectionEvent):void
+			{
+				resetProperties()
+			}
+						
+			[Mediate(event="SelectionEvent.REMOVED_FROM_SELECTION")]
+			public function onRemovedFromSelection(event:SelectionEvent):void
+			{
+				resetProperties()
+			}
+					
+			[Mediate(event="MultiSelectEvent.DRAG_MULTI_SELECTION_FINISHED")]
+			public function onSelectionChanged(event:MultiSelectEvent):void
+			{
+				resetProperties()
+			}	
+			
+			
+						
+			[Bindable]
+			protected var _imageStylesAC:ArrayCollection = new ArrayCollection ( [ 	
+				{label:"Plain", data:SDImageModel.STYLE_NONE },
+				{label:"Border", data:SDImageModel.STYLE_BORDER },
+				{label:"Tape", data:SDImageModel.STYLE_TAPE },
+				{label:"Border & Tape", data:SDImageModel.STYLE_BORDER_AND_TAPE } ] );
+						
+			protected var _imageStyle:String
+			
+			protected var sdImageModel:SDImageModel
+						
+			public function resetProperties():void
+			{
+				if (diagramModel==null || diagramModel.selectedArray.length==0) return
+				var sdObjectModelsArr:Array = diagramModel.selectedArray
+				
+				if (sdObjectModelsArr.length==1)
+				{
+					setControlsFromModel()				
+				}
+				else
+				{	
+					//blank out controls unless all models have same value
+					var imageStyleSame:Boolean = true		
+					var lastImageModel:SDImageModel = null
+					for each (var sdObjectModel:SDObjectModel in sdObjectModelsArr)
+					{
+						if (!sdObjectModel is SDImageMemento) return
+						
+						var sdImageModel:SDImageModel = SDImageModel(sdObjectModel)
+						//skip first iteration
+						if (lastImageModel==null) 
+						{
+							lastImageModel = sdImageModel
+							continue
+						}
+						if (lastImageModel)
+						{
+							if (sdImageModel.styleName != lastImageModel.styleName)
+							{
+								imageStyleSame = false
+							}							
+						}	
+						lastImageModel = sdImageModel
+					}					
+					
+					if (imageStyleSame)
+					{
+						_imageStyle = lastImageModel.styleName
+					}
+					else
+					{
+						_imageStyle = ""
+					}					
+					
+					setControlsFromProps()	
+				}
+				
+			}
+			
+			protected function setControlsFromModel():void
+			{		
+				if (diagramModel.selectedArray[0] && diagramModel.selectedArray[0] is SDImageModel)
+				{
+					var sdImageModel:SDImageModel = diagramModel.selectedArray[0] as SDImageModel									
+					setImageStyleddl(sdImageModel.styleName)
+				}
+			}
+			
+			protected function setControlsFromProps():void
+			{						
+				setImageStyleddl(_imageStyle)						
+			}
+			
+			protected function setImageStyleddl(styleName:String):void
+			{
+				if (styleName=="")
+				{
+					ddlImageStyle.selectedIndex= -1
+					return
+				}
+				
+				var len:uint = _imageStylesAC.length
+				for (var i:uint=0;i<len;i++)
+				{
+					if (_imageStylesAC.getItemAt(i).data==styleName)
+					{
+						ddlImageStyle.selectedIndex = i
+						return
+					}
+				}
+			}
+			
+											
+			
+			protected function onImageStyleChange():void
+			{				
+				if (ddlImageStyle.selectedIndex==-1) return
+				var event:ImageStyleEvent = new ImageStyleEvent(ImageStyleEvent.IMAGE_STYLE_CHANGE, true)
+				event.imageStyle = ddlImageStyle.selectedItem.data
+				dispatchEvent(event)
+			}
+		
+			
+		]]>
+	</fx:Script>
+	
+	<s:Label text="Image style:" paddingTop="7" paddingLeft="3" />
+	
+	<s:DropDownList id="ddlImageStyle"				    
+					dataProvider="{_imageStylesAC}"
+					horizontalCenter="0"
+					height="23"
+					width="180"
+					change="onImageStyleChange()"
+					/>
+	
+	
+	
+	
+</s:Group>

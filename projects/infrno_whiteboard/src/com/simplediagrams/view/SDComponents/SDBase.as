@@ -3,7 +3,6 @@ package com.simplediagrams.view.SDComponents
 	import com.simplediagrams.controllers.RemoteSharedObjectController;
 	import com.simplediagrams.events.ChangeDepthEvent;
 	import com.simplediagrams.events.ConnectionEvent;
-	import com.simplediagrams.model.ApplicationModel;
 	import com.simplediagrams.model.SDObjectModel;
 	import com.simplediagrams.util.Logger;
 	
@@ -13,8 +12,6 @@ package com.simplediagrams.view.SDComponents
 	import flash.filters.BitmapFilter;
 	import flash.filters.BitmapFilterQuality;
 	import flash.filters.GlowFilter;
-	import flash.system.Capabilities;
-	import flash.system.System;
 	import flash.ui.ContextMenu;
 	import flash.ui.ContextMenuItem;
 	
@@ -24,31 +21,32 @@ package com.simplediagrams.view.SDComponents
 	import mx.managers.DragManager;
 	import mx.managers.IFocusManagerComponent;
 	
-	import org.swizframework.Swiz;
-	
 	import spark.components.Group;
 	import spark.components.supportClasses.SkinnableComponent;
 
 	[Bindable]
 	public class SDBase extends SkinnableComponent implements IFocusManagerComponent 
 	{	
+		
+		
 		private var moveToBackCMI:ContextMenuItem
 		private var moveBackwardCMI:ContextMenuItem
 		private var moveForwardCMI:ContextMenuItem
 		private var moveToFrontCMI:ContextMenuItem
 		
-		private var _sdID:Number;
-		
+		private var _sdID:String;
+				
 		public function SDBase()
 		{
 			super();
 			
-			//this.doubleClickEnabled = true
-//			this.addEventListener(DragEvent.DRAG_ENTER, onDragEnter, false, 0, true)
-//			this.addEventListener(DragEvent.DRAG_DROP, onDragDrop, false, 0, true)
-//			this.addEventListener(DragEvent.DRAG_EXIT, onDragExit, false, 0, true)
+			this.doubleClickEnabled = true
+			//this.addEventListener(DragEvent.DRAG_ENTER, onDragEnter, false, 0, true)
+			//this.addEventListener(DragEvent.DRAG_DROP, onDragDrop, false, 0, true)
+			//this.addEventListener(DragEvent.DRAG_EXIT, onDragExit, false, 0, true)
 			//this.addEventListener(Event.COPY, onCopy, false, 0, true)
-			
+				
+				
 			//add all operations available to SDComponents' right click menu here
 			moveToBackCMI = new ContextMenuItem("Move to back ", false, true)
 			moveToBackCMI.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, moveToBackSelected);
@@ -61,75 +59,54 @@ package com.simplediagrams.view.SDComponents
 			
 			moveToFrontCMI = new ContextMenuItem("Move to front ",false, true);
 			moveToFrontCMI.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, moveToFrontSelected);
-
-			ApplicationModel.VERSION
-			var app_version:ContextMenuItem = new ContextMenuItem("Infrno Whiteboard " + ApplicationModel.VERSION);
-			app_version.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyToClipboard);
 			
 			var cm:ContextMenu = new ContextMenu()
 			
-			cm.hideBuiltInItems();
-			cm.customItems = [moveToBackCMI, moveBackwardCMI, moveForwardCMI, moveToFrontCMI, app_version]
+			cm.customItems = [moveToBackCMI, moveBackwardCMI, moveForwardCMI, moveToFrontCMI]
 		
 			this.contextMenu = cm
 			
 		}
 		
-		private function copyToClipboard(event:ContextMenuEvent):void
-		{
-			Logger.debug("setting content to the clipboard: Infrno Whiteboard"+ ApplicationModel.VERSION+" "+Capabilities.version+ (Capabilities.isDebugger?" -D":""), this);
-			System.setClipboard("Infrno Whiteboard " +ApplicationModel.VERSION+" "+Capabilities.version+ (Capabilities.isDebugger?" -D":"") );
-		}
-		
-		public function get sdID():Number
+		public function get sdID():String
 		{
 			return _sdID;
 		}
-		public function set sdID(value:Number):void
+		public function set sdID(value:String):void
 		{
 			_sdID = value;
 		}
-		
-		override public function drawFocus(isFocused:Boolean):void
-		{
-			//super.drawFocus(isFocused)
-		}
-		
-		override public function setFocus():void
-		{
-			super.setFocus()
-		}
-		
-		
 		
 		
 		public function moveToBackSelected(event:ContextMenuEvent):void
 		{
 			var eventChangeDepth:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.MOVE_TO_BACK);
 			eventChangeDepth.sdID = this.sdID;
-			Swiz.dispatchEvent(eventChangeDepth);				
+			dispatchEvent(eventChangeDepth);
 		}
 		
 		public function moveBackwardSelected(event:ContextMenuEvent):void
 		{
 			var eventChangeDepth:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.MOVE_BACKWARD);
 			eventChangeDepth.sdID = this.sdID;
-			Swiz.dispatchEvent(eventChangeDepth);				
+			dispatchEvent(eventChangeDepth);
 		}
+		
 		
 		public function moveForwardSelected(event:ContextMenuEvent):void
 		{
 			var eventChangeDepth:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.MOVE_FORWARD);
 			eventChangeDepth.sdID = this.sdID;
-			Swiz.dispatchEvent(eventChangeDepth);				
+			dispatchEvent(eventChangeDepth);
 		}
 		
 		public function moveToFrontSelected(event:ContextMenuEvent):void
 		{
 			var eventChangeDepth:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.MOVE_TO_FRONT);
 			eventChangeDepth.sdID = this.sdID;
-			Swiz.dispatchEvent(eventChangeDepth);				
+			dispatchEvent(eventChangeDepth);
 		}
+
 		
 		/*	
 		protected function onCopy(event:Event):void
@@ -182,15 +159,14 @@ package com.simplediagrams.view.SDComponents
                 	height = event.newValue as Number
                 	break
                 	                            
-				case "imageSource":
-					//TODO	
-					break
+                case "imageSource":
+                	//TODO	
+                	break
 				
 				case "depth":
 					this.depth = event.newValue as Number;
 					break
-				
-                
+                                
                 default: return;
             }
             positionDragCircle()
@@ -207,7 +183,10 @@ package com.simplediagrams.view.SDComponents
 		/* Drag handling code */
 		/* ****************** */
 
-	        
+		
+		/* Commenting this code out for now b/c it's somehow causing this shape to turn color 
+		   when somebody drags a shape from the library over top of this one when it's on the drawingboard.
+			        
         public function onDragEnter(event:DragEvent):void 
         {
         	var dropTarget:UIComponent = event.currentTarget as UIComponent;        	
@@ -223,7 +202,9 @@ package com.simplediagrams.view.SDComponents
         private function setGlowFilter():void
         {
         	if (this.filters.length==0)
-	        	this.filters = [this.getDropHoverFilter()]
+			{				
+				this.filters = [this.getDropHoverFilter()]
+			}
         }
         
         public function onDragDrop(event:DragEvent):void
@@ -238,9 +219,11 @@ package com.simplediagrams.view.SDComponents
         
         public function onDragExit(event:DragEvent):void
         {
-        	this.filters = []
+        	//this.filters = []
         }
-        
+		*/
+		
+		
         /*
         public function drawDragLine(event:MouseEvent):void
         {
@@ -267,6 +250,7 @@ package com.simplediagrams.view.SDComponents
 		
 		private function getDropHoverFilter():BitmapFilter
 		{
+		
             var color:Number = 0xFFFFFF;
             var alpha:Number = 0.8;
             var blurX:Number = 35;
@@ -289,9 +273,9 @@ package com.simplediagrams.view.SDComponents
 		public function destroy():void
 		{
 			
-			this.removeEventListener(DragEvent.DRAG_ENTER, onDragEnter)
-			this.removeEventListener(DragEvent.DRAG_DROP, onDragDrop)
-			this.removeEventListener(DragEvent.DRAG_EXIT, onDragExit)
+			//this.removeEventListener(DragEvent.DRAG_ENTER, onDragEnter)
+			//this.removeEventListener(DragEvent.DRAG_DROP, onDragDrop)
+			//this.removeEventListener(DragEvent.DRAG_EXIT, onDragExit)
 				
 			
 			//add all operations available to SDComponents' right click menu here

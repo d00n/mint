@@ -19,7 +19,8 @@ package com.simplediagrams.commands
 {
 	
 	import com.simplediagrams.util.Logger
-	import org.spicefactory.lib.reflect.ClassInfo;
+	import flash.utils.getQualifiedClassName
+
 		
 	/**
 	 * A suitable base class that implements the IUndoCommand interface.
@@ -112,7 +113,8 @@ package com.simplediagrams.commands
 		
 		public function toString():String
 		{
-			return "Command: " + ClassInfo.forInstance(this).simpleName
+			
+			return "Command: " + getQualifiedClassName(this)
 		}
 		
 	}

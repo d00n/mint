@@ -1,10 +1,10 @@
 package com.simplediagrams.view
 {
 	import com.simplediagrams.events.LoadDiagramEvent;
+	import com.simplediagrams.events.PropertiesEvent;
 	import com.simplediagrams.events.StyleEvent;
 	import com.simplediagrams.model.DiagramModel;
 	import com.simplediagrams.model.DiagramStyleManager;
-	import com.simplediagrams.events.PropertiesEvent
 	import com.simplediagrams.util.Logger;
 	import com.simplediagrams.view.skins.backgroundSkins.*;
 	
@@ -12,7 +12,7 @@ package com.simplediagrams.view
 	
 	import mx.styles.StyleManager;
 	
-	import org.swizframework.Swiz;
+	;
 	
 	import spark.components.supportClasses.SkinnableComponent;
 
@@ -23,45 +23,41 @@ package com.simplediagrams.view
 	public class Background extends SkinnableComponent 
 	{		
 		
+		[Inject]
 		public var diagramModel:DiagramModel
+		
+		[Inject]
+		public var diagramStyleManager:DiagramStyleManager
 		
 		public var fillColor:Number = 0xFFFFFF;
 				
 		public function Background()
 		{
-			super();
-			
-			diagramModel = Swiz.getBean("diagramModel") as DiagramModel
-			
-			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage)
-			
-			this.setStyle("skinClass",Class(ChalkboardSkin))
-			Swiz.addEventListener(StyleEvent.STYLE_CHANGED, onStyleChange)
-			Swiz.addEventListener(LoadDiagramEvent.DIAGRAM_LOADED, onDiagramLoaded)
-			Swiz.addEventListener(PropertiesEvent.PROPERTIES_EDITED, onDiagramPropertiesEdited)
+			super();				
+			this.setStyle("skinClass",Class(ChalkboardSkin))			
 		}
 		
-		protected function onDiagramPropertiesEdited(event:Event):void
+		[Mediate("PropertiesEvent.PROPERTIES_EDITED")]
+		public function onDiagramPropertiesEdited(event:Event):void
 		{
 			fillColor = diagramModel.baseBackgroundColor			
 		}
 				
-		protected function onDiagramLoaded(event:Event):void
+		[Mediate("LoadDiagramEvent.DIAGRAM_LOADED")]
+		public function onDiagramLoaded(event:LoadDiagramEvent):void
 		{
-			fillColor = diagramModel.baseBackgroundColor	
-		    
+			fillColor = diagramModel.baseBackgroundColor
 		}
 				
-		
-		protected function onAddedToStage(event:Event):void
+		[PostConstruct]
+		public function onPostConstruct():void
 		{
-			var diagramStyleManager:DiagramStyleManager = Swiz.getBean("diagramStyleManager") as DiagramStyleManager
 			setBackgroundStyle(diagramStyleManager.currStyle)
 		}			
-				
-		protected function onStyleChange(event:StyleEvent):void
+		
+		[Mediate(event="StyleEvent.STYLE_CHANGED")]
+		public function onStyleChange(event:StyleEvent):void
 		{
-			Logger.debug("changing style to : " + event.styleName, this)
 			setBackgroundStyle(event.styleName)
 		}
 		

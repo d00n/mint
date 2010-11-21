@@ -20,7 +20,7 @@
       	  	import mx.core.DragSource
       	  	import mx.controls.Image
 			
-			[Autowire(bean='defaultToolsManager')]
+			[Inject]
 			[Bindable]
 			public var defaultToolsManager:DefaultToolsManager
 			

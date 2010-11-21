@@ -21,23 +21,29 @@
 			
 			import mx.events.ValidationResultEvent;
 			
-			[Autowire(bean="applicationModel")]
+			[Inject]
 			public var applicationModel:ApplicationModel	
 			
 			[Bindable]
-			[Autowire(bean="registrationManager")]
+			[Inject]
 			public var registrationManager:RegistrationManager
 			
 			[Embed(source='assets/img/icons/error.png')]
 			[Bindable]
 			public var errorIcon:Class
 			
-						
+			
+			[Mediate(event="RegistrationViewEvent.SHOW_REGISTRATION_SCREEN")]
+			public function onShowScreen():void
+			{
+				txtEmail.text = ""
+				txtLicense.text = ""
+			}
+			
 			protected var req:URLRequest 
 			
 			protected function onCC():void
 			{								
-				trace("onCC() registerVIew")
 				Logger.debug("onCC() currentState:" + this.currentState,this) 						
 				req = new URLRequest("http://www.simplediagrams.com/purchase")	
 					
@@ -45,7 +51,6 @@
 			
 			protected function onATS():void
 			{								
-				trace("onATS() registerVIew")
 				Logger.debug("onATS() currentState: " + this.currentState,this) 				
 				
 			}
@@ -53,47 +58,11 @@
 			
 			protected function onEnterState():void
 			{
-				trace("onEnterState() registerVIew")
 				Logger.debug("entering state: " + this.currentState,this) 
 			}
 							
 			protected function onRegister():void
-			{
-				//validate license
-				/*var validationEvent:ValidationResultEvent = emailValidator.validate()
-				if (validationEvent.type != ValidationResultEvent.VALID)
-				{
-					txtEmail.errorString = validationEvent.message;
-					txtEmail.styleName = "invalidTextInputStyle";
-					hbxMessage.visible = true;
-					if (validationEvent.message=="This field is required.")
-					{
-						txtMessage.text = "The email field is required to register"
-					}
-					else
-					{						
-						txtMessage.text = validationEvent.message;
-					}
-	  				hbxMessage.visible = false;
-					return	
-				}
-				*/
-				
-				//validate key
-				/*
-				validationEvent = licenseValidator.validate()
-				if (validationEvent.type != ValidationResultEvent.VALID)
-				{
-					var msg:String = "This doesn't look like a SimpleDiagrams license key."
-					txtLicense.errorString = msg
-					txtLicense.styleName = "invalidTextInputStyle";
-					hbxMessage.visible = true;
-					txtMessage.text = msg			
-	  				hbxMessage.visible = false;
-					return	
-				}
-				*/
-											
+			{							
 				var evt:RegisterLicenseEvent = new RegisterLicenseEvent(RegisterLicenseEvent.VALIDATE_LICENSE, true)
 				evt.email = txtEmail.text
 				evt.licenseKey = txtLicense.text
@@ -101,7 +70,7 @@
 								
 			}
 			
-			public function onStartFreeVersion():void
+			public function onCancelProcess():void
 			{				
 				var evt:RegistrationViewEvent = new RegistrationViewEvent(RegistrationViewEvent.USE_IN_FREE_MODE, true)
 				dispatchEvent(evt)				
@@ -112,9 +81,10 @@
 				navigateToURL(req, "_blank")
 			}
 			
-			public function onCancelRegister():void
+			public function onCancelRegisterHTTPRequest():void
 			{
-				this.currentState = RegistrationManager.REGISTER_VIEW_NORMAL
+				var evt:RegistrationViewEvent = new RegistrationViewEvent(RegistrationViewEvent.CANCEL_REGISTRATION_HTTP_REQUEST, true)
+				dispatchEvent(evt)		
 			}
 			
 		]]>
@@ -163,7 +133,7 @@
 	    />	
 	
 
-	<s:Group x="15" y="80" width="390" includeIn="registerViewError">
+	<s:Group x="15" y="80" width="390" includeIn="registerViewError" >
 		
 		<s:layout>
 			<s:HorizontalLayout/>
@@ -178,14 +148,6 @@
 			
 	</s:Group>		
 	
-		
-	<mx:Text htmlText="{registrationManager.registrationMsg}"			
-			x="15" y="80"
-			width="390"
-			height="300"
-		   selectable="false"
-			includeIn="registerViewNormal"
-			/>
 				
 	
 	<s:Group x="15" y="80" width="390" includeIn="registerViewTimeout">
@@ -204,22 +166,7 @@
 	</s:Group>		
 	
 	
-	
-	<s:Group x="15" y="80" width="390">
-		
-		<s:layout>
-			<s:HorizontalLayout/>
-		</s:layout>
-		
-		<mx:Image source="{errorIcon}" includeIn="registerViewError" />
-		
-		<mx:Text htmlText="{registrationManager.errorMsg}"			
-			width="100%"
-			height="300"
-			/>
-			
-	</s:Group>		
-	
+	<!-- INPUT BACKGROUND  -->
 	<s:Rect x="15" y="170" width="390" height="120" radiusX="10" radiusY="10">
 		<s:stroke>
 			<s:SolidColorStroke color="0xFFFFFF" alpha=".4"/>
@@ -230,8 +177,8 @@
 		</s:fill>
 	</s:Rect>
 	
-	<s:Group width="390" height="150" 
-		x="15" y="180" excludeFrom="registerViewWaiting">
+	<!-- INPUT FIELDS -->	
+	<s:Group width="390" height="150" x="15" y="180" excludeFrom="registerViewWaiting">
 	
 		<s:layout>
 			<s:VerticalLayout  gap="10" />
@@ -247,19 +194,19 @@
 			<s:TextInput id="txtLicense" width="240" text=""/>
 		</s:HGroup>
 		
-		<s:HGroup paddingLeft="100">	
-		
+		<s:HGroup paddingLeft="100">			
 			<s:Button id="btnRegister" 
 				click="onRegister()" 
 				label="Register" 
 				styleName="blueButton"
 				width="170" height="30"
-				/>
-		
+				/>		
 		</s:HGroup>		
 		
 	</s:Group>	
 	
+	
+	<!-- WAITING MESSAGE AND ELEMENTS -->
 	<s:Group 
 		width="390" height="150" 
 		x="15" y="180" 
@@ -280,7 +227,7 @@
 		
 
 		<s:Button id="btnCancelRegister" 
-			click="onCancelRegister()" 
+			click="onCancelRegisterHTTPRequest()" 
 			label="Cancel"			
 			width="170" height="30"			
 			/>
@@ -288,7 +235,9 @@
 	</s:Group>
 		
 	
-	<mx:LinkButton x="15" y="330" label="No thanks, just start the free version" click="onStartFreeVersion()"  includeIn="registerViewNormal"/>
+	<mx:LinkButton x="15" y="330" 				    
+				   label="{registrationManager.cancelRegistrationText}" 
+				   click="onCancelProcess()" excludeFrom="registerViewWaiting"/>
 	
 	
 	<mx:HBox id="hbxMessage" 
@@ -306,8 +255,26 @@
 		<mx:Label id="txtMessage"			 	
 			 	color="#FFFFFF"
             	styleName="errorMessage"
-            	
+            	 selectable="false"
             	 />
 	</mx:HBox>				
+	
+	
+	
+	<s:RichEditableText id="richTxt" 
+						editable="false" 
+						selectable="false"
+						focusEnabled="false"
+						x="15" y="95" width="390"
+						includeIn="registerViewNormal"
+						>
+		<s:textFlow>
+			<s:TextFlow>
+				<s:p>Enter your email and the license number you purchased from the SimpleDiagrams.com site. 
+					If you haven't purchased a license yet, no problem. Just <s:a href="http://www.simplediagrams.com/buy.html">visit the purchase page</s:a> to get started.
+				</s:p>
+			</s:TextFlow>
+		</s:textFlow>
+	</s:RichEditableText>
 	
 </s:Group>

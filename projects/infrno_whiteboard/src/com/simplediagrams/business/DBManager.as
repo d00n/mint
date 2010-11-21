@@ -1,10 +1,13 @@
 package com.simplediagrams.business
 {
+	import com.simplediagrams.events.DatabaseEvent;
 	import com.simplediagrams.model.*;
 	import com.simplediagrams.util.Logger;
 	
 	import flash.data.SQLConnection;
 	import flash.data.SQLStatement;
+	import flash.errors.SQLError;
+	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.SQLErrorEvent;
 	import flash.events.SQLEvent;
@@ -518,25 +521,26 @@ package com.simplediagrams.business
 			//stmt.execute();
 		}
 		
-		private function typeArray(a:Array, c:Class):ArrayCollection
+		protected function typeArray(a:Array, c:Class):ArrayCollection
 		{
 			if (a==null) return null;
+			if (!_map[c]) loadMetadata(c);
 			var ac:ArrayCollection = new ArrayCollection();
-			var len:uint = a.length
+			var len:int = a.length
 			for (var i:int=0; i<len; i++)
 			{
 				ac.addItem(typeObject(a[i],c));
 			}
 			return ac;			
 		}
-
-		private function typeObject(o:Object, c:Class):Object
+		
+		protected function typeObject(o:Object, c:Class):Object
 		{
 			
 			var instance:Object = new c();
 			var fields:ArrayCollection = _map[c].fields;
 			
-			var len:uint = fields.length
+			var len:int = fields.length
 			for (var i:int; i<len; i++)
 			{
 				var item:Object = fields.getItemAt(i);
@@ -545,7 +549,7 @@ package com.simplediagrams.business
 			return instance;
 		}
 		
-		private function getSQLType(asType:String):String
+		protected function getSQLType(asType:String):String
 		{
 			Logger.debug("astype: " + asType);
 			if (asType == "int" || asType == "uint")
@@ -578,7 +582,7 @@ package com.simplediagrams.business
 		
 		
 		public function getDBVersion():Number
-		{	
+		{		
 			try
 			{
 				getDBVersionStmt.execute()
@@ -587,7 +591,7 @@ package com.simplediagrams.business
 			}
 			catch(err:Error)
 			{
-				Logger.error("getDBVersion() couldn't get db version. Error:  "+ err)
+				Logger.error("getDBVersion() couldn't get db version. Error:  "+ err, this)
 				
 			}
 			return NaN
@@ -610,7 +614,7 @@ package com.simplediagrams.business
 			}
 			catch(err:Error)
 			{
-				Logger.error("setDBVersion() couldn't set db version to: " + version+ " Error:  "+ err)	
+				Logger.error("setDBVersion() couldn't set db version to: " + version+ " Error:  "+ err, this)	
 			}
 		}
 		

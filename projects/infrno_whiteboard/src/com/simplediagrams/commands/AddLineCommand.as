@@ -8,7 +8,7 @@ package com.simplediagrams.commands
 	public class AddLineCommand extends UndoRedoCommand
 	{
 		private var _diagramModel:DiagramModel
-		public var sdID:Number = 0
+		public var sdID:String= ""
 		public var x:Number
 		public var y:Number
 		public var endX:Number
@@ -37,11 +37,10 @@ package com.simplediagrams.commands
 		
 		override public function redo():void
 		{
-			Logger.debug("redo()", this)
 			var newLineModel:SDLineModel = new SDLineModel()
 			setProperties(newLineModel)
 			_diagramModel.addSDObjectModel(newLineModel)
-			if (sdID!=0)
+			if (sdID!="")
 			{
 				newLineModel.sdID = sdID
 			}
@@ -55,14 +54,12 @@ package com.simplediagrams.commands
 		
 		protected function setProperties(newLineModel:SDLineModel):void
 		{
-			Logger.debug("setProperties()", this)
 			newLineModel.x = x
 			newLineModel.y = y				
 			newLineModel.endX = endX
 			newLineModel.endY = endY			
 			newLineModel.bendX = Math.ceil(endX / 2)
 			newLineModel.bendY = Math.ceil(endY / 2)
-			Logger.debug("setting start line to: " + startLineStyle, this)
 			newLineModel.startLineStyle = startLineStyle
 			newLineModel.endLineStyle = endLineStyle
 			newLineModel.lineWeight = lineWeight

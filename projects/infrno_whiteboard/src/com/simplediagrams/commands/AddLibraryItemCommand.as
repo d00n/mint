@@ -1,11 +1,10 @@
 package com.simplediagrams.commands
 {
+	import com.simplediagrams.errors.SDObjectModelNotFoundError;
 	import com.simplediagrams.model.DiagramModel;
 	import com.simplediagrams.model.LibraryManager;
 	import com.simplediagrams.model.SDSymbolModel;
 	import com.simplediagrams.util.Logger;
-	import com.simplediagrams.events.RemoteSharedObjectEvent;
-	import org.swizframework.Swiz;
 	
 	import mx.core.UIComponent;
 
@@ -15,12 +14,13 @@ package com.simplediagrams.commands
 		private var _libraryManager:LibraryManager
 		private var _libraryName:String
 		private var _symbolName:String
-		private var _sdID:Number = 0
+		private var _sdID:String = ""
 		public var x:Number
 		public var y:Number
 		public var textAlign:String
 		public var fontSize:Number
 		public var fontWeight:String
+		public var fontFamily:String
 		public var textPosition:String
 		public var color:Number;
 		
@@ -28,10 +28,11 @@ package com.simplediagrams.commands
 		* This class remembers the id first given to the symbol so that it can be restored correctly 
 		*/
 		
-		public function get sdID():Number { return _sdID; }
-		public function set sdID(value:Number):void { _sdID = value; }
+		public function get sdID():String { return _sdID; }
+		public function set sdID(value:String):void { _sdID = value; }
 		public function get libraryName():String { return _libraryName; }
 		public function get symbolName():String { return _symbolName; }
+		
 		
 		public function AddLibraryItemCommand(diagramModel:DiagramModel, libraryManager:LibraryManager, libraryName:String, symbolName:String)
 		{
@@ -49,18 +50,24 @@ package com.simplediagrams.commands
 		
 		override public function undo():void
 		{						
-			Logger.debug("undo() sdID: " + _sdID,this)
 			_diagramModel.deleteSDObjectModelByID(_sdID)		
 		}
 		
 		override public function redo():void
 		{
-			Logger.debug("redo() sdID: " + _sdID,this)
-			var newSymbolModel:SDSymbolModel = _libraryManager.getSDObject(_libraryName, _symbolName) as SDSymbolModel		
+			try
+			{
+				var newSymbolModel:SDSymbolModel = _libraryManager.getSDObjectModel(_libraryName, _symbolName) as SDSymbolModel					
+			}
+			catch(error:SDObjectModelNotFoundError)
+			{
+				Logger.error("Couldn't find symbol: " + _symbolName + " in library " + _libraryName, this)
+				return
+			}
+				
 			setProperties(newSymbolModel)			
 			_diagramModel.addSDObjectModel(newSymbolModel)
-			Logger.debug("after added newSymbolModel.sdID: " + newSymbolModel.sdID,this)
-			if (_sdID!=0)
+			if (_sdID!="")
 			{
 				newSymbolModel.sdID = _sdID
 			}
@@ -69,12 +76,8 @@ package com.simplediagrams.commands
 				_sdID = newSymbolModel.sdID
 			}
 			
-			Logger.debug("after adding sdID: " + _sdID,this)
+			
 			UIComponent(newSymbolModel.sdComponent).focusManager.getFocus()
-				
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.ADD_SD_OBJECT_MODEL);	
-//			rsoEvent.sdObjectModel = newSymbolModel;
-//			Swiz.dispatchEvent(rsoEvent);
 		}
 		
 		protected function setProperties(sdSymbolModel:SDSymbolModel):void
@@ -82,9 +85,10 @@ package com.simplediagrams.commands
 			sdSymbolModel.x = x
 			sdSymbolModel.y = y
 			sdSymbolModel.textAlign = textAlign
-			sdSymbolModel.fontSize
-			sdSymbolModel.fontWeight
-			sdSymbolModel.textPosition
+			sdSymbolModel.fontSize = fontSize
+			sdSymbolModel.fontWeight = fontWeight
+			sdSymbolModel.fontFamily = fontFamily
+			sdSymbolModel.textPosition = textPosition
 			sdSymbolModel.color = color;
 		}
 	}

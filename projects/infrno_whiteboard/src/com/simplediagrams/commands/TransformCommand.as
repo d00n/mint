@@ -9,7 +9,7 @@ package com.simplediagrams.commands
 	{	
 		//each object in _transformedObjectsArr array has form {sdID:(sdID of sdObjectModel), fromState:TransformMemento, toState:TransformMemento}		
 		protected var _transformedObjectsArr:Array 		
-		protected var _diagramModel:DiagramModel		
+		protected var _diagramModel:DiagramModel
 		
 		public function TransformCommand(diagramModel:DiagramModel, transformedObjectsArr:Array)
 		{
@@ -17,9 +17,9 @@ package com.simplediagrams.commands
 			_transformedObjectsArr = transformedObjectsArr
 			super();
 		}
-
+		
 		public function get TransformedObjectsArray () : Array { return _transformedObjectsArr; }
-
+		
 		override public function execute():void
 		{
 			redo()
@@ -27,7 +27,7 @@ package com.simplediagrams.commands
 		
 		override public function redo():void
 		{
-			Logger.info("redo() TRANSFORM" ,this)
+			Logger.debug("redo() TRANSFORM" ,this)
 			for each (var obj:Object in _transformedObjectsArr)
 			{
 				var sdObjectModel:SDObjectModel = _diagramModel.getModelByID(obj.sdID)

@@ -22,10 +22,12 @@ package com.simplediagrams.model
 		public static const DOWNLOAD_LIBRARIES_LIST_ERROR:String = "downloadLibrariesListError"
 		public static const DOWNLOAD_LIBRARIES_ERROR:String = "downloadLibrariesError";
 				
-		[Autowire(bean="registrationManager")]
+		
+		[Inject]
 		public var registrationManager:RegistrationManager;
 		
-		[Autowire(bean="downloadManager")]
+		
+		[Inject]
 		public var downloadManager:DownloadManager;
 		
 		public var viewing:String = DOWNLOADING_LIBRARIES_LIST

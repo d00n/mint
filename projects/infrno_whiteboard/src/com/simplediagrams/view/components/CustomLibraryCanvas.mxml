@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:BasicLibraryCanvas 
+			xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			xmlns:s="library://ns.adobe.com/flex/spark" 
+			xmlns:mx="library://ns.adobe.com/flex/mx" 
+			xmlns:components="com.simplediagrams.view.components.*"
+			width="400" height="300"
+			creationComplete="onCC()"
+			nativeDragEnter="onNativeDragEnter(event)"
+			verticalScrollPolicy="off"
+			horizontalScrollPolicy="off"		 
+	   		nativeDragDrop="onNativeDragDrop(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.simplediagrams.events.AddImageFileToCustomLibraryEvt;
+			import com.simplediagrams.events.DeleteItemFromCustomLibrary;
+			import com.simplediagrams.model.libraries.CustomLibrary;
+			import com.simplediagrams.util.Logger;
+			
+			import mx.controls.Alert;
+			
+			import spark.components.List;
+			
+			[Bindable]
+			[Embed(source="assets/img/drag_here_from_desktop.png")]
+			public var dragHereImg:Class
+			
+			
+			protected var _showDropHereMsg:Boolean = true;
+			
+			[Mediate(event="AddImageFileToCustomLibraryEvt.IMAGE_FROM_FILE_ADDED")]
+			public function onCustomLibraryImageAdded(event:AddImageFileToCustomLibraryEvt):void
+			{
+				showDropHereMsg = false
+			}
+			
+			[Mediate(event="DeleteItemFromCustomLibrary.ITEM_DELETED")]
+			public function onCustomLibraryImageDeleted(event:DeleteItemFromCustomLibrary):void
+			{
+				callLater(updateShowDropHereMsg)
+			}
+			
+			protected function updateShowDropHereMsg():void
+			{
+				if (_libraryList)
+				{
+					showDropHereMsg = (_libraryList.dataProvider.length==0)
+				}
+				else
+				{
+					showDropHereMsg  = true
+				}
+			}
+									
+				
+			protected function onCC():void
+			{
+				updateShowDropHereMsg()
+			
+				//setup context menu
+				var cmi:ContextMenuItem = new ContextMenuItem("Add image to library");
+				cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onAddImageToCustomLibrary, false, 0, true);
+				
+				var cm:ContextMenu = new ContextMenu();
+				cm.hideBuiltInItems();
+				cm.customItems = [cmi];
+				this.contextMenu = cm			
+			}
+			
+			protected function onAddImageToCustomLibrary(event:Event):void
+			{
+				var evt:AddImageFileToCustomLibraryEvt = new AddImageFileToCustomLibraryEvt(AddImageFileToCustomLibraryEvt.ADD_IMAGE_FROM_FILE, true)
+				evt.libraryID = _libraryID
+				dispatchEvent(evt)
+			}
+			
+			public function set showDropHereMsg(value:Boolean):void
+			{
+				_showDropHereMsg = value
+				if (imgDropMsgHere)
+				{
+					imgDropMsgHere.visible = _showDropHereMsg
+				}
+			}
+			
+				
+			private function onNativeDragEnter(event:NativeDragEvent):void
+			{            	
+				if (event.clipboard.hasFormat(ClipboardFormats.FILE_LIST_FORMAT))
+				{    				
+					NativeDragManager.acceptDragDrop(this)
+				}
+			}
+				
+			private function onNativeDragDrop(event:NativeDragEvent):void
+			{
+				NativeDragManager.dropAction = NativeDragActions.COPY;
+				var dropFiles:Array = NativeDragEvent(event).clipboard.getData(ClipboardFormats.FILE_LIST_FORMAT) as Array;		
+				if (dropFiles==null) return
+				
+				var file:File = dropFiles[0]
+				
+				if (file.extension != "png" && file.extension!= "jpg")
+				{
+					Alert.show("Image files can only be .png or .jpg formats","Wrong image format")
+					return
+				}
+				
+				Logger.debug("adding image to library: "+ file.name, this)
+				
+				var evt:AddImageFileToCustomLibraryEvt = new AddImageFileToCustomLibraryEvt(AddImageFileToCustomLibraryEvt.ADD_IMAGE_FROM_FILE, true)
+				evt.imageFile = file
+				evt.libraryID = _libraryID
+				dispatchEvent(evt)
+				
+				imgDropMsgHere.visible = false						
+			}
+			
+			public function destroy():void
+			{
+				//TODO remove context menu listener
+			}
+			
+		]]>
+	</fx:Script>
+	
+	
+	<mx:VBox id="imgDropMsgHere" horizontalAlign="center" width="100%" paddingTop="30">
+		<mx:Image  source="{dragHereImg}"/>		
+	</mx:VBox>
+	
+</components:BasicLibraryCanvas>

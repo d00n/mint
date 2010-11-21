@@ -6,6 +6,7 @@ package com.simplediagrams.events
 	{
 		
 		public static const CLOSE_DIAGRAM:String = "closeDiagram"
+		public static const DIAGRAM_CLOSED:String = "diagramClosed"
 
 		public function CloseDiagramEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

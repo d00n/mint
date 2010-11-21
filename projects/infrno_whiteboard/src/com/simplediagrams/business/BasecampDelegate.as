@@ -13,13 +13,13 @@ package com.simplediagrams.business
 
 	public class BasecampDelegate 
 	{
-		[Autowire(bean="basecampService")]
+		[Inject(bean="basecampService")]
 		public var service:HTTPService;
 		
-		[Autowire(bean="basecampModel")]
+		[Inject]
 		public var basecampModel:BasecampModel;
 		
-		[Autowire(bean="diagramModel")]
+		[Inject]
 		public var diagramModel:DiagramModel;
 				
 		
@@ -94,6 +94,14 @@ package com.simplediagrams.business
 									</attachments>
 								</request>
 			
+			if (basecampModel.msgIsPrivate) 
+			{
+				msgXML.post["private"] = "1"
+			}
+			else
+			{
+				msgXML.post["private"] = "0"
+			}
 			msgXML.post.title = messageTitle
 			msgXML.post.body = messageBody
 			msgXML.attachments.name = "SimpleDiagram : " + messageTitle
@@ -124,10 +132,6 @@ package com.simplediagrams.business
 			
 			var username:String = basecampModel.basecampLogin
 			var password:String = basecampModel.basecampPassword
-			
-			Logger.debug("username: " + username,this)
-			
-			Logger.debug("password: " + password,this)
 				
 			//add the header to request
 			var enc:Base64Encoder = new Base64Encoder();

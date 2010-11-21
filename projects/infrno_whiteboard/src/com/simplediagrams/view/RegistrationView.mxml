@@ -6,38 +6,31 @@
 	width="620" height="360" 		
 	horizontalCenter="0"
 	verticalCenter="0"
-	currentState="{_registrationManager.viewing}"
-	xmlns:register="com.simplediagrams.view.register.*">
+	xmlns:register="com.simplediagrams.view.register.*"
+	currentState="{registrationManager.viewing}" xmlns:view="com.simplediagrams.view.*">
 	
 	<fx:Script>
 		<![CDATA[
 			import com.simplediagrams.events.LicenseStatusEvent;
-			import mx.validators.ValidationResult;
 			import com.simplediagrams.model.ApplicationModel;
 			import com.simplediagrams.model.RegistrationManager;
 			import com.simplediagrams.util.AboutInfo;
 			import com.simplediagrams.util.Logger;
 			
+			import flash.net.navigateToURL;
 			
-			import mx.controls.Alert	
-			import org.swizframework.Swiz	            
+			import mx.controls.Alert;
+			import mx.events.ValidationResultEvent;
+			import mx.validators.ValidationResult;
 			
-			import mx.events.ValidationResultEvent;			
-			import flash.net.navigateToURL
-				
-			[Autowire(bean="applicationModel")]
+			
+			[Inject]
 			public var applicationModel:ApplicationModel	
 			
+			[Inject]
 			[Bindable]
-			protected var _registrationManager:RegistrationManager
-						
+			public var registrationManager:RegistrationManager
 			
-			[Autowire(bean="registrationManager")]
-			public function set registrationManager(model:RegistrationManager):void
-			{
-				this._registrationManager = model
-				this.currentState = _registrationManager.viewing
-			}
 						
 			[Bindable]
 			[Embed(source='assets/img/registration_bg.png')]
@@ -49,13 +42,14 @@
 			{						
 				var aboutInfo:AboutInfo = new AboutInfo()
 				lblVersion.text = "Version : " + AboutInfo.applicationVersion	
+									
 			}
 			
 			protected function onUpgrade():void
 			{
-				currentState='registerView'
+				registrationManager.viewing = RegistrationManager.VIEW_REGISTER
 			}
-							
+								
 		]]>
 	</fx:Script>
 	
@@ -64,7 +58,6 @@
 	</s:layout>
 		    
 	<s:states>
-		<s:State name="eulaView"/>
 		<s:State name="freeModeView"/>
 		<s:State name="registerView"/>
 		<s:State name="registrationSuccessView"/>
@@ -73,10 +66,15 @@
 		
 	<mx:Image source="{Bkgd}" />
 		    
-    <register:EULAView includeIn="eulaView" />
-    <register:FreeModeView includeIn="freeModeView" upgrade="onUpgrade()" />
-    <register:RegisterView includeIn="registerView"  />
-    <register:RegistrationSuccessView includeIn="registrationSuccessView"  />
+    <register:FreeModeView includeIn="freeModeView" 
+						   upgrade="onUpgrade()" />
+	
+    <register:RegisterView id="registerView" 
+						   includeIn="registerView" />
+	
+    <register:RegistrationSuccessView id="successView" 
+									  includeIn="registrationSuccessView" />
+	
     <register:ServerUnavailableView includeIn="serverUnavailableView"  />
         
 	<!-- stuff for blue info section on right side of screen ... doesn't change across sub-views -->

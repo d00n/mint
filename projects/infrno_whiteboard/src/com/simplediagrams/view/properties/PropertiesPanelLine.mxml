@@ -21,16 +21,24 @@
 			import com.simplediagrams.util.Logger
 			import mx.events.PropertyChangeEvent;
 			
-			[Autowire(bean="diagramModel")]
+						
+			[Inject]
 			public var diagramModel:DiagramModel
 			
-			[Autowire(bean="settingsModel")]
+			[Inject]
 			public var settingsModel:SettingsModel
+			
+			
+			[PostConstruct]
+			public function postConstruct():void
+			{	
+				resetProperties()	
+			}
+			
 			
 			[Bindable]
 			[Embed(source='assets/img/lineEndings/lineNone.png')]
-			public var lineNone:Class
-			
+			public var lineNone:Class			
 			
 			[Bindable]
 			[Embed(source='assets/img/lineEndings/lineStartVLine.png')]
@@ -114,9 +122,7 @@
 				
 			// this flag is also set when initing controls 
 			protected var _launchControlEvents:Boolean = false 
-			
-				
-				
+							
 			protected var sdLineModel:SDLineModel
 																			 
 			

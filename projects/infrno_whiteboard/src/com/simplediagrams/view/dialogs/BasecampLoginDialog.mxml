@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 xmlns:myComps="*" 		
-		 creationComplete="onCC()"
+		 creationComplete="{this.closeButton.visible=false }"
 		 title="Basecamp Login"
 		 >
 	
@@ -20,27 +20,29 @@
 	<fx:Script>
 		<![CDATA[
 			import com.simplediagrams.events.BasecampEvent;
+			import com.simplediagrams.events.BasecampLoginEvent;
 			import com.simplediagrams.model.BasecampModel;
 			import com.simplediagrams.util.Logger;
 			
 			import mx.collections.ArrayCollection;
 			
+			public static const ATTEMPT_LOGIN:String = "attemptLogin";
+			
 			public static const STATE_LOGGING_IN:String = "loggingIn";
 			
+			[Dispatcher]
+			public var dispatcher:IEventDispatcher
 			
 			[Bindable]
-			private var _urlsAC:ArrayCollection = new ArrayCollection([{label:"http://", data:"http://"}, {label:"https://", data:"https://"}]);
+			private var _urlsAC:ArrayCollection = new ArrayCollection([{label:"https://", data:"https://"}, {label:"http://", data:"http://"}]);
 			
 			[Bindable]
 			private var _errorMsg:String = "";
 				
-			[Bindable]
-			[Autowire(name="basecampModel")]
+			[Bindable]			
+			[Inject]
 			public var basecampModel:BasecampModel
 			
-			protected function onCC():void
-			{
-			}
 			
 			public function loginFailed():void
 			{
@@ -97,50 +99,26 @@
 				{
 					url = url.substr(0, url.length-1)		
 					Logger.debug("User added ending slash, which isn't needed, so take off URL, which is now: " + url,this)
-
 				}
 				
 				url = cbxUrlPrefix.selectedItem.data + url
-				
-				//test that credentials work
-				if (basecampModel.basecampURL != url)
-				{
-					basecampModel.isDirty = true
-					basecampModel.basecampURL = url
-				}
-				if (basecampModel.basecampLogin != tipLogin.text)
-				{
-					basecampModel.isDirty = true
-					basecampModel.basecampLogin = tipLogin.text
-				}
-				if (basecampModel.basecampPassword != tipPassword.text)
-				{
-					basecampModel.isDirty = true
-					basecampModel.basecampPassword = tipPassword.text
-				}
-				
-				//this should probably be in controller but...
-				if (basecampModel.isDirty && cbxRememberMe.selected)
-				{
-					basecampModel.saveToEncryptedStore()
-				}
-				else if (basecampModel.isDirty && !cbxRememberMe.selected)
-				{
-					basecampModel.clearFromEncryptedStore()
-				}
-				
-				
+												
 				this.currentState = STATE_LOGGING_IN
 				btnOK.enabled = false
-				
-				dispatchEvent(new BasecampEvent(BasecampEvent.GET_PROJECTS, true))
+					
+				var loginEvt:BasecampLoginEvent = new BasecampLoginEvent(BasecampLoginEvent.BASECAMP_LOGIN_ATTEMPT, true)
+				loginEvt.login = tipLogin.text
+				loginEvt.password = tipPassword.text
+				loginEvt.url = url
+				loginEvt.rememberMe = this.cbxRememberMe.selected
+													
+				dispatcher.dispatchEvent(loginEvt)
 			}
 			
 						
 			protected function onCancel():void
-			{			
-				var evt:Event = new Event(Event.CANCEL, true)
-				dispatchEvent(evt)				
+			{							
+				dispatcher.dispatchEvent(new BasecampLoginEvent(BasecampLoginEvent.BASECAMP_LOGIN_CANCEL, true))			
 			}
 			
 			protected function onChangeRememberMe():void
@@ -239,4 +217,4 @@
 		
 	</s:VGroup>	
 	
-</s:Panel>
+</s:TitleWindow>

@@ -10,6 +10,7 @@ package com.simplediagrams.events
 		public static const CHANGE_TEXT_POSITION:String = "changeTextPosition"
 			
 		public static const CHANGE_FONT_WEIGHT:String = "changeFontWeight"
+		public static const CHANGE_FONT_FAMILY:String = "changeFontFamily"
 			
 		public static const TEXT_ALIGN_LEFT:String = "left"
 		public static const TEXT_ALIGN_CENTER:String = "center"
@@ -22,7 +23,8 @@ package com.simplediagrams.events
 		public static const TEXT_POSITION_BOTTOM:String = "bottom"
 		public static const TEXT_POSITION_BELOW:String = "below"
 		
-		public var fontSize:Number
+		public var fontSize:Number = 0
+		public var fontFamily:String = ""
 		
 		public var fontWeight:String
 		public var selected:Boolean

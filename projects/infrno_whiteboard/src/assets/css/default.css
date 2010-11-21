@@ -3,12 +3,23 @@
 @namespace mx "library://ns.adobe.com/flex/mx";
 @namespace components "com.simplediagrams.view.components.*";
 
+
+
+/* CLASSES */
+
+
 components|IconButton {
 	skinClass: ClassReference("com.simplediagrams.view.skins.IconButtonSkin");
 }
 
 
 s|Panel
+{
+	cornerRadius: 5;
+	highlightAlphas: 0.29, 0;
+}
+
+s|TitleWindow
 {
 	cornerRadius: 5;
 	highlightAlphas: 0.29, 0;
@@ -35,14 +46,18 @@ mx|Accordion
 	textSelectedColor: #ffffff;
 }
 
-.linkButton
-{
-	color:#4c73dd;
-}
 
 s|Button
 {
 	cornerRadius: 5px;
+}
+
+
+/* STYLES */
+
+.linkButton
+{
+	color:#4c73dd;
 }
 
 

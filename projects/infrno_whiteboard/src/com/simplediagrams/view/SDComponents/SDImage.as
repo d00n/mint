@@ -12,18 +12,24 @@ package com.simplediagrams.view.SDComponents
 	import mx.events.PropertyChangeEvent;
 
 	[SkinState("normal")]
-	[SkinState("selected")]
+	[SkinState("border")]
+	[SkinState("tape")]
+	[SkinState("photoStyle")]
 	[Bindable]	
 	public class SDImage extends SDBase implements ISDComponent
 	{	
 					
 		private var _model:SDImageModel
 		
-		public var imageSource:Object;
+		public var imageData:ByteArray		
 		
 		[SkinPart(required="true")]		
 		public var imageHolder:Image;
-				
+		
+		public var imageStyle:String
+		public var tapeVisible:Boolean
+		public var borderVisible:Boolean
+		
 		public function SDImage()
 		{
 			super();
@@ -55,18 +61,16 @@ package com.simplediagrams.view.SDComponents
 			this.width = _model.width
 			this.height = _model.height  
 			this.rotation = _model.rotation
+			this.imageData = _model.imageData
 			this.depth = _model.depth;
-			
-			if (_model.imageURL != null && _model.imageURL.length != 0)
-				this.imageSource = _model.imageURL;
-			else
-				this.imageSource = _model.imageData;
-					
-            
+            imageStyle = _model.styleName
             _model.addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );
         			
+			this.invalidateSkinState()
 			
 		}
+		
+
 		
 		public override function get objectModel():SDObjectModel
 		{
@@ -79,33 +83,43 @@ package com.simplediagrams.view.SDComponents
 			super.onModelChange(event)
 				
 			switch(event.property)
-			{    			
+			{    
+				
 				case "imageData":
 					Logger.debug("imageData changed", this)
-					imageSource = _model.imageData
+					imageData = _model.imageData
 					this.invalidateProperties()
 					break
-				case "imageURL":
-					Logger.debug("imageURL changed", this)
-					if (imageSource == null){
-						imageSource = _model.imageURL
-						this.invalidateProperties()
-					}
-					break							
-			}		
+				
+				case "styleName":
+					Logger.debug("imageData changed", this)
+					imageStyle = _model.styleName
+					this.invalidateSkinState()
+					break
+							
+			}
+			
 			
 		}        
        
-       override protected function partAdded(partName:String, instance:Object) : void
-       {
-       		super.partAdded(partName, instance)
-       		
-       		if (instance == imageHolder)
+		override protected function getCurrentSkinState():String 
+		{
+			if (imageStyle=="none") return "normal"
+			return imageStyle
+			
+		}
+		
+		
+		override protected function partAdded(partName:String, instance:Object) : void
+		{
+			super.partAdded(partName, instance)
+	       		
+			if (instance == imageHolder)
        		{
        			imageHolder.addEventListener(Event.COMPLETE, onImageLoaded)
        		}
-       	
-       }
+	       	
+	    }
         
         																	
 		public override function destroy():void
@@ -113,6 +127,8 @@ package com.simplediagrams.view.SDComponents
 			super.destroy()
 			_model = null
 		}
+		
+		
 		
 		
 		

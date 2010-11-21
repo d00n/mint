@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 width="300" height="500"
 		 title="Manage Libraries"		 
 		 contentBackgroundColor="0xFFFFFF"
 		 creationComplete="onCC()"
@@ -28,17 +27,21 @@
 			import mx.events.CloseEvent;
 						
 			[Bindable]
-			[Autowire( bean="libraryManager")]
+			[Inject]
 			public var libraryManager:LibraryManager
+			
+			[Dispatcher]
+			public var dispatcher:IEventDispatcher
 			
 			protected var _libraryToDelete:ILibrary
 			
 			protected function onCC():void
 			{
+				this.closeButton.visible=false 
 				libraryManager.rememberShowInPanelSettings()
 			}
 			
-			protected function onOK():void
+			protected function onDone():void
 			{
 				var evt:Event = new Event("OK", true)
 				dispatchEvent(evt)
@@ -55,7 +58,14 @@
 			public function deleteItem(libraryObj:Object):void
 			{   
 				_libraryToDelete = libraryObj as ILibrary
-				Alert.show("Delete this library plugin?", "Delete Plugin", Alert.OK | Alert.CANCEL, FlexGlobals.topLevelApplication as Sprite, onDeleteItemConfirm) 						
+				if (_libraryToDelete.isPlugin)
+				{
+					Alert.show("Delete the " + _libraryToDelete.displayName + " library plugin?", "Delete Plugin", Alert.OK | Alert.CANCEL, FlexGlobals.topLevelApplication as Sprite, onDeleteItemConfirm) 						
+				}
+				else if(_libraryToDelete.isCustom)					
+				{					
+					Alert.show("Delete the" + _libraryToDelete.displayName + " custom library?", "Delete Custom Library", Alert.OK | Alert.CANCEL, FlexGlobals.topLevelApplication as Sprite, onDeleteItemConfirm) 
+				}
 			}
 			
 			protected function onDeleteItemConfirm(event:CloseEvent):void
@@ -64,7 +74,7 @@
 				{
 					var evt:DeleteLibraryEvent = new DeleteLibraryEvent(DeleteLibraryEvent.DELETE_LIBRARY, true)
 					evt.library = _libraryToDelete
-					dispatchEvent(evt)
+					dispatcher.dispatchEvent(evt)
 				}
 				_libraryToDelete = null
 			}
@@ -116,7 +126,7 @@
 				</mx:itemRenderer>
 			</mx:DataGridColumn>
 			
-			<mx:DataGridColumn dataField="isPlugin" headerText="Plugin" width="50" >
+			<mx:DataGridColumn dataField="isPlugin" headerText="Plugin" width="60" >
 				<mx:itemRenderer>
 					<fx:Component>						
 						<mx:Box horizontalAlign="center"  >
@@ -126,9 +136,26 @@
 				</mx:itemRenderer>
 			</mx:DataGridColumn>
 			
+			
+			<mx:DataGridColumn dataField="isCustom" headerText="Custom" width="60" >
+				<mx:itemRenderer>
+					<fx:Component>						
+						<mx:Box horizontalAlign="center"  >
+							<mx:Image visible="{data.isCustom}" source="@Embed('assets/img/icons/tick.png')" toolTip="This library is a plugin."/>
+						</mx:Box>						
+					</fx:Component>
+				</mx:itemRenderer>
+			</mx:DataGridColumn>
+			
+			
+			<mx:DataGridColumn 
+				dataField="libraryName"
+				headerText="Library Name"
+				/>
+			
 			<mx:DataGridColumn 
 				dataField="displayName"
-			  	headerText="Name"
+			  	headerText="Display Name"
 			/>
 			
 			
@@ -139,7 +166,7 @@
 							<mx:Button click="outerDocument.deleteItem(data)" 
 									   useHandCursor="true"
 									   buttonMode="true"
-									   visible="{data.isPlugin}"
+									   visible="{data.canBeDeleted}"
 									   width="16"
 									   height="16"
 									   upSkin="@Embed('assets/img/icons/delete.png')"
@@ -159,13 +186,15 @@
 	
 	<s:VGroup width="100%" horizontalAlign="right" paddingRight="10" paddingTop="5">
 		<s:HGroup>
+			<!--
 			<s:Button id="btnCancel" label="CANCEL" 
 					  click="onCancel()"  
 					  styleName="blueButton"
-					  width="90" height="30" />	
+					  width="90" height="30" />
+			-->
 			<s:Button id="btnDone" 
-					  label="OK" 
-					  click="onOK()"  
+					  label="DONE" 
+					  click="onDone()"  
 					  styleName="blueButton"
 					  width="90" height="30" />
 		</s:HGroup>	
@@ -174,4 +203,4 @@
 	
 	
 	
-</s:Panel>
+</s:TitleWindow>

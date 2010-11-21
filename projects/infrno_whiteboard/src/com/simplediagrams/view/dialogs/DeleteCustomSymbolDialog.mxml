@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300"
+			   creationComplete="onCC()"
+			    title="Delete Custom Symbol"
+			   
+			   >
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.simplediagrams.controllers.DialogsController;
+			import com.simplediagrams.events.DeleteItemFromCustomLibrary;
+			
+			import mx.managers.PopUpManager;
+			
+			[Bindable]
+			public var libraryName:String
+			
+			[Bindable]
+			public var symbolName:String
+						
+			[Dispatcher]
+			public var dispatcher:IEventDispatcher
+			
+			[Inject]
+			public var dialogsController:DialogsController
+						
+			protected function onDelete():void
+			{
+				var evt:DeleteItemFromCustomLibrary = new DeleteItemFromCustomLibrary(DeleteItemFromCustomLibrary.DELETE_ITEM, true)
+				evt.libraryName = libraryName
+				evt.symbolName = symbolName
+				dispatcher.dispatchEvent(evt)
+					
+				dialogsController.removeDialog(this)
+			}
+			
+			protected function onCancel():void
+			{
+				dialogsController.removeDialog(this)
+			}
+			
+			public function onCC():void
+			{
+				this.closeButton.visible=false
+			}
+			
+		
+			
+		]]>
+	</fx:Script>
+	
+	<s:VGroup width="100%" height="100%" paddingTop="10" paddingBottom="10" paddingLeft="10" paddingRight="10">
+		
+		
+		<s:TextArea
+					 width="100%" 
+					 height="100%"
+					 editable="false"
+					 selectable="false"
+					 borderVisible="false"
+					 contentBackgroundAlpha="0"
+					 >
+			<s:textFlow>
+				<s:TextFlow>
+					<s:p><s:span fontWeight="bold">Are you sure you want to delete this symbol?</s:span></s:p>
+					<s:br/>
+					<s:p>If you delete this symbol, any saved diagrams that use it will no longer have access to it.</s:p>
+				</s:TextFlow>				
+			</s:textFlow>
+			
+		</s:TextArea>
+		
+		<s:HGroup  width="100%" horizontalAlign="right" paddingRight="10" paddingTop="5" paddingBottom="10">
+			<s:Button label="YES" width="90" height="30" click="onDelete()" styleName="blueButton"  />
+			<s:Button label="CANCEL" width="90" height="30" click="onCancel()" styleName="blueButton" />
+		</s:HGroup>
+		
+	</s:VGroup>
+	
+	
+</s:TitleWindow>

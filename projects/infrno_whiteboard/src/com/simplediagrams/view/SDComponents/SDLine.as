@@ -88,8 +88,7 @@ package com.simplediagrams.view.SDComponents
 			
 			
 		public function set objectModel(objectModel:SDObjectModel):void
-		{
-			Logger.debug("set model() model: " + objectModel, this)         
+		{     
 			_model = SDLineModel(objectModel)
 					
 			x = _model.x;
@@ -146,29 +145,25 @@ package com.simplediagrams.view.SDComponents
 					
 					case "startX":
 						startX = event.newValue as Number
-						if (startDragCircle != null)
-							startDragCircle.x = startX
+						startDragCircle.x = startX
 						this.repositionText()
 						break
 						
 					case "startY":					
 						startY = event.newValue as Number
-						if (startDragCircle != null)
-							startDragCircle.y = startY
+						startDragCircle.y = startY
 						this.repositionText()
 						break
 						
 					case "endX":
 						endX = event.newValue as Number
-						if (endDragCircle != null)
-							endDragCircle.x = endX
+						endDragCircle.x = endX
 						this.repositionText()
 						break
 						
 					case "endY":
 						endY = event.newValue as Number
-						if (endDragCircle != null)
-							endDragCircle.y = endY
+						endDragCircle.y = endY
 						this.repositionText()
 						break
 					
@@ -300,10 +295,8 @@ package com.simplediagrams.view.SDComponents
 	
 		protected function positionArcCircle():void
 		{
-			if (arcDragCircle !=null) {
-				arcDragCircle.x = _model.bendX
-				arcDragCircle.y = _model.bendY
-			}
+			arcDragCircle.x = _model.bendX
+			arcDragCircle.y = _model.bendY	
 		}	
 		
 		protected function setAngles():void

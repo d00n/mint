@@ -74,6 +74,7 @@
 			  change="onTextAreaChange()"
 			  horizontalScrollPolicy="off"
 			  verticalScrollPolicy="off"
+			  fontFamily="{hostComponent.fontFamily}"
     		  x = "5"
     		  y = "5"
               heightInLines="10"

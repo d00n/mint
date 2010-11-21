@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 title="Missing Symbols Warning"		 
+		 contentBackgroundColor="0xFFFFFF"
+		 creationComplete="onCC()"
+		 
+		 xmlns:local="*" xmlns:components="com.simplediagrams.view.components.*">
+	
+	<fx:Metadata>
+		[Event(name="OK", type="flash.events.Event")]
+		[Event(name='cancel', event='flash.events.Event')]
+	</fx:Metadata>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.simplediagrams.events.DeleteLibraryEvent;
+			import com.simplediagrams.model.LibraryManager;
+			import com.simplediagrams.model.libraries.ILibrary;
+			import com.simplediagrams.model.libraries.MissingSymbolInfo;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.FlexGlobals;
+			import mx.events.CloseEvent;
+		
+			// holds MissingSymbolInfo objects
+			[Bindable]
+			protected var  _missingSymbolsAC:ArrayCollection
+			
+			public var fileName:String 
+			public var nativePath:String
+			
+			public function set missingSymbolsArr(arr:Array):void
+			{
+				_missingSymbolsAC = new ArrayCollection(arr)
+			}
+			
+			
+			protected function onCC():void
+			{
+				this.closeButton.visible=false
+			}
+			
+			protected function onDone():void
+			{
+				var evt:Event = new Event("OK", true)
+				dispatchEvent(evt)
+			}
+			
+			protected function onCancel():void
+			{			
+				var evt:Event = new Event(Event.CANCEL, true)
+				dispatchEvent(evt)				
+			}
+			
+						
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout  paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10"/>
+	</s:layout>
+	
+	
+	<s:VGroup width="100%">
+		<s:RichText width="100%" 
+				  paddingBottom="5"
+					 >
+			
+			<s:textFlow>
+				<s:TextFlow>
+					<s:p paragraphSpaceAfter="5">This SimpleDiagrams file uses symbols from custom or plugin
+					libraries that don't exist on your system. Do you want to continue loading?</s:p>
+					<s:p>IMPORTANT: If you do continue loading, a box symbol will replace each missing symbol.</s:p>
+				
+				</s:TextFlow>
+			</s:textFlow>
+					 			
+		</s:RichText>
+	</s:VGroup>
+	
+	<s:Label fontWeight="bold" text ="Missing from library:"/>
+	
+	<components:CheckBoxDataGrid
+		id="dgLibraries" 
+		width="100%" 
+		height="100%"
+		dataProvider="{_missingSymbolsAC}"
+		allowMultipleSelection="true"
+	>
+		<components:columns>
+									
+			<mx:DataGridColumn
+				dataField="libraryType"
+				headerText="Library Type"
+				/>
+			
+			<mx:DataGridColumn 
+				dataField="libraryName"
+				headerText="Library Name"
+				/>
+			
+			<mx:DataGridColumn 
+				dataField="symbolName"
+			  	headerText="Symbol Name"
+			/>			
+		</components:columns>
+		
+	</components:CheckBoxDataGrid>
+	
+	
+	
+	
+	<s:VGroup width="100%" horizontalAlign="right" paddingRight="10" paddingTop="5">
+		<s:HGroup>
+			
+			<s:Button id="btnCancel" label="CANCEL LOADING" 
+					  click="onCancel()"  
+					  styleName="blueButton"
+					  width="140" height="30" />
+			
+			<s:Button id="btnDone" 
+					  label="CONTINUE LOADING" 
+					  click="onDone()"  
+					  styleName="blueButton"
+					  width="140" height="30" />
+		</s:HGroup>	
+	</s:VGroup>
+	
+	
+	
+	
+</s:TitleWindow>

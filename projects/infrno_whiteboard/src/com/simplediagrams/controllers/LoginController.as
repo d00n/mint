@@ -13,27 +13,16 @@ package com.simplediagrams.controllers
 	import mx.rpc.events.ResultEvent;            
 	import flash.net.navigateToURL;
 	
-	
-	import org.swizframework.controller.AbstractController;
-	import org.swizframework.factory.IInitializingBean;
 
-	public class LoginController extends AbstractController implements IInitializingBean
+	public class LoginController
 	{
 		
-	    
-	    [Autowire(bean="applicationModel")]
+		
+		[Inject]
 	    public var appModel:ApplicationModel
 	    	    	    	    	    	    	    	    	    
 	    public function LoginController():void {}
-	    
-	    public function initialize():void
-	    {
-	    	Logger.debug("initialize()", this)
-	    }
-	    
-		
-		
-	  	    
+	   	  	    
 	    // Logging in    	
         [Mediate(event="LoginEvent.DO_LOGIN")]
 		public function login(event:LoginEvent):void 
@@ -47,8 +36,7 @@ package com.simplediagrams.controllers
  		
  		public function loginResults( event: ResultEvent, rememberMe:Boolean):void
  		{ 			
- 			Logger.debug("#loginResults() event.result :" + event.result, this)
- 			Logger.debug("#loginResults() rememberMe :" + rememberMe, this) 			
+ 						
  		}
  		
  		public function loginFault( fault:FaultEvent ):void

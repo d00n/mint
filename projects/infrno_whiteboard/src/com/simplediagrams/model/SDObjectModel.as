@@ -14,14 +14,13 @@ package com.simplediagrams.model
 	
 	import mx.collections.ArrayCollection;
 	
-	import org.spicefactory.lib.reflect.ClassInfo;
+	import flash.utils.getQualifiedClassName
 
 	[Bindable]
 	
 	//public class SDObjectModel extends DAO implements IResizeable, IMoveable
 	public class SDObjectModel extends EventDispatcher implements IResizeable, IMoveable
 	{
-		
 		
 		public static const TEXT_POSITION_ABOVE:String = "above"
 		public static const TEXT_POSITION_TOP:String = "top"
@@ -32,18 +31,17 @@ package com.simplediagrams.model
 		
 		public static const DELETE_SD_COMPONENT:String = "deleteSDComponent" //when SDObjectModel disptaches an event with this type, the related component is deleted
 		
-		private var _sdID:Number = 0;
+		private var _sdID:String = "";
 		private var _x:Number = 10;
         private var _y:Number  = 10;
         public var _height:Number = 50; //needs to be set without invoking dispatch
         public var _width:Number = 50; //needs to be set without invoking dispatch
         private var _rotation:Number = 0;
-		private var _zIndex:int = 0;
-		private var _color:Number= 0xFFFFFF;
+		private var _color:Number= -1
 		public var maintainProportion:Boolean = false;
 		public var diagramID:int
-		public var colorizable:Boolean = true;
-		public var depth:Number = 0;
+		public var colorizable:Boolean = true
+		private var _depth:int = 0;
 		
 		private var _startState:TransformMemento
 		private var _allowRotation:Boolean = true
@@ -62,12 +60,12 @@ package com.simplediagrams.model
 		}
 		
 		
-		public function set sdID(v:Number):void
+		public function set sdID(v:String):void
 		{
 			_sdID = v
 		}
 		
-		public function get sdID():Number
+		public function get sdID():String
 		{
 			return _sdID
 		}
@@ -110,9 +108,14 @@ package com.simplediagrams.model
 			return _color	
 		}
 		
+		/**
+		 * 
+		 * @param value
+		 * 
+		 */
 	 	public function set color(value:Number):void
 	 	{
-	 		_color = value;
+	 		_color = value
 	 	}			
 				
         public function get rotation():Number
@@ -144,6 +147,16 @@ package com.simplediagrams.model
         {
         	_height = v;
         }
+		
+		public function get depth():int
+		{
+			return _depth;
+		}
+		
+		public function set depth(v:int):void
+		{
+			_depth = v;
+		}
 
         public function get y():Number
         {
@@ -165,26 +178,19 @@ package com.simplediagrams.model
 			_x = v;
 		}
 		
-		public function get zIndex():int	
-		{
-			return _zIndex
-		}
-
-		public function set zIndex(value:int):void
-		{
-			_zIndex = value
-		}
+	
 	
 		
 		public function toDetailedString():String
 		{
 			
-			var ci:ClassInfo = ClassInfo.forInstance(this);
+			var className:String = getQualifiedClassName(this)
 				
-			var s:String = "\n SDObjectModel: \n-----------------------" +
-				"\nclass: " + ci.simpleName + 
+			var s:String = "\n\n SDObjectModel: \n-----------------------" +
+				"\nclass: " + className + 
+				"\nsdID: " + this.sdID + 
 				"\nx:" + x + "\ny: " + y + "\nwidth: " + width + "\nheight: " + height +
-				"\nzIndex: " + zIndex + "\nrotation: " + rotation + "\ncolor: " + color + 
+				"\ndepth: " + depth + "\nrotation: " + rotation + "\ncolor: " + color + 
 				"\ndiagramID: " + diagramID + "\n"
 			return s
 		}
@@ -288,7 +294,7 @@ package com.simplediagrams.model
 			memento.height = _height
 			memento.color = _color
 			memento.rotation = _rotation
-			memento.zIndex = _zIndex
+			memento.depth = depth
 			
 			return memento
 		}
@@ -303,7 +309,7 @@ package com.simplediagrams.model
 			height = memento.height
 			color = memento.color
 			rotation = memento.rotation
-			zIndex = memento.zIndex
+			depth = memento.depth
 		}
 		
 		
@@ -331,7 +337,7 @@ package com.simplediagrams.model
 			memento.width = width
 			memento.height = height
 			memento.rotation = rotation
-			memento.zIndex = zIndex
+			memento.depth = depth
 			memento.color = color
 			return memento
 		}
@@ -343,9 +349,8 @@ package com.simplediagrams.model
 			width = memento.width
 			height = memento.height
 			rotation = memento.rotation
-			zIndex = memento.zIndex
-			color = memento.color;
-
+			depth = memento.depth
+			color = memento.color
 		}
 		
 		public function getMemento():SDObjectMemento

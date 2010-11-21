@@ -34,12 +34,9 @@ package com.simplediagrams.model
 		public static const MAX_UNDOS:Number = 100
 		
 		private var _stack:ArrayCollection = new ArrayCollection()
-		
-		//indicates if there are commands after stackIndex
-		private var _cleanIndex:Number = -1;
-		
+				
 		// should only be used by associated getter/setter 
-		private var __stackIndex:Number = -1;
+		private var _stackIndex:Number = -1;
 
 		
 		public function UndoRedoManager()
@@ -53,7 +50,7 @@ package com.simplediagrams.model
 		[Bindable("indexChanged")]
 		public function get canUndo():Boolean
 		{
-			return stackIndex >=0
+			return stackIndex > 0
 		}
 		
 		/**
@@ -64,14 +61,13 @@ package com.simplediagrams.model
 		{
 			// note, if all undo events have been undone, then stackIndex
 			// will be -1 but stack.length will be greater than zero.  
-			return stackIndex + 1 < _stack.length
+			return stackIndex < _stack.length 
 		}
 		
 		public function clear():void
 		{
 			_stack = new ArrayCollection()
 			stackIndex = -1
-			setCleanIndex(-1)
 			dispatchEvent(new Event("countChanged"))
 		}
 		
@@ -117,10 +113,6 @@ package com.simplediagrams.model
 			//If there are redo's on the stack after the current index, wipe them out
 			if (canRedo)
 			{
-				if (_cleanIndex>stackIndex)
-				{
-					setCleanIndex(-1)
-				}
 				removeCommands(stackIndex++, _stack.length)
 			}
 			
@@ -138,30 +130,33 @@ package com.simplediagrams.model
 		
 		public function undo():void
 		{
-			Logger.debug("undo()", this)
+			if (stackIndex==-1)
+			{
+				Logger.error("undo() can't undo because stackIndex = -1",this)
+				return
+			}
+			
 			if (!canUndo) 
 			{ 
 				Logger.debug("can't undo.",this); 
 				return;
 			}
-			if (stackIndex>_stack.length-1) stackIndex=_stack.length-1
-			_stack[stackIndex].undo()
 			stackIndex--
-			Logger.debug("after undo, stack: ", this)
-			traceStack()
+			_stack[stackIndex].undo()
 		}
 		
 		public function redo():void
 		{
-			Logger.debug("redo()", this)
 			if (!canRedo) 
 			{ 
 				Logger.debug("can't redo.",this)
 				return
 			}
-			_stack[++stackIndex].redo()
-			Logger.debug("after redo, stack: ", this)
-			traceStack()
+			if (stackIndex>=0)
+			{
+				_stack[stackIndex].redo()
+				stackIndex++
+			}
 		}
 		
 		public function set index(ix:uint):void
@@ -188,52 +183,7 @@ package com.simplediagrams.model
 			}
 		}
 		
-		/**
-		 * Returns true if the stack is in a clean state.
-		 * 
-		 * <p>
-		 * The stack is considered clean if the current index is the index at
-		 * which clean = true was last called.  The stack is clean by default.
-		 * </p>
-		 */
-
-		
-		[Bindable("cleanChanged")]
-		public function get clean():Boolean
-		{
-			return cleanIndex==index
-		}
-		
-		
-		/**
-		* Sets the clean index to the current index if set to a true value.
-		*
-		* <p>
-		* The clean index will be reset if the clean index is higher than the
-		* current index and an event is pushed onto the stack.  (In other
-		* words, if there are events to be redone and an event is pushed onto
-		* the stack.)  The cleanIndex is set to -1 in the event of a reset.
-		* </p>
-		*/
-		public function set clean(b:Boolean):void
-		{
-			if (!b)
-				return;
-			
-			setCleanIndex(index);
-		}
-		
-		/**
-		 * Returns the index at which setClean was last called, or -1
-		 * if it has not been called or has been reset.
-		 */
-		[Bindable("cleanChanged")]
-		public function get cleanIndex():Number
-		{
-			return _cleanIndex;
-		}
-		
-		
+					
 		
 		/**
 		 * Returns true if the index is valid
@@ -255,22 +205,11 @@ package com.simplediagrams.model
 		 */
 		protected function addUndoRedoCommand(cmd:IUndoRedoCommand):void
 		{
-			Logger.debug("adding command. cmd: " + cmd.toString(),this)
 			_stack.addItem(cmd);
-			stackIndex++;
+			stackIndex = _stack.length
 			dispatchEvent( new Event("countChanged") );
-			traceStack()
 		}
 		
-		/**
-		 * Removes the top undo command from the stack
-		 */
-		protected function removeUndoCommand():void
-		{
-			_stack.removeItemAt(_stack.length - 1);
-			stackIndex--;
-			dispatchEvent( new Event("countChanged") );
-		}
 		
 		/**
 		 * Removes the items between the first index (inclusive) and the last
@@ -312,7 +251,7 @@ package com.simplediagrams.model
 		 */
 		protected function get stackIndex():Number
 		{
-			return __stackIndex;
+			return _stackIndex;
 		}
 		
 		/**
@@ -325,29 +264,14 @@ package com.simplediagrams.model
 		 */
 		protected function set stackIndex(ix:Number):void
 		{
-			__stackIndex = ix;
+			_stackIndex = ix;
 			dispatchEvent(new Event("indexChanged"));
-			dispatchEvent(new Event("cleanChanged"));
 		}
 		
-		
-		/**
-		 * Updates the clean index and dispatches the cleanChanged event.
-		 *
-		 * <p>
-		 * It would be nice if ActionScript supported public getters with
-		 * private setters as then I wouldn't need this helper function.
-		 * </p>
-		 */
-		protected function setCleanIndex(ix:Number):void
-		{
-			_cleanIndex = ix;
-			dispatchEvent(new Event("cleanChanged"));
-		}
-
-		
+				
 		protected function traceStack():void
 		{
+			Logger.debug("STACK INDEX: " + this.stackIndex, this)
 			for (var i:uint=0;i<_stack.length;i++)
 			{
 				if (i==stackIndex)
@@ -360,9 +284,7 @@ package com.simplediagrams.model
 				}	
 			}
 		}
-
-		
-		
+			
 		
 		
 	}

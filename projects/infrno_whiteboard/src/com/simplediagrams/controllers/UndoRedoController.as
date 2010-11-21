@@ -10,7 +10,7 @@ package com.simplediagrams.controllers
 	public class UndoRedoController extends AbstractController
 	{
 		
-		[Autowire]
+		[Inject]
 		public var undoRedoManager:UndoRedoManager
 		
 		public function UndoRedoController()
@@ -20,11 +20,11 @@ package com.simplediagrams.controllers
 		
 		[Mediate(event="UndoRedoEvent.UNDO")]
 		public function onUndo(event:UndoRedoEvent):void
-		{
+		{						
 			if (undoRedoManager.canUndo)
 			{
 				undoRedoManager.undo()
-			}
+			}			
 		}
 		
 		[Mediate(event="UndoRedoEvent.REDO")]
@@ -36,6 +36,7 @@ package com.simplediagrams.controllers
 			}
 		}
 		
+		 
 		[Mediate(event="LoadDiagramEvent.DIAGRAM_LOADED")]
 		[Mediate(event="CreateNewDiagramEvent.NEW_DIAGRAM_CREATED")]
 		public function onClear(event:Event):void

@@ -1,17 +1,16 @@
 package com.simplediagrams.model
 {
-//	import flash.data.EncryptedLocalStore;
+	import com.simplediagrams.util.Logger;
+	
+	import flash.data.EncryptedLocalStore;
 	import flash.events.EventDispatcher;
 //	import flash.filesystem.*;
 	import flash.utils.ByteArray;
-
-	import com.simplediagrams.util.Logger
 	
 	[Bindable]
 	public class RegistrationManager extends EventDispatcher
 	{
 		
-		public static const VIEW_EULA:String = "eulaView"
 		public static const VIEW_FREE_MODE:String = "freeModeView"
 		public static const VIEW_REGISTER:String = "registerView"
 		public static const VIEW_REGISTRATON_SUCCESS:String = "registrationSuccessView"
@@ -43,8 +42,6 @@ package com.simplediagrams.model
 		//manages the state of the RegisterView window within the Registration process
 		protected var _registerViewing:String = REGISTER_VIEW_NORMAL
 		
-		protected var _registrationMsg:String = "Enter your email and the license number you purchased from the SimpleDiagrams.com site. If you haven't " + 
-					"purchased a license yet, no problem. Just <font color='#3c69e1'><a href='http://www.simplediagrams.com/purchase'>visit the purchase page</a></font> to get started."
 		
 		/*
 		protected var _timeStillRemainingMsg:String = "You're using the SimpleDiagrams Beta free version. And that's great. But after the trial period is over you'll get a periodic" +
@@ -57,7 +54,7 @@ package com.simplediagrams.model
 		*/
 					
 		public var freeVersionMsg:String = "You're using the SimpleDiagrams Free Version. And that's great. But you're missing some great features only available " +
-			"in the SimpleDiagrams Full Version.<br/><br/>So, why not purchase the Full Version today? Getting a license is quick, simple and cheap. " + 
+			"in the SimpleDiagrams Full Version, like the ability to save files or use different fonts.<br/><br/>So, why not purchase the Full Version today? Getting a license is quick, simple and cheap. " + 
 			"<b>Click the \"Upgrade Now\" button below to get started.</b>"	
 					
 		public var timeoutMsg:String = "Your SimpleDiagrams trial has ended. Please enter your email and the license number you purchased from the SimpleDiagrams.com site. If you haven't " + 
@@ -66,31 +63,29 @@ package com.simplediagrams.model
 					
 		public var registrationSuccessMsg:String = "You have successfully registered this copy of SimpleDiagrams. You can find links to tutorials and help information via the 'help' menu above."
 		
+		protected var _isDialog:Boolean = false
+					
+		public var cancelRegistrationText:String = "No thanks, I'll use the free version"
+		
+		public var finalDoneButtonText:String = "Start SimpleDiagrams"
 		
 		public function RegistrationManager()
 		{
 			
 		}
 		
-		/*
-		public function get freeViewMsg():String
+		public function set isDialog(value:Boolean):void
 		{
-			if (trialDaysRemaining==0)
-			{
-				return _noTimeRemainingMsg
-			}
-			else
-			{
-				return _timeStillRemainingMsg
-			}
+			_isDialog = value
+			cancelRegistrationText = "Cancel"
+			finalDoneButtonText = "Return to SimpleDiagrams"
 		}
 		
-		public function get trialDaysRemainingText():String
+		public function get isDialog():Boolean
 		{
-			return trialDaysRemaining + " trial days remaining."
+			return _isDialog
 		}
-		*/
-		
+				
 		public function get viewing():String
 		{
 			return _viewing
@@ -119,22 +114,7 @@ package com.simplediagrams.model
 			licenseKey = key
 		}
 		
-		public function get registrationMsg():String
-		{
-			if (trialOver)
-			{
-				return "<b>Your SimpleDiagrams trial is over.</b> " + _registrationMsg
-			}
-			else
-			{
-				return _registrationMsg
-			}
-		}
 		
-		public function set registrationMsg(v:String):void
-		{
-			_registrationMsg = v
-		}
 		
 		
 		public function get tryingToValidateWithKey():String
@@ -171,16 +151,22 @@ package com.simplediagrams.model
 			return true;
 			
 			//legacy stuff for users pre 1.0.12
-			var isLicensed:ByteArray = EncryptedLocalStore.getItem("sdIsLicensed")
-			if (isLicensed && isLicensed.readUTFBytes(isLicensed.length) == "true") return true
-
+			try
+			{
+				var isLicensed:ByteArray = EncryptedLocalStore.getItem("sdIsLicensed")
+				if (isLicensed && isLicensed.readUTFBytes(isLicensed.length) == "true") return true
+			}
+			catch(error:Error)
+			{
+				Logger.error("Error trying to read sdIsLicensed",this)
+			}
 			//more recent stuff...
-			return (licenseKey!=null)
+			return (licenseKey!=null && licenseKey!="")
 		}
 		
 		public function deleteLicense():void
 		{
-//			EncryptedLocalStore.removeItem("com.simplediagrams.licenseKey")
+			EncryptedLocalStore.removeItem("com.simplediagrams.licenseKey")
 		}
 				
 		

@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:myComps="*" 		
+		 creationComplete="onCC()"
+		 title="Yammer Authorization"
+		 >
+	
+	
+	<fx:Metadata>
+		[Event(name="exportDiagramToYammer", type="com.simplediagrams.events.YammerEvent")]
+		[Event(name="showAuthorizeWebpage", type="com.simplediagrams.events.YammerEvent")]
+		[Event(name="attemptLogin", type="com.simplediagrams.events.YammerEvent")]
+		[Event(name='cancel', event='flash.events.Event')]
+	</fx:Metadata>
+	
+	<fx:Declarations>		
+		<mx:StringValidator id="vldPin" required="true" source="{txtPin}" property="text" maxLength="4" minLength="4"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.simplediagrams.events.YammerEvent;
+			import com.simplediagrams.model.YammerModel;
+			
+			import mx.controls.Alert;
+			
+			public static const STATE_SHOW_AUTHORIZE:String = "showAuthorize";
+			public static const STATE_AUTHORIZING:String = "authorizing";
+			public static const STATE_SHOW_COMPLETE_AUTHORIZE:String = "showCompleteAuthorize";
+			public static const STATE_AUTH_COMPLETE:String = "authComplete";
+			
+			[Bindable]
+			private var _errorMsg:String = "";
+			
+			[Bindable]
+			[Inject]
+			public var yammerModel:YammerModel
+			
+			protected function onCC():void
+			{
+			}
+			
+			
+			
+			protected function onAuthorize():void
+			{
+				
+				dispatchEvent(new YammerEvent(YammerEvent.SHOW_AUTHORIZE_WEBPAGE, true))				
+				currentState = YammerLoginDialog.STATE_SHOW_COMPLETE_AUTHORIZE
+			}
+			
+			protected function onAuthorizeComplete():void
+			{
+				if (txtPin.text.length!=4)
+				{
+					Alert.show("Please enter the pin number provided by Yammer.com in your browser window","PIN Required")
+					return
+				}
+				yammerModel.oauthVerifier = txtPin.text
+				dispatchEvent(new YammerEvent(YammerEvent.AUTHORIZATION_COMPLETE, true))
+			}
+			
+			
+			protected function onUploadNow():void
+			{				
+				dispatchEvent(new YammerEvent(YammerEvent.EXPORT_DIAGRAM, true))		
+			}
+			
+			
+			protected function onDone():void
+			{
+				dispatchEvent(new YammerEvent(YammerEvent.AUTHORIZATION_WINDOW_DONE, true))		
+			}
+			
+			protected function onCancel():void
+			{			
+				var evt:Event = new Event(Event.CANCEL, true)
+				dispatchEvent(evt)				
+			}
+			
+			
+			
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="showAuthorize"/>
+		<s:State name="authorizing"/>
+		<s:State name="showCompleteAuthorize"/>
+		<s:State name="authComplete"/>
+	</s:states>	
+	
+		
+	<s:VGroup width="100%" height="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">		
+			
+		<s:Group includeIn="showAuthorize" width="430" height="100%">
+						
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>					
+			
+			<s:VGroup height="100%" width="100%" paddingTop="10" gap="10">
+				<s:Label text="A one-time authorization with Yammer is required." fontWeight="bold" />
+				<s:Label height="25" width="430" text="Yammer requires you to complete a one-time authorization of SimpleDiagrams before uploading your diagrams to Yammer." />
+				<s:Label height="60" width="430" text="Authorizing is simple. Just click the 'Authorize' button below. The Yammer.com authorization site will appear. Follow the instructions on Yammer's site. When you're finished, return to this window to complete the process."/>
+			</s:VGroup>
+			
+					
+			<s:VGroup horizontalAlign="right" width="100%" paddingTop="10" paddingLeft="10" >
+				
+				<s:HGroup>
+					<s:Button id="btnCancelAuth" 
+							  label="CANCEL" 
+							  click="onCancel()"  
+							  width="90" 
+							  height="30" 
+							  styleName="blueButton"
+							  />	
+					<s:Button id="btnShowAuthorize" 
+							  label="AUTHORIZE" 
+							  click="onAuthorize()"  
+							  width="130" 
+							  height="30" 
+							  styleName="blueButton"
+							  />	
+				</s:HGroup>
+			</s:VGroup>
+			
+		</s:Group>
+		
+		
+		<s:Group includeIn="authorizing" width="430" height="100%">
+			
+			<s:layout>
+				<s:BasicLayout/>
+			</s:layout>					
+			
+			<s:Label height="20" textAlign="center" text="Authorizing..."  y="50" width="430"/>
+			
+			<myComps:LoadingBar y="75" x="80" />			
+			
+		</s:Group>
+		
+		
+		
+		<s:Group includeIn="showCompleteAuthorize" width="430" height="100%">
+			
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>					
+			
+			<s:VGroup height="100%" width="100%" paddingTop="10" gap="10">				
+				<s:Label width="430" text="Return to this window after you have finished the authorization process on Yammer.com."/>
+				<s:Label width="430" text="Enter the four digit pin provided by Yammer and click the 'Complete Authorization' button below"/>				
+				<s:HGroup verticalAlign="middle">
+					<s:Label text="Pin:"/>
+					<s:TextInput id="txtPin" maxChars="4" fontSize="16"/>
+				</s:HGroup>
+			</s:VGroup>
+					
+			
+			<s:VGroup horizontalAlign="right" width="100%" paddingTop="10" >
+				
+				<s:HGroup>
+					<s:Button id="btnCancelAuthComplete" 
+							  label="CANCEL" 
+							  click="onCancel()"  
+							  width="90" 
+							  height="30" 
+							  styleName="blueButton"
+							  />	
+					<s:Button id="btnCompleteAuth" 
+							  label="COMPLETE AUTHORIZATION" 
+							  click="onAuthorizeComplete()"  
+							  width="190" 
+							  height="30" 
+							  styleName="blueButton"
+							  />	
+				</s:HGroup>
+			</s:VGroup>
+			
+		</s:Group>
+				
+		
+		<s:Group includeIn="authComplete" width="430" height="100%">
+			
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>					
+			
+			<s:VGroup height="100%" width="100%" paddingTop="10" gap="10">				
+				<s:Label width="430" text="Authorization complete."/>
+				<s:Label width="430" text="This instance of SimpleDiagrams is now authorized to upload images to your yammer account."/>				
+			</s:VGroup>		
+			
+			<s:VGroup horizontalAlign="right" width="100%" paddingTop="10" >
+				
+				<s:HGroup>
+					<s:Button id="btnUploadNow" 
+							  label="UPLOAD AN IMAGE NOW" 
+							  click="onUploadNow()"  
+							  width="190" 
+							  height="30" 
+							  styleName="blueButton"
+							  />	
+					<s:Button id="btnDone" 
+							  label="DONE" 
+							  click="onDone()"  
+							  width="90" 
+							  height="30" 
+							  styleName="blueButton"
+							  />	
+				</s:HGroup>
+			</s:VGroup>
+			
+		</s:Group>
+		
+				
+		
+		
+		
+		
+	</s:VGroup>	
+	
+</s:TitleWindow>

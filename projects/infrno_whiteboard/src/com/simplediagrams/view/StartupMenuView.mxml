@@ -6,7 +6,6 @@
 	width="620" height="360" 		
 	horizontalCenter="0"
 	verticalCenter="0"
-	addedToStage="onATS()"
 	creationComplete="onCC()">
 
 	
@@ -25,14 +24,12 @@
 			
 			import mx.collections.ArrayCollection;
 			
-			import org.swizframework.Swiz;
-
 			[Bindable]
-			[Autowire(bean="applicationModel")]
+			[Inject]
 			public var applicationModel:ApplicationModel;    
 			
 			[Bindable]
-			[Autowire(bean="libraryManager")]
+			[Inject]
 			public var library:LibraryManager;    		
     			    			
 			
@@ -75,31 +72,26 @@
 			
 			}
 			
-			protected function onATS():void
-			{
-				Logger.debug("onATS()",this)
-			
-			}
 			
 		
 			protected function onCreateDiagram():void
 			{
 				var evt:CreateNewDiagramEvent = new CreateNewDiagramEvent(CreateNewDiagramEvent.CREATE_NEW_DIAGRAM, true)
-				Swiz.dispatchEvent(evt)
+				dispatchEvent(evt)
 			}
 			
 			protected function onOpenDiagram():void
 			{				
-				var evt:OpenDiagramEvent = new OpenDiagramEvent(OpenDiagramEvent.OPEN_DIAGRAM_EVENT, true)
-				Swiz.dispatchEvent(evt)
+				var evt:OpenDiagramEvent = new OpenDiagramEvent(OpenDiagramEvent.OPEN_DIAGRAM, true)
+				dispatchEvent(evt)
 			}
 			
 			protected function onOpenRecentDiagram():void
 			{				
-			 	var evt:LoadDiagramEvent = new LoadDiagramEvent(LoadDiagramEvent.LOAD_DIAGRAM)
+			 	var evt:LoadDiagramEvent = new LoadDiagramEvent(LoadDiagramEvent.LOAD_DIAGRAM, true)
 			 	if (lstDiagrams.selectedItem == null) return
 			 	evt.nativePath = lstDiagrams.selectedItem.data
-				Swiz.dispatchEvent(evt)
+				dispatchEvent(evt)
 			}
 			
 			protected function onHelp():void
@@ -120,10 +112,7 @@
 			{
 				
 				var evt:ShowDialogEvent = new ShowDialogEvent(ShowDialogEvent.OPEN_DIAGRAM_DIALOG, true)
-				Swiz.dispatchEvent(evt)
-				//var evt:ShowDialogEvent = new ShowDialogEvent(ShowDialogEvent.OPEN_DIAGRAM_DIALOG, true)
-				//Swiz.dispatchEvent(evt)
-				//openButtonHackList.selectedIndex=-1
+				dispatchEvent(evt)
 			}
 			
 			protected function onClearRecentList():void

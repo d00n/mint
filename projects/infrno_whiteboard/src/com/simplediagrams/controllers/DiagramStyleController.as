@@ -13,15 +13,12 @@ package com.simplediagrams.controllers
 
 	public class DiagramStyleController extends AbstractController
 	{
-		[Autowire(bean="diagramStyleManager")]
+		[Inject]
 		public var diagramStyleManager:DiagramStyleManager;
 		
-		[Autowire(bean="diagramModel")]
+		[Inject]
 		public var diagramModel:DiagramModel;
-
-		[Autowire(bean="remoteSharedObjectController")]
-		public var remoteSharedObjectController:RemoteSharedObjectController
-		
+				
 		public function DiagramStyleController()
 		{
 		}

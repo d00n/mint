@@ -41,6 +41,7 @@ package com.simplediagrams.view.SDComponents
 		public var fontWeight:String
 		public var fontSize:Number
 		public var textAlign:String
+		public var fontFamily:String
 		
 		protected var _cwTextArea:ChangeWatcher
 		protected var _model:SDTextAreaModel;
@@ -62,10 +63,11 @@ package com.simplediagrams.view.SDComponents
    			text = _model.text			
             fontColor = _model.color
 			fontWeight = _model.fontWeight
+			fontFamily = _model.fontFamily
             fontSize = _model.fontSize
             textAlign = _model.textAlign
             setSkinStyle()
-			this.depth = _model.depth;
+			depth = _model.depth;
             
             _model.addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );
         			        
@@ -92,8 +94,6 @@ package com.simplediagrams.view.SDComponents
         
         override protected function onModelChange(event:PropertyChangeEvent):void
 		{
-			Logger.info("onModelChange event.property=" + event.property,this);
-			
 			super.onModelChange(event)
 				
 			switch(event.property)
@@ -123,6 +123,10 @@ package com.simplediagrams.view.SDComponents
 				
 				case "fontWeight":
 					this.fontWeight = String(event.newValue)
+					break
+				
+				case "fontFamily":
+					this.fontFamily = String(event.newValue)
 					break
 				
     			case "skinStyle":
@@ -171,6 +175,7 @@ package com.simplediagrams.view.SDComponents
         
         protected function onTextAreaMouseDown(event:MouseEvent):void
 	    { 
+			Logger.debug("depth: " + this.depth, this)
 			this.invalidateSkinState()
 		    event.stopPropagation()    // this allows us to drag to select within the text area without having objecthandles think we want to drag the component!
 	    }
@@ -186,8 +191,7 @@ package com.simplediagrams.view.SDComponents
 				
 				mainTextArea.addEventListener(TextOperationEvent.CHANGE, onTextAreaChange, false, 0, true)				
 				mainTextArea.addEventListener(MouseEvent.MOUSE_DOWN, onTextAreaMouseDown, false, 0, true)			
-				mainTextArea.addEventListener(MouseEvent.ROLL_OUT, onTextAreaMouseOut, false, 0, true)		
-				mainTextArea.addEventListener(FocusEvent.FOCUS_OUT, onFocusOut, false, 0, true);
+				mainTextArea.addEventListener(MouseEvent.ROLL_OUT, onTextAreaMouseOut, false, 0, true)				
 				if (focusManager)
 					focusManager.setFocus(mainTextArea)
 			
@@ -200,11 +204,6 @@ package com.simplediagrams.view.SDComponents
 			}
 				
         }
-		
-		protected function onFocusOut(event:Event):void
-		{
-			Logger.info("onFocusOut",this);			
-		}
 		
 		protected function onTextAreaChange(event:Event):void
 		{
@@ -219,7 +218,6 @@ package com.simplediagrams.view.SDComponents
 
 		protected function onTextAreaMouseOut(event:Event):void
 		{
-			Logger.info("onTextAreaMouseOut",this);
 			/*
 			if (mainTextArea.focusManager)
 			{
@@ -242,7 +240,6 @@ package com.simplediagrams.view.SDComponents
 			mainTextArea.removeEventListener(Event.CHANGE, onTextAreaChange)				
 			mainTextArea.removeEventListener(MouseEvent.MOUSE_DOWN, onTextAreaMouseDown)	
 			mainTextArea.removeEventListener(MouseEvent.MOUSE_OUT, onTextAreaMouseOut)	
-			mainTextArea.removeEventListener(FocusEvent.FOCUS_OUT, onFocusOut);
             _model.removeEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );
 			if (backgroundImage) backgroundImage.removeEventListener(MouseEvent.MOUSE_DOWN, onBackgroundClick)	
 			_model = null

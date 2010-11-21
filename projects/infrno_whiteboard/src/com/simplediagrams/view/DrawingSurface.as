@@ -13,7 +13,7 @@ package com.simplediagrams.view
 	
 	import mx.containers.Canvas;
 	
-	import org.swizframework.Swiz;
+	;
 	
 	[Event(name="lineDrawn", type="flash.events.Event")]
 	public class DrawingSurface extends Canvas 
@@ -23,13 +23,16 @@ package com.simplediagrams.view
 		
 		public var hasDrawing:Boolean = false
 		
+		protected var linePoints:Array = new Array()
+			
+		protected var _backgroundColor:int = 0xFFFFFF			
+		protected var _toolType:String
+		
 		protected var _pencilColor:int = 0xFFFFFF
 		protected var _pencilWidth:int = 1
-		
+			
 		protected var _lineColor:int = 0xFFFFFF
-		protected var _lineWidth:int = 1
-		
-		protected var _backgroundColor:int = 0xFFFFFF
+		protected var _lineWidth:int = 1					
 		
 		public var initialX:Number = 0
 		public var initialY:Number = 0
@@ -38,29 +41,23 @@ package com.simplediagrams.view
 		public var finalY:Number = 0
 		
 		protected var _maxX:Number = 0
-		protected var _maxY:Number = 0
-		
+		protected var _maxY:Number = 0		
 		
 		protected var _xOffset:Number
 		protected var _yOffset:Number
 		
-		protected var _toolType:String
 		
-		protected var linePoints:Array = new Array()
 		
 		
 		public function DrawingSurface():void
-		{                   
-			Swiz.addEventListener(StyleEvent.STYLE_CHANGED, onStyleChanged)
-			
-			
+		{                   			
 			this.addEventListener(MouseEvent.MOUSE_MOVE, onLineMouseMove)
 			this.addEventListener(MouseEvent.MOUSE_UP, onLineMouseUp)
 		}	
 		
-		protected function onStyleChanged(event:StyleEvent):void
+		public function onStyleChanged(styleName:String):void
 		{
-			switch(event.styleName)
+			switch(styleName)
 			{
 				case DiagramStyleManager.CHALKBOARD_STYLE:
 					_lineColor = 0xFFFFFF
@@ -90,15 +87,15 @@ package com.simplediagrams.view
 			
 		}
 		
-		public function getPath():String
-		{
+		public function getPath(scaleFactor:Number=1):String
+		{			
 			//normalize the path so that the top left corner is set correctly
 			var len:int = linePoints.length
 			var path:String = ""
 			for (var i:int = 0; i<len;i++)
 			{
 				var action:Object = linePoints[i]
-				path += action.moveType + " " + (action.x - initialX).toString() + "," + (action.y - initialY).toString() + " "
+				path += action.moveType + " " + ((action.x*scaleFactor) - initialX*scaleFactor).toString() + "," + (action.y*scaleFactor - initialY*scaleFactor).toString() + " "
 			}
 			
 			return path

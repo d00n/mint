@@ -1,6 +1,9 @@
 package com.simplediagrams.model
 {
 	import flash.events.EventDispatcher;
+	import flash.text.Font;
+	
+	import mx.collections.ArrayCollection;
 	
 	public class PropertiesPanelModel extends EventDispatcher
 	{
@@ -9,9 +12,11 @@ package com.simplediagrams.model
 		public static const PROPERTIES_TEXT:String  = "propertiesText"
 		public static const PROPERTIES_LINE:String  = "propertiesLine";
 		public static const PROPERTIES_SYMBOL:String  = "propertiesSymbol";
+		public static const PROPERTIES_IMAGE:String  = "propertiesImage";
 		
 		
 		public static const SELECTION_CHANGED:String  = "selectionChanged";
+		
 		
 		
 		[Bindable]
@@ -22,6 +27,9 @@ package com.simplediagrams.model
 		
 		public function PropertiesPanelModel()
 		{
+			
+			
+			
 		}
 	}
 }

@@ -1,64 +1,80 @@
 package com.simplediagrams.controllers
 {
 	  
+//	import com.simplediagrams.business.DBManager;
 	import com.simplediagrams.business.LibraryPluginsDelegate;
-	import com.simplediagrams.business.SettingsManager;
+	import com.simplediagrams.business.SettingsDelegate;
 	import com.simplediagrams.events.ApplicationEvent;
+	import com.simplediagrams.events.CloseDiagramEvent;
 	import com.simplediagrams.events.CreateNewDiagramEvent;
 	import com.simplediagrams.events.LoadDiagramEvent;
+	import com.simplediagrams.events.LoadLibraryPluginEvent;
+	import com.simplediagrams.events.OpenDiagramEvent;
+	import com.simplediagrams.events.SaveDiagramEvent;
+	import com.simplediagrams.events.SelectionEvent;
 	import com.simplediagrams.model.ApplicationModel;
+	import com.simplediagrams.model.BasecampModel;
 	import com.simplediagrams.model.DiagramModel;
 	import com.simplediagrams.model.DiagramStyleManager;
 	import com.simplediagrams.model.LibraryManager;
 	import com.simplediagrams.model.RegistrationManager;
 	import com.simplediagrams.model.SettingsModel;
+	import com.simplediagrams.model.YammerModel;
 	import com.simplediagrams.util.AboutInfo;
 	import com.simplediagrams.util.Logger;
 	import com.simplediagrams.view.AboutWindow;
+	import com.simplediagrams.view.dialogs.CustomAlert;
 	import com.simplediagrams.view.dialogs.LoadingLibraryPluginsDialog;
 	import com.simplediagrams.view.dialogs.VerifyQuitDialog;
 	
+//	import flash.data.EncryptedLocalStore;
+	import flash.display.DisplayObject;
 	import flash.events.Event;
 //	import flash.filesystem.*;
 	
 	import mx.controls.Alert;
 	import mx.core.FlexGlobals;
 	import mx.events.DynamicEvent;
+	import mx.managers.PopUpManager;
 	
 	import org.swizframework.controller.AbstractController;
 
 	public class ApplicationController extends AbstractController 
 	{       
 		
-		[Autowire(bean="applicationModel")]
+		[Inject]
 		public var appModel:ApplicationModel;
 		
-		[Autowire(bean="registrationManager")]
+		[Inject]
 		public var registrationManager:RegistrationManager;
 		
-		[Autowire(bean="settingsManager")]
-		public var settingsManager:SettingsManager
+		[Inject]
+		public var settingsManager:SettingsDelegate
 		
-		[Autowire(bean="settingsModel")]
+		[Inject]
 		public var settingsModel:SettingsModel
 		
-		[Autowire(bean="diagramModel")]
+		[Inject]
 		public var diagramModel:DiagramModel;
-				
-		[Autowire(bean="libraryManager")]
+		
+		[Inject]
 		public var libraryManager:LibraryManager;
 		
-		[Autowire(bean="diagramStyleManager")]
+		[Inject]
+		public var yammerModel:YammerModel;
+		
+		[Inject]
+		public var basecampModel:BasecampModel;
+		
+		[Inject]
 		public var diagramStyleManager:DiagramStyleManager
 		
-		[Autowire(bean="dialogsController")]
+		[Inject]
 		public var dialogsController:DialogsController;
-						
-		/*
-		[Autowire(bean="dbManager")]
-		public var db:DBManager;
-		*/
-	
+		
+//		[Inject]
+//		public var dbManager:DBManager;
+					
 		
 		protected var _verifyQuitDialog:VerifyQuitDialog
 		protected var _loadLibraryPluginsDialog:LoadingLibraryPluginsDialog
@@ -68,6 +84,7 @@ package com.simplediagrams.controllers
 				   
 		public function ApplicationController() 
 		{				
+			
 			Logger.debug("ApplicationController created.", this)
 			
 			//add close listener to intercept application close event
@@ -75,10 +92,17 @@ package com.simplediagrams.controllers
 			
 		}
 		
-		[Mediate(event="CreateNewDiagramEvent.CREATE_NEW_DIAGRAM")]
-		public function createNewDiagram(event:CreateNewDiagramEvent):void
+		[Mediate(event="SelectionEvent.SELECTION_CLEARED")]
+		public function selectionCleared(event:SelectionEvent):void
 		{
+			FlexGlobals.topLevelApplication.setFocus()
+		}
+		
+		[Mediate(event="CreateNewDiagramEvent.NEW_DIAGRAM_CREATED")]
+		public function createNewDiagram(event:CreateNewDiagramEvent):void
+		{			
 			appModel.viewing = ApplicationModel.VIEW_DIAGRAM	
+			appModel.currFileName = "New SimpleDiagram"
 		}
 		
 		[Mediate(event="LoadDiagramEvent.DIAGRAM_LOADED")]
@@ -86,52 +110,82 @@ package com.simplediagrams.controllers
 		{	
 			Logger.debug("diagramLoaded() ",this)
 			appModel.viewing = ApplicationModel.VIEW_DIAGRAM	
+			appModel.currFileName = "File: " + event.fileName
 		}
 		
-		[Mediate(event="ApplicationEvent.INIT_APP")]
-		public function initApp(event:ApplicationEvent):void
+		[Mediate(event="SaveDiagramEvent.DIAGRAM_SAVED")]
+		public function diagramSaved(event:SaveDiagramEvent):void
+		{
+			appModel.currFileName = "File: " + event.fileName
+		}
+		
+		[Mediate(event="CloseDiagramEvent.DIAGRAM_CLOSED")]
+		public function diagramClosed(event:CloseDiagramEvent):void
+		{
+			appModel.currFileName = "SimpleDiagrams"
+		}
+		
+		[Mediate("mx.events.FlexEvent.APPLICATION_COMPLETE" )] 
+		public function initApp(event:FlexEvent):void
 		{	
-			Logger.debug("initApp()", this)
-			
-			//UNCOMMENT THE FOLLOWING ONCE THE APPLICATIONUPDATERUI PROBLEM HAS BEEN FIXED BY ADOBE
-			/*
-			//Check for updates
-			var appUpdater:ApplicationUpdaterUI = new ApplicationUpdaterUI()
-			appUpdater.configurationFile = new File("app:/updateConfig.xml"); 
-			appUpdater.initialize();	
-			*/
-			
-			Logger.debug("isLicensed(): " + registrationManager.isLicensed.toString())	
+			Logger.info("initApp()", this)
 				
-			//UNCOMMENT FOR TESTING
+			//UNCOMMENT FOR TESTING			
 			//registrationManager.deleteLicense()
 			//EncryptedLocalStore.removeItem("userAgreedToEULA")
-				
-			//CHECK AGREED TO EULA
-				
-//			var agreedToEULA:Boolean 
-//			try
-//			{
-//				agreedToEULA = appModel.didUserAgreeToEULA()
-//			}
-//			catch(err:Error)
-//			{
-//				Logger.error("Couldn't read 'agreedToEULA' string from model", this)
-//				agreedToEULA = false
-//			}
-//			
-//			if (agreedToEULA==false)
-//			{
-//				appModel.menuEnabled = false 
-//				appModel.viewing=ApplicationModel.VIEW_REGISTRATION	
-//				registrationManager.viewing = RegistrationManager.VIEW_EULA
-//				return
-//			}
-														
-			//load in settings
-			settingsManager.loadSettings()
+			//basecampModel.clearFromEncryptedStore()
+			//yammerModel.clearFromEncryptedStore()
+							
+			Logger.info("checking EULA...",this)
+			//CHECK AGREED TO EULA				
+			var agreedToEULA:Boolean 
+			try
+			{
+				agreedToEULA = appModel.didUserAgreeToEULA()
+			}
+			catch(err:Error)
+			{
+				Logger.error("Couldn't read 'agreedToEULA' string from model", this)
+				agreedToEULA = false
+			}
+			Logger.info("agreedToEULA: " + agreedToEULA.toString(),this)
 			
+			if (agreedToEULA==false)
+			{
+				appModel.menuEnabled = false 
+				appModel.viewing=ApplicationModel.VIEW_EULA	
+				return
+			}
+			else
+			{
+				doStartupTasks()
+			}
+		}
+				
+		[Mediate(event="EULAEvent.USER_AGREED_TO_EULA")]
+		public function onUserAgreedToEULA():void
+		{
+			appModel.userAgreedToEULA()
+			doStartupTasks()
+		}
+		
+					
+		public function doStartupTasks():void
+		{
+					
+			Logger.info("loading settings...",this)						
+			//load in settings
+			try
+			{
+				settingsManager.loadSettings()
+			}
+			catch(error:Error)
+			{
+				Logger.error("Couldn't load settings", this)
+			}
+					
 			//setup log
+			Logger.info("initLogFile...",this)
 			try
 			{				
 				initLogFile()
@@ -140,6 +194,7 @@ package com.simplediagrams.controllers
 			{
 				Logger.error("Couldn't init log. Error: " + error, this)
 			}
+						
 			
 			//CHECK LICENSE			
 //			Logger.debug("isLicensed: " + registrationManager.isLicensed,this)
@@ -175,27 +230,38 @@ package com.simplediagrams.controllers
 //				libraryManager.hidePremiumLibraries()
 //			}			
 			
-			Logger.debug("settings stylees to:" + settingsModel.defaultDiagramStyle,this)
+			Logger.debug("settings styles to:" + settingsModel.defaultDiagramStyle,this)
 			//set initial styles -- this should be loaded from a settings folder later
 			diagramStyleManager.changeStyle(settingsModel.defaultDiagramStyle)	
-							
-								
+															
 		}
 		
-		protected function onLoadingLibraryPluginsFinished(event:Event):void
+		protected function onLoadingLibraryPluginsFinished(event:LoadLibraryEvent):void
 		{	
 			if (_libraryPluginsDelegate.errorsEncountered)
 			{
-				var msg:String = "An error occurred when loading library plug-ins. One of the library plug-ins may be corrupt. Please delete the library plug-ins and reload them to fix this problem. "
+				var msg:String = "The following errors occurred when loading library plugins:\n\n<ul>"
+				for (var i:uint=0;i<_libraryPluginsDelegate.errorsErr.length;i++)
+				{	
+					msg += "<li>" + _libraryPluginsDelegate.errorsErr[i] + "</li>"
+				}
+				msg += "</ul>\nPlease download the latest libraries from SimpleDiagrams.com"	
+				var alert:CustomAlert = new CustomAlert()
+				alert.width=400
+				alert.height=250			
+				alert.text=msg
+				alert.title =  "Plugin Library Load Error"
+				alert.invalidateSize()
+				PopUpManager.addPopUp(alert, FlexGlobals.topLevelApplication as DisplayObject)
+				PopUpManager.centerPopUp(alert)	
 					
-				Alert.show(msg, "Library Load Error")
 			}			
 			dialogsController.removeDialog(_loadLibraryPluginsDialog)
 			_loadLibraryPluginsDialog = null
 			appModel.viewing = ApplicationModel.VIEW_STARTUP			
 		}
 		
-		protected function onLoadingLibraryPluginsFailed(event:Event):void
+		protected function onLoadingLibraryPluginsFailed(event:LoadLibraryEvent):void
 		{	
 			Alert.show("An error occurred when loading library plug-ins. Some library plug-ins may not have loaded correctly. Please see log for details.", "Library Load Error")			
 			dialogsController.removeDialog(_loadLibraryPluginsDialog)
@@ -220,11 +286,13 @@ package com.simplediagrams.controllers
 			quitApp(null)
 		}
 		
+		
+		
 		[Mediate(event="ApplicationEvent.QUIT")]
 		public function quitApp(event:ApplicationEvent):void
-		{
+		{			
 			Logger.debug("quitApp()",this)
-			if (diagramModel.isDirty)
+			if (diagramModel.isDirty && ApplicationModel.testMode==false)
 			{
 				_verifyQuitDialog = dialogsController.showVerifyQuitDialog()
 				_verifyQuitDialog.addEventListener(VerifyQuitDialog.QUIT, onQuit)
@@ -298,75 +366,6 @@ package com.simplediagrams.controllers
          
       	
 		
-                
-        /*        
-        protected function initDB():void
-        {
-        	
-			Logger.debug("initDB()", this)
-			//set database according to settings
-			if (db.isConnected)
-			{
-				db.close()
-			}
-			
-			Logger.debug("setting db location to : " + appModel.dbPath , this)
-			db.dbLocation = appModel.dbPath
-														
-			//Create DB connection
-			appModel.txtStatus = "Opening database..."
-			db.addEventListener("open", onDBConnectionOpened)
-			db.addEventListener("error", onDBConnectionError)
-			db.openDB()
-				
-			
-        }          
-      
-		private function onDBConnectionOpened(event:Event):void
-		{			
-			Logger.debug("onDBConnectionOpened()", this)			
-			
-			// MIGRATIONS
-			// ...............
-			// Now that DB has opened properly...			
-			// check for database version and do migrations if necessary			
-						
-			var migrationMgr:MigrationManager = new MigrationManager()
-			appModel.txtStatus = "Checking database version..."
-			if (migrationMgr.isDBCurrent==false)
-			{
-				appModel.txtStatus = "Updating database..."
-				migrationMgr.migrateDB()
-			}
-			else
-			{
-				Logger.debug("No DB migrations needed.", this)
-			}
-			
-			initLibrary()
-								
-			//tell everybody initial data is loaded
-			Logger.debug("load initial data complete.", this)
-			Swiz.dispatch(DatabaseEvent.DATABASE_LOADED)
-						
-        	//now launch events to init other parts of app
-        	var initMenuEvt:DynamicEvent = new DynamicEvent(ApplicationEvent.INIT_MENU)
-        	initMenuEvt.mainWindow = _stage    	
-        	Swiz.dispatchEvent(initMenuEvt)
-        	
-        	appModel.viewing = ApplicationModel.VIEW_STARTUP
-		}
-		
-		private function onDBConnectionError(event:Event):void
-		{
-			//TODO: Make this error nice and more informative
-			Alert.show("Could not open connection to database at location: " + db.dbLocation + ". Please check log for details.")
-			Logger.error("#LoadInitialDataCommand: sql connection error. event: " + event)
-			Swiz.dispatch(DatabaseEvent.DATABASE_LOAD_ERROR)
-		}
-        */
-		
-	
 		
         
         

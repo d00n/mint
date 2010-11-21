@@ -3,11 +3,14 @@ package com.simplediagrams.model
 	import mx.collections.ArrayCollection;
 	import com.simplediagrams.util.Logger
 	import com.simplediagrams.model.SDObjectModel
-	import org.swizframework.Swiz;
+	;
 	import flash.text.engine.FontWeight
 	
 	public class SettingsModel
 	{
+		
+		[Inject]
+		public var diagramStylesMager:DiagramStyleManager
 		
 		public var recentFilesAC:ArrayCollection = new ArrayCollection()
 		private var _defaultDiagramStyle:String = DiagramStyleManager.CHALKBOARD_STYLE
@@ -17,19 +20,20 @@ package com.simplediagrams.model
 		public var defaultStartLineStyle:uint = SDLineModel.NONE_STYLE
 		public var defaultEndLineStyle:uint = SDLineModel.ARROW_STYLE
 		public var defaultTextPosition:String = SDObjectModel.TEXT_POSITION_TOP
-			
+		
+		protected var _defaultImageStyle:String = SDImageModel.STYLE_BORDER_AND_TAPE
 		protected var _defaultLineWeight:uint = 1		
 		protected var _defaultFontSize:Number = 12
 		protected var _defaultTextAlign:String = "left"
 		protected var _defaultFontWeight:String = "normal"
+		protected var _defaultFontFamily:String = ApplicationModel.DEFAULT_SYSTEM_FAULT
 			
 		public function SettingsModel()
 		{
 		}
 		
 		public function set defaultDiagramStyle(styleName:String):void
-		{
-			var diagramStylesMager:DiagramStyleManager = Swiz.getBean("diagramStyleManager") as DiagramStyleManager
+		{			
 			if (diagramStylesMager.isValidStyle(styleName))
 			{
 				_defaultDiagramStyle = styleName
@@ -40,6 +44,24 @@ package com.simplediagrams.model
 		{
 			return _defaultDiagramStyle
 		}
+		
+		
+		
+		
+		public function set defaultImageStyle(styleName:String):void
+		{			
+			if (styleName=="")
+			{
+				styleName = SDImageModel.STYLE_BORDER_AND_TAPE //this is more for backwards compatability, since before we tracked this everything was saved as "photoStyle" which is BORDERS_AND_TAPE
+			}
+			_defaultImageStyle = styleName
+		}
+		
+		public function get defaultImageStyle():String
+		{
+			return _defaultImageStyle
+		}
+		
 		
 		
 		public function get defaultFontSize():Number
@@ -62,6 +84,27 @@ package com.simplediagrams.model
 		{
 			if (value == FontWeight.BOLD || value == FontWeight.NORMAL)	_defaultFontWeight=value		
 		}
+		
+		
+		public function get defaultFontFamily():String
+		{
+			return _defaultFontFamily
+		}
+		
+		public function set defaultFontFamily(value:String):void
+		{
+			if (value=="")
+			{
+				_defaultFontFamily = ApplicationModel.DEFAULT_SYSTEM_FAULT
+			}
+			else
+			{
+				_defaultFontFamily=value
+			}
+					
+		}
+		
+		
 		
 		public function get defaultLineWeight():Number
 		{

@@ -1,7 +1,11 @@
 package com.simplediagrams.controllers
 {
 	
+	import com.simplediagrams.commands.ChangeImageStyleCommand;
 	import com.simplediagrams.commands.ChangeLineStyleCommand;
+	import com.simplediagrams.commands.ChangeSymbolPropertiesCommand;
+	import com.simplediagrams.commands.ChangeTextFieldPropertiesCommand;
+	import com.simplediagrams.events.ImageStyleEvent;
 	import com.simplediagrams.events.LineStyleEvent;
 	import com.simplediagrams.events.MultiSelectEvent;
 	import com.simplediagrams.events.RemoteSharedObjectEvent;
@@ -9,31 +13,34 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.events.TextPropertyChangeEvent;
 	import com.simplediagrams.model.DiagramModel;
 	import com.simplediagrams.model.PropertiesPanelModel;
+	import com.simplediagrams.model.SDImageModel;
 	import com.simplediagrams.model.SDLineModel;
+	import com.simplediagrams.model.SDObjectModel;
 	import com.simplediagrams.model.SDSymbolModel;
 	import com.simplediagrams.model.SDTextAreaModel;
 	import com.simplediagrams.model.SettingsModel;
 	import com.simplediagrams.model.UndoRedoManager;
+	import com.simplediagrams.model.mementos.SDSymbolMemento;
+	import com.simplediagrams.model.mementos.SDTextAreaMemento;
 	import com.simplediagrams.util.Logger;
 	
 	import flash.events.Event;
 	
-	import org.swizframework.Swiz;
 	import org.swizframework.controller.AbstractController;
 
 	public class PropertiesPanelController extends AbstractController
 	{
 		
-		[Autowire(bean="diagramModel")]
+		[Inject]
 		public var diagramModel:DiagramModel
 		
-		[Autowire(bean="settingsModel")]
+		[Inject]
 		public var settingsModel:SettingsModel
 		
-		[Autowire(bean="propertiesPanelModel")]
+		[Inject]
 		public var propertiesPanelModel:PropertiesPanelModel
 		
-		[Autowire(bean="undoRedoManager")]
+		[Inject]
 		public var undoRedoManager:UndoRedoManager
 		
 		public function PropertiesPanelController()
@@ -82,26 +89,33 @@ package com.simplediagrams.controllers
 			
 			if (selectedArr.length==1)
 			{				
-				if (selectedArr[0] is SDSymbolModel) 
+				var selectectObj:SDObjectModel = selectedArr[0] as SDObjectModel
+				if (selectectObj is SDSymbolModel) 
 				{
 					propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_SYMBOL
 					return
 				}
-				else if (selectedArr[0] is SDTextAreaModel)
+				else if (selectectObj is SDTextAreaModel)
 				{
 					propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_TEXT
 					return					
 				}
-				else if (selectedArr[0] is SDLineModel)
+				else if (selectectObj is SDLineModel)
 				{					
 					propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_LINE 
+					return
+				}
+				else if (selectectObj is SDImageModel)
+				{					
+					propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_IMAGE 
 					return
 				}
 			}
   			
   			var allText:Boolean = true
   			var allLines:Boolean = true  
-			var allSymbols:Boolean = true  			
+			var allSymbols:Boolean = true  	
+			var allImages:Boolean = true  			
   			for each (var obj:Object in selectedArr)
   			{
   				if (obj is SDTextAreaModel == false)
@@ -115,6 +129,10 @@ package com.simplediagrams.controllers
 				if (obj is SDSymbolModel == false)
 				{
 					allSymbols = false
+				}
+				if (obj is SDImageModel == false)
+				{
+					allImages = false
 				}
   			}	
   				
@@ -153,6 +171,17 @@ package com.simplediagrams.controllers
 					propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_SYMBOL
 				}						
 			}
+			else if (allImages)
+			{
+				if (propertiesPanelModel.viewing == PropertiesPanelModel.PROPERTIES_IMAGE)
+				{
+					//do nothing, handled within PropertiesPanelImage
+				}
+				else
+				{
+					propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_IMAGE
+				}	
+			}
   			else
   			{
   				propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_NONE  	
@@ -164,48 +193,112 @@ package com.simplediagrams.controllers
   		{
   			
   		}
-  		
-  		
+		
+		
+		
+	
+  		  		
   		[Mediate(event="TextPropertyChangeEvent.CHANGE_FONT_SIZE")]
   		public function onFontSizeChange(event:TextPropertyChangeEvent):void
   		{
+			
+			if (event.fontSize==0)
+			{
+				Logger.error("onFontSizeChange() event.fontSize cannot be 0")
+				return
+			}
+						
   			var selectedArr:Array = diagramModel.selectedArray		
   			
   			for each (var obj:Object in selectedArr)
   			{
   				if (obj is SDTextAreaModel)
   				{
-  					SDTextAreaModel(obj).fontSize = event.fontSize
+					var sdTextAreaModel:SDTextAreaModel = SDTextAreaModel(obj)
+					var oldMemento:SDTextAreaMemento = sdTextAreaModel.getMemento() as SDTextAreaMemento
+					sdTextAreaModel.fontSize = event.fontSize
+					var cmd:ChangeTextFieldPropertiesCommand = new ChangeTextFieldPropertiesCommand(diagramModel, oldMemento, sdTextAreaModel)
+					cmd.execute()
+					undoRedoManager.push(cmd)
   				}
 				else if (obj is SDSymbolModel)
 				{
-					SDSymbolModel(obj).fontSize = event.fontSize
+					var sdSymbolModel:SDSymbolModel = SDSymbolModel(obj)
+					var oldSymbolMemento:SDSymbolMemento = sdSymbolModel.getMemento() as SDSymbolMemento
+					sdSymbolModel.fontSize = event.fontSize
+					var symbolCmd:ChangeSymbolPropertiesCommand = new ChangeSymbolPropertiesCommand(diagramModel, oldSymbolMemento, sdSymbolModel)
+					symbolCmd.execute()
+					undoRedoManager.push(symbolCmd)
 				}
   			}
 			
-			settingsModel.defaultFontSize = event.fontSize;
+			settingsModel.defaultFontSize = event.fontSize
+				
+  		}
+		
+		[Mediate(event="TextPropertyChangeEvent.CHANGE_FONT_FAMILY")]
+		public function onFontFamilyChange(event:TextPropertyChangeEvent):void
+		{
+			var selectedArr:Array = diagramModel.selectedArray		
+			
+				
+			for each (var obj:Object in selectedArr)
+			{
+				if (obj is SDTextAreaModel)
+				{
+					var sdTextAreaModel:SDTextAreaModel = SDTextAreaModel(obj)
+					var oldMemento:SDTextAreaMemento = sdTextAreaModel.getMemento() as SDTextAreaMemento
+					sdTextAreaModel.fontFamily = event.fontFamily
+					var cmd:ChangeTextFieldPropertiesCommand = new ChangeTextFieldPropertiesCommand(diagramModel, oldMemento, sdTextAreaModel)
+					cmd.execute()
+					undoRedoManager.push(cmd)
+				}
+				else if (obj is SDSymbolModel)
+				{
+					var sdSymbolModel:SDSymbolModel = SDSymbolModel(obj)
+					var oldSymbolMemento:SDSymbolMemento = sdSymbolModel.getMemento() as SDSymbolMemento
+					sdSymbolModel.fontFamily = event.fontFamily
+					var symbolCmd:ChangeSymbolPropertiesCommand = new ChangeSymbolPropertiesCommand(diagramModel, oldSymbolMemento, sdSymbolModel)
+					symbolCmd.execute()
+					undoRedoManager.push(symbolCmd)
+				}
+			}				
+			
+			settingsModel.defaultFontFamily = event.fontFamily
 			
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
 			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
-			Swiz.dispatchEvent(rsoEvent);				
-  		}
+			Swiz.dispatchEvent(rsoEvent);
+			
+		}
 		
 		[Mediate(event="TextPropertyChangeEvent.CHANGE_FONT_WEIGHT")]
 		public function onChangeFontWeight(event:TextPropertyChangeEvent):void
 		{
 			var selectedArr:Array = diagramModel.selectedArray		
 			
+				
 			for each (var obj:Object in selectedArr)
 			{
 				if (obj is SDTextAreaModel)
 				{
-					SDTextAreaModel(obj).fontWeight = event.fontWeight
+					var sdTextAreaModel:SDTextAreaModel = SDTextAreaModel(obj)
+					var oldMemento:SDTextAreaMemento = sdTextAreaModel.getMemento() as SDTextAreaMemento
+					sdTextAreaModel.fontWeight = event.fontWeight
+					var cmd:ChangeTextFieldPropertiesCommand = new ChangeTextFieldPropertiesCommand(diagramModel, oldMemento, sdTextAreaModel)
+					cmd.execute()
+					undoRedoManager.push(cmd)
 				}
 				else if (obj is SDSymbolModel)
 				{
-					SDSymbolModel(obj).fontWeight = event.fontWeight
+					var sdSymbolModel:SDSymbolModel = SDSymbolModel(obj)
+					var oldSymbolMemento:SDSymbolMemento = sdSymbolModel.getMemento() as SDSymbolMemento
+					sdSymbolModel.fontWeight = event.fontWeight
+					var symbolCmd:ChangeSymbolPropertiesCommand = new ChangeSymbolPropertiesCommand(diagramModel, oldSymbolMemento, sdSymbolModel)
+					symbolCmd.execute()
+					undoRedoManager.push(symbolCmd)
 				}
-			}
+			}			
 			
 			settingsModel.defaultFontWeight = event.fontWeight
 			
@@ -219,18 +312,28 @@ package com.simplediagrams.controllers
 		{
 			var selectedArr:Array = diagramModel.selectedArray		
 			
+				
 			for each (var obj:Object in selectedArr)
 			{
 				if (obj is SDTextAreaModel)
 				{
-					SDTextAreaModel(obj).textAlign = event.textAlign
+					var sdTextAreaModel:SDTextAreaModel = SDTextAreaModel(obj)
+					var oldMemento:SDTextAreaMemento = sdTextAreaModel.getMemento() as SDTextAreaMemento
+					sdTextAreaModel.textAlign = event.textAlign
+					var cmd:ChangeTextFieldPropertiesCommand = new ChangeTextFieldPropertiesCommand(diagramModel, oldMemento, sdTextAreaModel)
+					cmd.execute()
+					undoRedoManager.push(cmd)
 				}
 				else if (obj is SDSymbolModel)
 				{
-					SDSymbolModel(obj).textAlign = event.textAlign
+					var sdSymbolModel:SDSymbolModel = SDSymbolModel(obj)
+					var oldSymbolMemento:SDSymbolMemento = sdSymbolModel.getMemento() as SDSymbolMemento
+					sdSymbolModel.textAlign = event.textAlign
+					var symbolCmd:ChangeSymbolPropertiesCommand = new ChangeSymbolPropertiesCommand(diagramModel, oldSymbolMemento, sdSymbolModel)
+					symbolCmd.execute()
+					undoRedoManager.push(symbolCmd)
 				}
-			}
-			
+			}			
 			settingsModel.defaultTextAlign=event.textAlign
 			
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
@@ -242,13 +345,16 @@ package com.simplediagrams.controllers
 		public function onTextPositionChange(event:TextPropertyChangeEvent):void
 		{
 			var selectedArr:Array = diagramModel.selectedArray		
-			
-				
 			for each (var obj:Object in selectedArr)
 			{
 				if (obj is SDSymbolModel)
 				{
-					SDSymbolModel(obj).textPosition = event.textPosition
+					var sdSymbolModel:SDSymbolModel = SDSymbolModel(obj)
+					var oldMemento:SDSymbolMemento = sdSymbolModel.getMemento() as SDSymbolMemento
+					sdSymbolModel.textPosition = event.textPosition
+					var symbolCmd:ChangeSymbolPropertiesCommand = new ChangeSymbolPropertiesCommand(diagramModel, oldMemento, sdSymbolModel)
+					symbolCmd.execute()
+					undoRedoManager.push(symbolCmd)
 				}
 			}
 			
@@ -261,18 +367,28 @@ package com.simplediagrams.controllers
 		
 		
   		
-  		[Mediate(event="LineStyleEvent.LINE_START_STYLE_CHANGE")]
-  		public function onLineStartStyleChange(event:LineStyleEvent):void
+  		[Mediate(event="ImageStyleEvent.IMAGE_STYLE_CHANGE")]
+  		public function onImageStyleChange(event:ImageStyleEvent):void
   		{  			
+			Logger.debug("onImageStyleChange() setting imageStyle to: " + event.imageStyle,this)
+			var cmd:ChangeImageStyleCommand = new ChangeImageStyleCommand(diagramModel)	
+			cmd.newImageStyle = event.imageStyle
+			cmd.execute()
+			undoRedoManager.push(cmd)	  			
+			settingsModel.defaultImageStyle = event.imageStyle  		
+  		}
+		
+		
+		[Mediate(event="LineStyleEvent.LINE_START_STYLE_CHANGE")]
+		public function onLineStartStyleChange(event:LineStyleEvent):void
+		{  			
 			Logger.debug("onLineStartStyleChange() setting startLineStyle to: " + event.lineStyle,this)
 			var cmd:ChangeLineStyleCommand = new ChangeLineStyleCommand(diagramModel)	
 			cmd.startLineStyle = event.lineStyle
 			cmd.execute()
-			undoRedoManager.push(cmd)	
-  			
-			settingsModel.defaultStartLineStyle = event.lineStyle
-  		
-  		}
+			undoRedoManager.push(cmd)	  			
+			settingsModel.defaultStartLineStyle = event.lineStyle  		
+		}
   		
   		[Mediate(event="LineStyleEvent.LINE_END_STYLE_CHANGE")]
   		public function onLineEndStyleChange(event:LineStyleEvent):void

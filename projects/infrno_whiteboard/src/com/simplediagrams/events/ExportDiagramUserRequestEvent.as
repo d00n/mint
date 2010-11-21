@@ -5,7 +5,7 @@ package com.simplediagrams.events
 	public class ExportDiagramUserRequestEvent extends Event
 	{				
 		public static const EXPORT_DIAGRAM:String = "exportDiagramUserRequest"
-		public static const DESTINATION_FLICKR:String ="exportToFlickr"
+		public static const DESTINATION_YAMMER:String ="exportToYammer"
 		public static const DESTINATION_BASECAMP:String = "exportToBasecamp"
 		public static const DESTINATION_FILE:String = "exportToFile"
 			

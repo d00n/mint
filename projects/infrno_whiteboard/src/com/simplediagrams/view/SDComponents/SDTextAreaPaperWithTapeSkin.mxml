@@ -49,6 +49,7 @@
         		  fontSize="{hostComponent.fontSize}"
         		  width="{hostComponent.width-20}"
         		  height="{hostComponent.height-20}"
+				  fontFamily="{hostComponent.fontFamily}"
         		  text="{hostComponent.text}"
                   heightInLines="10"
                   widthInChars="15"

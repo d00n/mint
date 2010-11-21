@@ -1,16 +1,19 @@
 package com.simplediagrams.model
 {
 	
+	import com.roguedevelopment.objecthandles.ObjectHandles;
 	import com.roguedevelopment.objecthandles.constraints.*;
+	import com.simplediagrams.errors.DiagramIncompleteDueToMissingSymbolsError;
+	import com.simplediagrams.errors.SymbolNotFoundError;
 	import com.simplediagrams.events.ClearDiagramEvent;
 	import com.simplediagrams.events.ConnectorAddedEvent;
 	import com.simplediagrams.events.CreateNewDiagramEvent;
 	import com.simplediagrams.events.DeleteSDComponentEvent;
+	import com.simplediagrams.events.DiagramModelEvent;
 	import com.simplediagrams.events.LoadDiagramEvent;
 	import com.simplediagrams.events.RemoteSharedObjectEvent;
 	import com.simplediagrams.events.StyleEvent;
 	import com.simplediagrams.events.ToolEvent;
-	import com.simplediagrams.model.dao.DiagramDAO;
 	import com.simplediagrams.model.mementos.SDObjectMemento;
 	import com.simplediagrams.util.Logger;
 	import com.simplediagrams.view.SDComponents.ISDComponent;
@@ -19,10 +22,10 @@ package com.simplediagrams.model
 	import flash.events.EventDispatcher;
 	
 	import mx.collections.ArrayCollection;
+	import mx.controls.Alert;
 	import mx.events.CollectionEvent;
 	import mx.events.DynamicEvent;
-	
-	import org.swizframework.Swiz;
+	import mx.utils.UIDUtil;
 	
 	import spark.components.Group;
 
@@ -46,55 +49,72 @@ package com.simplediagrams.model
 		public static const ZOOM_TOOL:String = "zoomTool";
 		
 		public static const DIAGRAM_BUILT:String = "diagramBuilt";
-				
-			
-		[Autowire(bean="settingsModel")]
+		
+		[Dispatcher]
+		public var dispatcher:IEventDispatcher;
+		
+		[Inject]
 		public var settingsModel:SettingsModel;
 		
-		[Autowire(bean='diagramStyleManager')]
+		[Inject]
+		public var sdObjectHandles:SDObjectHandles;
+		
+		[Inject]
 		public var diagramStyleManager:DiagramStyleManager
 		
 		public var firstBuild:Boolean = true
-						
+		
+			
+		protected var _name:String = ""
+		protected var _description:String	
+		protected var _styleName:String		
+		protected var _horizontalScrollPosition:Number 
+		protected var _verticalScrollPosition:Number
+		protected var _width:Number = 2000
+		protected var _height:Number = 1600;
+		protected var _baseBackgroundColor:Number = 0xFFFFFF;	
+		protected var _scaleX:Number = 1
+		protected var _scaleY:Number = 1
+		protected var _createdAt:Date = new Date()
+		protected var _updatedAt:Date = new Date()
+			
+			
 		protected var _isDirty:Boolean = false //flag for tracking user changes beyond saved state
 		protected var _currToolType:String = POINTER_TOOL
-		protected var _objectHandles:SDObjectHandles
 		protected var _objectConnectors:ObjectConnectors 
-		protected var _diagramDAO:DiagramDAO 
-		protected var _currColor:Number 
+		//protected var _diagramDAO:DiagramDAO 
+		protected var _currColor:Number = 0xFFFFFF;
 		
 		public var sdObjectModelsAC:ArrayCollection 
 	
 		public function DiagramModel()
+		{        	
+		}
+		
+		[PostConstruct]
+		public function createObjectHandles():void
 		{
-			_diagramDAO = new DiagramDAO()
-			objectHandles = new SDObjectHandles();
-            sdObjectModelsAC = new ArrayCollection()	
-        	sdObjectModelsAC.addEventListener(CollectionEvent.COLLECTION_CHANGE, onCollectionChange)
-        	//var constraint:MaintainProportionConstraint = new MaintainProportionConstraint()
-        	//objectHandles.constraints.push(constraint)
-        	
-        	Swiz.addEventListener(StyleEvent.STYLE_CHANGED, onStyleChanged)
+			sdObjectModelsAC = new ArrayCollection()	
+			sdObjectModelsAC.addEventListener(CollectionEvent.COLLECTION_CHANGE, onCollectionChange)
+			//var constraint:MaintainProportionConstraint = new MaintainProportionConstraint()
+			//objectHandles.constraints.push(constraint)
 		}
 		
 		public function onCollectionChange(event:CollectionEvent):void
 		{
-			_isDirty = true;
+			_isDirty = true
 		}
 		
 		public function initDiagramModel():void
 		{	
-			
-			Logger.debug("initing diagram model", this)					
-			_diagramDAO = new DiagramDAO()
-						
+										
 			_currToolType = POINTER_TOOL
 				
-			dispatchEvent(new ClearDiagramEvent(ClearDiagramEvent.CLEAR_DIAGRAM, true))
+			dispatcher.dispatchEvent(new ClearDiagramEvent(ClearDiagramEvent.CLEAR_DIAGRAM, true))
 			
 			//clear out any existing stuff
 			if (_objectConnectors)	_objectConnectors.removeAll()
-			if (_objectHandles) _objectHandles.removeAll()
+			if (sdObjectHandles) sdObjectHandles.removeAll()
 						
 			//setup for new diagram
 			sdObjectModelsAC.removeAll()	
@@ -103,9 +123,8 @@ package com.simplediagrams.model
 		
 		}
 		
-		public function getModelByID(sdID:Number):SDObjectModel
+		public function getModelByID(sdID:String):SDObjectModel
 		{
-			Logger.debug("looking for id: " + sdID, this)
 			var len:uint =sdObjectModelsAC.length
 			for (var i:uint =0;i<len;i++)
 			{
@@ -114,24 +133,24 @@ package com.simplediagrams.model
 					return sdObjectModelsAC.getItemAt(i) as SDObjectModel
 				}
 			}
-			Logger.debug("couldn't find model with " + sdID, this)
+			Logger.debug("getModelByID() couldn't find model with sdID : " + sdID, this)
 			return null
 		}
 		
 		public function addToSelected(sdObjectModel:SDObjectModel):void
 		{
-			objectHandles.selectionManager.addToSelected(sdObjectModel)
+			sdObjectHandles.selectionManager.addToSelected(sdObjectModel)
 		}
 		
 		public function findModel(sdBase:SDBase):SDObjectModel
 		{
-			return objectHandles.findModel(sdBase) as SDObjectModel
+			return sdObjectHandles.findModel(sdBase) as SDObjectModel
 		}
 		
 		public function set selectedArray(objArr:Array):void
 		{
 			//clear the existing selection
-			objectHandles.selectionManager.clearSelection()
+			sdObjectHandles.selectionManager.clearSelection()
 			
 			for each (var obj:Object in objArr)
 			{
@@ -141,17 +160,17 @@ package com.simplediagrams.model
 		
 		public function get selectedArray():Array
 		{
-			return this.objectHandles.selectionManager.currentlySelected
+			return sdObjectHandles.selectionManager.currentlySelected
 		}
 		
 		public function get selectedVisuals():Array
 		{
-			return this.objectHandles.getSelectedVisuals()
+			return sdObjectHandles.getSelectedVisuals()
 		}
 		
 		public function clearSelection():void
 		{
-			this.objectHandles.selectionManager.clearSelection()
+			sdObjectHandles.selectionManager.clearSelection()
 		}
 		
 			
@@ -162,81 +181,111 @@ package com.simplediagrams.model
 		
 		public function set isDirty(v:Boolean):void
 		{
-			Logger.debug("isDirty set to : "+ v.toString(), this)
 			_isDirty = v
 		}
 		
 		
 		public function setContainer(s:Group):void
 		{
-			objectHandles.setContainer(s)
+			sdObjectHandles.setContainer(s)
 		}
 		
 		public function setHandlesContainer(s:Group):void
 		{
-			objectHandles.setHandlesContainer(s)
+			sdObjectHandles.setHandlesContainer(s)
 		}
 		
+		/*
 		public function onConnectorAdded(evt:ConnectorAddedEvent):void
 		{
-			dispatchEvent(evt)
+			dispatcher.dispatchEvent(evt)
 		}
+		*/
 		
 		
+		
+		
+		/** builds the diagram from the sdObjectModels preloaded into the sdObjectModelsAC 
+		   This is used when a diagram is loaded from file.
+		*/
 		public function buildDiagram():void
 		{
-			Logger.debug("buildDiagram() ", this)
-			Logger.debug("	sdObjectModelsAC.length: " + this.sdObjectModelsAC.length, this)
 			
 			//clear out any existing stuff
-			_objectHandles.removeAll()
+			sdObjectHandles.removeAll()
 			
 			//change style 
 			var styleEvent:StyleEvent = new StyleEvent(StyleEvent.CHANGE_STYLE, true)
-			styleEvent.styleName = _diagramDAO.styleName
+			styleEvent.styleName = _styleName
 			styleEvent.isLoadedStyle = true
-			Swiz.dispatchEvent(styleEvent)
+			dispatcher.dispatchEvent(styleEvent)
 			
-			//add symbols to objectHandles			
+			//add symbols to objectHandles	
+			var modelsForMissingSymbolsArr:Array = []
 			for each (var sdModel:SDObjectModel in sdObjectModelsAC)
 			{				
-				addComponentForModel(sdModel)
+				try
+				{
+					addComponentForModel(sdModel, false)
+				}
+				catch(error:SymbolNotFoundError)
+				{					
+					modelsForMissingSymbolsArr.push(sdModel)
+				}
 			}
 			
-			Swiz.dispatchEvent(new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_BUILT))
-		
-			isDirty = false			
+			isDirty = false	
+				
+			if (modelsForMissingSymbolsArr.length > 0)
+			{
+				var error:DiagramIncompleteDueToMissingSymbolsError = new DiagramIncompleteDueToMissingSymbolsError()
+				error.modelsForMissingSymbolsArr = modelsForMissingSymbolsArr
+				throw error
+			}			
 			
+			dispatcher.dispatchEvent(new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_BUILT))
+								
 		}
 		
 		
-		/** Adds a new SDObjectModel to the drawingBoard, 
-		 *  and updates the view to show this object */
+		/** Adds a new SDObjectModel to the diagram.
+		 *  This function doesn't directly update the view, but indirectly launches an 
+		 *  event (via the addComponentForModel function) indicating that a new model and it's related component
+		 *  have been added. Views will listen for this event and update appropriately
+		 * 
+		 *  @param newSDObjectModel a new object model, to be used to create related component
+		 *  @param fromFile indicates whether these are being added programmatically as file is read
+		 *  @param isPaste  is this the results of a "paste" action
+		 *  */
 		 
-		public function addSDObjectModel(newSDObjectModel:SDObjectModel):void
+		public function addSDObjectModel(newSDObjectModel:SDObjectModel, fromFile:Boolean = false, isPaste:Boolean = false):void
 		{							
 			//if this objectModel doesn't have an id, give it a new unique one
-			if (newSDObjectModel.sdID==0)
+			if (newSDObjectModel.sdID=="")
 			{
 				newSDObjectModel.sdID = getUniqueID()
 			}
+						
+			sdObjectModelsAC.addItem(newSDObjectModel)
+									
+			//If we're adding this dynamically because of user interaction, rather than from a file, 	
+			//we have to supply initial values for stuff like depth
+			if (fromFile==false || newSDObjectModel.depth<0)
+			{				
+				newSDObjectModel.depth = this.sdObjectModelsAC.length - 1;
+			}
 			
-			newSDObjectModel.depth = this.sdObjectModelsAC.length;			
-			sdObjectModelsAC.addItem(newSDObjectModel);
-			
-//			//set defaults
-//			if (newSDObjectModel is SDPencilDrawingModel) 
-//			{
-//				// don't change the color
-//			}
-//			else 
-//			{
-//				newSDObjectModel.color = _currColor
-//			}
-			
-			addComponentForModel(newSDObjectModel, true)
-		
-			isDirty = true;
+			if (fromFile==false)
+			{
+				//set default color if model doesn't already have color
+				if (newSDObjectModel.color == -1) 
+				{
+					newSDObjectModel.color = _currColor
+				}
+				var setSelected:Boolean = !isPaste
+				addComponentForModel(newSDObjectModel, setSelected)		
+				isDirty = true
+			}
 		
 			// This is how add/delete/modify/cut/copy/paste actions hit the RSO
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.ADD_SD_OBJECT_MODEL);
@@ -245,37 +294,28 @@ package com.simplediagrams.model
 			Swiz.dispatchEvent(rsoEvent);		
 		}
 		
-		public function addComponentForModel(sdModel:SDObjectModel, setSelected:Boolean = true):Object
+		protected function addComponentForModel(sdModel:SDObjectModel, setSelected:Boolean = true):Object
 		{
-			//create visual object and add to ObjectHandles		
+			//create visual object and add to ObjectHandles				
 			var newSDComponent:ISDComponent = sdModel.createSDComponent()
-			newSDComponent.objectModel = sdModel;
+			newSDComponent.objectModel = sdModel
 			newSDComponent.sdID = sdModel.sdID;
 				
-			//Tell layer that new SDObjectModel has been added 
-			var evt:DynamicEvent = new DynamicEvent(DiagramModel.SD_OBJECT_ADDED, true)
+			//Tell visual layer that new SDObjectModel has been added 
+			var evt:DiagramModelEvent = new DiagramModelEvent(DiagramModelEvent.SD_OBJECT_ADDED_TO_MODEL, true)
 			evt.newSDComponent = newSDComponent
-			dispatchEvent(evt)
+			dispatcher.dispatchEvent(evt)
 			
 			//register with objecthandles 
-			var captureKeyEvents:Boolean = true
-			if (sdModel is SDTextAreaModel) captureKeyEvents = false
-			objectHandles.registerComponent(sdModel, newSDComponent as EventDispatcher, null, captureKeyEvents)
-			if (setSelected) objectHandles.selectionManager.setSelected(sdModel)
+			var captureKeyEvents:Boolean = !(sdModel is SDTextAreaModel)
+			sdObjectHandles.registerComponent(sdModel, newSDComponent as EventDispatcher, null, captureKeyEvents)
+				
+			if (setSelected) sdObjectHandles.selectionManager.setSelected(sdModel)
 						
 			return newSDComponent
 		}
 		
 		
-		public function get objectHandles():SDObjectHandles
-		{
-			return _objectHandles;
-		}
-
-		public function set objectHandles(v:SDObjectHandles):void
-		{
-			_objectHandles = v;
-		}
 		
 		public function get objectConnectors():ObjectConnectors
 		{
@@ -302,101 +342,101 @@ package com.simplediagrams.model
 			
 			_currToolType = toolType
 			
-			dispatchEvent(evt)
+			dispatcher.dispatchEvent(evt)
 		}
 		
 		
 		
 		public function get name():String
 		{
-			return _diagramDAO.name
+			return _name
 		}
 		
 		public function set name(v:String):void
 		{
-			_diagramDAO.name = v
+			_name = v
 		}
 		
 		public function get updatedAt():Date
 		{
-			return _diagramDAO.updatedAt
+			return _updatedAt
 		}
 		
 		public function set updatedAt(v:Date):void
 		{
-			_diagramDAO.updatedAt = v
+			_updatedAt = v
 		}
 		
 		public function get createdAt():Date
 		{
-			return _diagramDAO.createdAt
+			return _createdAt
 		}
 		
 		public function set createdAt(v:Date):void
 		{
-			_diagramDAO.createdAt = v
+			_createdAt = v
 		}
 		
 		
 		public function get description():String
 		{
-			return _diagramDAO.description
+			return _description
 		}
 		
 		public function set description(v:String):void
 		{
-			_diagramDAO.description = v
+			_description = v
 		}
 		
 		
 		public function get styleName():String
 		{
-			return _diagramDAO.styleName
+			return _styleName
 		}
 		
 		public function set styleName(v:String):void
 		{
-			_diagramDAO.styleName = v
+			_styleName = v
 		}
 		
 		public function get verticalScrollPosition():Number
 		{
-			return _diagramDAO.verticalScrollPosition
+			return _verticalScrollPosition
 		}
 		
 		public function set verticalScrollPosition(v:Number):void
 		{
-			_diagramDAO.verticalScrollPosition = v
+			_verticalScrollPosition = v
 		}
 		
 		public function get width():Number
 		{
-			return _diagramDAO.width
+			return _width
 		}
 		
 		public function set width(v:Number):void
 		{
-			_diagramDAO.width = v
+			_width = v
 		}
 		
 		public function get height():Number
 		{
-			return _diagramDAO.height
+			return _height
 		}
 		
 		public function set height(v:Number):void
 		{
-			_diagramDAO.height = v
+			_height = v
 		}	
 		
 		public function get baseBackgroundColor():Number
 		{
-			return _diagramDAO.baseBackgroundColor
+			return _baseBackgroundColor
 		}
 		
 		public function set baseBackgroundColor(v:Number):void
 		{
-			_diagramDAO.baseBackgroundColor = v
+			_baseBackgroundColor = v
 		}
 		
 		
@@ -425,49 +465,48 @@ package com.simplediagrams.model
 		
 		public function get horizontalScrollPosition():Number
 		{
-			return _diagramDAO.horizontalScrollPosition
+			return _horizontalScrollPosition
 		}
 		
 		public function set horizontalScrollPosition(v:Number):void
 		{
-			_diagramDAO.horizontalScrollPosition = v
+			_horizontalScrollPosition = v
 		}
 		
 		public function get scaleX():Number
 		{
-			return _diagramDAO.scaleX
+			return _scaleX
 		}
 		
 		public function set scaleX(v:Number):void
 		{
-			_diagramDAO.scaleX = v
+			_scaleX = v
 		}
 		
 		public function get scaleY():Number
 		{
-			return _diagramDAO.scaleY
+			return _scaleY
 		}
 		
 		public function set scaleY(v:Number):void
 		{
-			_diagramDAO.scaleY = v
+			_scaleY = v
 		}
 		
 			
 		
 		public function deleteSelectedSDObjectModels():void
 		{			
-			Logger.debug("deleteSelectedSDObjectModels()",this)
 			//remove all SD objects that are currently selected
 			
-			var sdObjectModelsArr:Array = this.objectHandles.selectionManager.currentlySelected
+			var sdObjectModelsArr:Array = sdObjectHandles.selectionManager.currentlySelected
 			
 			for each (var sdObjectModel:SDObjectModel in sdObjectModelsArr)
 			{
 				deleteSDObjectModel(sdObjectModel)
 			}
 			
-			this.objectHandles.selectionManager.clearSelection()   			
+			sdObjectHandles.selectionManager.clearSelection()   			
 			isDirty = true
 		}
 		
@@ -480,23 +519,21 @@ package com.simplediagrams.model
 			{
 				if (sdObjectModelsAC.getItemAt(i) as SDObjectModel == sdObjectModel)
 				{
-					objectHandles.unregisterComponent(sdObjectModel.sdComponent as EventDispatcher)  	//remove from object handles
+					sdObjectHandles.unregisterComponent(sdObjectModel.sdComponent as EventDispatcher)  	//remove from object handles
 					sdObjectModelsAC.removeItemAt(i)													//remove from our local arrayCollection
 					break	
 				}
 			}
-			
-			Logger.debug("deleting sdOBjectMode:" +sdObjectModel + "  component: " + sdObjectModel.sdComponent,this)
-			
+				
 			var evt:DeleteSDComponentEvent = new DeleteSDComponentEvent(DeleteSDComponentEvent.DELETE_FROM_DIAGRAM, true)
 			evt.sdComponent = sdObjectModel.sdComponent
-			Swiz.dispatchEvent(evt)
+			dispatcher.dispatchEvent(evt)
 			
-			this.objectHandles.selectionManager.clearSelection()   			
+			sdObjectHandles.selectionManager.clearSelection()   			
 			isDirty = true
 		}
 		
-		public function deleteSDObjectModelByID(id:Number):void
+		public function deleteSDObjectModelByID(id:String):void
 		{
 			var sdObjectModel:SDObjectModel = this.getModelByID(id)
 			if (sdObjectModel!=null)
@@ -510,19 +547,17 @@ package com.simplediagrams.model
 		public function createNew():void
 		{
 			initDiagramModel()	
-			
-			Logger.info("createNew()",this);
 									
 			//launch the loaded event before actually building the diagram
 			//b/c on the first load, the DrawingBoard stage won't be set up correctly.			
-			var evt:CreateNewDiagramEvent = new CreateNewDiagramEvent(CreateNewDiagramEvent.NEW_DIAGRAM_CREATED, true, true)
-			Swiz.dispatchEvent(evt)			
+			var evt:CreateNewDiagramEvent = new CreateNewDiagramEvent(CreateNewDiagramEvent.NEW_DIAGRAM_CREATED, true)
+			dispatcher.dispatchEvent(evt)			
 			
 		}		
 		
 		public function updateUpdatedAt():void
 		{			
-			_diagramDAO.updatedAt = new Date()
+			_updatedAt = new Date()
 		}
 		
 				
@@ -531,19 +566,16 @@ package com.simplediagrams.model
 			return this.sdObjectModelsAC.length
 		}
 	
-		
-		
-		
-		protected function onStyleChanged(event:StyleEvent):void
+		[Mediate(event="StyleEvent.STYLE_CHANGED")]
+		public function onStyleChanged(event:StyleEvent):void
 		{
-			_diagramDAO.styleName = event.styleName
+			_styleName = event.styleName
 			_currColor = diagramStyleManager.defaultSymbolColor
-				
 		}
 		
-		protected function getUniqueID():Number
+		protected function getUniqueID():String
 		{
-			return new Date().time
+			return UIDUtil.createUID();
 		}
 		
 		

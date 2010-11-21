@@ -3,6 +3,7 @@ package com.simplediagrams.controllers
 	
 	import com.simplediagrams.business.BasecampDelegate;
 	import com.simplediagrams.events.BasecampEvent;
+	import com.simplediagrams.events.BasecampLoginEvent;
 	import com.simplediagrams.events.ExportDiagramEvent;
 	import com.simplediagrams.model.ApplicationModel;
 	import com.simplediagrams.model.BasecampModel;
@@ -17,6 +18,7 @@ package com.simplediagrams.controllers
 	
 	import flash.display.BitmapData;
 	import flash.events.Event;
+	import flash.events.IEventDispatcher;
 	import flash.utils.ByteArray;
 	
 	import mx.collections.ArrayCollection;
@@ -28,27 +30,29 @@ package com.simplediagrams.controllers
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	
-	import org.swizframework.controller.AbstractController;
+	import org.swizframework.controller.AbstractController
+	
+	import spark.components.Group;
 
 	public class BasecampController extends AbstractController 
 	{
 		
-		[Autowire(name='DialogsController')]
+		[Inject]
 		public var dialogsController:DialogsController
 		
-		[Autowire(name='applicationModel')]
+		[Inject]
 		public var applicationModel:ApplicationModel
 		
-		[Autowire(name='registrationManager')]
+		[Inject]
 		public var registrationManager:RegistrationManager
 		
-		[Autowire(name='diagramModel')]
+		[Inject]
 		public var diagramModel:DiagramModel
 		
-		[Autowire(name='basecampDelegate')]
+		[Inject]
 		public var basecampDelegate:BasecampDelegate;
 		
-		[Autowire(name='basecampModel')]
+		[Inject]
 		public var basecampModel:BasecampModel;
 		
 		private var _exportInfoDialog:ExportDiagramToBasecampDialog	
@@ -58,7 +62,7 @@ package com.simplediagrams.controllers
 		private var _messageBody:String
 		private var _extendedMessageBody:String
 		private var _messageTitle:String
-		private var _view:UIComponent
+		private var _view:Group
 		private var _uploadImageToken:AsyncToken
 		
 		public function BasecampController()
@@ -82,26 +86,26 @@ package com.simplediagrams.controllers
 			//make sure user is licensed
 			if (registrationManager.isLicensed==false)
 			{
-				Alert.show("Sorry. This feature is only available to Full Version users. Visit simpledigrams.com and upgrade to Full Version today!", "Full Version Only")
+				Alert.show("This feature is only available to Full Version users. Visit www.simpledigrams.com and upgrade to Full Version today!", "Full Version Only")
 				return
 			}
 				
-			_view = event.view 
+			_view = event.view as Group
 			
-			//get login information if not already present
-			
+			dialogsController.removeDialog()	
+				
+			//get login information if not already present			
 			if (basecampModel.basecampLogin=="")
 			{
-				_loginDialog = dialogsController.showGetBasecampLoginDialog()				
-				_loginDialog.addEventListener(BasecampEvent.GET_PROJECTS, getProjects)	
-				_loginDialog.addEventListener(Event.CANCEL, onLoginInfoCancel)
+				_loginDialog = dialogsController.showGetBasecampLoginDialog()		
 				
 			}
 			else if (basecampModel.projectsAC.length==0)
 			{
+				//show logging in process bar and get projects directly
 				_loginDialog = dialogsController.showGetBasecampLoginDialog()
-				_loginDialog.currentState = "loggingIn"				
-				getProjects(null)
+				_loginDialog.currentState = BasecampLoginDialog.STATE_LOGGING_IN			
+				doLogin()
 			}
 			else
 			{	
@@ -109,25 +113,77 @@ package com.simplediagrams.controllers
 			}
 		}
 		
-				
-		protected function onLoginInfoCancel(event:Event):void
-		{
-			//If user cancels login, then clear out their credentials
-			//so that they have to enter them again explicitly (until they get a successful login)
-			this.basecampDelegate.cancelServiceCall()
+		/* A login is conducted by simply trying to get a list of projects and passing the users credentials with that GET request*/
+		[Mediate(event="BasecampLoginEvent.BASECAMP_LOGIN_ATTEMPT")]
+		public function onBasecampLogin(event:BasecampLoginEvent):void
+		{						
+			//test that credentials work
+			if (basecampModel.basecampURL != event.url)
+			{
+				basecampModel.isDirty = true
+				basecampModel.basecampURL = event.url
+			}
+			if (basecampModel.basecampLogin != event.login)
+			{
+				basecampModel.isDirty = true
+				basecampModel.basecampLogin = event.login
+			}
+			if (basecampModel.basecampPassword != event.password)
+			{
+				basecampModel.isDirty = true
+				basecampModel.basecampPassword = event.password
+			}
+			
+			if (basecampModel.isDirty && event.rememberMe)
+			{
+				basecampModel.saveToEncryptedStore()
+			}
+			else if (basecampModel.isDirty && !event.rememberMe)
+			{
+				basecampModel.clearFromEncryptedStore()
+			}
+						
+			doLogin()
+		}
+			
+		[Mediate(event="BasecampLoginEvent.BASECAMP_LOGIN_CANCEL")]
+		public function onLoginInfoCancel(event:Event):void
+		{	
 			basecampModel.clearFromEncryptedStore()
 			removeLoginInfoDialog()
+			dispatcher.dispatchEvent(new BasecampLoginEvent(BasecampLoginEvent.BASECAMP_LOGIN_CANCELED, true))
 		}
 		
-		/* This function tries to get a list of projects based
+		protected function removeLoginInfoDialog():void
+		{			
+			_loginDialog.removeEventListener(BasecampLoginEvent.BASECAMP_LOGIN_ATTEMPT, onBasecampLogin)	
+			_loginDialog.removeEventListener(BasecampLoginEvent.BASECAMP_LOGIN_CANCEL, onLoginInfoCancel)
+			dialogsController.removeDialog(_loginDialog)			
+			_loginDialog = null
+		}
+		
+			
+		/* To login, this function tries to get a list of projects based
 		on the current credentials stored in the basecampModel*/
-		protected function getProjects(event:Event):void
-		{
-			Logger.debug("getProjects()", this)				
-			executeServiceCall(basecampDelegate.getProjects(), getProjectsResults, getProjectsFaultHandler)	
+		protected function doLogin():void
+		{	
+			executeServiceCall(basecampDelegate.getProjects(), doLoginResults, doLoginFaultHandler)	
 		}
 				
-		protected function getProjectsResults(re:ResultEvent):void
+		
+		//TODO :: Handle this more gracefully
+		protected function doLoginFaultHandler(fe:FaultEvent):void
+		{
+			Logger.error("doLoginFaultHandler() couldn't login and get projects :" + fe.message, this)
+			if (_loginDialog==null)
+			{
+				_loginDialog = dialogsController.showGetBasecampLoginDialog()	
+			}
+			_loginDialog.loginFailed()
+			Alert.show("An error occurred when trying to login to your Basecamp account. Please re-enter your credentials.", "Basecamp Login Error")	
+		}
+		
+		protected function doLoginResults(re:ResultEvent):void
 		{			
 			var resultsXML:XML = re.result as XML;		
 			
@@ -144,8 +200,7 @@ package com.simplediagrams.controllers
 				removeLoginInfoDialog()
 			}
 			
-			getExportInfoFromUser()
-						
+			getExportInfoFromUser()						
 		}
 		
 		protected function parseProjectsResults(resultsXML:XML):void
@@ -163,19 +218,6 @@ package com.simplediagrams.controllers
 			basecampModel.projectsAC.refresh()
 		}
 		
-		//TODO :: Handle this more gracefully
-		protected function getProjectsFaultHandler(fe:FaultEvent):void
-		{
-			Logger.error("getProjectsFaultHandler() couldn't get projects:" + fe.message, this)
-			if (_loginDialog==null)
-			{
-				_loginDialog = dialogsController.showGetBasecampLoginDialog()				
-				_loginDialog.addEventListener(BasecampEvent.GET_PROJECTS, getProjects)	
-				_loginDialog.addEventListener(Event.CANCEL, onLoginInfoCancel)
-			}
-			_loginDialog.loginFailed()
-			Alert.show("An error occurred when trying to login to your Basecamp account. Please re-enter your credentials.", "Basecamp Login Error")	
-		}
 		
 		public function onRefreshProjects(event:Event):void
 		{					
@@ -198,19 +240,11 @@ package com.simplediagrams.controllers
 		
 		
 		
-		protected function removeLoginInfoDialog():void
-		{
-			dialogsController.removeDialog(_loginDialog)			
-			_loginDialog.removeEventListener(BasecampEvent.GET_PROJECTS, getProjects)	
-			_loginDialog.removeEventListener(Event.CANCEL, onLoginInfoCancel)
-			_loginDialog = null
-		}
-		
 		protected function getExportInfoFromUser():void
-		{			
-						
+		{		
+			_view.clipAndEnableScrolling = false
 			var bd:BitmapData = new BitmapData(diagramModel.width, diagramModel.height)
-			bd.draw(_view)
+			bd.draw(_view)			
 			_imageByteArray = new PNGEncoder().encode(bd)
 			_messageBody = ""
 			_extendedMessageBody = ""
@@ -223,6 +257,7 @@ package com.simplediagrams.controllers
 			_exportInfoDialog.addEventListener(Event.CANCEL, onExportCancel)
 			_exportInfoDialog.addEventListener(BasecampEvent.CANCEL_UPLOAD, onCancelUpload)
 			_exportInfoDialog.imageData = _imageByteArray
+			_view.clipAndEnableScrolling = true
 		}
 		
 		
@@ -241,23 +276,22 @@ package com.simplediagrams.controllers
 			basecampModel.clearFromEncryptedStore()
 			
 			clearExportInfoDialog()	
-			
-			_loginDialog = dialogsController.showGetBasecampLoginDialog()				
-			_loginDialog.addEventListener(BasecampEvent.GET_PROJECTS, getProjects)	
-			_loginDialog.addEventListener(Event.CANCEL, onLoginInfoCancel)
+						
+			_loginDialog = dialogsController.showGetBasecampLoginDialog()	
 		}
 		
 		protected function onExportDialogOK(event:Event):void
-		{	
-					
+		{						
 			_messageBody = _exportInfoDialog.messageBody
 			_extendedMessageBody = _exportInfoDialog.extendedMessageBody
 			_messageTitle = _exportInfoDialog.messageTitle
-			
-			//first we upload image
-			_uploadImageToken:
+			basecampModel.msgIsPrivate = _exportInfoDialog.msgIsPrivate			
+			startImageUpload()			
+		}
+		
+		protected function startImageUpload():void
+		{
 			executeServiceCall(basecampDelegate.uploadImage(_imageByteArray), uploadImageHandler, uploadImageFaultHandler)
-			
 		}
 		
 		protected function uploadImageHandler(re:ResultEvent):void

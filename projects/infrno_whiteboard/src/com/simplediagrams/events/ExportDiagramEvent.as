@@ -11,7 +11,7 @@ package com.simplediagrams.events
 	{
 		
 		public static const EXPORT_TO_BASECAMP:String = "exportDiagramToBaseCamp"
-		public static const EXPORT_TO_FLICKR:String = "exportToFlickr"
+		public static const EXPORT_TO_YAMMER:String = "exportToYammer"
 		public static const EXPORT_TO_FILE:String = "exportToFile"
 			
 		public static const FORMAT_PNG:String = "pngFormat"

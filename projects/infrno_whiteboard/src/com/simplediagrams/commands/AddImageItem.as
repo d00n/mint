@@ -9,7 +9,7 @@ package com.simplediagrams.commands
 	public class AddImageItem extends UndoRedoCommand
 	{
 		private var _diagramModel:DiagramModel
-		private var _sdID:Number = 0
+		private var _sdID:String = ""
 		public var x:Number
 		public var y:Number
 			
@@ -35,7 +35,7 @@ package com.simplediagrams.commands
 								
 			_diagramModel.addSDObjectModel(newSDImageModel)
 			setProperties(newSDImageModel)
-			if (_sdID!=0)
+			if (_sdID!="")
 			{
 				newSDImageModel.sdID = _sdID
 			}

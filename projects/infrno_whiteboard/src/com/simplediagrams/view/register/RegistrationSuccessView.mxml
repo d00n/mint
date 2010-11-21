@@ -13,7 +13,7 @@
 						
 			
 			[Bindable]
-			[Autowire(bean="registrationManager")]
+			[Inject]
 			public var registrationManager:RegistrationManager
 						
 			public function onContinue():void
@@ -60,7 +60,7 @@
 	
 	<mx:Text text="{registrationManager.registrationSuccessMsg}"
 			x="15" y="110"
-			width="400"
+			width="390"
 			height="300"
 			/>
 	
@@ -70,7 +70,7 @@
 		<s:Button id="btnContinue" 
 			click="onContinue()"
 			styleName="blueButton"
-			label="Start SimpleDiagrams"
+			label="{registrationManager.finalDoneButtonText}"
 			width="170" height="30"
 			/>			
 						

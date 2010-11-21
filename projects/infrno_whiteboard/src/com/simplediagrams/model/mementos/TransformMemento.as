@@ -11,8 +11,8 @@ package com.simplediagrams.model.mementos
 		public var width:Number
 		public var height:Number
 		public var rotation:Number
-		public var zIndex:Number
 		public var color:Number
+		public var depth:Number
 		
 		public function TransformMemento()
 		{
@@ -26,7 +26,7 @@ package com.simplediagrams.model.mementos
 			memento.width = width
 			memento.height = height
 			memento.rotation = rotation
-			memento.zIndex = zIndex
+			memento.depth = depth
 			memento.color = color
 			return memento
 		}

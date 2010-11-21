@@ -5,7 +5,7 @@ package com.simplediagrams.model
 	
 	import flash.events.EventDispatcher;
 	
-	import org.swizframework.Swiz;
+	;
 
 	[Bindable]
 	public class DiagramStyleManager extends EventDispatcher
@@ -22,6 +22,9 @@ package com.simplediagrams.model
 		protected var _blackColorMatrix:Array
 		protected var _whiteColorMatrix:Array
 		
+
+		[Dispatcher]
+		public var dispatcher:IEventDispatcher;
 		
 		public function DiagramStyleManager() 
 		{
@@ -75,7 +78,7 @@ package com.simplediagrams.model
 												
 				var evt:StyleEvent = new StyleEvent(StyleEvent.STYLE_CHANGED, true)
 				evt.styleName = _currStyle
-				Swiz.dispatchEvent(evt)
+				dispatcher.dispatchEvent(evt)
 			}
 			else
 			{

@@ -2,7 +2,7 @@ package com.simplediagrams.model
 {
 	import com.simplediagrams.util.Logger;
 	
-	import flash.data.EncryptedLocalStore;
+//	import flash.data.EncryptedLocalStore;
 	import flash.events.EventDispatcher;
 //	import flash.filesystem.*;
 	import flash.utils.ByteArray;
@@ -166,7 +166,7 @@ package com.simplediagrams.model
 		
 		public function deleteLicense():void
 		{
-			EncryptedLocalStore.removeItem("com.simplediagrams.licenseKey")
+//			EncryptedLocalStore.removeItem("com.simplediagrams.licenseKey")
 		}
 				
 		

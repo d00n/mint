@@ -134,13 +134,13 @@
 			protected function onUndoIcon():void
 			{
 				var undoEvent:UndoRedoEvent = new UndoRedoEvent(UndoRedoEvent.UNDO, true)		
-				Swiz.dispatchEvent(undoEvent)
+				dispatcher.dispatchEvent(undoEvent)
 			}
 			
 			protected function onRedoIcon():void
 			{
 				var redoEvent:UndoRedoEvent = new UndoRedoEvent(UndoRedoEvent.REDO, true)		
-				Swiz.dispatchEvent(redoEvent)
+				dispatcher.dispatchEvent(redoEvent)
 			}
 			
 			protected function onAddPictureIcon():void
@@ -199,7 +199,7 @@
 			
 			protected function onToggleShapeDrawer():void
 			{
-				dispatchEvent(new ShapesPanelEvent(ShapesPanelEvent.TOGGLE_DISPLAY, true))				
+				dispatcher.dispatchEvent(new ShapesPanelEvent(ShapesPanelEvent.TOGGLE_DISPLAY, true))				
 			}
 			
 		]]>

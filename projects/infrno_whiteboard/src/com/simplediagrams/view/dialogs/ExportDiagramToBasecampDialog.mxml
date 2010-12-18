@@ -84,7 +84,7 @@
 					dispatcher.dispatchEvent(evt)
 				}
 				
-				cbxMsgIsPrivate.selected = basecampModel.defaultMessageToPrivate
+//				cbxMsgIsPrivate.selected = basecampModel.defaultMessageToPrivate
 				
 			}
 			

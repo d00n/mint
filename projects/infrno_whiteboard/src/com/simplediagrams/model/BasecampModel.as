@@ -22,16 +22,17 @@ package com.simplediagrams.model
 		public var saveLocally:Boolean = false
 		
 		private var _peopleArr:Array = []
-		private var _basecampURL:String = "" //"https://mcquilleninteractive.basecamphq.com"
-		private var _basecampLogin:String = "" //"daniel@mcquilleninteractive.com"
-		private var _basecampPassword:String = "" //thisisfortestingstuff"
+		private var _basecampURL:String = "" 
+		private var _basecampLogin:String = "" 
+		private var _basecampPassword:String = "" 
 			
 		public var isDirty:Boolean = false
 			
 		public var projectsAC:ArrayCollection = new ArrayCollection()
 		public var peopleAC:ArrayCollection = new ArrayCollection() //holds PersonVO's
 		public var selectedPeopleAC:ArrayCollection = new ArrayCollection() //holds PersonVO's
-		
+		public var msgIsPrivate:Boolean = true
+			
 		public function BasecampModel()
 		{
 			//upon creation, see if the user has saved basecamp credentials locally

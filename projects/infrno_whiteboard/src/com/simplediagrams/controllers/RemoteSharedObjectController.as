@@ -16,6 +16,7 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.commands.PasteCommand;
 	import com.simplediagrams.commands.TransformCommand;
 	import com.simplediagrams.events.*;
+	import com.simplediagrams.model.ApplicationModel;
 	import com.simplediagrams.model.DiagramModel;
 	import com.simplediagrams.model.DiagramStyleManager;
 	import com.simplediagrams.model.LibraryManager;
@@ -30,7 +31,6 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.model.mementos.*;
 	import com.simplediagrams.model.mementos.SDLineMemento;
 	import com.simplediagrams.model.mementos.TransformMemento;
-	import com.simplediagrams.model.ApplicationModel;
 	import com.simplediagrams.util.Logger;
 	import com.simplediagrams.view.SDComponents.SDBase;
 	import com.simplediagrams.view.SDComponents.SDLine;
@@ -41,6 +41,7 @@ package com.simplediagrams.controllers
 	import flash.display.BitmapData;
 	import flash.events.AsyncErrorEvent;
 	import flash.events.Event;
+	import flash.events.IEventDispatcher;
 	import flash.events.IOErrorEvent;
 	import flash.events.NetStatusEvent;
 	import flash.events.SecurityErrorEvent;
@@ -55,14 +56,12 @@ package com.simplediagrams.controllers
 	import flash.system.Capabilities;
 	import flash.utils.ByteArray;
 	import flash.utils.describeType;
-	import flash.system.Capabilities;
 	
 	import mx.collections.ArrayCollection;
 	import mx.core.UIComponent;
 	import mx.graphics.codec.PNGEncoder;
 	import mx.utils.object_proxy;
 	
-	import org.swizframework.Swiz;
 	import org.swizframework.controller.AbstractController;
 	
 	import spark.components.Group;
@@ -91,8 +90,7 @@ package com.simplediagrams.controllers
 		private var _wowza_server:String;
 		private var _wowza_whiteboard_app:String;
 		private var _wowza_whiteboard_port:String;
-		
-		
+			
 		[Autowire(bean='diagramModel')]
 		public var diagramModel:DiagramModel
 
@@ -269,7 +267,7 @@ package com.simplediagrams.controllers
 				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
 				rsoEvent.changedSDObjectModelArray = new Array;				
 				rsoEvent.changedSDObjectModelArray.push(sdImageModel);
-				Swiz.dispatchEvent(rsoEvent);	
+				dispatcher.dispatchEvent(rsoEvent);	
 			}
 			
 			var responder:Responder = new Responder(returnValueFunction);
@@ -341,13 +339,13 @@ package com.simplediagrams.controllers
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
 			rsoEvent.changedSDObjectModelArray = new Array;				
 			rsoEvent.changedSDObjectModelArray.push(sdTextAreaModel);
-			Swiz.dispatchEvent(rsoEvent);	
+			dispatcher.dispatchEvent(rsoEvent);	
 		}
 		
 		public function processUpdate_DeleteSelectedSDObjectModel(changeObject:Object):void
 		{
 			Logger.info("processUpdate_DeleteSelectedSDObjectModel()",this);
-			var sdID:Number = parseInt(changeObject.sdID);
+			var sdID:String = changeObject.sdID;
 			diagramModel.deleteSDObjectModelByID(sdID);
 		}		
 			
@@ -421,7 +419,7 @@ package com.simplediagrams.controllers
 					sd_obj.fontWeight 			= sdTextAreaModel.fontWeight;				
 					sd_obj.text					= sdTextAreaModel.text;	
 					
-					Logger.info("dispatchUpdate_ObjectChanged() sdTextAreaModel.text=" + sdTextAreaModel.text + ", depth=" + sdTextAreaModel.depth.toString() + ", zIndex=" + sdTextAreaModel.zIndex.toString(), this);
+					Logger.info("dispatchUpdate_ObjectChanged() sdTextAreaModel.text=" + sdTextAreaModel.text + ", depth=" + sdTextAreaModel.depth.toString() + ", depth=" + sdTextAreaModel.depth.toString(), this);
 				}
 				
 				_remoteSharedObject.setProperty(sd_obj.sdID.toString(), sd_obj);
@@ -432,7 +430,7 @@ package com.simplediagrams.controllers
 		{
 			Logger.info("processUpdate_ObjectChanged()",this);
 			
-			var sdID:Number = parseInt(changeObject.sdID);			
+			var sdID:String = changeObject.sdID;			
 			var sdObjectModel:SDObjectModel;
 			switch ( changeObject.sdObjectModelType) {
 				case "SDSymbolModel": {
@@ -442,7 +440,7 @@ package com.simplediagrams.controllers
 						var libraryName:String = changeObject.libraryName;
 						var symbolName:String = changeObject.symbolName;
 						
-						sdSymbolModel = libraryManager.getSDObject(libraryName, symbolName) as SDSymbolModel;
+						sdSymbolModel = libraryManager.getSDObjectModel(libraryName, symbolName) as SDSymbolModel;
 					}
 					
 					sdSymbolModel.textAlign 	= changeObject.textAlign;
@@ -514,7 +512,7 @@ package com.simplediagrams.controllers
 					
 					sdObjectModel = sdTextAreaModel;
 					
-					Logger.info("processUpdate_ObjectChanged() sdTextAreaModel.text=" + sdTextAreaModel.text + ", depth=" + sdTextAreaModel.depth.toString() + ", zIndex=" + sdTextAreaModel.zIndex.toString(), this);
+					Logger.info("processUpdate_ObjectChanged() sdTextAreaModel.text=" + sdTextAreaModel.text + ", depth=" + sdTextAreaModel.depth.toString() + ", depth=" + sdTextAreaModel.depth.toString(), this);
 					break;
 				}
 			}
@@ -533,7 +531,7 @@ package com.simplediagrams.controllers
 			// we perform it's responsibilities here:	
 			if (diagramModel.sdObjectModelsAC.contains(sdObjectModel) == false) {
 				diagramModel.sdObjectModelsAC.addItem(sdObjectModel);
-				diagramModel.addComponentForModel(sdObjectModel, false);
+				diagramModel.addSDObjectModel(sdObjectModel);
 			}
 		}	
 		
@@ -775,7 +773,7 @@ package com.simplediagrams.controllers
 		//				fileManager.loadXMLIntoDiagramModel(xmlDiagram);
 		//				var evt:LoadDiagramEvent = new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_LOADED, true)							
 		//				evt.success = true
-		//				Swiz.dispatchEvent(evt)		
+		//				dispatcher.dispatchEvent(evt)		
 		//			}	
 		//		}
 		
@@ -805,7 +803,7 @@ package com.simplediagrams.controllers
 		//				fileManager.loadXMLIntoDiagramModel(xmlDiagram);
 		//				var evt:LoadDiagramEvent = new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_LOADED, true)							
 		//				evt.success = true
-		//				Swiz.dispatchEvent(evt)		
+		//				dispatcher.dispatchEvent(evt)		
 		//			}	
 		//		}
 		

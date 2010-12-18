@@ -6,10 +6,9 @@
 			xmlns:components="com.simplediagrams.view.components.*"
 			width="400" height="300"
 			creationComplete="onCC()"
-			nativeDragEnter="onNativeDragEnter(event)"
 			verticalScrollPolicy="off"
-			horizontalScrollPolicy="off"		 
-	   		nativeDragDrop="onNativeDragDrop(event)">
+			horizontalScrollPolicy="off">		 
+	   		<!--nativeDragDrop="onNativeDragDrop(event)"-->
 	
 	<fx:Script>
 		<![CDATA[
@@ -85,37 +84,37 @@
 			}
 			
 				
-			private function onNativeDragEnter(event:NativeDragEvent):void
-			{            	
-				if (event.clipboard.hasFormat(ClipboardFormats.FILE_LIST_FORMAT))
-				{    				
-					NativeDragManager.acceptDragDrop(this)
-				}
-			}
-				
-			private function onNativeDragDrop(event:NativeDragEvent):void
-			{
-				NativeDragManager.dropAction = NativeDragActions.COPY;
-				var dropFiles:Array = NativeDragEvent(event).clipboard.getData(ClipboardFormats.FILE_LIST_FORMAT) as Array;		
-				if (dropFiles==null) return
-				
-				var file:File = dropFiles[0]
-				
-				if (file.extension != "png" && file.extension!= "jpg")
-				{
-					Alert.show("Image files can only be .png or .jpg formats","Wrong image format")
-					return
-				}
-				
-				Logger.debug("adding image to library: "+ file.name, this)
-				
-				var evt:AddImageFileToCustomLibraryEvt = new AddImageFileToCustomLibraryEvt(AddImageFileToCustomLibraryEvt.ADD_IMAGE_FROM_FILE, true)
-				evt.imageFile = file
-				evt.libraryID = _libraryID
-				dispatchEvent(evt)
-				
-				imgDropMsgHere.visible = false						
-			}
+//			private function onNativeDragEnter(event:NativeDragEvent):void
+//			{            	
+//				if (event.clipboard.hasFormat(ClipboardFormats.FILE_LIST_FORMAT))
+//				{    				
+//					NativeDragManager.acceptDragDrop(this)
+//				}
+//			}
+//				
+//			private function onNativeDragDrop(event:NativeDragEvent):void
+//			{
+//				NativeDragManager.dropAction = NativeDragActions.COPY;
+//				var dropFiles:Array = NativeDragEvent(event).clipboard.getData(ClipboardFormats.FILE_LIST_FORMAT) as Array;		
+//				if (dropFiles==null) return
+//				
+//				var file:File = dropFiles[0]
+//				
+//				if (file.extension != "png" && file.extension!= "jpg")
+//				{
+//					Alert.show("Image files can only be .png or .jpg formats","Wrong image format")
+//					return
+//				}
+//				
+//				Logger.debug("adding image to library: "+ file.name, this)
+//				
+//				var evt:AddImageFileToCustomLibraryEvt = new AddImageFileToCustomLibraryEvt(AddImageFileToCustomLibraryEvt.ADD_IMAGE_FROM_FILE, true)
+//				evt.imageFile = file
+//				evt.libraryID = _libraryID
+//				dispatchEvent(evt)
+//				
+//				imgDropMsgHere.visible = false						
+//			}
 			
 			public function destroy():void
 			{

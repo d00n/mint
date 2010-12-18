@@ -246,7 +246,7 @@ package com.simplediagrams.model
 				
 		public function set currFileName(value:String):void
 		{
-			FlexGlobals.topLevelApplication.title = value
+//			FlexGlobals.topLevelApplication.title = value
 		}
 		
 		

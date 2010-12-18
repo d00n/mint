@@ -42,11 +42,11 @@
 			protected function onOK():void
 			{
 				
-				basecampModel.enableNotifications = this.cbxEnableNotifications.selected
-				basecampModel.defaultMessageToPrivate = this.cbxDefaultBasecampMsgPrivate.selected
-				
-				var evt:Event = new Event("OK", true)
-				dispatchEvent(evt)				
+//				basecampModel.enableNotifications = this.cbxEnableNotifications.selected
+//				basecampModel.defaultMessageToPrivate = this.cbxDefaultBasecampMsgPrivate.selected
+//				
+//				var evt:Event = new Event("OK", true)
+//				dispatchEvent(evt)				
 			}
 						
 			
@@ -96,7 +96,7 @@
 	
 		<!--
 		<s:Label text="Export settings" fontWeight="bold"/>
-		-->
+
 		
 		<mx:Spacer height="20"/>
 		<s:Label text="Basecamp Export" fontWeight="bold"/>
@@ -112,7 +112,7 @@
 			<s:Label text="Default messages to private:" width="180" paddingTop="6"/>
 			<s:CheckBox id="cbxDefaultBasecampMsgPrivate" selected="{basecampModel.defaultMessageToPrivate}" />
 		</s:HGroup>
-		
+		-->
 		
 		
 		<mx:Spacer height="20"/>

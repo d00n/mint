@@ -181,7 +181,7 @@ package com.simplediagrams.controllers
 		
 						
 			
-		[Mediate(event="OpenDiagramEvent.OPEN_DIAGRAM_EVENT")]
+//		[Mediate(event="OpenDiagramEvent.OPEN_DIAGRAM_EVENT")]
 		public function openDiagram(event:OpenDiagramEvent):void
 		{							
 			if (diagramModel.isDirty)
@@ -245,46 +245,46 @@ package com.simplediagrams.controllers
 		
 		public function checkSaveBeforeOpen():void
 		{
-			if (_saveBeforeActionDialog)
-			{				
-				dialogsController.removeDialog(_saveBeforeActionDialog)
-			}
-			
-			_saveBeforeActionDialog = dialogsController.showSaveBeforeActionDialog()
-			_saveBeforeActionDialog.mode = SaveBeforeActionDialog.MODE_SAVE_BEFORE_OPEN
-			_saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.SAVE, onSaveBeforeAction)
-			_saveBeforeActionDialog.addEventListener(Event.CANCEL, onCancelSaveBeforeAction)
-			_saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.DONT_SAVE, onDontSaveBeforeAction)		
+//			if (_saveBeforeActionDialog)
+//			{				
+//				dialogsController.removeDialog(_saveBeforeActionDialog)
+//			}
+//			
+//			_saveBeforeActionDialog = dialogsController.showSaveBeforeActionDialog()
+//			_saveBeforeActionDialog.mode = SaveBeforeActionDialog.MODE_SAVE_BEFORE_OPEN
+//			_saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.SAVE, onSaveBeforeAction)
+//			_saveBeforeActionDialog.addEventListener(Event.CANCEL, onCancelSaveBeforeAction)
+//			_saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.DONT_SAVE, onDontSaveBeforeAction)		
 									
 		}
 		
 		public function checkSaveBeforeClose():void
 		{
-			if (_saveBeforeActionDialog)
-			{				
-				dialogsController.removeDialog(_saveBeforeActionDialog)
-			}
-			
-			_saveBeforeActionDialog = dialogsController.showSaveBeforeActionDialog()
-			_saveBeforeActionDialog.mode = SaveBeforeActionDialog.MODE_SAVE_BEFORE_CLOSE
-			_saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.SAVE, onSaveBeforeAction)
-			_saveBeforeActionDialog.addEventListener(Event.CANCEL, onCancelSaveBeforeAction)
-			_saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.DONT_SAVE, onDontSaveBeforeAction)		
+//			if (_saveBeforeActionDialog)
+//			{				
+//				dialogsController.removeDialog(_saveBeforeActionDialog)
+//			}
+//			
+//			_saveBeforeActionDialog = dialogsController.showSaveBeforeActionDialog()
+//			_saveBeforeActionDialog.mode = SaveBeforeActionDialog.MODE_SAVE_BEFORE_CLOSE
+//			_saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.SAVE, onSaveBeforeAction)
+//			_saveBeforeActionDialog.addEventListener(Event.CANCEL, onCancelSaveBeforeAction)
+//			_saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.DONT_SAVE, onDontSaveBeforeAction)		
 									
 		}
 		
 		public function checkSaveBeforeNew():void
 		{
-			if (_saveBeforeActionDialog)
-			{				
-				dialogsController.removeDialog(_saveBeforeActionDialog)
-			}
-			
-			_saveBeforeActionDialog = dialogsController.showSaveBeforeActionDialog()
-			_saveBeforeActionDialog.mode = SaveBeforeActionDialog.MODE_SAVE_BEFORE_NEW
-			_saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.SAVE, onSaveBeforeAction)
-			_saveBeforeActionDialog.addEventListener(Event.CANCEL, onCancelSaveBeforeAction)
-			_saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.DONT_SAVE, onDontSaveBeforeAction)
+//			if (_saveBeforeActionDialog)
+//			{				
+//				dialogsController.removeDialog(_saveBeforeActionDialog)
+//			}
+//			
+//			_saveBeforeActionDialog = dialogsController.showSaveBeforeActionDialog()
+//			_saveBeforeActionDialog.mode = SaveBeforeActionDialog.MODE_SAVE_BEFORE_NEW
+//			_saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.SAVE, onSaveBeforeAction)
+//			_saveBeforeActionDialog.addEventListener(Event.CANCEL, onCancelSaveBeforeAction)
+//			_saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.DONT_SAVE, onDontSaveBeforeAction)
 						
 		}
 		
@@ -306,26 +306,26 @@ package com.simplediagrams.controllers
 		
 		public function performActionAfterSave():void
 		{
-			switch (_actionAfterSave)		
-			{
-				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_NEW:
-					startNew()
-					break
-					
-				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_CLOSE:					
-					closeDiagram()
-					break
-					
-				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_OPEN:
-					fileManager.loadSimpleDiagramFromFile()
-					break
-					
-				default:				
-			}
-			_actionAfterSave = null
-			fileManager.clear()
-			dialogsController.removeDialog(_saveBeforeActionDialog)			
-			removeSaveBeforeActionEventListeners()
+//			switch (_actionAfterSave)		
+//			{
+//				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_NEW:
+//					startNew()
+//					break
+//					
+//				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_CLOSE:					
+//					closeDiagram()
+//					break
+//					
+//				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_OPEN:
+//					fileManager.loadSimpleDiagramFromFile()
+//					break
+//					
+//				default:				
+//			}
+//			_actionAfterSave = null
+//			fileManager.clear()
+//			dialogsController.removeDialog(_saveBeforeActionDialog)			
+//			removeSaveBeforeActionEventListeners()
 		}
 		
 		
@@ -338,33 +338,33 @@ package com.simplediagrams.controllers
 		
 		public function onDontSaveBeforeAction(event:Event):void
 		{
-			switch (_saveBeforeActionDialog.mode)		
-			{
-				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_NEW:
-					startNew()
-					break
-					
-				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_CLOSE:
-					closeDiagram()
-					break
-					
-				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_OPEN:
-					fileManager.loadSimpleDiagramFromFile()
-					break
-					
-				default:				
-			}
-			
-			dialogsController.removeDialog(_saveBeforeActionDialog)			
-			removeSaveBeforeActionEventListeners()
+//			switch (_saveBeforeActionDialog.mode)		
+//			{
+//				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_NEW:
+//					startNew()
+//					break
+//					
+//				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_CLOSE:
+//					closeDiagram()
+//					break
+//					
+//				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_OPEN:
+//					fileManager.loadSimpleDiagramFromFile()
+//					break
+//					
+//				default:				
+//			}
+//			
+//			dialogsController.removeDialog(_saveBeforeActionDialog)			
+//			removeSaveBeforeActionEventListeners()
 		}
 		
 		private function removeSaveBeforeActionEventListeners():void
 		{		
-			_saveBeforeActionDialog.removeEventListener(SaveBeforeActionDialog.SAVE, onSaveBeforeAction)
-			_saveBeforeActionDialog.removeEventListener(Event.CANCEL, onCancelSaveBeforeAction)
-			_saveBeforeActionDialog.removeEventListener(SaveBeforeActionDialog.DONT_SAVE, onDontSaveBeforeAction)		
-			_saveBeforeActionDialog = null
+//			_saveBeforeActionDialog.removeEventListener(SaveBeforeActionDialog.SAVE, onSaveBeforeAction)
+//			_saveBeforeActionDialog.removeEventListener(Event.CANCEL, onCancelSaveBeforeAction)
+//			_saveBeforeActionDialog.removeEventListener(SaveBeforeActionDialog.DONT_SAVE, onDontSaveBeforeAction)		
+//			_saveBeforeActionDialog = null
 		}
 		
 		

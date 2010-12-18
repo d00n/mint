@@ -27,14 +27,13 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.view.dialogs.LoadingLibraryPluginsDialog;
 	import com.simplediagrams.view.dialogs.VerifyQuitDialog;
 	
-//	import flash.data.EncryptedLocalStore;
 	import flash.display.DisplayObject;
 	import flash.events.Event;
-//	import flash.filesystem.*;
 	
 	import mx.controls.Alert;
 	import mx.core.FlexGlobals;
 	import mx.events.DynamicEvent;
+	import mx.events.FlexEvent;
 	import mx.managers.PopUpManager;
 	
 	import org.swizframework.controller.AbstractController;
@@ -162,7 +161,7 @@ package com.simplediagrams.controllers
 			}
 		}
 				
-		[Mediate(event="EULAEvent.USER_AGREED_TO_EULA")]
+//		[Mediate(event="EULAEvent.USER_AGREED_TO_EULA")]
 		public function onUserAgreedToEULA():void
 		{
 			appModel.userAgreedToEULA()
@@ -236,32 +235,32 @@ package com.simplediagrams.controllers
 															
 		}
 		
-		protected function onLoadingLibraryPluginsFinished(event:LoadLibraryEvent):void
+		protected function onLoadingLibraryPluginsFinished(event:LoadLibraryPluginEvent):void
 		{	
-			if (_libraryPluginsDelegate.errorsEncountered)
-			{
-				var msg:String = "The following errors occurred when loading library plugins:\n\n<ul>"
-				for (var i:uint=0;i<_libraryPluginsDelegate.errorsErr.length;i++)
-				{	
-					msg += "<li>" + _libraryPluginsDelegate.errorsErr[i] + "</li>"
-				}
-				msg += "</ul>\nPlease download the latest libraries from SimpleDiagrams.com"	
-				var alert:CustomAlert = new CustomAlert()
-				alert.width=400
-				alert.height=250			
-				alert.text=msg
-				alert.title =  "Plugin Library Load Error"
-				alert.invalidateSize()
-				PopUpManager.addPopUp(alert, FlexGlobals.topLevelApplication as DisplayObject)
-				PopUpManager.centerPopUp(alert)	
-					
-			}			
-			dialogsController.removeDialog(_loadLibraryPluginsDialog)
-			_loadLibraryPluginsDialog = null
-			appModel.viewing = ApplicationModel.VIEW_STARTUP			
+//			if (_libraryPluginsDelegate.errorsEncountered)
+//			{
+//				var msg:String = "The following errors occurred when loading library plugins:\n\n<ul>"
+//				for (var i:uint=0;i<_libraryPluginsDelegate.errorsErr.length;i++)
+//				{	
+//					msg += "<li>" + _libraryPluginsDelegate.errorsErr[i] + "</li>"
+//				}
+//				msg += "</ul>\nPlease download the latest libraries from SimpleDiagrams.com"	
+//				var alert:CustomAlert = new CustomAlert()
+//				alert.width=400
+//				alert.height=250			
+//				alert.text=msg
+//				alert.title =  "Plugin Library Load Error"
+//				alert.invalidateSize()
+//				PopUpManager.addPopUp(alert, FlexGlobals.topLevelApplication as DisplayObject)
+//				PopUpManager.centerPopUp(alert)	
+//					
+//			}			
+//			dialogsController.removeDialog(_loadLibraryPluginsDialog)
+//			_loadLibraryPluginsDialog = null
+//			appModel.viewing = ApplicationModel.VIEW_STARTUP			
 		}
 		
-		protected function onLoadingLibraryPluginsFailed(event:LoadLibraryEvent):void
+		protected function onLoadingLibraryPluginsFailed(event:LoadLibraryPluginEvent):void
 		{	
 			Alert.show("An error occurred when loading library plug-ins. Some library plug-ins may not have loaded correctly. Please see log for details.", "Library Load Error")			
 			dialogsController.removeDialog(_loadLibraryPluginsDialog)

@@ -97,13 +97,13 @@ package com.simplediagrams.controllers
 			dialogsController.removeDialog()
 				
 			//show warning and list fonts if some fonts aren't available			
-			var unavailableFontsArr:Array = fileManager.unavailableFontsArr
-			if (fileManager.unavailableFontsArr && fileManager.unavailableFontsArr.length>0)
-			{
-				var dialog:UnavailableFontsDialog = dialogsController.showUnavailableFontsDialog() 
-				dialog.setUnavailableFonts(fileManager.unavailableFontsArr)
-				dialog.addEventListener("OK", onUnavailableFontsDialogOK)
-			}
+//			var unavailableFontsArr:Array = fileManager.unavailableFontsArr
+//			if (fileManager.unavailableFontsArr && fileManager.unavailableFontsArr.length>0)
+//			{
+//				var dialog:UnavailableFontsDialog = dialogsController.showUnavailableFontsDialog() 
+//				dialog.setUnavailableFonts(fileManager.unavailableFontsArr)
+//				dialog.addEventListener("OK", onUnavailableFontsDialogOK)
+//			}
 			
 		}
 				
@@ -240,7 +240,7 @@ package com.simplediagrams.controllers
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_WIDGET_ADDED);	
 			rsoEvent.changedSDObjectModelArray = new Array;
 			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
-			Swiz.dispatchEvent(rsoEvent);				
+			dispatcher.dispatchEvent(rsoEvent);				
 		}
 				
 		
@@ -266,7 +266,7 @@ package com.simplediagrams.controllers
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_WIDGET_CREATED);	
 			rsoEvent.changedSDObjectModelArray = new Array;
 			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
-			Swiz.dispatchEvent(rsoEvent);				
+			dispatcher.dispatchEvent(rsoEvent);				
 		}
 		
 		
@@ -288,7 +288,7 @@ package com.simplediagrams.controllers
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.PENCIL_DRAWING_CREATED);	
 			rsoEvent.changedSDObjectModelArray = new Array;
 			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
-			Swiz.dispatchEvent(rsoEvent);				
+			dispatcher.dispatchEvent(rsoEvent);				
 		}
 			
 		
@@ -314,7 +314,7 @@ package com.simplediagrams.controllers
 //			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.CREATE_LINE_COMPONENT);	
 //			rsoEvent.changedSDObjectModelArray = new Array;
 //			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
-//			Swiz.dispatchEvent(rsoEvent);				
+//			dispatcher.dispatchEvent(rsoEvent);				
 		}
 		
 		
@@ -363,7 +363,7 @@ package com.simplediagrams.controllers
 			
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.DELETE_SELECTED_SD_OBJECT_MODEL);	
 			rsoEvent.sdIDArray = sdIDArray;
-			Swiz.dispatchEvent(rsoEvent);
+			dispatcher.dispatchEvent(rsoEvent);
 		}
 		
 // Doon - commented out on 4/21/10		
@@ -483,7 +483,7 @@ package com.simplediagrams.controllers
   			
 //			remoteSharedObjectController.dispatchUpdate_RefreshZoom();
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.REFRESH_ZOOM);	
-			Swiz.dispatchEvent(rsoEvent);
+			dispatcher.dispatchEvent(rsoEvent);
   		}
 
 		[Mediate(event='ZoomEvent.ZOOM_OUT')]
@@ -497,7 +497,7 @@ package com.simplediagrams.controllers
 				
 //			remoteSharedObjectController.dispatchUpdate_RefreshZoom();
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.REFRESH_ZOOM);	
-			Swiz.dispatchEvent(rsoEvent);
+			dispatcher.dispatchEvent(rsoEvent);
   		}
   		
 		[Mediate(event='ColorEvent.CHANGE_COLOR')]
@@ -575,7 +575,7 @@ package com.simplediagrams.controllers
 			remoteSharedObjectEvent.imageData = _fileReference.data;
 			remoteSharedObjectEvent.imageName = _fileReference.name;
 			remoteSharedObjectEvent.sdImageModel = _currModelForImageLoad;
-			Swiz.dispatchEvent(remoteSharedObjectEvent);	
+			dispatcher.dispatchEvent(remoteSharedObjectEvent);	
 		}
 		
 		protected function onCancelFileSelect(event:Event):void
@@ -781,7 +781,7 @@ package com.simplediagrams.controllers
 				
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
 			rsoEvent.changedSDObjectModelArray = sdObjectsArr;
-			Swiz.dispatchEvent(rsoEvent);
+			dispatcher.dispatchEvent(rsoEvent);
 		}
 		
 		
@@ -918,7 +918,7 @@ package com.simplediagrams.controllers
 		public function throw_ObjectChanged_RSOEvent(sdObjectModelArray:Array):void{
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);
 			rsoEvent.changedSDObjectModelArray = sdObjectModelArray;
-			Swiz.dispatchEvent(rsoEvent);
+			dispatcher.dispatchEvent(rsoEvent);
 		}	
 
 		

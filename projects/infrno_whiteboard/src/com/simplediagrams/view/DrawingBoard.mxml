@@ -6,8 +6,6 @@
 	xmlns:view="com.simplediagrams.view.*" 
 	xmlns:properties="com.simplediagrams.view.properties.*"
 	xmlns:myComps="*" 
-    nativeDragEnter="onNativeDragEnter(event)"
-    nativeDragDrop="onNativeDragDrop(event)"
     dragEnter="onDragEnter(event)"
     dragDrop="onDragDrop(event)"
     mouseChildren="true">

@@ -268,7 +268,7 @@ package com.simplediagrams.controllers
 			
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
 			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
-			Swiz.dispatchEvent(rsoEvent);
+			dispatcher.dispatchEvent(rsoEvent);
 			
 		}
 		
@@ -304,7 +304,7 @@ package com.simplediagrams.controllers
 			
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
 			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
-			Swiz.dispatchEvent(rsoEvent);				
+			dispatcher.dispatchEvent(rsoEvent);				
 		}
 		
 		[Mediate(event="TextPropertyChangeEvent.CHANGE_TEXT_ALIGN")]
@@ -338,7 +338,7 @@ package com.simplediagrams.controllers
 			
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
 			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
-			Swiz.dispatchEvent(rsoEvent);				
+			dispatcher.dispatchEvent(rsoEvent);				
 		}
 		
 		[Mediate(event="TextPropertyChangeEvent.CHANGE_TEXT_POSITION")]
@@ -362,7 +362,7 @@ package com.simplediagrams.controllers
 			
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
 			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
-			Swiz.dispatchEvent(rsoEvent);				
+			dispatcher.dispatchEvent(rsoEvent);				
 		}
 		
 		

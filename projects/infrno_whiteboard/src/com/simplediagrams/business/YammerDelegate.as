@@ -8,7 +8,7 @@ package com.simplediagrams.business
 	import flash.events.EventDispatcher;
 	import flash.events.HTTPStatusEvent;
 	import flash.events.IOErrorEvent;
-	import flash.filesystem.File;
+//	import flash.filesystem.File;
 	import flash.net.FileReference;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;

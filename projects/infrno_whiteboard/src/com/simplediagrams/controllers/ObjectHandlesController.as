@@ -46,7 +46,7 @@ package com.simplediagrams.controllers
 				
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
 			rsoEvent.changedSDObjectModelArray = event.relatedObjects;
-			Swiz.dispatchEvent(rsoEvent);
+			dispatcher.dispatchEvent(rsoEvent);
 		}
 		
 		
@@ -101,7 +101,7 @@ package com.simplediagrams.controllers
 				
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
 			rsoEvent.changedSDObjectModelArray = event.relatedObjects;
-			Swiz.dispatchEvent(rsoEvent);
+			dispatcher.dispatchEvent(rsoEvent);
 
 		}
 		

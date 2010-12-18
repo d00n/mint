@@ -22,21 +22,21 @@ package com.adobe.example.signature
 	{
 		
 //		public var sigFile:File
-		[Bindable] public var xmlDoc:XML
-		public var xmlSig:XML
-		public const signatureNS:Namespace = new Namespace("http://www.w3.org/2000/09/xmldsig#");
-		
-		[Bindable]
-		public var statusText:String = '';
-		
-		[Bindable]
-		public var signatureText:String = '';
-		
-		public function SignatureValidator()
-		{
-		}
-		
-		
+//		[Bindable] public var xmlDoc:XML
+//		public var xmlSig:XML
+//		public const signatureNS:Namespace = new Namespace("http://www.w3.org/2000/09/xmldsig#");
+//		
+//		[Bindable]
+//		public var statusText:String = '';
+//		
+//		[Bindable]
+//		public var signatureText:String = '';
+//		
+//		public function SignatureValidator()
+//		{
+//		}
+//		
+//		
 //		public function loadFile(sigFile:File):void
 //		{
 //			Logger.debug("loadFile() sigFile: " + sigFile.nativePath, this)
@@ -137,7 +137,8 @@ package com.adobe.example.signature
 //			} 
 //			else 
 //			{
-//				Logger.debug("\nManifest only validated when signature references are valid.\n")
+//				Logger.debug("\nManifest only validated when signature references are valid.\n", this)
+//				dispatchEvent(new Event("INVALID"))
 //			}
 //		}
 //		
@@ -203,30 +204,30 @@ package com.adobe.example.signature
 //			Logger.debug( message )
 //			return result
 //		}
-		
-		
-		
-		
-		public function formatArray( array:Array ):String 
-		{
-			if( array.length > 0 )
-			{
-				var commaDelimitedList:String = ""
-				for( var i:int; i < array.length - 1; i++ )
-				{
-					commaDelimitedList += array[i].toString() + ", "
-				}
-				commaDelimitedList += array[array.length - 1].toString()
-				return commaDelimitedList
-			} 
-			else
-			{
-				return ""
-			}
-		}
-		
-	
-
+//		
+//		
+//		
+//		
+//		public function formatArray( array:Array ):String 
+//		{
+//			if( array.length > 0 )
+//			{
+//				var commaDelimitedList:String = ""
+//				for( var i:int; i < array.length - 1; i++ )
+//				{
+//					commaDelimitedList += array[i].toString() + ", "
+//				}
+//				commaDelimitedList += array[array.length - 1].toString()
+//				return commaDelimitedList
+//			} 
+//			else
+//			{
+//				return ""
+//			}
+//		}
+//		
+//	
+//
 	}
 }
 

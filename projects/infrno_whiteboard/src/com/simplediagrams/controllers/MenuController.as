@@ -14,7 +14,7 @@ package com.simplediagrams.controllers
 	
 	import mx.controls.Alert;
 	import mx.core.FlexGlobals;
-	import mx.events.FlexNativeMenuEvent;
+//	import mx.events.FlexNativeMenuEvent;
 	
 	
 	public class MenuController
@@ -109,7 +109,7 @@ package com.simplediagrams.controllers
 					}
 				}		
 			}
-			FlexGlobals.topLevelApplication.appMenu.dataProvider = ApplicationModel.menuDataArr
+//			FlexGlobals.topLevelApplication.appMenu.dataProvider = ApplicationModel.menuDataArr
 			
 		}		
 

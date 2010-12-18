@@ -1,9 +1,13 @@
 package com.adobe.example.packaging
 {
+	import com.simplediagrams.util.Logger;
+	
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
+	import flash.events.SecurityErrorEvent;
 //	import flash.filesystem.File;
 //	import flash.filesystem.FileMode;
 //	import flash.filesystem.FileStream;
@@ -12,7 +16,6 @@ package com.adobe.example.packaging
 	import flash.utils.ByteArray;
 	import flash.utils.CompressionAlgorithm;
 	import flash.utils.Endian;
-	import com.simplediagrams.util.Logger
 	
 	public class Unpackager extends EventDispatcher
 	{
@@ -58,12 +61,15 @@ package com.adobe.example.packaging
 //			m_dir = destination;
 //			source = new URLStream();
 //			source.addEventListener(ProgressEvent.PROGRESS, parse);
+//			source.addEventListener(Event.COMPLETE, onLoadComplete);            
+//			source.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);            
+//			source.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
 //			source.load( url );
 //		}
 		
 		private function parse( event:ProgressEvent ):void 
 		{
-			Logger.debug("parsing...")
+			Logger.debug("parsing()...", this)
 			// The underlying progress from the byte stream is the best estimate
 			// we've got of work accomplished and remaining.
 			
@@ -272,11 +278,28 @@ package com.adobe.example.packaging
 				dispatchError( e );
 			}
 		}
-		private function dispatchError( error:Error ):void {
+		
+		protected function onLoadComplete(event:Event):void
+		{
+			Logger.debug("onUnpackComplete() ", this) 
+		}
+		
+		protected function ioErrorHandler(event:IOErrorEvent):void 
+		{
+			Logger.error("ioErrorHandler: " + event, this);
+		}
+		
+		protected function securityErrorHandler(event:SecurityErrorEvent):void 
+		{
+			Logger.error("securityErrorHandler: " + event, this);
+		}
+
+		
+		protected function dispatchError( error:Error ):void 
+		{
+			Logger.error("dispatchError: error: " + error.errorID + " " + error.message, this)
 			m_ucfParseState = AT_ERROR;
-			dispatchEvent( new ErrorEvent( 
-				ErrorEvent.ERROR, false, false, error.message, error.errorID
-			));
+			dispatchEvent( new ErrorEvent(ErrorEvent.ERROR, false, false, error.message, error.errorID));
 		}
 	}
 }

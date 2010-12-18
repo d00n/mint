@@ -24,7 +24,6 @@
 			import com.simplediagrams.model.YammerModel;
 			import com.simplediagrams.util.Logger;
 			
-			import org.swizframework.Swiz
 			import mx.controls.Alert
 			import flash.utils.ByteArray;
 			

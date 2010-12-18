@@ -19,8 +19,6 @@ package com.simplediagrams.business
 	import mx.graphics.codec.PNGEncoder;
 	import mx.utils.Base64Decoder;
 	import mx.utils.Base64Encoder;
-	
-	import org.swizframework.Swiz;
 
 	public class FileManager extends EventDispatcher
 	{
@@ -119,35 +117,35 @@ package com.simplediagrams.business
 			}
 			else
 			{
-				var evt:LoadDiagramEvent = new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_LOAD_CANCELED, true)	
-				Swiz.dispatchEvent(evt)	
+//				var evt:LoadDiagramEvent = new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_LOAD_CANCELED, true)	
+//				dispatcher.dispatchEvent(evt)	
 			}
 		}
 		
 		protected function loadDiagramFromXML(xml:XML):void
 		{
-			diagramModel.initDiagramModel()
-			
-			try
-			{				
-				loadXMLIntoDiagramModel(xml)		
-				
-				var evt:LoadDiagramEvent = new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_LOADED, true)							
+//			diagramModel.initDiagramModel()
+//			
+//			try
+//			{				
+//				loadXMLIntoDiagramModel(xml)		
+//				
+//				var evt:LoadDiagramEvent = new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_LOADED, true)							
 //				evt.nativePath = _diagramFile.nativePath
 //				evt.fileName = _diagramFile.name
-				evt.success = true
-				Swiz.dispatchEvent(evt)		
-					
-			}
-			catch(err:Error)
-			{
-				Logger.error("Error loading diagram file: Error: " + err, this)				
-				evt = new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_LOAD_ERROR, true)	
-				evt.errorMessage = "There was an error loading this diagram file. The file appears corrupted. Please contact support for help."
-				Swiz.dispatchEvent(evt)					
-			}
-			
-						
+//				evt.success = true
+//				dispatcher.dispatchEvent(evt)		
+//					
+//			}
+//			catch(err:Error)
+//			{
+//				Logger.error("Error loading diagram file: Error: " + err, this)				
+//				evt = new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_LOAD_ERROR, true)	
+//				evt.errorMessage = "There was an error loading this diagram file. The file appears corrupted. Please contact support for help."
+//				dispatcher.dispatchEvent(evt)					
+//			}
+//			
+//						
 		}
 		
 		protected function getUnavailableLibrariesUsed(fileXML:XML):Array
@@ -245,7 +243,7 @@ package com.simplediagrams.business
 //			var savedEvent:SaveDiagramEvent = new SaveDiagramEvent(SaveDiagramEvent.DIAGRAM_SAVED, true)
 //			savedEvent.nativePath = _diagramFile.nativePath
 //			savedEvent.fileName = _diagramFile.name
-//			Swiz.dispatchEvent(savedEvent)	
+//			dispatcher.dispatchEvent(savedEvent)	
 //		
 		}
 		
@@ -339,7 +337,7 @@ package com.simplediagrams.business
 				o.@height = sdObjModel.height
 				o.@width = sdObjModel.width
 				o.@rotation = sdObjModel.rotation
-				o.@zIndex = sdObjModel.zIndex
+				o.@depth = sdObjModel.depth
 				o.@color = sdObjModel.color
 				o.@colorizable = sdObjModel.colorizable.toString()
 				
@@ -455,7 +453,7 @@ package com.simplediagrams.business
 				sdObjModel.height = sdXML.@height 
 				sdObjModel.width = sdXML.@width 
 				sdObjModel.rotation = sdXML.@rotation 
-				sdObjModel.zIndex = sdXML.@zIndex 
+				sdObjModel.depth = sdXML.@depth 
 				sdObjModel.color = sdXML.@color 
 				sdObjModel.colorizable = (sdXML.@colorizable=="true")
 			

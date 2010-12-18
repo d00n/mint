@@ -15,7 +15,6 @@ package com.simplediagrams.view.SDComponents
 	import mx.controls.Image;
 	import mx.events.PropertyChangeEvent;
 	
-	import org.swizframework.Swiz;
 	import org.swizframework.controller.AbstractController;
 	
 	import spark.components.TextArea;
@@ -28,6 +27,8 @@ package com.simplediagrams.view.SDComponents
 	[Bindable]
 	public class SDTextArea extends SDBase implements ISDComponent
 	{
+		[Dispatcher]
+		public var dispatcher:IEventDispatcher;
 
 		[SkinPart(required="true")]		
 		public var mainTextArea:TextArea;
@@ -212,7 +213,7 @@ package com.simplediagrams.view.SDComponents
 			
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.DISPATCH_TEXT_AREA_CHANGE);
 			rsoEvent.sdID = _model.sdID;
-			Swiz.dispatchEvent(rsoEvent);			
+			dispatcher.dispatchEvent(rsoEvent);			
 		}
 
 		protected function onTextAreaMouseOut(event:Event):void

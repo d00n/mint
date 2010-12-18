@@ -60,7 +60,7 @@ package com.simplediagrams.controllers
 		private var _messageTitle:String
 		private var _view:Group
 		private var _uploadImageToken:AsyncToken
-		private var _tempImageFile:File
+//		private var _tempImageFile:File
 		
 		public function YammerController():void
 		{			

@@ -291,7 +291,7 @@ package com.simplediagrams.model
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.ADD_SD_OBJECT_MODEL);
 			rsoEvent.changedSDObjectModelArray = new Array;
 			rsoEvent.changedSDObjectModelArray.push(newSDObjectModel);
-			Swiz.dispatchEvent(rsoEvent);		
+			dispatcher.dispatchEvent(rsoEvent);		
 		}
 		
 		protected function addComponentForModel(sdModel:SDObjectModel, setSelected:Boolean = true):Object

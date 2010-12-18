@@ -4,10 +4,10 @@ package com.simplediagrams.model
 	
 	import com.adobe.webapis.flickr.Permission;
 	
-	import flash.data.EncryptedLocalStore;
+//	import flash.data.EncryptedLocalStore;
 	import flash.events.EventDispatcher;
-	import flash.filesystem.*;
-	import flash.utils.ByteArray;
+//	import flash.filesystem.*;
+//	import flash.utils.ByteArray;
 
 	
 	[Bindable]
@@ -48,37 +48,37 @@ package com.simplediagrams.model
 		public function loadFromEncryptedStore():void
 		{
 			
-			var yammerUsernameBA:ByteArray = EncryptedLocalStore.getItem("com.simplediagrams.YammerUsername")
-			if (yammerUsernameBA) username = yammerUsernameBA.readUTFBytes(yammerUsernameBA.length)
-				
-			var yammerPermAccessTokenBA:ByteArray = EncryptedLocalStore.getItem("com.simplediagrams.YammerPermAccessToken")
-			if (yammerPermAccessTokenBA) permAccessToken = yammerPermAccessTokenBA.readUTFBytes(yammerPermAccessTokenBA.length)
-				
-			var yammerPermAccessSecretBA:ByteArray = EncryptedLocalStore.getItem("com.simplediagrams.YammerPermAccessSecret")
-			if (yammerPermAccessSecretBA) permAccessSecret = yammerPermAccessSecretBA.readUTFBytes(yammerPermAccessSecretBA.length)
+//			var yammerUsernameBA:ByteArray = EncryptedLocalStore.getItem("com.simplediagrams.YammerUsername")
+//			if (yammerUsernameBA) username = yammerUsernameBA.readUTFBytes(yammerUsernameBA.length)
+//				
+//			var yammerPermAccessTokenBA:ByteArray = EncryptedLocalStore.getItem("com.simplediagrams.YammerPermAccessToken")
+//			if (yammerPermAccessTokenBA) permAccessToken = yammerPermAccessTokenBA.readUTFBytes(yammerPermAccessTokenBA.length)
+//				
+//			var yammerPermAccessSecretBA:ByteArray = EncryptedLocalStore.getItem("com.simplediagrams.YammerPermAccessSecret")
+//			if (yammerPermAccessSecretBA) permAccessSecret = yammerPermAccessSecretBA.readUTFBytes(yammerPermAccessSecretBA.length)
 			
 		}
 		
 		public function saveToEncryptedStore():void
 		{			
-			var ba:ByteArray = new ByteArray()
-			ba.writeUTFBytes(username)
-			EncryptedLocalStore.setItem("com.simplediagrams.YammerUsername", ba )	
-				
-			ba = new ByteArray()
-			ba.writeUTFBytes(permAccessToken)
-			EncryptedLocalStore.setItem("com.simplediagrams.YammerPermAccessToken", ba )
-				
-			ba = new ByteArray()
-			ba.writeUTFBytes(permAccessSecret)
-			EncryptedLocalStore.setItem("com.simplediagrams.YammerPermAccessSecret", ba )
+//			var ba:ByteArray = new ByteArray()
+//			ba.writeUTFBytes(username)
+//			EncryptedLocalStore.setItem("com.simplediagrams.YammerUsername", ba )	
+//				
+//			ba = new ByteArray()
+//			ba.writeUTFBytes(permAccessToken)
+//			EncryptedLocalStore.setItem("com.simplediagrams.YammerPermAccessToken", ba )
+//				
+//			ba = new ByteArray()
+//			ba.writeUTFBytes(permAccessSecret)
+//			EncryptedLocalStore.setItem("com.simplediagrams.YammerPermAccessSecret", ba )
 		}
 		
 		public function clearFromEncryptedStore():void
 		{
-			EncryptedLocalStore.removeItem("com.simplediagrams.YammerUsername")
-			EncryptedLocalStore.removeItem("com.simplediagrams.YammerPermAccessToken")
-			EncryptedLocalStore.removeItem("com.simplediagrams.YammerPermAccessSecret")
+//			EncryptedLocalStore.removeItem("com.simplediagrams.YammerUsername")
+//			EncryptedLocalStore.removeItem("com.simplediagrams.YammerPermAccessToken")
+//			EncryptedLocalStore.removeItem("com.simplediagrams.YammerPermAccessSecret")
 			
 		}
 		

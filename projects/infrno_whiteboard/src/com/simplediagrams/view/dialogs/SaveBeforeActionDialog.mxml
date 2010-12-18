@@ -41,7 +41,7 @@
 			[Bindable]
 			private var WarningIcon:Class	
 			
-			private var _mode:String = FileManager.MODE_SAVE_BEFORE_NEW;
+//			private var _mode:String = FileManager.MODE_SAVE_BEFORE_NEW;
 			
 			[Bindable]
 			private var _headerText:String
@@ -57,27 +57,28 @@
 			
 			public function set mode(v:String):void
 			{
-				switch (v)
-				{
-					case FileManager.MODE_SAVE_BEFORE_NEW:
-						_headerText = "Save changes before starting new diagram?"
-						break
-					case FileManager.MODE_SAVE_BEFORE_CLOSE:
-						_headerText = "Save changes before closing this diagram?"
-						break
-					case FileManager.MODE_SAVE_BEFORE_OPEN:
-						_headerText = "Save changes before opening a new diagram?"
-						break
-					default:
-						Logger.error("mode set to unrecongized value: " + v, this)
-						return					
-				}
-				_mode = v
+//				switch (v)
+//				{
+//					case FileManager.MODE_SAVE_BEFORE_NEW:
+//						_headerText = "Save changes before starting new diagram?"
+//						break
+//					case FileManager.MODE_SAVE_BEFORE_CLOSE:
+//						_headerText = "Save changes before closing this diagram?"
+//						break
+//					case FileManager.MODE_SAVE_BEFORE_OPEN:
+//						_headerText = "Save changes before opening a new diagram?"
+//						break
+//					default:
+//						Logger.error("mode set to unrecongized value: " + v, this)
+//						return					
+//				}
+//				_mode = v
 			}				
 			
 			public function get mode():String
 			{
-				return _mode
+//				return _mode
+				return null;
 			}
 			
 			public function onSave():void

@@ -33,10 +33,9 @@ package com.roguedevelopment.objecthandles
 	import com.simplediagrams.view.SDComponents.SDBase;
 	
 	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
-	
-	import org.swizframework.Swiz;
 	
 	[Event(name="removedFromSelection", type="com.simplediagrams.events.SelectionEvent")]
 	[Event(name="selectionCleared", type="com.simplediagrams.events.SelectionEvent")]
@@ -45,13 +44,16 @@ package com.roguedevelopment.objecthandles
 	{
 		public var currentlySelected:Array = [];
 		
-		public function ObjectHandlesSelectionManager()
+		public var dispatcher:IEventDispatcher;
+		
+		public function ObjectHandlesSelectionManager(dispatcher:IEventDispatcher)
 		{
+			this.dispatcher = dispatcher
 		}
 		
 		public function addToSelected( model:Object ) : void
 		{
-			//Logger.debug("adding to selected: model: " + model.iconClass, this)
+			Logger.debug("adding to selected: model: " + model.iconClass +" id: " + SDObjectModel(model).sdID + " selected: " + model.selected, this)
 			if( currentlySelected.indexOf( model ) != -1 ) { return; } // already selected
 			
 			//Logger.debug("model isn't selectd, so go ahead and add it. ", this)
@@ -67,20 +69,20 @@ package com.roguedevelopment.objecthandles
 				SDObjectModel(model).selected = true
 			}
 				
-			//~DMcQ
-							
+			//~DMcQ							
 			currentlySelected.push(model);
-			
-			//Logger.debug("currentlySelected is now: " + currentlySelected.iconClass, this)
-			
+									
 			//DMcQ make the visual object get focus
-			var sdComponent:SDBase = SDObjectModel(model).sdComponent as SDBase			
-			sdComponent.focusManager.setFocus(sdComponent)		
-			
+			var sdComponent:SDBase = SDObjectModel(model).sdComponent as SDBase	
+			if (sdComponent && sdComponent.focusManager)
+			{
+				sdComponent.focusManager.setFocus(sdComponent)		
+			}
+					
 			//DMcQ: using our own SelectionEvent so Swiz can pick it up correctly
 			var evt:SelectionEvent = new SelectionEvent( SelectionEvent.ADDED_TO_SELECTION, true );
 			evt.targets.push( model );
-			Swiz.dispatchEvent( evt)
+			dispatcher.dispatchEvent( evt)
 		}
 
 		public function isSelected( model:Object ) : Boolean
@@ -98,8 +100,11 @@ package com.roguedevelopment.objecthandles
 			
 			//DMcQ make the visual object get focus
 			var sdComponent:SDBase = SDObjectModel(model).sdComponent as SDBase
-			sdComponent.focusManager.setFocus(sdComponent)
-				
+			if (sdComponent.focusManager)
+			{
+				sdComponent.focusManager.setFocus(sdComponent)
+			}
+			
 			//DMcQ: Set the selected property on model so skins and things know what to do
 			SDObjectModel(model).selected = true
 		}
@@ -125,7 +130,7 @@ package com.roguedevelopment.objecthandles
 			//DMcQ: using swiz...
 			var event:SelectionEvent = new SelectionEvent( SelectionEvent.REMOVED_FROM_SELECTION, true);
 			event.targets.push(model);			
-			Swiz.dispatchEvent( event );
+			dispatcher.dispatchEvent( event );
 					
 		}
 
@@ -145,7 +150,7 @@ package com.roguedevelopment.objecthandles
 			//DMcQ: using swiz...
 			var event:SelectionEvent = new SelectionEvent( SelectionEvent.SELECTION_CLEARED );
 			event.targets = currentlySelected;	
-			Swiz.dispatchEvent( event );	
+			dispatcher.dispatchEvent( event );	
 						
 		}
 		

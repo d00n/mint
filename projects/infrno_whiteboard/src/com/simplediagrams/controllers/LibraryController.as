@@ -289,35 +289,35 @@ package com.simplediagrams.controllers
 //			removeLoadSelectedLibraryListeners(loader)
 		}
 		
-		protected function onLoadSelectedLibraryPluginFailed(event:LoadLibraryEvent):void
-		{
-			if (_loadingLibraryProgressDialog)
-			{
-				dialogsController.removeDialog(_loadingLibraryProgressDialog)
-			}
-			_loadingLibraryProgressDialog = null
-				
-			if (event.isInvalid)	
-			{
-				Alert.show("The " + _selectedLibraryPluginToLoad.name + " library plugin is an outdated version. Please download the most recent version from SimpleDiagrams and reload this library.","Library Error")
-			}
-			else
-			{
-				Alert.show("SimpleDiagrams could not load the selected library plugin. Please make sure the file is a valid SimpleDiagrams library plugin file", "Load Error")
-			}
-			_selectedLibraryPluginToLoad = null
-			if (_loadingLibraryProgressDialog)
-			{
-				dialogsController.removeDialog(_loadingLibraryProgressDialog)
-			}
-			_loadingLibraryProgressDialog = null
-			
-		}
+//		protected function onLoadSelectedLibraryPluginFailed(event:LoadLibraryEvent):void
+//		{
+//			if (_loadingLibraryProgressDialog)
+//			{
+//				dialogsController.removeDialog(_loadingLibraryProgressDialog)
+//			}
+//			_loadingLibraryProgressDialog = null
+//				
+//			if (event.isInvalid)	
+//			{
+//				Alert.show("The " + _selectedLibraryPluginToLoad.name + " library plugin is an outdated version. Please download the most recent version from SimpleDiagrams and reload this library.","Library Error")
+//			}
+//			else
+//			{
+//				Alert.show("SimpleDiagrams could not load the selected library plugin. Please make sure the file is a valid SimpleDiagrams library plugin file", "Load Error")
+//			}
+//			_selectedLibraryPluginToLoad = null
+//			if (_loadingLibraryProgressDialog)
+//			{
+//				dialogsController.removeDialog(_loadingLibraryProgressDialog)
+//			}
+//			_loadingLibraryProgressDialog = null
+//			
+//		}
 		
 		protected function removeLoadSelectedLibraryListeners(loader:LibraryPluginsDelegate):void
 		{			
-			loader.removeEventListener(LoadLibraryEvent.LOADING_FINISHED, onLoadSelectedLibraryPluginComplete)
-			loader.removeEventListener(LoadLibraryEvent.LOADING_FAILED, onLoadSelectedLibraryPluginFailed)
+//			loader.removeEventListener(LoadLibraryEvent.LOADING_FINISHED, onLoadSelectedLibraryPluginComplete)
+//			loader.removeEventListener(LoadLibraryEvent.LOADING_FAILED, onLoadSelectedLibraryPluginFailed)
 		}
 		
 		
@@ -418,43 +418,43 @@ package com.simplediagrams.controllers
 		
 		
 		
-		[Mediate(event="AddImageFileToCustomLibraryEvt.ADD_IMAGE_FROM_FILE")]
-		public function addImageFromFileToCustomLibrary(event:AddImageFileToCustomLibraryEvt):void
-		{
-			Logger.debug("addImageFromFileToCustomLibrary() adding image to library " + event.libraryID+ " from file: " + event.imageFile, this)
-			
-			
-			if (event.imageFile)
-			{
-				//open up image and add byteArray to library
-				var imageFile:File = event.imageFile
-				var imageBA:ByteArray =  new ByteArray()
-				var stream:FileStream = new FileStream()
-				stream.open(imageFile, FileMode.READ)
-				stream.readBytes(imageBA,0, stream.bytesAvailable)
-				addImageDataToCustomLibrary(imageBA, event.libraryID)
-			}
-			else
-			{
-				//browse for file
-				_currLibraryID = event.libraryID
-				_imageForCustomSymbolFile = new File()				
-				_imageForCustomSymbolFile.addEventListener(Event.SELECT, onImageFileForCustomSymbolSelected);
-				var imageFilter:FileFilter = new FileFilter("Image", "*.png;*.jpg;*.gif;");
-				_imageForCustomSymbolFile.browseForOpen("Select an image file", [imageFilter])
-			}
-				
-		}
-		
-		protected function onImageFileForCustomSymbolSelected(event:Event):void
-		{
-			_imageForCustomSymbolFile.removeEventListener(Event.SELECT, onImageFileForCustomSymbolSelected);
-			var imageBA:ByteArray =  new ByteArray()
-			var stream:FileStream = new FileStream()
-			stream.open(_imageForCustomSymbolFile, FileMode.READ)
-			stream.readBytes(imageBA,0, stream.bytesAvailable)
-			addImageDataToCustomLibrary(imageBA, _currLibraryID)
-		}
+//		[Mediate(event="AddImageFileToCustomLibraryEvt.ADD_IMAGE_FROM_FILE")]
+//		public function addImageFromFileToCustomLibrary(event:AddImageFileToCustomLibraryEvt):void
+//		{
+//			Logger.debug("addImageFromFileToCustomLibrary() adding image to library " + event.libraryID+ " from file: " + event.imageFile, this)
+//			
+//			
+//			if (event.imageFile)
+//			{
+//				//open up image and add byteArray to library
+//				var imageFile:File = event.imageFile
+//				var imageBA:ByteArray =  new ByteArray()
+//				var stream:FileStream = new FileStream()
+//				stream.open(imageFile, FileMode.READ)
+//				stream.readBytes(imageBA,0, stream.bytesAvailable)
+//				addImageDataToCustomLibrary(imageBA, event.libraryID)
+//			}
+//			else
+//			{
+//				//browse for file
+//				_currLibraryID = event.libraryID
+//				_imageForCustomSymbolFile = new File()				
+//				_imageForCustomSymbolFile.addEventListener(Event.SELECT, onImageFileForCustomSymbolSelected);
+//				var imageFilter:FileFilter = new FileFilter("Image", "*.png;*.jpg;*.gif;");
+//				_imageForCustomSymbolFile.browseForOpen("Select an image file", [imageFilter])
+//			}
+//				
+//		}
+//		
+//		protected function onImageFileForCustomSymbolSelected(event:Event):void
+//		{
+//			_imageForCustomSymbolFile.removeEventListener(Event.SELECT, onImageFileForCustomSymbolSelected);
+//			var imageBA:ByteArray =  new ByteArray()
+//			var stream:FileStream = new FileStream()
+//			stream.open(_imageForCustomSymbolFile, FileMode.READ)
+//			stream.readBytes(imageBA,0, stream.bytesAvailable)
+//			addImageDataToCustomLibrary(imageBA, _currLibraryID)
+//		}
 		
 		
 		protected function addImageDataToCustomLibrary(imageBA:ByteArray, libraryID:uint):void

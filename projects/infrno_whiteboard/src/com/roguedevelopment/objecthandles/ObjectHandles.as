@@ -50,6 +50,7 @@ package com.roguedevelopment.objecthandles
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
@@ -64,8 +65,6 @@ package com.roguedevelopment.objecthandles
 	import mx.core.IVisualElement;
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ScrollEvent;
-	
-	import org.swizframework.Swiz;
 	
 	import spark.components.Group;
 
@@ -88,8 +87,12 @@ package com.roguedevelopment.objecthandles
 		 * Switch it over to a VisualElementHandle for Flex 4 based applications.  Do this before creating ObjectHandle instances,
 		 * it's merely here to provide a convienent way to set the default globally.
 		 **/
-		public static var defaultHandleClass:Class = SpriteHandle;
+		
+		
+		protected var _dispatcher:IEventDispatcher;
 				
+		public static var defaultHandleClass:Class = SpriteHandle;
+						
         protected const zero:Point = new Point(0,0);
         
         protected var container:Group;
@@ -187,7 +190,7 @@ package com.roguedevelopment.objecthandles
 		
 		
 		public function ObjectHandles(  container:Group , 
-                                        selectionManager:ObjectHandlesSelectionManager = null, 
+                                        selManager:ObjectHandlesSelectionManager = null, 
                                         handleFactory:IFactory = null)
         {       
             this.container = container;
@@ -196,21 +199,17 @@ package com.roguedevelopment.objecthandles
             container.addEventListener( ScrollEvent.SCROLL, onContainerScroll );
             
             
-            if( selectionManager )          
-                this.selectionManager = selectionManager;           
+            if( selectionManager)          
+                selectionManager = selManager;           
             else            
-                this.selectionManager = new ObjectHandlesSelectionManager();
-            
+                selectionManager = new ObjectHandlesSelectionManager(_dispatcher);
+				            
             
             if( handleFactory )
                 this.handleFactory = handleFactory;
             else
                 this.handleFactory = new ClassFactory( Handle );
-            
-            
-            Swiz.addEventListener(SelectionEvent.ADDED_TO_SELECTION, onSelectionAdded );
-            Swiz.addEventListener(SelectionEvent.REMOVED_FROM_SELECTION, onSelectionRemoved );
-           	Swiz.addEventListener(SelectionEvent.SELECTION_CLEARED, onSelectionCleared );
+                        
             
 			multiSelectHandles.push( new HandleDescription( HandleRoles.RESIZE_UP + HandleRoles.RESIZE_LEFT, 
 				zero ,
@@ -291,6 +290,7 @@ package com.roguedevelopment.objecthandles
             
         }
 		
+	
 		
 		/**
 		 * Registers a component with the ObjectHandle manager.
@@ -344,9 +344,7 @@ package com.roguedevelopment.objecthandles
         }
         
         protected function onKeyDown(event:KeyboardEvent):void
-        {
-			Logger.debug("######## keyboard event: " + event.keyCode, this)
-								
+        {								
             var t:DragGeometry = new DragGeometry();
 			var evt:MoveOnceEvent
 		    switch(event.keyCode )
@@ -371,7 +369,7 @@ package com.roguedevelopment.objecthandles
             }
 			
 			evt.relatedObjects = this.selectionManager.currentlySelected
-			Swiz.dispatchEvent(evt)
+			_dispatcher.dispatchEvent(evt)
             
             //applyConstraints( t, HandleRoles.MOVE );
 			//applyTranslation( t );
@@ -394,7 +392,8 @@ package com.roguedevelopment.objecthandles
         {
 			if (visualDisplay==null)
 			{
-				Logger.warn("somebody sent a null visualDisplay to unregisterComponent.", this)
+				//Logger.warn("somebody sent a null visualDisplay to unregisterComponent.", this)
+				throw new Error("somebody sent a null visualDisplay to unregisterComponent.")
 				return
 			}
             visualDisplay.removeEventListener( MouseEvent.MOUSE_DOWN, onComponentMouseDown);
@@ -443,22 +442,7 @@ package com.roguedevelopment.objecthandles
 		//~DMCQ
 		
         
-		protected function onSelectionAdded( event:SelectionEvent ) : void
-		{
-			setupHandles();                 
-		}
-		
-		protected function onSelectionRemoved( event:SelectionEvent ) : void
-		{
-			setupHandles();            
-		}
-		
-		protected function onSelectionCleared( event:SelectionEvent ) : void
-		{                       
-			setupHandles();
-			lastSelectedModel=null;
-		}
-		
+	
 		
 		
         protected function onComponentMouseDown(event:MouseEvent):void
@@ -477,9 +461,8 @@ package com.roguedevelopment.objecthandles
             {}
             
             var model:Object = findModel( event.target as DisplayObject);
-			for each (var model:Object in this.selectionManager.currentlySelected)
-			{
-				Logger.debug("capturing state of model: " + model,this)				
+			for each (model in this.selectionManager.currentlySelected)
+			{	
 				SDObjectModel(model).captureStartState()
 			}				
 			
@@ -508,17 +491,15 @@ package com.roguedevelopment.objecthandles
 				
 			if (isMoved)
 			{
-				Swiz.dispatchEvent(new ObjectChangedEvent(selectionManager.currentlySelected, ObjectChangedEvent.OBJECT_MOVED, true));
+				_dispatcher.dispatchEvent(new ObjectChangedEvent(selectionManager.currentlySelected, ObjectChangedEvent.OBJECT_MOVED, true));
 			}
 			else if (isResized)
 			{
-				Swiz.dispatchEvent(new ObjectChangedEvent(selectionManager.currentlySelected, ObjectChangedEvent.OBJECT_RESIZED, true));
+				_dispatcher.dispatchEvent(new ObjectChangedEvent(selectionManager.currentlySelected, ObjectChangedEvent.OBJECT_RESIZED, true));
 			}
 			else if (isRotated)
 			{
-				Logger.debug("onContainerMouseUp() dispatching OBJECT_ROTATED",this)
-				Logger.debug("onContainerMouseUp() selectionManager.currentlySelected.length: " + selectionManager.currentlySelected.length,this)
-				Swiz.dispatchEvent(new ObjectChangedEvent(selectionManager.currentlySelected, ObjectChangedEvent.OBJECT_ROTATED, true));
+				_dispatcher.dispatchEvent(new ObjectChangedEvent(selectionManager.currentlySelected, ObjectChangedEvent.OBJECT_ROTATED, true));
 			}
 			
 			isMoved = false;
@@ -971,7 +952,7 @@ package com.roguedevelopment.objecthandles
 			}
 			else
 			{
-				if(! selectionManager.isSelected( model ) )
+				if(!selectionManager.isSelected( model ) )
 					selectionManager.setSelected( model );
 			}
 			
@@ -1160,7 +1141,7 @@ package com.roguedevelopment.objecthandles
 			Logger.debug("onHandleDown()",this)
 			_isHandleDragging = true
 			var evt:ObjectChangedEvent = new ObjectChangedEvent(this.selectionManager.currentlySelected, ObjectChangedEvent.OBJECT_START_RESIZING, true)
-			Swiz.dispatchEvent(evt)
+			_dispatcher.dispatchEvent(evt)
 			
 			var handle:IHandle = event.target as IHandle;
 			if( ! handle ) { return; }

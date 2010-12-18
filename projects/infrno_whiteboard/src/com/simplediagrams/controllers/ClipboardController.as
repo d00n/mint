@@ -32,10 +32,7 @@ package com.simplediagrams.controllers
 
 		[Autowire(bean="remoteSharedObjectController")]
 		public var remoteSharedObjectController:RemoteSharedObjectController
-		
-		[Dispatcher]
-		public var dispatcher:IEventDispatcher;
-		
+			
 		
 		private var _copyArr:Array = []
 		

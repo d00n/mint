@@ -8,7 +8,7 @@ package com.simplediagrams.view.SDComponents
 	
 	import flash.utils.ByteArray;
 	
-	import mx.controls.Image;
+	import mx.controls.Image
 	import mx.events.PropertyChangeEvent;
 
 	[SkinState("normal")]
@@ -38,8 +38,8 @@ package com.simplediagrams.view.SDComponents
 		
 		protected function onImageLoaded(event:Event):void
 		{
-			_model.origWidth = imageHolder.content.width
-			_model.origHeight = imageHolder.content.height
+			_model.origWidth = imageHolder.width
+			_model.origHeight = imageHolder.height
 		}
 	
 		public function onAddImageClick():void

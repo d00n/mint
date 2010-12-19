@@ -5,20 +5,22 @@ package com.simplediagrams.view
 	import com.simplediagrams.events.StyleEvent;
 	import com.simplediagrams.model.DiagramModel;
 	import com.simplediagrams.model.DiagramStyleManager;
+	import com.simplediagrams.model.SDBackgroundModel;
 	import com.simplediagrams.util.Logger;
 	import com.simplediagrams.view.skins.backgroundSkins.*;
 	
 	import flash.events.Event;
 	
+	import mx.core.BitmapAsset;
+	import mx.events.PropertyChangeEvent;
+	import mx.graphics.BitmapFillMode;
 	import mx.styles.StyleManager;
-	
-	;
 	
 	import spark.components.supportClasses.SkinnableComponent;
 
 
 	[SkinState("normal")]
-	[SkinState("disabled")]
+	[SkinState("blank")]
 	[Bindable]
 	public class Background extends SkinnableComponent 
 	{		
@@ -29,57 +31,52 @@ package com.simplediagrams.view
 		[Inject]
 		public var diagramStyleManager:DiagramStyleManager
 		
-		public var fillColor:Number = 0xFFFFFF;
-				
-		public function Background()
-		{
-			super();				
-			this.setStyle("skinClass",Class(ChalkboardSkin))			
-		}
+		public var backgroundImageData:BitmapAsset
+		public var fillMode:String = BitmapFillMode.SCALE;
+		public var tintColor:Number = 0x000000
+		public var tintAlpha:Number = 0;
 		
-		[Mediate("PropertiesEvent.PROPERTIES_EDITED")]
-		public function onDiagramPropertiesEdited(event:Event):void
-		{
-			fillColor = diagramModel.baseBackgroundColor			
-		}
-				
-		[Mediate("LoadDiagramEvent.DIAGRAM_LOADED")]
-		public function onDiagramLoaded(event:LoadDiagramEvent):void
-		{
-			fillColor = diagramModel.baseBackgroundColor
-		}
-				
 		[PostConstruct]
 		public function onPostConstruct():void
-		{
-			setBackgroundStyle(diagramStyleManager.currStyle)
-		}			
-		
-		[Mediate(event="StyleEvent.STYLE_CHANGED")]
-		public function onStyleChange(event:StyleEvent):void
-		{
-			setBackgroundStyle(event.styleName)
+		{			
+			diagramModel.addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );
+			var ImageBitmapAsset:Class = SDBackgroundModel(diagramModel.currSDBackgroundModel).imageDataClass
+			backgroundImageData = new ImageBitmapAsset()
+			this.invalidateSkinState()
 		}
 		
-		protected function setBackgroundStyle(styleName:String):void
+		[PreDestroy]
+		public function onPreDestroy():void
+		{			
+			diagramModel.removeEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );
+		}
+		
+		override protected function getCurrentSkinState():String 
 		{
-			switch(styleName)
+			if (SDBackgroundModel(diagramModel.currSDBackgroundModel).backgroundName=="Blank")
 			{
-				case DiagramStyleManager.CHALKBOARD_STYLE:
-					this.setStyle("skinClass",Class(ChalkboardSkin))
-					break
-				
-				case DiagramStyleManager.WHITEBOARD_STYLE:
-					this.setStyle("skinClass",Class(WhiteboardSkin))				
-					break
-										
-				case DiagramStyleManager.BASIC_STYLE:
-					Logger.debug("setting fill Color to : " + fillColor, this)				
-					fillColor = diagramModel.baseBackgroundColor
-					this.setStyle("skinClass",Class(BasicSkin))					
-					break
-					
+				return "blank"
 			}
+			return "normal"		
+		}
+		
+		public function Background()
+		{
+			super();						
+		}
+						
+		protected function onModelChange(event:PropertyChangeEvent):void
+		{
+			if( event.property == "currSDBackgroundModel" && diagramModel && diagramModel.currSDBackgroundModel)
+			{
+				var bgModel:SDBackgroundModel = SDBackgroundModel(diagramModel.currSDBackgroundModel)
+				var ImageBitmapAsset:Class = bgModel.imageDataClass
+				fillMode = bgModel.fillMode
+				tintAlpha = bgModel.tintAlpha
+				tintColor = bgModel.tintColor
+				backgroundImageData = new ImageBitmapAsset()				
+			}
+			this.invalidateSkinState()
 		}
 	
 		

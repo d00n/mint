@@ -9,6 +9,7 @@
     keyDown="onKeyDown(event)"
     title="Edit Diagram Properties"
     width="350"
+ 
     creationComplete="onCC()"
     >
 	
@@ -25,18 +26,43 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import com.simplediagrams.model.DiagramModel;
+			import com.simplediagrams.util.Logger;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.PropertyChangeEvent;
+			import mx.events.PropertyChangeEventKind;
 			import mx.events.ValidationResultEvent;
+			import mx.graphics.BitmapFillMode;
 			import mx.validators.Validator;
-		
-			import com.simplediagrams.model.DiagramModel
-			import com.simplediagrams.util.Logger
 			
 			
 			[Bindable]
+			[Autowire]
 			public var diagramModel:DiagramModel
+			
+			[Bindable]
+			protected var _selectedBGFormat:uint
+			
 			
 			protected var _validatorsArr:Array 
 			
+			public var bgFormatsAC:ArrayCollection = new ArrayCollection(	[{label:"Clip", data:BitmapFillMode.CLIP},
+																			{label:"Repeat", data:BitmapFillMode.REPEAT},
+																			{label:"Scale", data:BitmapFillMode.SCALE}]);
+			
+			[PostConstruct]
+			public function onPostConstruct():void
+			{
+				for (var i:uint=0;i<bgFormatsAC.length;i++)
+				{
+					if (bgFormatsAC.getItemAt(i).data == diagramModel.currSDBackgroundModel.fillMode)
+					{
+						_selectedBGFormat = i
+					}
+				}
+			}
+				
 			protected function onCC():void
 			{
 				this.closeButton.visible=false
@@ -55,10 +81,18 @@
 				{					
 					diagramModel.width = Number(txtWidth.text)
 					diagramModel.height = Number(txtHeight.text)
-					diagramModel.baseBackgroundColor = cpBackgroundColor.selectedColor
 					diagramModel.isDirty = true
-					Logger.debug("diagramModel.baseBackgroundColor: " + diagramModel.height, this)
+					var oldBGValue:String = diagramModel.currSDBackgroundModel.fillMode
+						
+					diagramModel.currSDBackgroundModel.fillMode = lstBGFormat.selectedItem.data
+					diagramModel.currSDBackgroundModel.tintAlpha = hslAlpha.value
+					diagramModel.currSDBackgroundModel.tintColor = cpBackgroundColor.selectedColor
+						
 					
+					diagramModel.dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE, 
+												false, false, PropertyChangeEventKind.UPDATE, 
+												'currSDBackgroundModel', null, null, diagramModel));
+						
 					var evt:Event = new Event("OK", true)
 					dispatchEvent(evt)
 				}
@@ -96,6 +130,12 @@
 					onOK()
 				}
 			}
+			
+			protected function formatAlphaSlider(value:Number):String
+			{
+				return uint(value*100).toString() + "%"
+			}
+		
 
 			
 		]]>
@@ -126,58 +166,73 @@
 	</s:layout>
 	
 		
-	<s:Group includeIn="error" id="errorMessage">
+	<s:HGroup includeIn="error" id="errorMessage" paddingTop="5" paddingBottom="5">
 	
-		<s:layout>
-			<s:HorizontalLayout  paddingTop="5" paddingBottom="5"  />			
-		</s:layout>
-		
 		<mx:Text showEffect="showEff"
 				height="40" width="320" 
 				color="#CC0000"
 				text="Some of your inputs are not valid. Please check the fields with a red border."/>
-	</s:Group>
+	</s:HGroup>
 			
 	
 	
-	<s:Group  >
-		<s:layout>
-			<s:HorizontalLayout  paddingTop="10" paddingBottom="5"  />			
-		</s:layout>
+	<s:Label text="Size" fontWeight="bold" paddingTop="5" />
+	
+	<s:HGroup  paddingTop="5" paddingBottom="5">
+		
 		<mx:Label paddingLeft="5" text="Width:" width="80"/>
 		<s:TextInput id="txtWidth" text="{diagramModel.width}"  
 			restrict="0-9" maxChars="4"
 			width="80"
 			/>
-	</s:Group>
+	</s:HGroup>
 	
-	<s:Group >
-		<s:layout>
-			<s:HorizontalLayout  paddingTop="5" paddingBottom="5"  />			
-		</s:layout>
+	<s:HGroup paddingTop="5" paddingBottom="5">		
 		<mx:Label paddingLeft="5" text="Height:" width="80"/>
 		<s:TextInput id="txtHeight" text="{diagramModel.height}" 
 					 restrict="0-9" maxChars="4"
 					 width="80"
 					 />
-	</s:Group>
+	</s:HGroup>
+	
+	<s:Label text="Background" fontWeight="bold" paddingTop="5" />
+	
+	<s:HGroup paddingTop="10" paddingBottom="5" >	
+		<s:Label width="80" paddingLeft="5" text="Format:" />
+		<s:DropDownList id="lstBGFormat" dataProvider="{bgFormatsAC}" selectedIndex="{_selectedBGFormat}" />
+	</s:HGroup>
+	
+		
+	<s:HGroup  paddingBottom="5" verticalAlign="middle"  >	
+		<s:Label width="80" paddingLeft="5" text="Tint Color:" />
+		<mx:ColorPicker id="cpBackgroundColor" selectedColor="{diagramModel.currSDBackgroundModel.tintColor}" height="25" width="25"  />		
+	</s:HGroup>
+	
+	<s:HGroup   paddingBottom="5" verticalAlign="middle"  >	
+		<s:Label width="80" paddingLeft="5" text="Tint Amount:" />
+				
+		<s:Group>
+			<mx:Image source="@Embed('assets/img/grid_block.png')"/>
+			<s:Rect id="backgroundRect" width="25" height="25"   >
+				<s:fill>
+					<s:SolidColor alpha="{hslAlpha.value}" color="{cpBackgroundColor.selectedColor}"/>
+				</s:fill>
+			</s:Rect>
+		</s:Group>
+					
+		<s:Label text="{(uint(hslAlpha.value*100)).toString() + '%'}" width="40"/>
+		
+		<s:HSlider id="hslAlpha" minimum="0" maximum="1"				   
+				   dataTipFormatFunction="formatAlphaSlider"
+				   snapInterval=".01"
+				   value="{diagramModel.currSDBackgroundModel.tintAlpha}"
+				   />		
+	</s:HGroup>
 	
 	
-	<s:Group  >
-		<s:layout>
-			<s:HorizontalLayout  paddingTop="15" paddingBottom="5"  />			
-		</s:layout>
-		<mx:Text width="80" height="40" paddingLeft="5" text="Background:" />
-		<mx:ColorPicker id="cpBackgroundColor" selectedColor="{diagramModel.baseBackgroundColor}" />
-		<mx:Spacer width="10"/>
-		<mx:Label text="(Applies to Basic style only)" styleName="formHint" />
-	</s:Group>
 	
-	<s:Group  >
-		<s:layout>
-			<s:HorizontalLayout  paddingTop="15" paddingBottom="5"  />			
-		</s:layout>
-	</s:Group>
+	
+	
 	
 	<s:VGroup width="100%" horizontalAlign="right">
 		<s:HGroup>

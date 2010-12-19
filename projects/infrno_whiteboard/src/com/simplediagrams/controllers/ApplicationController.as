@@ -28,6 +28,7 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.view.dialogs.VerifyQuitDialog;
 	
 	import flash.display.DisplayObject;
+	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	
 	import mx.controls.Alert;

@@ -58,9 +58,37 @@
 				</s:HGroup>				
 			</s:Group>
 			
+			<s:TabBar id="tbrLibrary" dataProvider="{vstLibrary}" styleName="libraryTabBar" x="10">
+				<s:layout>
+					<s:ButtonBarHorizontalLayout gap="2" />
+				</s:layout>
+			</s:TabBar>
 			
 		</s:Group>
 		
+		
+		<mx:ViewStack id="vstLibrary" selectedIndex="{tbrLibrary.selectedIndex}" width="100%" height="100%">
+			
+
+			<s:NavigatorContent id="search" label="Symbols" width="100%" height="100%">			
+				<s:Rect  width="100%" height="100%">
+					<s:fill>
+						<s:BitmapFill source="@Embed('assets/img/backgrounds/shape_library_bg.png')" fillMode="repeat"/>
+					</s:fill>					
+				</s:Rect>			
+				<view:LibraryPanel id="libraryPanel" height="100%" width="100%" contentBackgroundAlpha="0" backgroundAlpha="0" />		
+			</s:NavigatorContent>
+			
+
+			<s:NavigatorContent label="Backgrounds" width="100%" height="100%">			
+				<s:Rect  width="100%" height="100%">
+					<s:fill>
+						<s:BitmapFill source="@Embed('assets/img/backgrounds/shape_library_bg.png')" fillMode="repeat"/>
+					</s:fill>					
+				</s:Rect>			
+				<view:BackgroundsPanel id="backgroundsPanel" height="100%" width="100%" contentBackgroundAlpha="0"/>	
+			</s:NavigatorContent>
+		</mx:ViewStack>
 		
 		-->
 		
@@ -73,7 +101,8 @@
 			</s:Rect>
 			<view:LibraryPanel id="libraryPanel" height="100%" width="100%" contentBackgroundAlpha="0" backgroundAlpha="0" />
 		</s:Group>
-	</s:VGroup>
+	</s:VGroup>		
+
 		
 							
 </s:Group>

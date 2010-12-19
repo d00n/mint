@@ -10,6 +10,7 @@
     <fx:Metadata>
     	<![CDATA[
        		[HostComponent("com.simplediagrams.view.SDComponents.SDTextArea")]
+		
     	]]>
     </fx:Metadata> 
     
@@ -43,19 +44,21 @@
           
   	<mx:Image id="backgroundImage" source="{StickyNote}" width="{hostComponent.width}" height="{hostComponent.height}" />
   
-    <s:Scroller id="scroller" left="0" top="0" right="0" bottom="0" minViewportInset="1">
-      <s:RichEditableText id="mainTextArea"
-        		  color="{hostComponent.fontColor}"
+   
+   <s:TextArea id="mainTextArea"
         		  fontSize="{hostComponent.fontSize}"
-        		  width="{hostComponent.width-20}"
-        		  height="{hostComponent.height-20}"
-				  fontFamily="{hostComponent.fontFamily}"
+        		  contentBackgroundAlpha="0"
+        		  borderVisible="false"
+        		  x = "10"
+        		  y = "2"
         		  text="{hostComponent.text}"
+        		  width="{hostComponent.width-25}"
+        		  height="{hostComponent.height-20}"  
+				  fontFamily="{hostComponent.fontFamily}"
+        		  verticalScrollPolicy="off"
+        		  horizontalScrollPolicy="off"
                   heightInLines="10"
-                  widthInChars="15"
-                  paddingLeft="10" paddingTop="15"
-                  paddingRight="10" paddingBottom="10"/>
-         
-    </s:Scroller>
+                  widthInChars="15"/>
+
 
 </s:SparkSkin>

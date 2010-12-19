@@ -68,7 +68,7 @@
 				_openListAC.addItem(new Object())
 				
 				var aboutInfo:AboutInfo = new AboutInfo()
-				lblVersion.text = "Version : " + AboutInfo.applicationVersion
+				lblVersion.text = "Version : " + AboutInfo.applicationVersion 
 			
 			}
 			

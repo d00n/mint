@@ -5,7 +5,6 @@ package com.simplediagrams.model
 	
 	import flash.events.EventDispatcher;
 	
-	;
 
 	[Bindable]
 	public class DiagramStyleManager extends EventDispatcher

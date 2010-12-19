@@ -23,8 +23,10 @@ package com.simplediagrams.model
 	
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
+	import mx.core.BitmapAsset;
 	import mx.events.CollectionEvent;
 	import mx.events.DynamicEvent;
+	import mx.events.PropertyChangeEvent;
 	import mx.utils.UIDUtil;
 	
 	import spark.components.Group;
@@ -61,9 +63,13 @@ package com.simplediagrams.model
 		
 		[Inject]
 		public var diagramStyleManager:DiagramStyleManager
+				
 		
 		public var firstBuild:Boolean = true
-		
+			
+			
+		//background
+		public var currSDBackgroundModel:SDBackgroundModel			
 			
 		protected var _name:String = ""
 		protected var _description:String	
@@ -102,12 +108,33 @@ package com.simplediagrams.model
 		
 		public function onCollectionChange(event:CollectionEvent):void
 		{
+			if (event.items && event.items[0] is PropertyChangeEvent) 
+			{
+				//don't track this if the user just selected something
+				if (event.items[0].property=="selected")
+				{
+					return
+				}
+				
+				//don't track if image was loaded after buildDiagram() finished
+				if (event.target && event.target[0] is SDImageModel)
+				{
+					if (event.items[0].property=="origWidth" || event.items[0].property=="origHeight")
+					{
+						return
+					}
+				}
+				
+			}
+			
+				
 			_isDirty = true
 		}
 		
 		public function initDiagramModel():void
 		{	
 										
+			
 			_currToolType = POINTER_TOOL
 				
 			dispatcher.dispatchEvent(new ClearDiagramEvent(ClearDiagramEvent.CLEAR_DIAGRAM, true))
@@ -119,6 +146,7 @@ package com.simplediagrams.model
 			//setup for new diagram
 			sdObjectModelsAC.removeAll()	
 			
+				
 			_isDirty = false	
 		
 		}
@@ -234,17 +262,17 @@ package com.simplediagrams.model
 				}
 			}
 			
-			isDirty = false	
 				
 			if (modelsForMissingSymbolsArr.length > 0)
 			{
 				var error:DiagramIncompleteDueToMissingSymbolsError = new DiagramIncompleteDueToMissingSymbolsError()
 				error.modelsForMissingSymbolsArr = modelsForMissingSymbolsArr
 				throw error
-			}			
+			}		
 			
 			dispatcher.dispatchEvent(new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_BUILT))
-								
+			
+			isDirty = false	
 		}
 		
 		
@@ -546,6 +574,8 @@ package com.simplediagrams.model
 		/* Do all things necessary to init DiagramModel for a new diagram */		
 		public function createNew():void
 		{
+			
+				
 			initDiagramModel()	
 									
 			//launch the loaded event before actually building the diagram

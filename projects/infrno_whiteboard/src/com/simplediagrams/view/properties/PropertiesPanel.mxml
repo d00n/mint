@@ -77,7 +77,7 @@
 	
 	<s:Rect left="20" right="30" top="-4" bottom="0" excludeFrom="none" radiusX="4" radiusY="4" >
 		<s:fill>
-			<s:SolidColor id="backgroundColor" color="{_backgroundColor}" alpha=".3"/>
+			<s:SolidColor id="backgroundColor" color="{_backgroundColor}" alpha=".7"/>
 		</s:fill>
 	</s:Rect>
 	

@@ -79,7 +79,6 @@
 				height.border="{hostComponent.height-20}" 
 				width.photoStyle="{hostComponent.width-20}" 
 				height.photoStyle="{hostComponent.height-20}" 
-				enabled="false" 
 				focusEnabled="false"
 				mouseEnabled="false"			  
 			 />

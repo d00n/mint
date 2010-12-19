@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Accordion xmlns:fx="http://ns.adobe.com/mxml/2009" 
-	xmlns:s="library://ns.adobe.com/flex/spark" 
-	xmlns:mx="library://ns.adobe.com/flex/mx" 
-	addedToStage="onATS()"
-	horizontalScrollPolicy="off" 
-	paddingLeft="0" 
-	paddingRight="0"
-	creationPolicy="all"
-    borderStyle="none"
-    borderColor="#000000"
-	headerStyleName="customAccordionHeadStyles"
-	>
+			  xmlns:s="library://ns.adobe.com/flex/spark" 
+			  xmlns:mx="library://ns.adobe.com/flex/mx" 
+			  addedToStage="onATS()"
+			  horizontalScrollPolicy="off" 
+			  paddingLeft="0" 
+			  paddingRight="0"
+			  creationPolicy="all"
+			  borderStyle="none"
+			  borderColor="#000000"
+			  headerStyleName="customAccordionHeadStyles"
+			  >
 	
 	<fx:Script>
 		<![CDATA[
@@ -19,6 +19,7 @@
 			import com.simplediagrams.model.DiagramStyleManager;
 			import com.simplediagrams.model.LibraryManager;
 			import com.simplediagrams.model.RegistrationManager;
+			import com.simplediagrams.model.SDBackgroundModel;
 			import com.simplediagrams.model.SDObjectModel;
 			import com.simplediagrams.model.SDSymbolModel;
 			import com.simplediagrams.model.libraries.CustomLibrary;
@@ -26,6 +27,7 @@
 			import com.simplediagrams.util.Logger;
 			import com.simplediagrams.view.components.BasicLibraryCanvas;
 			import com.simplediagrams.view.components.CustomLibraryCanvas;
+			import com.simplediagrams.view.itemRenderers.BackgroundsLibraryItemRenderer;
 			import com.simplediagrams.view.itemRenderers.LibraryItemRenderer;
 			
 			import flash.events.Event;
@@ -41,6 +43,8 @@
 			
 			import spark.components.List;
 			import spark.layouts.TileLayout;
+			
+			
 			
 			[Inject]
 			[Bindable]
@@ -58,33 +62,18 @@
 			[Bindable]
 			public var diagramStyleManager:DiagramStyleManager;
 			
-			[Mediate(event="CreateCustomLibraryEvent.CUSTOM_LIBRARY_CREATED")]
-			public function onCustomLibraryAdded(event:CreateCustomLibraryEvent):void
-			{
-				//make sure to open the custom library dialog so user can start adding symbols
-				this.selectedIndex = libraryManager.librariesAC.length-1
-				
-			}
-			
-			[Mediate(event="LibraryEvent.LIBRARIES_UPDATED")]
-			public function updatePanel(event:Event):void
-			{
-				createLibraryPanel()
-			}
-			
 			
 			protected function onATS():void
 			{
-				Logger.debug("onATS()", this)
-				if (this.numChildren==0 || libraryManager.panelNeedsUpdating )
+				if (this.numChildren==0 || libraryManager.backgroundPanelNeedsUpdating )
 				{
-					createLibraryPanel()
-					libraryManager.panelNeedsUpdating = false //I use this flag because if this state isn't active when a PANEL_UPDATED event is launched, we won't get a panel update
+					createBackgroundLibraryPanel()
+					libraryManager.backgroundPanelNeedsUpdating = false //I use this flag because if this state isn't active when a PANEL_UPDATED event is launched, we won't get a panel update
 				}
 			}
 			
 			
-			protected function createLibraryPanel():void
+			protected function createBackgroundLibraryPanel():void
 			{
 				if (libraryManager==null) return
 					
@@ -92,36 +81,23 @@
 				var len:uint = libraryManager.librariesAC.length
 				for (var i:uint=0;i<len;i++)
 				{
-					var library:ILibrary = libraryManager.librariesAC.getItemAt(i) as ILibrary
+					var library:ILibrary = libraryManager.librariesAC.getItemAt(i) as ILibrary					
+					if (!library.isBackgroundsLibrary) continue
 					if (!library.showInPanel) continue
-					if (library.isBackgroundsLibrary) continue
-					if (library.isPremium && registrationManager.isLicensed==false) continue						
-						
-					if (library.isCustom)
-					{
-						var canvas:BasicLibraryCanvas = new CustomLibraryCanvas()
-						CustomLibraryCanvas(canvas).libraryID = CustomLibrary(library).id
-						if (library.sdLibraryObjectsAC.length>0)
-						{
-							CustomLibraryCanvas(canvas).showDropHereMsg = false
-						}
-					}
-					else
-					{						
-						canvas = new BasicLibraryCanvas()
-					}
+					if (library.isPremium && registrationManager.isLicensed==false) continue	
+					var canvas:BasicLibraryCanvas = new BasicLibraryCanvas()
 					canvas.percentWidth = 100
 					canvas.percentHeight = 100
 					canvas.label = library.displayName
 					canvas.setStyle("backgroundAlpha", 0)
-										
+					
 					var list:List = new List()					
 					list.id = "lstTileList"
 					list.styleName = "libraryTileList"
 					list.dataProvider = library.sdLibraryObjectsAC
-					list.itemRenderer = new ClassFactory(LibraryItemRenderer)
+					list.itemRenderer = new ClassFactory(BackgroundsLibraryItemRenderer)
 					list.dragEnabled = true
-					list.dropEnabled = false
+					list.dropEnabled = false				
 					list.dragMoveEnabled = false
 					list.addEventListener(DragEvent.DRAG_START, onDragStart)
 					list.percentHeight = 100
@@ -148,40 +124,25 @@
 			
 			private function onDragStart(event:MouseEvent):void
 			{
-												
-                var dragInitiator:List = event.currentTarget as List;
-                var dragSource:DragSource = new DragSource();
-               				
-                dragSource.addData(dragInitiator.selectedItem, 'libraryItem');
-                               
+				
+				var dragInitiator:List = event.currentTarget as List;
+				var dragSource:DragSource = new DragSource();
+				
+				dragSource.addData(dragInitiator.selectedItem, 'backgroundLibraryItem');
+				
 				var dragProxy:Image = new Image()
-				var sdObjectModel:SDObjectModel = SDObjectModel(event.currentTarget.selectedItem)
+				var sdBG:SDBackgroundModel = SDBackgroundModel(event.currentTarget.selectedItem)
 				
-				//color drag image to fit style setting
-				var defaultColorMatrix:Array = diagramStyleManager.defaultColorMatrix
-				
-				if (sdObjectModel.colorizable)
-				{
-					var filter:ColorMatrixFilter = new ColorMatrixFilter(defaultColorMatrix)
-					dragProxy.filters = [filter]				
-				}
-				
-				if (sdObjectModel is SDSymbolModel && SDSymbolModel(sdObjectModel).imageData)
-				{					
-					dragProxy.source = SDSymbolModel(sdObjectModel).imageData			
-				}
-				else
-				{			
-					var iconClass:Class = sdObjectModel.iconClass					
-					dragProxy.source = new iconClass()			
-				}	
-					
+				dragProxy.source = sdBG.thumbnailDataClass
+				dragProxy.width = 30
+				dragProxy.height = 30
+								
 				var xPos:Number = event.target.parent.mouseX
 				var yPos:Number = event.target.parent.mouseY
-			
+				
 				try
 				{	
-                	DragManager.doDrag(dragInitiator, dragSource, event, dragProxy, xPos, yPos)
+					DragManager.doDrag(dragInitiator, dragSource, event, dragProxy, xPos, yPos)
 				}
 				catch(err:Error)
 				{
@@ -192,14 +153,14 @@
 			
 			private function noSelectionEasingFunction(t:Number,b:Number,c:Number,d:Number):Number
 			{
-			     return 0;
+				return 0;
 			}
-
+			
 			
 		]]>
 	</fx:Script>
 	
-
 	
-
+	
+	
 </mx:Accordion>

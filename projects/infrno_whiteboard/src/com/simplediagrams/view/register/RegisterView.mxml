@@ -46,7 +46,7 @@
 			{								
 				Logger.debug("onCC() currentState:" + this.currentState,this) 						
 				req = new URLRequest("http://www.simplediagrams.com/purchase")	
-					
+				this.focusManager.setFocus(this.txtEmail)	
 			}
 			
 			protected function onATS():void

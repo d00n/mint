@@ -67,6 +67,8 @@ package com.simplediagrams.view.SDComponents
 			fontFamily = _model.fontFamily
             fontSize = _model.fontSize
             textAlign = _model.textAlign
+			rotation = _model.rotation
+										
             setSkinStyle()
 			depth = _model.depth;
             

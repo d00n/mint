@@ -13,12 +13,12 @@
 	<fx:Script>
 		<![CDATA[
 			import com.roguedevelopment.objecthandles.constraints.*;
-			import com.simplediagrams.controllers.DiagramController;
 			import com.simplediagrams.controllers.RemoteSharedObjectController;
 			import com.simplediagrams.events.*;
 			import com.simplediagrams.model.DefaultToolsManager;
 			import com.simplediagrams.model.DiagramModel;
 			import com.simplediagrams.model.DiagramStyleManager;
+			import com.simplediagrams.model.SDBackgroundModel;
 			import com.simplediagrams.model.SDCustomSymbolModel;
 			import com.simplediagrams.model.SDSymbolModel;
 			import com.simplediagrams.util.Logger;
@@ -62,9 +62,6 @@
 				drawingSurface.pencilColor = drawingSurface.lineColor = diagramModel.getColor()            	
 				setMouseListeners()
 				
-				var evt:DrawingBoardEvent = new DrawingBoardEvent(DrawingBoardEvent.DRAWING_BOARD_CREATION_COMPLETE, true)
-				dispatchEvent(evt)
-            	
 			}
 			
 			public function initDrawingBoard():void
@@ -159,15 +156,15 @@
 			{
 				initDrawingBoard()
 				
-            	background.width = diagramModel.width
-            	background.height = diagramModel.height
+            	diagramBackground.width = diagramModel.width
+				diagramBackground.height = diagramModel.height
             	sdObjectsHolder.width = diagramModel.width
             	sdObjectsHolder.height = diagramModel.height
 			}
 							
 			private function onDragEnter(event:DragEvent):void 
             {
-                if (event.dragSource.hasFormat('libraryItem') || event.dragSource.hasFormat('defaultTool')) 
+                if (event.dragSource.hasFormat('libraryItem') || event.dragSource.hasFormat('defaultTool')|| event.dragSource.hasFormat('backgroundLibraryItem')) 
                 {
                     DragManager.acceptDragDrop(this);          
                 }
@@ -227,6 +224,12 @@
 					
 					dispatchEvent(libraryItemDroppedEvt)
 					
+				}
+				else if (event.dragSource.hasFormat("backgroundLibraryItem"))
+				{
+					var bgDroppedEvt:BackgroundItemDroppedEvent = new BackgroundItemDroppedEvent(BackgroundItemDroppedEvent.BACKGROUND_ITEM_DROPPED_EVENT, true)
+					bgDroppedEvt.sdBackgroundModel = event.dragSource.dataForFormat("backgroundLibraryItem") as  SDBackgroundModel
+					dispatchEvent(bgDroppedEvt)
 				}
 				else if (event.dragSource.hasFormat("defaultTool"))
 				{
@@ -369,7 +372,7 @@
             	this.removeEventListener(MouseEvent.MOUSE_MOVE, onDragMarquee)
             	            	            	
             	///don't do anything if the original target of the click was something other than the background
-            	if (event.target!=background && diagramModel.currToolType!=DiagramModel.TEXT_TOOL) return
+            	if (event.target!=diagramBackground && diagramModel.currToolType!=DiagramModel.TEXT_TOOL) return
             						
 				_clickedBackground = true 	
 									
@@ -415,7 +418,7 @@
 				this.removeEventListener(MouseEvent.MOUSE_MOVE, onDragMarquee)
 									
 				//If user clicked background, then we should deselect anything that's selected
-				if (event.target == background  &&	_clickedBackground  )
+				if (event.target == diagramBackground  &&	_clickedBackground  )
 				{
 					diagramModel.sdObjectHandles.selectionManager.clearSelection() 
 					_clickedBackground = false
@@ -452,8 +455,8 @@
 					} 
 					
             		// collect info and dispatch multiSelect event							
-					var mw:Number = background.mouseX - _marqueeX
-					var mh:Number = background.mouseY - _marqueeY
+					var mw:Number = diagramBackground.mouseX - _marqueeX
+					var mh:Number = diagramBackground.mouseY - _marqueeY
 				   				     				  	
 					if (mw<_marqueeX) 
 					{
@@ -697,11 +700,12 @@
 			</s:layout>
 			
 			<view:Background 
-				id="background"
+				id="diagramBackground"
 		   	 	width="{diagramModel.width}"
 		    	height="{diagramModel.height}"
 				scaleX="{diagramModel.scaleX}"
 				scaleY="{diagramModel.scaleY}"	
+			    skinClass="com.simplediagrams.view.skins.BackgroundSkin"
 				/>
 			
 			<s:Group id="sdObjectsHolder"  

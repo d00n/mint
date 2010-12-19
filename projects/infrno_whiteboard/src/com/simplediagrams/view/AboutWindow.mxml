@@ -54,7 +54,7 @@
 			{
 				
 				var aboutInfo:AboutInfo = new AboutInfo()
-				version = "Version : " + AboutInfo.applicationVersion	
+				version = "Version : " + AboutInfo.applicationVersion 
 			
 				var myFilter:DropShadowFilter = new DropShadowFilter ()
 				myFilter.alpha = .2

@@ -83,7 +83,10 @@
 	<s:states>
 		<s:State name="normal" />
 	</s:states>
-		
+	
 	<mx:Image id="iconImage" source="{_imageSource}" width="40" height="40" x="5" y="5" />
 	
+	<!--
+	<s:MovieClipSWFLoader id="iconImage" source="{_imageSource}" width="40" height="40" x="5" y="5" />
+	-->
 </s:ItemRenderer>

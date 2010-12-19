@@ -12,6 +12,7 @@ package com.simplediagrams.model
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.Sort;
+	import mx.effects.easing.Back;
 	import mx.utils.ObjectUtil;
 
 
@@ -25,22 +26,36 @@ package com.simplediagrams.model
 		[Inject]
 		public var diagramModel:DiagramModel;
 		
+		//some default background images
+		[Embed(source='assets/img/backgrounds/chalkboard_tile.png')]
+		public var chalkboardBG:Class;
+		
+		[Embed(source='assets/img/backgrounds/whiteboard_tile.png')]
+		public var whiteboardBG:Class;
 		
 		public var diagramsAC:ArrayCollection = new ArrayCollection()
 		public var recentDiagramsAC:ArrayCollection = new ArrayCollection()
 		
+		
+		public var availableForDownloadLibrariesAC:ArrayCollection = new ArrayCollection()
+		protected var rememberShowInPanelSettingsArr:Array = []	
+		
+		public var panelNeedsUpdating:Boolean = true //this flag helps the panel know to update if it missed the actual event (because it wasn't an active state and therefore wasn't wired)
+		public var backgroundPanelNeedsUpdating:Boolean = true	
+			
+			
+		public var librariesAC:ArrayCollection = new ArrayCollection()
+			
+		//symbol libraries
 		public var libraryBasic:LibraryBasic = new LibraryBasic()	
 		public var libraryBiz:LibraryBiz = new LibraryBiz()	
 		public var libraryMeetings:LibraryMeetings = new LibraryMeetings()	
 		public var libraryCommunication:LibraryCommunication = new LibraryCommunication()	
 		public var libraryMaterials:LibraryMaterials = new LibraryMaterials()	
 					
-		public var librariesAC:ArrayCollection = new ArrayCollection()
+		//background libraries
+		public var backgroundLibraryBasic:BackgroundLibraryBasic = new BackgroundLibraryBasic()
 		
-		public var availableForDownloadLibrariesAC:ArrayCollection = new ArrayCollection()
-		protected var rememberShowInPanelSettingsArr:Array = []	
-			
-		public var panelNeedsUpdating:Boolean = true //this flag helps the panel know to update if it missed the actual event (because it wasn't an active state and therefore wasn't wired)
 			
 		public static function getSymbolClass(fullyQualifiedSymbolName:String):Class
 		{
@@ -55,11 +70,16 @@ package com.simplediagrams.model
 			
 			
 		public function LibraryManager()
-		{					
+		{		
+			//symbols
 			librariesAC.addItem(libraryBasic)
 			librariesAC.addItem(libraryBiz)
 			librariesAC.addItem(libraryMeetings)
 			librariesAC.addItem(libraryCommunication)
+			
+			//backgrounds
+			librariesAC.addItem(backgroundLibraryBasic)	
+				
 			librariesAC.refresh()
 		}
 		
@@ -266,6 +286,26 @@ package com.simplediagrams.model
 				}
 			}
 			return null
+		}
+		
+		public function getSDBackgroundModel(libraryName:String, bgName:String):SDBackgroundModel
+		{
+			for each (var lib:ILibrary in librariesAC)
+			{				
+				if (lib.isBackgroundsLibrary && libraryName==lib.libraryName)
+				{
+					var bg:SDBackgroundModel = lib.getSDObjectModel(bgName) as SDBackgroundModel				
+					return bg
+				}		
+			}
+			
+			Logger.warn("Couldn't find SDBackgroundModel for libraryName: " + libraryName + " templateName: " + bgName, this)
+			throw new SDObjectModelNotFoundError
+		}
+		
+		public function getDefaultBackgroundModel():SDBackgroundModel
+		{
+			return backgroundLibraryBasic.getSDObjectModel("Chalkboard") as SDBackgroundModel
 		}
 		
 		

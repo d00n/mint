@@ -1,6 +1,7 @@
 package com.simplediagrams.model.libraries
 {
 	import com.simplediagrams.errors.SDObjectModelNotFoundError;
+	import com.simplediagrams.model.SDBackgroundModel;
 	import com.simplediagrams.model.SDObjectModel;
 	import com.simplediagrams.model.SDSymbolModel;
 	import com.simplediagrams.util.Logger;
@@ -16,6 +17,7 @@ package com.simplediagrams.model.libraries
 		protected var _isPremium:Boolean = false 	//not to be shown in free versions
 		protected var _isPlugin:Boolean = false		//plugins will set this to true
 		protected var _isCustom:Boolean = false		//custom libraries will set this to true
+		protected var _isBackgroundsLibrary:Boolean = false //libraries of background images will set this to true
 		protected var _libraryName:String 			//the fully qualified name, e.g. com.simplediagrams.shapelibrary.basicClean
 		protected var _fileName:String 				//the name of the file (same as last part of _libraryName)
 		protected var _displayName:String 			//to be shown in UI
@@ -54,8 +56,7 @@ package com.simplediagrams.model.libraries
 		
 		
 		public function initLibrary():void
-		{	
-		
+		{			
 			//attach actual graphic symbol to class
 			for each (var sdObj:SDSymbolModel in _sdLibraryObjectsAC)
 			{
@@ -119,6 +120,16 @@ package com.simplediagrams.model.libraries
 		}
 		
 		
+		public function get isBackgroundsLibrary():Boolean
+		{
+			return _isBackgroundsLibrary
+		}
+		
+		public function set isBackgroundsLibrary(value:Boolean):void
+		{
+			_isBackgroundsLibrary = value
+		}
+		
 		public function get isPremium():Boolean
 		{
 			return _isPremium
@@ -153,15 +164,15 @@ package com.simplediagrams.model.libraries
 				
 		public function getSDObjectModel(symbolName:String):SDObjectModel
 		{
-			for each (var obj:SDSymbolModel in sdLibraryObjectsAC)
+			for each (var obj:SDObjectModel in sdLibraryObjectsAC)
 			{
-				if (symbolName==obj.symbolName)
+				if (obj is SDSymbolModel && symbolName== SDSymbolModel(obj).symbolName)
 				{
-					var sdObj:SDSymbolModel = obj.clone() as SDSymbolModel
+					var sdObj:SDObjectModel = obj.clone()
 					return sdObj
 				}
-			}			
-			throw new SDObjectModelNotFoundError()			
+			}     
+			throw new SDObjectModelNotFoundError()      
 		}
 		
 		public function addLibraryItem(obj:Object):void

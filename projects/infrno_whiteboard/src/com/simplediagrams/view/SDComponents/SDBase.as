@@ -80,14 +80,14 @@ package com.simplediagrams.view.SDComponents
 		
 		public function moveToBackSelected(event:ContextMenuEvent):void
 		{
-			var eventChangeDepth:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.MOVE_TO_BACK);
+			var eventChangeDepth:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.MOVE_TO_BACK, true);
 			eventChangeDepth.sdID = this.sdID;
 			dispatchEvent(eventChangeDepth);
 		}
 		
 		public function moveBackwardSelected(event:ContextMenuEvent):void
 		{
-			var eventChangeDepth:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.MOVE_BACKWARD);
+			var eventChangeDepth:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.MOVE_BACKWARD, true);
 			eventChangeDepth.sdID = this.sdID;
 			dispatchEvent(eventChangeDepth);
 		}
@@ -95,14 +95,14 @@ package com.simplediagrams.view.SDComponents
 		
 		public function moveForwardSelected(event:ContextMenuEvent):void
 		{
-			var eventChangeDepth:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.MOVE_FORWARD);
+			var eventChangeDepth:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.MOVE_FORWARD, true);
 			eventChangeDepth.sdID = this.sdID;
 			dispatchEvent(eventChangeDepth);
 		}
 		
 		public function moveToFrontSelected(event:ContextMenuEvent):void
 		{
-			var eventChangeDepth:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.MOVE_TO_FRONT);
+			var eventChangeDepth:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.MOVE_TO_FRONT, true);
 			eventChangeDepth.sdID = this.sdID;
 			dispatchEvent(eventChangeDepth);
 		}

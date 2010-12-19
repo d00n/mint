@@ -16,8 +16,11 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.errors.DiagramIncompleteDueToMissingSymbolsError;
 	import com.simplediagrams.errors.SymbolNotFoundError;
 	import com.simplediagrams.events.*;
+	import com.simplediagrams.model.ApplicationModel;
 	import com.simplediagrams.model.DiagramModel;
 	import com.simplediagrams.model.LibraryManager;
+	import com.simplediagrams.model.RegistrationManager;
+	import com.simplediagrams.model.SDBackgroundModel;
 	import com.simplediagrams.model.SDImageModel;
 	import com.simplediagrams.model.SDLineModel;
 	import com.simplediagrams.model.SDObjectModel;
@@ -67,6 +70,9 @@ package com.simplediagrams.controllers
 		}
 		
 		[Inject]
+		public var appModel:ApplicationModel
+		
+		[Inject]
 		public var diagramModel:DiagramModel
 		
 		[Inject]
@@ -83,6 +89,9 @@ package com.simplediagrams.controllers
 		
 		[Inject]
 		public var dialogsController:DialogsController	
+		
+		[Inject]
+		public var registrationManager:RegistrationManager
 
 		[Autowire(bean="remoteSharedObjectController")]
 		public var remoteSharedObjectController:RemoteSharedObjectController
@@ -208,6 +217,20 @@ package com.simplediagrams.controllers
 		
 		
 		*/
+		
+		protected var _freeBackgroundsArr:Array = ["Blank","Chalkboard","Whiteboard"];
+		
+		[Mediate(event='BackgroundItemDroppedEvent.BACKGROUND_ITEM_DROPPED_EVENT')]
+		public function onBackgroundItemDropped(event:BackgroundItemDroppedEvent):void
+		{			
+			var sdBackgroundModel:SDBackgroundModel = event.sdBackgroundModel
+			if (registrationManager.isLicensed==false && (_freeBackgroundsArr.indexOf(sdBackgroundModel.backgroundName)==-1))
+			{
+				Alert.show("This background is only available to Full Version users. Visit www.simpledigrams.com and upgrade to Full Version today!", "Full Version Only")
+				return
+			}
+			diagramModel.currSDBackgroundModel = sdBackgroundModel
+		}
 		
 		
 		[Mediate(event='DrawingBoardItemDroppedEvent.STICKY_NOTE_ADDED')]
@@ -976,6 +999,15 @@ package com.simplediagrams.controllers
 				}
 			}
 		}
+		
+		
+		[Mediate("RebuildDiagramEvent.REBUILD_DIAGRAM_EVENT")]
+		public function rebuildDiagram(event:RebuildDiagramEvent):void
+		{
+			diagramModel.buildDiagram()
+		}
+		
+  		
 		
 	}
 }

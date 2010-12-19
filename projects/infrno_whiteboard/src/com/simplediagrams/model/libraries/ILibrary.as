@@ -24,7 +24,10 @@ package com.simplediagrams.model.libraries
 		function set isPlugin(value:Boolean):void
 		
 		function get isCustom():Boolean
-		function set isCustom(value:Boolean):void			
+		function set isCustom(value:Boolean):void	
+			
+		function get isBackgroundsLibrary():Boolean
+		function set isBackgroundsLibrary(value:Boolean):void		
 			
 		function get isPremium():Boolean
 		function set isPremium(value:Boolean):void

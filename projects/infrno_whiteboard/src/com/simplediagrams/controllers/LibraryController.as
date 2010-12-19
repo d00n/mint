@@ -39,6 +39,7 @@ package com.simplediagrams.controllers
 	
 	public class LibraryController extends AbstractController
 	{
+		
 		[Bindable]
 		[Inject]
 		public var libraryManager:LibraryManager;
@@ -97,6 +98,7 @@ package com.simplediagrams.controllers
 			}
 			
 			libraryManager.panelNeedsUpdating = true
+			libraryManager.backgroundPanelNeedsUpdating = true
 			dispatcher.dispatchEvent(new LibraryEvent(LibraryEvent.LIBRARIES_UPDATED, true))	
 			clearDialog()
 		}
@@ -145,6 +147,7 @@ package com.simplediagrams.controllers
 			
 			libraryManager.removeLibrary(library.libraryName)	
 			libraryManager.panelNeedsUpdating = true
+			libraryManager.backgroundPanelNeedsUpdating = true
 			dispatcher.dispatchEvent(new LibraryEvent(LibraryEvent.LIBRARIES_UPDATED, true))
 				
 			//get rid of folder if library is a plugin
@@ -344,6 +347,7 @@ package com.simplediagrams.controllers
 				lib.customLibraryDAO = dao
 				libraryManager.addLibrary(lib)
 				libraryManager.panelNeedsUpdating = true
+				libraryManager.backgroundPanelNeedsUpdating = true
 				dispatcher.dispatchEvent(new LibraryEvent(LibraryEvent.LIBRARIES_UPDATED, true))		
 				
 				//load symbols in library

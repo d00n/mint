@@ -14,8 +14,10 @@ package com.simplediagrams.view.SDComponents
 	import flash.utils.ByteArray;
 	
 	import mx.controls.Image;
+	//import mx.controls.MovieClipSWFLoader;
 	import mx.events.FlexEvent;
 	import mx.events.PropertyChangeEvent;
+	
 	
 	import spark.components.Label;
 	import spark.primitives.Graphic;
@@ -30,7 +32,9 @@ package com.simplediagrams.view.SDComponents
 		
 		
 		[SkinPart(required="true")]		
-		public var imgLibrarySymbol:Image		
+		public var imgLibrarySymbol:Image
+		//public var imgLibrarySymbol:MovieClipSWFLoader		
+		
 		
 		[SkinPart(required="true")]		
 		public var imgCustomSymbol:Image		

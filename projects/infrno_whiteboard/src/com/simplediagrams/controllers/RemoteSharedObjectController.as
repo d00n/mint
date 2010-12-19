@@ -69,10 +69,10 @@ package com.simplediagrams.controllers
 	public class RemoteSharedObjectController extends AbstractController 
 	{
 
-		/** A value of "success" means the client changed the shared object */
+		/** SUCCESS means the client changed the shared object */
 		private static const SUCCESS : String = "success";
 		
-		/** A value of "change" means another client changed the object or the server resynchronized the object. */
+		/** CHANGE means another client changed the object or the server resynchronized the object. */
 		private static const CHANGE : String = "change";
 		
 		private static const SHARED_OBJECT_NAME:String = "whiteboard_contents";
@@ -549,6 +549,7 @@ package com.simplediagrams.controllers
 			}		
 			
 		}
+		
 		
 //		//[Mediate(event="CreateNewDiagramEvent.NEW_DIAGRAM_CREATED")]
 //		public function dispatchUpdate_ClearDiagram(event:CreateNewDiagramEvent) : void

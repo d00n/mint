@@ -78,8 +78,5 @@ package com.simplediagrams.view
 			}
 			this.invalidateSkinState()
 		}
-	
-		
-		
 	}
 }

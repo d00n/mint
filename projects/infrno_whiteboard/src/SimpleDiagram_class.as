@@ -29,6 +29,8 @@ protected function onPreInit():void
 	
 	Logger.info("#SIMPLEDIAGRAMS: PRE-INITIALIZED")
 	Logger.info("==================================================") 
+		
+		
 	
 //	_updater = new ApplicationUpdaterUI();
 //	_updater.configurationFile = File.applicationDirectory.resolvePath("config/updaterConfig.xml");

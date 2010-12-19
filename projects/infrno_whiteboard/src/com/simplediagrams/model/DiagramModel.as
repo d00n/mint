@@ -95,6 +95,7 @@ package com.simplediagrams.model
 	
 		public function DiagramModel()
 		{        	
+			Logger.debug("DiagramModel() constructor")
 		}
 		
 		[PostConstruct]

@@ -7,7 +7,7 @@
 	mouseUp="onMouseUp(event)"
 	creationComplete="onCC()"
 
-	width="45" >
+	width="24" >
 	
 	<s:layout>
 		<s:BasicLayout/>

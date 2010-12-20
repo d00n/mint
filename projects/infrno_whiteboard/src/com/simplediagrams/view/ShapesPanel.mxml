@@ -22,7 +22,7 @@
 	</s:layout>
 	
 
-	<view:DefaultObjectsPanel id="defaultToolsPanel" height="100" width="100%" />
+	<!--view:DefaultObjectsPanel id="defaultToolsPanel" height="100" width="100%" /-->
 	
 	<s:VGroup height="100%" width="100%" gap="0">
 		

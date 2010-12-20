@@ -73,7 +73,7 @@ package com.simplediagrams.model
 		
 		public var fontsAC:ArrayCollection 
 		
-		protected var _viewing:String = VIEW_STARTUP
+		protected var _viewing:String = VIEW_DIAGRAM
 		
 		
 		//protected static var _baseStorageDir:File	

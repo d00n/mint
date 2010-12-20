@@ -4,6 +4,7 @@ package com.simplediagrams.view
 	import com.simplediagrams.events.PropertiesEvent;
 	import com.simplediagrams.events.StyleEvent;
 	import com.simplediagrams.model.DiagramModel;
+	import com.simplediagrams.model.LibraryManager;
 	import com.simplediagrams.model.DiagramStyleManager;
 	import com.simplediagrams.model.SDBackgroundModel;
 	import com.simplediagrams.util.Logger;
@@ -26,7 +27,10 @@ package com.simplediagrams.view
 	{		
 		
 		[Inject]
-		public var diagramModel:DiagramModel
+		public var diagramModel:DiagramModel	
+		
+		[Inject]
+		public var libraryManager:LibraryManager
 		
 		[Inject]
 		public var diagramStyleManager:DiagramStyleManager
@@ -39,6 +43,10 @@ package com.simplediagrams.view
 		[PostConstruct]
 		public function onPostConstruct():void
 		{			
+			//setup default background	
+			if (diagramModel.currSDBackgroundModel == null)
+				diagramModel.currSDBackgroundModel = libraryManager.getDefaultBackgroundModel()
+				
 			diagramModel.addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );
 			var ImageBitmapAsset:Class = SDBackgroundModel(diagramModel.currSDBackgroundModel).imageDataClass
 			backgroundImageData = new ImageBitmapAsset()

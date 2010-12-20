@@ -236,9 +236,6 @@ package com.simplediagrams.controllers
 		
 		private function startNewDiagram():void
 		{
-			//setup default background			
-			diagramModel.currSDBackgroundModel = libraryManager.getDefaultBackgroundModel()
-			
 			appModel.viewing = ApplicationModel.VIEW_DIAGRAM			
 				
 			diagramModel.createNew()		//this will launch an "new diagram created" event

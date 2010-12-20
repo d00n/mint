@@ -3,7 +3,6 @@ import com.simplediagrams.events.ApplicationEvent;
 import com.simplediagrams.events.CloseDiagramEvent;
 import com.simplediagrams.events.CreateNewDiagramEvent;
 import com.simplediagrams.events.LoadDiagramEvent;
-import com.simplediagrams.events.RemoteSharedObjectEvent;
 import com.simplediagrams.events.SDMenuEvent;
 import com.simplediagrams.model.ApplicationModel;
 import com.simplediagrams.util.Logger;
@@ -15,7 +14,8 @@ import flash.ui.Keyboard;
 
 import mx.rpc.events.FaultEvent;
 
-import org.swizframework.processors.DispatcherProcessor;
+//import org.swizframework.processors.DispatcherProcessor;
+import com.simplediagrams.events.RemoteSharedObjectEvent;
 
 private var _isWin:Boolean; 
 private var _isMac:Boolean; 
@@ -116,7 +116,8 @@ protected function onPreInit():void
 //	}
 //}
 
-protected function onAppComplete():void
+
+protected function onApplicationComplete():void
 {
 	//	Security.loadPolicyFile("http://admin.infrno.net/crossdomain.xml");
 	

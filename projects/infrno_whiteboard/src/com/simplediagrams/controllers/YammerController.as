@@ -14,7 +14,7 @@ package com.simplediagrams.controllers
 	
 	import flash.display.BitmapData;
 	import flash.events.Event;
-	import flash.filesystem.*;
+//	import flash.filesystem.*;
 	import flash.net.FileReference;
 	import flash.utils.ByteArray;
 	

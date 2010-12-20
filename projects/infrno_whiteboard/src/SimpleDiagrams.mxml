@@ -8,7 +8,8 @@
     preinitialize="onPreInit()"  
     frameRate="48"
 	minWidth="700" 
-	minHeight="500" >
+	minHeight="500"
+	applicationComplete="onApplicationComplete()" >
 			
 	<fx:Script>
 		<![CDATA[
@@ -16,7 +17,7 @@
 			
 			import mx.logging.LogEventLevel;
 			
-			
+
 		]]>
 	</fx:Script>
 	

@@ -1,6 +1,5 @@
 package com.simplediagrams.controllers
 {
-	
 	import com.simplediagrams.business.FileManager;
 	import com.simplediagrams.commands.AddImageItem;
 	import com.simplediagrams.commands.AddLibraryItemCommand;
@@ -68,7 +67,6 @@ package com.simplediagrams.controllers
 		
 	public class RemoteSharedObjectController extends AbstractController 
 	{
-
 		/** SUCCESS means the client changed the shared object */
 		private static const SUCCESS : String = "success";
 		
@@ -97,9 +95,8 @@ package com.simplediagrams.controllers
 		[Autowire(bean='libraryManager')]
 		public var libraryManager:LibraryManager;
 		
-		public function RemoteSharedObjectController() {			
+		public function RemoteSharedObjectController() {
 		}
-
 
 		[Mediate(event="RemoteSharedObjectEvent.START")]
 		private function connect():void{

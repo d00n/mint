@@ -8,7 +8,7 @@ package com.simplediagrams.business
 	import com.simplediagrams.util.Logger;
 	import com.simplediagrams.vo.RecentFileVO;
 	
-	import flash.filesystem.*;
+//	import flash.filesystem.*;
 	
 	import mx.collections.ArrayCollection;
 

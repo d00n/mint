@@ -213,7 +213,8 @@ package com.simplediagrams.model
 			fontsAC.refresh()
 			
 				
-			version = getAppVersion()
+			version = getAppVersion()	
+				
 		}
 		
 		protected function getAppVersion():String

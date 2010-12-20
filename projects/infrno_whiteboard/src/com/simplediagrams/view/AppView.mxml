@@ -15,6 +15,7 @@
 			[Bindable]
 			[Inject]
 			public var applicationModel:ApplicationModel
+
 			
 			
 		]]>

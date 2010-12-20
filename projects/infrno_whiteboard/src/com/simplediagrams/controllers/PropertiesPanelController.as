@@ -107,7 +107,7 @@ package com.simplediagrams.controllers
 				}
 				else if (selectectObj is SDImageModel)
 				{					
-					propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_IMAGE 
+//					propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_IMAGE 
 					return
 				}
 			}

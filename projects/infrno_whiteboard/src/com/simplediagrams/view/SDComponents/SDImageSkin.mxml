@@ -61,9 +61,9 @@
 				width.photoStyle="{hostComponent.width-20}" 
 				height.photoStyle="{hostComponent.height-20}" 
 				>
-			<s:fill>
+			<!--s:fill>
 				<s:SolidColor color="0xEEEEEE"/>
-			</s:fill>
+			</s:fill-->
 		</s:Rect>
 	</s:Graphic>
 	

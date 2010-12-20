@@ -589,6 +589,8 @@ package com.simplediagrams.controllers
 			_currModelForImageLoad.y = 10;
 			_currModelForImageLoad.imageData = _fileReference.data;		
 			
+			_currModelForImageLoad.styleName = SDImageModel.STYLE_NONE;
+			
 			diagramModel.addSDObjectModel(_currModelForImageLoad);			
 				
 			Logger.debug("onLoadComplete() about to dispatch RemoteSharedObjectEvent.LOAD_IMAGE, _currModelForImageLoad.sdID=" + _currModelForImageLoad.sdID,this)

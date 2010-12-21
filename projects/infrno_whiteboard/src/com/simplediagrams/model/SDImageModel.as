@@ -49,7 +49,7 @@ package com.simplediagrams.model
 			var component:SDImage = new SDImage()
 			component.objectModel = this
 			this.sdComponent = component
-			Logger.debug("component: " + component)
+			Logger.debug("createSDComponent() component: " + component, this)
 			return component
 		}
 		
@@ -68,19 +68,19 @@ package com.simplediagrams.model
 		}
 		
 		public function set imageURL(value:String):void{
-			_imageURL = value;
+			_imageURL = value;		
 		}
 		
 		private function loadProgress(event:ProgressEvent):void
 		{   
 			// TODO loading bar in the image frame for extra credit
 			var percentLoaded:Number = Math.round((event.bytesLoaded/event.bytesTotal) * 100);
-			trace("Loading: "+percentLoaded+"%");
+			trace("SDImageModel Loading: "+percentLoaded+"%");
 		}
 		
 		public function loadComplete(event:Event):void
 		{
-			trace("Complete");
+			trace("SDImageModel Complete");
 			// TODO: ....and where's Johnny?
 			//			addChild(loader);
 		}

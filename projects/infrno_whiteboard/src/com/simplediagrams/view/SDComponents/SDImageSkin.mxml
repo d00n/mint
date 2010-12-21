@@ -13,7 +13,7 @@
 	
 	<fx:Script>
 		<![CDATA[         
-			import com.simplediagrams.model.SDImageModel;
+//			import com.simplediagrams.model.SDImageModel;
 			import com.simplediagrams.util.Logger;
 			
 			/* Define the skin elements that should not be colorized. 
@@ -72,7 +72,7 @@
 				x="0" y="0"
 				x.border="10" y.border="10" 
 				x.photoStyle="10" y.photoStyle="10" 
-				source="{hostComponent.imageData}" 
+				source="{hostComponent.imageSource}" 
 				width="{hostComponent.width}" 
 				height="{hostComponent.height}"		
 				width.border="{hostComponent.width-20}" 
@@ -102,11 +102,11 @@
 	</s:Graphic>
 	
 	
-	<s:Button label="Click to add image"	    
+	<!--s:Button label="Click to add image"	    
 			  visible="{hostComponent.imageData==null}"
 			  click="hostComponent.onAddImageClick()" 
 			  skinClass="com.simplediagrams.view.skins.LinkButtonSkin"
 			  horizontalCenter="0" 
-			  verticalCenter="0" />
+			  verticalCenter="0" /-->
 	
 </s:SparkSkin>

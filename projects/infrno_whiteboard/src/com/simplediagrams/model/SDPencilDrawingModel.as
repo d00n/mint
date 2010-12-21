@@ -28,7 +28,7 @@ package com.simplediagrams.model
 			var component:SDPencilDrawing = new SDPencilDrawing()
 			component.objectModel = this
 			this.sdComponent = component
-			Logger.debug("component: " + component, this)
+			Logger.debug("SDPencilDrawingModel.createSDComponent() component: " + component, this)
 			return component
 		}
 	

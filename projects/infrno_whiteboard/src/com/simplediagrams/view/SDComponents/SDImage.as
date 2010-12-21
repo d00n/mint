@@ -22,6 +22,7 @@ package com.simplediagrams.view.SDComponents
 		private var _model:SDImageModel
 		
 		public var imageData:ByteArray		
+		public var imageSource:Object;
 		
 		[SkinPart(required="true")]		
 		public var imageHolder:Image;
@@ -52,7 +53,7 @@ package com.simplediagrams.view.SDComponents
 		
 		public function set objectModel(objectModel:SDObjectModel):void
 		{
-			Logger.debug("set model() model: " + objectModel, this)         
+			Logger.debug("SDImage set objectModel(): " + objectModel, this)         
             _model = SDImageModel(objectModel)
             
             //redraw();
@@ -61,13 +62,17 @@ package com.simplediagrams.view.SDComponents
 			this.width = _model.width
 			this.height = _model.height  
 			this.rotation = _model.rotation
-			this.imageData = _model.imageData
+//			this.imageData = _model.imageData
 			this.depth = _model.depth;
             imageStyle = _model.styleName
-            _model.addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );
-        			
-			this.invalidateSkinState()
 			
+			if (_model.imageURL != null && _model.imageURL.length != 0)
+				this.imageSource = _model.imageURL;
+			else
+				this.imageSource = _model.imageData;			
+			
+			_model.addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );
+			this.invalidateSkinState()
 		}
 		
 
@@ -87,10 +92,15 @@ package com.simplediagrams.view.SDComponents
 				
 				case "imageData":
 					Logger.debug("imageData changed", this)
-					imageData = _model.imageData
+					imageSource = _model.imageData
 					this.invalidateProperties()
 					break
-				
+				case "imageURL":
+					Logger.debug("imageURL changed", this)
+					if (imageSource == null){
+						imageSource = _model.imageURL
+						this.invalidateProperties()
+					}
 				case "styleName":
 					Logger.debug("imageData changed", this)
 					imageStyle = _model.styleName

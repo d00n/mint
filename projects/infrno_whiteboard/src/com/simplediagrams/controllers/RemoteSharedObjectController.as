@@ -318,7 +318,7 @@ package com.simplediagrams.controllers
 			
 			for(var i:int=0; i< event.sdIDArray.length; i++) 
 			{
-				var sdID:Number = event.sdIDArray[i];
+				var sdID:String = event.sdIDArray[i];
 				var sd_obj:Object = {};
 				sd_obj.commandName = "DeleteSelectedSDObjectModel";
 				sd_obj.sdID = sdID;						

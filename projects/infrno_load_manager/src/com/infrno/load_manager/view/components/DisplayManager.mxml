@@ -4,13 +4,93 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:components="com.infrno.load_manager.view.components.*">
 	
+	<fx:Script>
+		<![CDATA[
+			////
+			//  make sure POPUPMANAGER and DRAGMANAGER are owned by the loading application not
+			//  either of the child swfs.
+			////
+			import mx.managers.PopUpManager;
+			import mx.managers.DragManager;
+			private var popUpManager:PopUpManager;
+			private var dragManager:DragManager;
+			
+			import mx.managers.DragManager;
+			import mx.core.DragSource;
+			import mx.events.DragEvent;
+			import flash.events.MouseEvent;
+			import mx.containers.Canvas;
+			import mx.containers.Panel;
+			
+			//
+			// D&D event handlers.
+			//
+			
+			// Creation complete handler for each panel to add the 
+			// mouseMove event handler to the title bar. 
+			// Clicking the mouse button, then moving the mouse on the title bar
+			// initiates the d&d operation. 
+			private function myPanelCCHandler(event:Event):void 
+			{
+				event.currentTarget.myTitleBar.addEventListener(MouseEvent.MOUSE_DOWN, tbMouseMoveHandler);
+			}
+			
+			// Variables used to hold the mouse pointer's location in the title bar.
+			// Since the mouse pointer can be anywhere in the title bar, you have to 
+			// compensate for it when you drop the panel. 
+			public var xOff:Number;
+			public var yOff:Number;
+			
+			// Function called by the canvas dragEnter event; enables dropping
+			private function doDragEnter(event:DragEvent):void 
+			{
+				DragManager.acceptDragDrop(Canvas(event.target));
+			}
+			
+			// Drag initiator event handler for
+			// the title bar's mouseMove event.
+			private function tbMouseMoveHandler(event:MouseEvent):void 
+			{
+				var dragInitiator:Panel=Panel(event.currentTarget.parent);
+				var ds:DragSource = new DragSource();
+				ds.addData(event.currentTarget.parent, 'panel'); 
+				
+				// Update the xOff and yOff variables to show the
+				// current mouse location in the Panel.  
+				xOff = event.currentTarget.mouseX;
+				yOff = event.currentTarget.mouseY;
+				
+				// Initiate d&d. 
+				DragManager.doDrag(dragInitiator, ds, event);                    
+			}            
+			
+			// Function called by the Canvas dragDrop event; 
+			// Sets the panel's position, 
+			// "dropping" it in its new location.
+			private function doDragDrop(event:DragEvent):void 
+			{
+				// Compensate for the mouse pointer's location in the title bar.
+				var tempX:int = event.currentTarget.mouseX - xOff;
+				event.dragInitiator.x = tempX;
+				
+				var tempY:int = event.currentTarget.mouseY - yOff;
+				event.dragInitiator.y = tempY;
+				
+				// Put the dragged panel on top of all other components.
+				//v1.setChildIndex(Panel(event.dragInitiator), v1.numChildren-1);			
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
 	<s:states>
 		<s:State name="setup" />
 		<s:State name="wizzard" />
 		<s:State name="chat" />
 	</s:states>
 	
-	<s:BorderContainer horizontalCenter="0" verticalCenter="0" includeIn="wizzard">
+	<s:BorderContainer horizontalCenter="0" verticalCenter="-100" includeIn="wizzard" dropShadowVisible="true" >
 		<s:layout>
 			<s:VerticalLayout gap="0" />
 		</s:layout>
@@ -20,12 +100,20 @@
 		<components:Wizzard id="wizzard" />
 	</s:BorderContainer>
 	
-	<s:HGroup width="100%" height="100%" includeIn="chat">
-		<s:Scroller height="100%">
-			<components:Chat height="100%" />
-		</s:Scroller>
+	<mx:Canvas id="v1"
+		width="100%" height="100%" includeIn="chat"
+		dragEnter="doDragEnter(event);" 
+		dragDrop="doDragDrop(event);">
+	
 		<s:Scroller width="100%" height="100%">
 			<components:WhiteBoard width="100%" height="100%" />
 		</s:Scroller>
-	</s:HGroup>
+		
+		<components:ChatPanel 
+		  height="100%" 
+		  minHeight="300"
+		  creationComplete="myPanelCCHandler(event);">
+			<components:Chat height="100%"/>
+		</components:ChatPanel>
+	</mx:Canvas>
 </s:Group>

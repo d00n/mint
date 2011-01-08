@@ -10,7 +10,7 @@ package com.simplediagrams.events
 		public static const MOVE_FORWARD:String = "cd_moveForward"
 		public static const MOVE_BACKWARD:String = "cd_moveBackward"
 			
-		public static const OBJECT_MOVED:String = "objectMoved"
+		public static const OBJECT_MOVED:String = "cd_objectMoved"
 		
 		public var sdID:String;
 		

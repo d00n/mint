@@ -853,17 +853,20 @@ package com.simplediagrams.controllers
 			var target_sdObjectModel:SDObjectModel = diagramModel.getModelByID(event.sdID);			
 			if (target_sdObjectModel == null || target_sdObjectModel.depth == 0)
 				return;
-
-			target_sdObjectModel.depth = 0;
-			var numElements:uint = diagramModel.sdObjectModelsAC.length;			
-			for (var i:uint = 0; i<numElements; i++)
+			
+			var targetOrigDepth:uint = target_sdObjectModel.depth
+			for each (var sdObjectModel:SDObjectModel in diagramModel.sdObjectModelsAC)
 			{
-				var sdObjectModel:SDObjectModel = diagramModel.sdObjectModelsAC.getItemAt(i) as SDObjectModel;
-				if (sdObjectModel != target_sdObjectModel) 
+				if (sdObjectModel==target_sdObjectModel)
+				{
+					sdObjectModel.depth = 0;
+				}
+				else if (sdObjectModel.depth < targetOrigDepth)
 				{
 					sdObjectModel.depth ++
 				}
-			}					
+			}	
+			dumpDepths()
 
 			throw_ObjectChanged_RSOEvent(diagramModel.sdObjectModelsAC.toArray());
 		}
@@ -875,16 +878,19 @@ package com.simplediagrams.controllers
 			var numElements:uint = diagramModel.sdObjectModelsAC.length;				
 			if (target_sdObjectModel == null || target_sdObjectModel.depth == numElements -1)
 				return;
-
-			target_sdObjectModel.depth = numElements - 1
-			for (var i:uint = 0; i<numElements; i++)
+			var targetOrigDepth:uint = target_sdObjectModel.depth
+			for each (var sdObjectModel:SDObjectModel in diagramModel.sdObjectModelsAC)
 			{
-				var sdObjectModel:SDObjectModel = diagramModel.sdObjectModelsAC.getItemAt(i) as SDObjectModel;
-				if (sdObjectModel != target_sdObjectModel) 
+				if (sdObjectModel==target_sdObjectModel)
+				{
+					sdObjectModel.depth = diagramModel.sdObjectModelsAC.length - 1
+				}
+				else if (sdObjectModel.depth > targetOrigDepth)
 				{
 					sdObjectModel.depth --
 				}				
 			}				
+			dumpDepths()
 
 			throw_ObjectChanged_RSOEvent(diagramModel.sdObjectModelsAC.toArray());
 		}
@@ -898,18 +904,19 @@ package com.simplediagrams.controllers
 			if (target_sdObjectModel == null || target_sdObjectModel.depth == 0)
 				return;
 			
-			for (var i:uint = 0; i<numElements; i++)
+			var targetOrigDepth:uint = target_sdObjectModel.depth
+			for each (var sdObjectModel:SDObjectModel in diagramModel.sdObjectModelsAC)
 			{
-				var sdObjectModel:SDObjectModel = diagramModel.sdObjectModelsAC.getItemAt(i) as SDObjectModel;
-				if (target_sdObjectModel.depth == sdObjectModel.depth + 1) 
+				if (sdObjectModel==target_sdObjectModel)
 				{
-					target_sdObjectModel.depth --;
-					sdObjectModel.depth ++;
-						
-					throw_ObjectChanged_RSOEvent(diagramModel.sdObjectModelsAC.toArray());
-					break
+					sdObjectModel.depth--;
+				}
+				else if (sdObjectModel.depth == targetOrigDepth-1)
+				{
+					sdObjectModel.depth ++
 				}
 			}
+			dumpDepths()
 			
 			dispatcher.dispatchEvent(new ChangeDepthEvent(ChangeDepthEvent.OBJECT_MOVED, true))
 			
@@ -924,22 +931,33 @@ package com.simplediagrams.controllers
 			if (target_sdObjectModel == null || target_sdObjectModel.depth == numElements-1)
 				return;
 			
-			for (var i:uint = 0; i<numElements; i++)
+			var targetOrigDepth:uint = target_sdObjectModel.depth
+			for each (var sdObjectModel:SDObjectModel in diagramModel.sdObjectModelsAC)
 			{
-				var sdObjectModel:SDObjectModel = diagramModel.sdObjectModelsAC.getItemAt(i) as SDObjectModel;
-				if (target_sdObjectModel.depth == sdObjectModel.depth - 1) 
+				if (sdObjectModel==target_sdObjectModel)
 				{
-					target_sdObjectModel.depth ++;
-					sdObjectModel.depth --;
-					
-					throw_ObjectChanged_RSOEvent(diagramModel.sdObjectModelsAC.toArray());
-					break
-				}				
+					sdObjectModel.depth++;
+				}
+				else if (sdObjectModel.depth == targetOrigDepth+1)
+				{
+					sdObjectModel.depth --
+				}
 			}
+			dumpDepths()
+
 			dispatcher.dispatchEvent(new ChangeDepthEvent(ChangeDepthEvent.OBJECT_MOVED, true))			
 		}
 		
-
+		private function dumpDepths():void{
+			var numElements:uint = diagramModel.sdObjectModelsAC.length;
+			
+			for (var i:uint = 0; i<numElements; i++)
+			{
+				var sdObjectModel:SDObjectModel = diagramModel.sdObjectModelsAC.getItemAt(i) as SDObjectModel;
+				Logger.debug("dumpDepths() sdObjectModel.sdID=" + sdObjectModel.sdID.toString() + " sdObjectModel.depth=" + sdObjectModel.depth.toString() )		
+			}	
+		}
+			
 		public function throw_ObjectChanged_RSOEvent(sdObjectModelArray:Array):void{
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);
 			rsoEvent.changedSDObjectModelArray = sdObjectModelArray;

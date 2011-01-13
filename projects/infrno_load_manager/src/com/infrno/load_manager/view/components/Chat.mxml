@@ -1,8 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx">
-	<mx:SWFLoader 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"		 
+		 resize="Chat_SwfLoader_Group_resizeHandler(event)"
+		 >
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.ResizeEvent;
+
+			protected function Chat_SwfLoader_Group_resizeHandler(event:ResizeEvent):void
+			{
+				chatSWF.width = this.width;	
+			}
+
+		]]>
+	</fx:Script>
+
+	
+	<mx:SWFLoader id="chatSWF"
 			source="InfrnoChat.swf" 
 			width="162"
 			height="100%" />

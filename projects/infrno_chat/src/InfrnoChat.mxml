@@ -4,7 +4,19 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx" 
 			   xmlns:chat="com.infrno.chat.*" 
 			   xmlns:components="com.infrno.chat.view.components.*"
+			   resize="InfrnoChat_Application_resizeHandler(event)"			   
 			   >
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.ResizeEvent;
+			
+			protected function InfrnoChat_Application_resizeHandler(event:ResizeEvent):void {
+				trace("InfrnoChat_Application_resizeHandler  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+			}
+
+		]]>
+	</fx:Script>	
 	
 	<fx:Style source="assets/css/default.css"/>
 	

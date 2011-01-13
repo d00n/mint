@@ -20,12 +20,8 @@
 		<components:Wizzard id="wizzard" />
 	</s:BorderContainer>
 	
-	<s:HGroup width="100%" height="100%" includeIn="chat">
-		<s:Scroller height="100%">
-			<components:Chat height="100%" />
-		</s:Scroller>
-		<s:Scroller width="100%" height="100%">
-			<components:WhiteBoard width="100%" height="100%" />
-		</s:Scroller>
-	</s:HGroup>
+	<mx:HDividedBox width="100%" height="100%" includeIn="chat">
+		<components:Chat height="100%" />
+		<components:WhiteBoard width="100%" height="100%" />
+	</mx:HDividedBox>
 </s:Group>

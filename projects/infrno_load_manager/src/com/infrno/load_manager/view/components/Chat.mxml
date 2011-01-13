@@ -12,6 +12,7 @@
 			protected function Chat_SwfLoader_Group_resizeHandler(event:ResizeEvent):void
 			{
 				chatSWF.width = this.width;	
+				chatSWF.height = this.height;	
 			}
 
 		]]>
@@ -21,5 +22,6 @@
 	<mx:SWFLoader id="chatSWF"
 			source="InfrnoChat.swf" 
 			width="162"
+			minWidth="162"
 			height="100%" />
 </s:Group>

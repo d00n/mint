@@ -13,12 +13,15 @@ package com.infrno.chat.view.mediators
 	import com.infrno.chat.view.components.VideoPresense;
 	import com.infrno.chat.view.components.Videos;
 	
+	import flash.display.DisplayObject;
+	
 	import mx.core.IVisualElement;
 	import mx.events.FlexEvent;
 	
 	import org.robotlegs.mvcs.Mediator;
 	
 	import spark.components.Group;
+	import spark.components.List;
 	
 	public class VideosMediator extends Mediator
 	{
@@ -67,13 +70,18 @@ package com.infrno.chat.view.mediators
 		
 		private function removeVideos():void
 		{
-			var element_num:int = videos.videos_holder.numElements;
+			var element_num:int = videos.videos_holder.numChildren;
 			for(var i:int = 0; i<element_num; i++){
 				try{
-					var curr_element:VideoPresense = videos.videos_holder.getElementAt(i) as VideoPresense;
+					
+//					var curr_element:VideoPresense = videos.videos_holder.getElementAt(i) as VideoPresense;
+					var curr_element:VideoPresense = videos.videos_holder.getChildAt(i) as VideoPresense;
+					
+					
 					//if the video isn't in the users collection remove it
 					if(dataProxy.users_collection[curr_element.name] == null){
-						videos.videos_holder.removeElement(curr_element as IVisualElement);
+//						videos.videos_holder.removeElement(curr_element as IVisualElement);
+						videos.videos_holder.removeChild(curr_element as VideoPresense);
 					}
 				}catch(e:Object){
 					//out of range error I'm sure
@@ -86,17 +94,21 @@ package com.infrno.chat.view.mediators
 		{
 			trace("VideosMediator.updateVideos() updating videos");
 			
-			for(var n:String in dataProxy.users_collection){
-				var curr_info:UserInfoVO = dataProxy.users_collection[n];
+			for(var name:String in dataProxy.users_collection){
+				var userInfo:UserInfoVO = dataProxy.users_collection[name];
 				var video_presense:VideoPresense;
 				
 				//if the video presense doesn't exist add one
-				if(videos.videos_holder.getChildByName(n) == null){
-					video_presense = videos.videos_holder.addElement(new VideoPresense()) as VideoPresense;
-					video_presense.data = curr_info;
-					video_presense.name = curr_info.suid.toString();
+				if(videos.videos_holder.getChildByName(name) == null){
 					
-					video_presense.is_local = curr_info.suid == dataProxy.my_info.suid;
+//					video_presense = videos.videos_holder.addElement(new VideoPresense()) as VideoPresense;
+					video_presense = new VideoPresense();
+					videos.videos_holder.dataProvider.addItem(video_presense);
+					
+					video_presense.data = userInfo;
+					video_presense.name = userInfo.suid.toString();
+					
+					video_presense.is_local = userInfo.suid == dataProxy.my_info.suid;
 					
 					video_presense.addEventListener(FlexEvent.CREATION_COMPLETE,function(e:FlexEvent):void
 					{
@@ -109,20 +121,20 @@ package com.infrno.chat.view.mediators
 					});
 					
 				} else {
-					video_presense = getElementbyName(videos.videos_holder,curr_info.suid.toString());
+					video_presense = getElementbyName(videos.videos_holder, userInfo.suid.toString());
 					if(!video_presense.isInitialized())
 						return;
 
-					video_presense.is_local = curr_info.suid == dataProxy.my_info.suid;
+					video_presense.is_local = userInfo.suid == dataProxy.my_info.suid;
 					
-					if(curr_info.suid == dataProxy.my_info.suid){
+					if(userInfo.suid == dataProxy.my_info.suid){
 						setupMyPresenseComponent(video_presense);
 					} else {
 						setupOtherPresenseComponent(video_presense);
 					}
 				}
 				
-//				if(curr_info.suid == dataProxy.my_info.suid){
+//				if(userInfo.suid == dataProxy.my_info.suid){
 //					trace("VideosMediator.updateVideos() this is my video.. so showing my camera");
 //					video_presense.is_local = true;
 //					video_presense.camera = deviceProxy.camera;
@@ -135,23 +147,23 @@ package com.infrno.chat.view.mediators
 //					//start playing the suid
 //					video_presense.is_local = false;
 //					
-//					if(dataProxy.use_peer_connection && curr_info.nearID && dataProxy.peer_capable && !(curr_info.ns is NetStreamPeer) ){
-//						trace("VideosMediator.updateVideos() setting up and playing from the peer connection: "+curr_info.suid.toString());
-//						curr_info.ns = peerService.getNewNetStream(curr_info.nearID);
-//						curr_info.ns.play(curr_info.suid.toString());
-//						video_presense.netstream = curr_info.ns;
+//					if(dataProxy.use_peer_connection && userInfo.nearID && dataProxy.peer_capable && !(userInfo.ns is NetStreamPeer) ){
+//						trace("VideosMediator.updateVideos() setting up and playing from the peer connection: "+userInfo.suid.toString());
+//						userInfo.ns = peerService.getNewNetStream(userInfo.nearID);
+//						userInfo.ns.play(userInfo.suid.toString());
+//						video_presense.netstream = userInfo.ns;
 //						video_presense.toggleAudio();
 //						video_presense.toggleVideo();
-//					} else if(!dataProxy.use_peer_connection && !(curr_info.ns is NetStreamMS) ){
+//					} else if(!dataProxy.use_peer_connection && !(userInfo.ns is NetStreamMS) ){
 //						trace("VideosMediator.updateVideos() setting up and playing from the stream server");
-//						curr_info.ns = msService.getNewNetStream();
-//						curr_info.ns.play(curr_info.suid.toString(),-1);
-//						video_presense.netstream = curr_info.ns;
+//						userInfo.ns = msService.getNewNetStream();
+//						userInfo.ns.play(userInfo.suid.toString(),-1);
+//						video_presense.netstream = userInfo.ns;
 //						video_presense.toggleAudio();
 //						video_presense.toggleVideo();
 //					}
 //					try{
-//						video_presense.audio_level.value = curr_info.ns.soundTransform.volume*100
+//						video_presense.audio_level.value = userInfo.ns.soundTransform.volume*100
 //					} catch(e:Object){
 //						//something didn't initialze
 //					}
@@ -172,35 +184,35 @@ package com.infrno.chat.view.mediators
 		
 		private function setupOtherPresenseComponent(video_presense:VideoPresense):void
 		{
-			var curr_info:UserInfoVO = video_presense.data;
+			var userInfo:UserInfoVO = video_presense.data;
 			
-			if(dataProxy.use_peer_connection && curr_info.nearID && dataProxy.peer_capable && !(curr_info.ns is NetStreamPeer) ){
-				trace("VideosMediator.updateVideos() setting up and playing from the peer connection: "+curr_info.suid.toString());
-				curr_info.ns = peerService.getNewNetStream(curr_info.nearID);
-				curr_info.ns.play(curr_info.suid.toString());
-				video_presense.netstream = curr_info.ns;
+			if(dataProxy.use_peer_connection && userInfo.nearID && dataProxy.peer_capable && !(userInfo.ns is NetStreamPeer) ){
+				trace("VideosMediator.updateVideos() setting up and playing from the peer connection: "+userInfo.suid.toString());
+				userInfo.ns = peerService.getNewNetStream(userInfo.nearID);
+				userInfo.ns.play(userInfo.suid.toString());
+				video_presense.netstream = userInfo.ns;
 				video_presense.toggleAudio();
 				video_presense.toggleVideo();
-			} else if(!dataProxy.use_peer_connection && !(curr_info.ns is NetStreamMS) ){
+			} else if(!dataProxy.use_peer_connection && !(userInfo.ns is NetStreamMS) ){
 				trace("VideosMediator.updateVideos() setting up and playing from the stream server");
-				curr_info.ns = msService.getNewNetStream();
-				curr_info.ns.play(curr_info.suid.toString(),-1);
-				video_presense.netstream = curr_info.ns;
+				userInfo.ns = msService.getNewNetStream();
+				userInfo.ns.play(userInfo.suid.toString(),-1);
+				video_presense.netstream = userInfo.ns;
 				video_presense.toggleAudio();
 				video_presense.toggleVideo();
 			}
 			try{
-				video_presense.audio_level.value = curr_info.ns.soundTransform.volume*100
+				video_presense.audio_level.value = userInfo.ns.soundTransform.volume*100
 			} catch(e:Object){
 				//something didn't initialze
 			}
 		}
 		
-		private function getElementbyName(visible_element:Group,name:String):VideoPresense
+		private function getElementbyName(visible_element:spark.components.List, name:String):VideoPresense
 		{
-			var num_elements:int = visible_element.numElements;
+			var num_elements:int = visible_element.numChildren;
 			for(var i:int=0;i<num_elements;i++){
-				var curr_element:VideoPresense = visible_element.getElementAt(i) as VideoPresense;
+				var curr_element:VideoPresense = visible_element.getChildAt(i) as VideoPresense;
 				if(curr_element.name == name){
 					return curr_element;
 				}

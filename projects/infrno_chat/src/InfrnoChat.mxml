@@ -13,6 +13,12 @@
 			
 			protected function InfrnoChat_Application_resizeHandler(event:ResizeEvent):void {
 				trace("InfrnoChat_Application_resizeHandler  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+				
+				// This event fires before everything is in place, so mind your nulls
+				if (ChatVGroup) {
+					ChatVGroup.width = this.width
+					ChatVGroup.height = this.height
+				}
 			}
 
 		]]>
@@ -24,11 +30,13 @@
 		<chat:ApplicationContext contextView="{this}" />
 	</fx:Declarations>
 	
-	<s:Scroller height="100%">
-		<s:VGroup width="162" height="100%">
-			<components:Videos width="100%" height="100%" />
-			<components:Chat width="100%" />
-		</s:VGroup>
-	</s:Scroller>
+
+	<s:VGroup id="ChatVGroup" width="162" height="100%">
+		<components:Videos width="100%" height="100%" />
+		
+
+		<components:Chat width="100%" />
+	</s:VGroup>
+
 		
 </s:Application>

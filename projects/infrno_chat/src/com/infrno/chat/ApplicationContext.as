@@ -37,11 +37,11 @@ package com.infrno.chat
 			commandMap.mapEvent(PeerEvent.PEER_NETCONNECTION_CONNECTED,ReportPeerConnectionStatusCommand);
 			commandMap.mapEvent(PeerEvent.PEER_NETCONNECTION_DISCONNECTED,ReportPeerConnectionStatusCommand);
 			
-			commandMap.mapEvent(VideoPresenseEvent.AUDIO_LEVEL,AudioVideoControlCommand);
-			commandMap.mapEvent(VideoPresenseEvent.AUDIO_MUTED,AudioVideoControlCommand);
-			commandMap.mapEvent(VideoPresenseEvent.AUDIO_UNMUTED,AudioVideoControlCommand);
-			commandMap.mapEvent(VideoPresenseEvent.VIDEO_MUTED,AudioVideoControlCommand);
-			commandMap.mapEvent(VideoPresenseEvent.VIDEO_UNMUTED,AudioVideoControlCommand);
+			commandMap.mapEvent(VideoPresenceEvent.AUDIO_LEVEL,AudioVideoControlCommand);
+			commandMap.mapEvent(VideoPresenceEvent.AUDIO_MUTED,AudioVideoControlCommand);
+			commandMap.mapEvent(VideoPresenceEvent.AUDIO_UNMUTED,AudioVideoControlCommand);
+			commandMap.mapEvent(VideoPresenceEvent.VIDEO_MUTED,AudioVideoControlCommand);
+			commandMap.mapEvent(VideoPresenceEvent.VIDEO_UNMUTED,AudioVideoControlCommand);
 
 			commandMap.mapEvent(SettingsEvent.SHOW_SETTINGS,SettingsCommand);			
 			

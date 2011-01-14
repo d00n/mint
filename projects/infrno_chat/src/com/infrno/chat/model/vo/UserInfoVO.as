@@ -47,8 +47,10 @@ package com.infrno.chat.model.vo
 		public function updateInfo(info:Object):void
 		{
 			for(var i:String in info){
-				if(info[i]!=null)
+				if(info[i]!=null) {
 					this[i] = info[i];
+					trace("updateInfo info[i]=" +info[i]);
+				}
 			}
 		}
 		

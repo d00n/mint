@@ -2,7 +2,7 @@ package com.infrno.chat.model.events
 {
 	import flash.events.Event;
 	
-	public class VideoPresenseEvent extends Event
+	public class VideoPresenceEvent extends Event
 	{
 		public static const AUDIO_LEVEL		:String		= "audio_level";
 
@@ -13,7 +13,7 @@ package com.infrno.chat.model.events
 		
 		private var _value					:Number;
 		
-		public function VideoPresenseEvent(type:String, bubbles:Boolean=false, value:Number=0)
+		public function VideoPresenceEvent(type:String, bubbles:Boolean=false, value:Number=0)
 		{
 			super(type,bubbles);
 			_value = value;

@@ -2,14 +2,14 @@ package com.infrno.chat.controller
 {
 	import com.infrno.chat.model.DataProxy;
 	import com.infrno.chat.model.DeviceProxy;
-	import com.infrno.chat.model.events.VideoPresenseEvent;
+	import com.infrno.chat.model.events.VideoPresenceEvent;
 	
 	import org.robotlegs.mvcs.Command;
 	
 	public class AudioVideoControlCommand extends Command
 	{
 		[Inject]
-		public var event			:VideoPresenseEvent;
+		public var event			:VideoPresenceEvent;
 		
 		[Inject]
 		public var dataProxy		:DataProxy;
@@ -21,17 +21,17 @@ package com.infrno.chat.controller
 		{
 			trace("AudioVideoControlCommand.execute() " +event.type);
 			switch(event.type){
-				case VideoPresenseEvent.AUDIO_LEVEL:
+				case VideoPresenceEvent.AUDIO_LEVEL:
 					if(deviceProxy.mic)
 						deviceProxy.mic.gain = event.value;
 					break;
-				case VideoPresenseEvent.AUDIO_MUTED:
+				case VideoPresenceEvent.AUDIO_MUTED:
 					dataProxy.pubishing_audio = false;
 					
 					if(dataProxy.ns)
 						dataProxy.ns.attachAudio(null);
 					break;
-				case VideoPresenseEvent.AUDIO_UNMUTED:
+				case VideoPresenceEvent.AUDIO_UNMUTED:
 					dataProxy.pubishing_audio = true;
 					
 					trace( "audio unmuted." )
@@ -46,13 +46,13 @@ package com.infrno.chat.controller
 						dataProxy.ns.attachAudio(deviceProxy.mic);
 					}
 					break;
-				case VideoPresenseEvent.VIDEO_MUTED:
+				case VideoPresenceEvent.VIDEO_MUTED:
 					dataProxy.pubishing_video = false;
 					
 					if(dataProxy.ns)
 						dataProxy.ns.attachCamera(null);
 					break;
-				case VideoPresenseEvent.VIDEO_UNMUTED:
+				case VideoPresenceEvent.VIDEO_UNMUTED:
 					dataProxy.pubishing_video = true;
 					
 					if(dataProxy.ns)

@@ -7,7 +7,7 @@
 		 >
 	<fx:Script>
 		<![CDATA[
-			import com.infrno.chat.model.events.VideoPresenseEvent;
+			import com.infrno.chat.model.events.VideoPresenceEvent;
 			import com.infrno.chat.model.events.SettingsEvent;
 			import com.infrno.chat.model.vo.UserInfoVO;
 			
@@ -72,7 +72,7 @@
 			{
 				if( _is_local ) 
 				{
-					dispatchEvent( new VideoPresenseEvent( VideoPresenseEvent.AUDIO_UNMUTED, true ) );
+					dispatchEvent( new VideoPresenceEvent( VideoPresenceEvent.AUDIO_UNMUTED, true ) );
 					return;
 				}
 				
@@ -93,7 +93,7 @@
 				trace( "toggelAudio" );
 				if(audioToggleButton.selected){
 					if(_is_local){
-						dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.AUDIO_MUTED,true))
+						dispatchEvent(new VideoPresenceEvent(VideoPresenceEvent.AUDIO_MUTED,true))
 					} else {
 						if(_data.ns!=null){
 							setAudioLevel(0,true);
@@ -102,7 +102,7 @@
 					}
 				} else {
 					if(_is_local){
-						dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.AUDIO_UNMUTED,true))
+						dispatchEvent(new VideoPresenceEvent(VideoPresenceEvent.AUDIO_UNMUTED,true))
 					} else {
 						if(_data.ns!=null){
 							setAudioLevel(audio_level.value);
@@ -117,7 +117,7 @@
 			{
 				if( _is_local )
 				{
-					dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.VIDEO_UNMUTED,true));
+					dispatchEvent(new VideoPresenceEvent(VideoPresenceEvent.VIDEO_UNMUTED,true));
 					video.attachCamera(_camera);
 					video.visible = true;
 					return;
@@ -143,7 +143,7 @@
 				//if using peer then we are unable to request a receiveAudio/Video false.. we'd just need to hide it
 				if( videoToggleButton.selected ){
 					if( _is_local ){
-						dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.VIDEO_MUTED,true));
+						dispatchEvent(new VideoPresenceEvent(VideoPresenceEvent.VIDEO_MUTED,true));
 						video.attachCamera(null)
 					} else {
 						if(_data.ns!=null)
@@ -152,7 +152,7 @@
 					video.visible = false;
 				} else {
 					if(_is_local){
-						dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.VIDEO_UNMUTED,true));
+						dispatchEvent(new VideoPresenceEvent(VideoPresenceEvent.VIDEO_UNMUTED,true));
 						video.attachCamera(_camera);
 					} else {
 						if(_data.ns!=null)
@@ -247,7 +247,7 @@
 				}
 				
 				if(_is_local){
-					dispatchEvent(new VideoPresenseEvent(VideoPresenseEvent.AUDIO_LEVEL,true,levelIn));
+					dispatchEvent(new VideoPresenceEvent(VideoPresenceEvent.AUDIO_LEVEL,true,levelIn));
 					return;
 				}
 				

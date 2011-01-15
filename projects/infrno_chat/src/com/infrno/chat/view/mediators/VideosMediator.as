@@ -92,7 +92,11 @@ package com.infrno.chat.view.mediators
 		
 		private function fetchVideoPresence(name:String): VideoPresence{
 			var videoPresence:VideoPresence;
-			for(var i:int=0; i++; i<videos.videos_holder.dataProvider.length){
+			var i:int;
+//			i=0; i<videos.videos_holder.dataProvider.length; i++
+			var length:int = videos.videos_holder.dataProvider.length;
+			for(i = 0; i < length; i++){
+				trace("fetchVideoPresence i="+i+", videos.videos_holder.dataProvider.length="+length)
 				videoPresence = videos.videos_holder.dataProvider.getItemAt(i) as VideoPresence;
 				if (videoPresence.name == name) {
 					return videoPresence;
@@ -133,7 +137,7 @@ package com.infrno.chat.view.mediators
 					});
 					
 				} else {
-					videoPresence = getElementbyName(videos.videos_holder, userInfo.suid.toString());
+//					videoPresence = getElementbyName(videos.videos_holder, userInfo.suid.toString());
 					if(!videoPresence.isInitialized())
 						return;
 

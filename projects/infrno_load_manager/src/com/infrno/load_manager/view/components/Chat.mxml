@@ -2,26 +2,32 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"		 
-		 resize="Chat_SwfLoader_Group_resizeHandler(event)"
+		 resize="ChatSwfLoader_resizeHandler(event)"
 		 >
 	
 	<fx:Script>
 		<![CDATA[
 			import mx.events.ResizeEvent;
+			import mx.managers.SystemManager;
 
-			protected function Chat_SwfLoader_Group_resizeHandler(event:ResizeEvent):void
+			protected function ChatSwfLoader_resizeHandler(event:ResizeEvent):void
 			{
-				chatSWF.width = this.width;	
-				chatSWF.height = this.height;	
+				loadedChatSwf.width = this.width;	
+				loadedChatSwf.height = this.height;
+
+				Object(loadedChatSwf.content).setActualSize(this.width, this.height);
+				
+				var loadedSM:SystemManager = SystemManager(loadedChatSwf.content);
+//				loadedSM.application["updateDimensions"] (this.width, this.height);
 			}
 
 		]]>
 	</fx:Script>
 
 	
-	<mx:SWFLoader id="chatSWF"
+	<mx:SWFLoader id="loadedChatSwf" 
 			source="InfrnoChat.swf" 
 			width="168"
-			minWidth="162"
+
 			height="100%" />
 </s:Group>

@@ -24,8 +24,8 @@
 		<components:Wizzard id="wizzard" />
 	</s:BorderContainer>
 	
-	<mx:HDividedBox width="100%" height="100%" includeIn="chat" > <!--liveDragging="true"-->
-		<components:Chat  minWidth="162" height="100%" />
+	<mx:HDividedBox width="100%" height="100%" includeIn="chat" liveDragging="true">
+		<components:Chat  minWidth="168 " height="100%" />
 		<components:WhiteBoard width="100%" height="100%" />
 	</mx:HDividedBox>
 </s:Group>

@@ -152,7 +152,6 @@ package com.infrno.chat.view.mediators
 //					videoPresence = videos.videos_holder.addElement(new VideoPresence()) as VideoPresence;
 					videoPresence = new VideoPresence();
 					videos.videos_holder.dataProvider.addItem(videoPresence);
-					videos.videos_holder.invalidateDisplayList();
 					
 					videoPresence.data = userInfo;
 					videoPresence.name = userInfo.suid.toString();

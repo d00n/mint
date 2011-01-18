@@ -17,9 +17,9 @@
 				// This event fires before everything is in place, so mind your nulls
 				if (ChatVGroup) {
 					ChatVGroup.width = this.width
-						
-					// This does not seem to have an effect
-//					ChatVGroup.height = this.height
+//						
+//					// This does not seem to have an effect
+//					 ChatVGroup.height = this.height
 				}
 			}
 
@@ -33,7 +33,7 @@
 	</fx:Declarations>
 	
 
-	<s:VGroup id="ChatVGroup" width="162" height="100%">
+	<s:VGroup id="ChatVGroup" height="100%">
 		<components:Videos width="100%" height="100%" />
 		<components:Chat width="100%" />
 	</s:VGroup>

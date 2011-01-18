@@ -17,7 +17,7 @@ package com.infrno.chat.model.vo
 		public var user_id					:String;
 		public var nearID					:String;
 
-		private var _ns						:NetStream;
+		private var _netStream				:NetStream;
 		
 		public function UserInfoVO(infoObj:Object=null)
 		{
@@ -30,26 +30,26 @@ package com.infrno.chat.model.vo
 		
 		public function get ns():NetStream
 		{
-			return _ns;
+			return _netStream;
 		}
 		
-		public function set ns(ns_in:NetStream):void
+		public function set ns(netStream:NetStream):void
 		{
-			if(_ns && _ns.hasEventListener(NetStatusEvent.NET_STATUS)){
-				_ns.close();
-				_ns.removeEventListener(NetStatusEvent.NET_STATUS,handleNetStatus);
-				_ns = null;
+			if(_netStream && _netStream.hasEventListener(NetStatusEvent.NET_STATUS)){
+				_netStream.close();
+				_netStream.removeEventListener(NetStatusEvent.NET_STATUS,handleNetStatus);
+				_netStream = null;
 			}
-			_ns = ns_in;
-			_ns.addEventListener(NetStatusEvent.NET_STATUS,handleNetStatus);
+			_netStream = netStream;
+			_netStream.addEventListener(NetStatusEvent.NET_STATUS,handleNetStatus);
 		}
 		
 		public function updateInfo(info:Object):void
 		{
 			for(var i:String in info){
 				if(info[i]!=null) {
+					trace("UserInfoVO.updateInfo info["+i+"]=" +info[i]);
 					this[i] = info[i];
-					trace("updateInfo info[i]=" +info[i]);
 				}
 			}
 		}

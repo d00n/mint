@@ -34,13 +34,13 @@ package com.infrno.chat.controller
 				case VideoPresenceEvent.AUDIO_UNMUTED:
 					dataProxy.pubishing_audio = true;
 					
-					trace( "audio unmuted." )
+					trace( "AudioVideoControlCommand.execute() audio unmuted." )
 					if(dataProxy.ns)
 					{
-						trace( "attaching mic." )
+						trace( "AudioVideoControlCommand.execute() attaching mic." )
 						if( deviceProxy.mic == null ) 
 						{
-							trace( "deviceProxy.mic is null" )
+							trace( "AudioVideoControlCommand.execute() deviceProxy.mic is null" )
 						}
 						
 						dataProxy.ns.attachAudio(deviceProxy.mic);

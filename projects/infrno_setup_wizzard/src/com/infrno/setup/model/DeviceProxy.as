@@ -103,16 +103,17 @@ package com.infrno.setup.model
 		}
 		
 		private function handleCameraActivity(evt:ActivityEvent):void{
-			trace("camera active: "+evt.activating)
+			trace("com.infrno.setup.model.DeviceProxy.handleCameraActivity() camera active: "+evt.activating)
 			camera_active=evt.activating;
 			dispatch(new DeviceEvent(DeviceEvent.CAMERA_ACTIVITY,evt.activating));
 		}
 		
-		public function handleCameraStatus( evt:StatusEvent ) : void
+		public function handleCameraStatus(event:StatusEvent) : void
 		{
-			trace(evt.code);
-			if(evt.code=="Camera.Muted"){
-				trace("no access to the camera");
+			trace("com.infrno.setup.model.DeviceProxy.handleMicStatus() event="+event.code);
+
+			if(event.code=="Camera.Muted"){
+				trace("com.infrno.setup.model.DeviceProxy.handleCameraStatus() no access to the camera");
 				camera_active=false;
 			}
 		}
@@ -150,19 +151,19 @@ package com.infrno.setup.model
 		}
 		
 		
-		private function handleMicActivity( activityEvent:ActivityEvent ) : void
+		private function handleMicActivity(event:ActivityEvent) : void
 		{
-			if( activityEvent.activating){
-				mic_active = activityEvent.activating;
-				dispatch(new DeviceEvent(DeviceEvent.MIC_ACTIVITY,activityEvent.activating));
+			if( event.activating){
+				mic_active = event.activating;
+				dispatch(new DeviceEvent(DeviceEvent.MIC_ACTIVITY,event.activating));
 			}
 		}
 		
-		private function handleMicStatus( statusEvent:StatusEvent ) : void 
+		private function handleMicStatus(event:StatusEvent) : void 
 		{
-			trace(statusEvent.code);
-			if(statusEvent.code=="Microphone.Muted"){
-				trace("no access to the mic");
+			trace("Wizard DeviceProxy.handleMicStatus() event="+event.code);
+			if(event.code=="Microphone.Muted"){
+				trace("Wizard DeviceProxy.handleMicStatus() no access to the mic");
 				mic_active = false;
 			}
 		}

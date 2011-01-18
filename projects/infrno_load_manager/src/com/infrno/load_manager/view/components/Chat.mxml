@@ -21,7 +21,7 @@
 	
 	<mx:SWFLoader id="chatSWF"
 			source="InfrnoChat.swf" 
-			width="162"
+			width="168"
 			minWidth="162"
 			height="100%" />
 </s:Group>

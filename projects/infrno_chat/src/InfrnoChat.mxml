@@ -17,7 +17,9 @@
 				// This event fires before everything is in place, so mind your nulls
 				if (ChatVGroup) {
 					ChatVGroup.width = this.width
-					ChatVGroup.height = this.height
+						
+					// This does not seem to have an effect
+//					ChatVGroup.height = this.height
 				}
 			}
 

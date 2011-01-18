@@ -59,7 +59,7 @@ package com.infrno.chat.model
 			
 			if(Camera.names.length == 0){
 				//no cameras installed at all
-				trace("no cameras installed at all");
+				trace("DeviceProxy.initCam() no cameras installed at all");
 			}
 			
         	_camera = Camera.getCamera(nameIn);
@@ -95,13 +95,13 @@ package com.infrno.chat.model
 		
 		private function initMic(micIn:int=-1):Microphone
 		{
-			trace( "********** initMic ( " +micIn  + " ) " );
+			trace( "DeviceProxy.initMic() micIn=" +micIn);
 			mic_active = false;
 			
 			_mic = Microphone.getMicrophone(micIn);
 			
 			if(_mic == null){
-				trace("mic not accessible");
+				trace("DeviceProxy.initMic() mic==null");
 				_mic_level_timer.reset();
 			} else {
 				for(var i:String in mic_array){

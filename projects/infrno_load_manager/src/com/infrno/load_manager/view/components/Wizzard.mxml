@@ -18,17 +18,17 @@
             
             public function handleWizzardNextVideo( event:Event ) : void 
             {
-            	trace( "wizzard next video" );
+            	trace( "Wizzard.handleWizzardNextVideo()" );
             }
             
             public function handleWizzardNextAudio( event:Event ) : void 
             {
-            	trace( "wizzard next audio" );
+            	trace( "Wizzard.handleWizzardNextAudio()" );
             }
             
             public function handleWizzardClose( event:Event ) : void 
             {
-            	trace( "wizzard close" );
+            	trace( "Wizzard.handleWizzardClose()" );
             	var displayObject:DisplayObject = setupWizzardSwfLoader.content;
             	displayObject.removeEventListener( "WIZZARD_NEXT_VIDEO", handleWizzardNextVideo );
             	displayObject.removeEventListener( "WIZZARD_NEXT_AUDIO", handleWizzardNextAudio );

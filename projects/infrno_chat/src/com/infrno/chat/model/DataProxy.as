@@ -45,6 +45,7 @@ package com.infrno.chat.model
 		public function DataProxy( )
 		{
 			users_collection = new Object();
+//			my_info	= new UserInfoVO({user_name:"user"+Math.round(Math.random()*1000), user_id:"sample_user_id"});
 		}
 	
 		public function get media_server( ):String 

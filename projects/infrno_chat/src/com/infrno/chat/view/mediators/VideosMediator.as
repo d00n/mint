@@ -17,6 +17,7 @@ package com.infrno.chat.view.mediators
 	
 	import mx.core.IVisualElement;
 	import mx.events.FlexEvent;
+	import mx.logging.Log;
 	
 	import org.robotlegs.mvcs.Mediator;
 	
@@ -70,18 +71,23 @@ package com.infrno.chat.view.mediators
 		
 		private function removeVideos():void
 		{
-			var element_num:int = videos.videos_holder.numChildren;
-			for(var i:int = 0; i<element_num; i++){
+			trace("VideosMediator.removeVideos()");
+//			var element_num:int = videos.videos_holder.numChildren;
+			var dataProviderLength:int = videos.videos_holder.dataProvider.length;
+			for(var i:int = 0; i<dataProviderLength; i++){
+				trace("VideosMediator.removeVideos() i="+i);
 				try{
 					
 //					var curr_element:VideoPresence = videos.videos_holder.getElementAt(i) as VideoPresence;
-					var curr_element:VideoPresence = videos.videos_holder.getChildAt(i) as VideoPresence;
-					
+					var videoPresence:VideoPresence = videos.videos_holder.dataProvider.getItemAt(i) as VideoPresence;
+					trace("VideosMediator.removeVideos() videoPresence.name="+videoPresence.name);
 					
 					//if the video isn't in the users collection remove it
-					if(dataProxy.users_collection[curr_element.name] == null){
-//						videos.videos_holder.removeElement(curr_element as IVisualElement);
-						videos.videos_holder.removeChild(curr_element as VideoPresence);
+					if(dataProxy.users_collection[videoPresence.name] == null){
+//						videos.videos_holder.removeElement(videoPresence as IVisualElement);
+						var vp_index:int = videos.videos_holder.dataProvider.getItemIndex(videoPresence);
+						trace("VideosMediator.removeVideos() vp_index="+vp_index);
+						videos.videos_holder.dataProvider.removeItemAt(vp_index);
 					}
 				}catch(e:Object){
 					//out of range error I'm sure
@@ -90,14 +96,14 @@ package com.infrno.chat.view.mediators
 			}
 		}
 		
-		private function fetchVideoPresence(name:String): VideoPresence{
+		private function getVideoPresenceByName(name:String): VideoPresence{
+			trace("VideosMediator.getVideoPresenceByName name="+name)
 			var videoPresence:VideoPresence;
-			var i:int;
-//			i=0; i<videos.videos_holder.dataProvider.length; i++
-			var length:int = videos.videos_holder.dataProvider.length;
-			for(i = 0; i < length; i++){
-				trace("fetchVideoPresence i="+i+", videos.videos_holder.dataProvider.length="+length)
+			var dataProviderLength:int = videos.videos_holder.dataProvider.length;
+			for(var i:int = 0; i < dataProviderLength; i++){
+				trace("VideosMediator.getVideoPresenceByName i="+i+", videos.videos_holder.dataProvider.length="+dataProviderLength)
 				videoPresence = videos.videos_holder.dataProvider.getItemAt(i) as VideoPresence;
+				trace("VideosMediator.getVideoPresenceByName videoPresence.name="+videoPresence.name)
 				if (videoPresence.name == name) {
 					return videoPresence;
 				}
@@ -105,42 +111,78 @@ package com.infrno.chat.view.mediators
 			return null;
 		}
 		
+//		private function getElementbyName(visible_element:spark.components.List, name:String):VideoPresence
+//		{
+//			var num_elements:int = visible_element.numChildren;
+//			for(var i:int=0;i<num_elements;i++){
+//				var curr_element:VideoPresence = visible_element.getChildAt(i) as VideoPresence;
+//				if(curr_element.name == name){
+//					return curr_element;
+//				}
+//			}
+//			return null;
+//		}		
+		
+		private function onVideoPresenceCreationComplete(e:FlexEvent):void
+		{
+			trace("VideosMediator.onVideoPresenceCreationComplete")
+			
+			var curr_presence:VideoPresence = e.target as VideoPresence;
+			if(curr_presence.is_local){
+				setupMyPresenceComponent(curr_presence);
+			} else {
+				setupOtherPresenceComponent(curr_presence);
+			}
+		}
+		
 		private function updateVideos():void
 		{
-			trace("VideosMediator.updateVideos() updating videos");
+			trace("VideosMediator.updateVideos()");
 			
 			for(var name:String in dataProxy.users_collection){
+				trace("VideosMediator.updateVideos() name="+name);
 				var userInfo:UserInfoVO = dataProxy.users_collection[name];
 				
 				//if the video presence doesn't exist add one
 //				if(videos.videos_holder.getChildByName(name) == null){
-				var videoPresence:VideoPresence = fetchVideoPresence(name);
+				var videoPresence:VideoPresence = getVideoPresenceByName(name);
 				if(videoPresence == null){
+					trace("VideosMediator.updateVideos() adding new VideoPresence for name="+name);
 					
 //					videoPresence = videos.videos_holder.addElement(new VideoPresence()) as VideoPresence;
 					videoPresence = new VideoPresence();
 					videos.videos_holder.dataProvider.addItem(videoPresence);
+					videos.videos_holder.invalidateDisplayList();
 					
 					videoPresence.data = userInfo;
 					videoPresence.name = userInfo.suid.toString();
 					
 					videoPresence.is_local = userInfo.suid == dataProxy.my_info.suid;
 					
-					videoPresence.addEventListener(FlexEvent.CREATION_COMPLETE,function(e:FlexEvent):void
-					{
-						var curr_presence:VideoPresence = e.target as VideoPresence;
-						if(curr_presence.is_local){
-							setupMyPresenceComponent(curr_presence);
-						} else {
-							setupOtherPresenceComponent(curr_presence);
-						}
-					});
+					videoPresence.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
+						{
+							trace("VideosMediator.updateVideos() VideoPresence FlexEvent.CREATION_COMPLETE event listener")
+							
+							var curr_presence:VideoPresence = e.target as VideoPresence;
+							if(curr_presence.is_local){
+								setupMyPresenceComponent(curr_presence);
+							} else {
+								setupOtherPresenceComponent(curr_presence);
+							}
+						});
 					
 				} else {
+					trace("VideosMediator.updateVideos() found existing VideoPresence for name="+name);
+					
+					// videoPresence is assigned, and not null.
+					// why are we fetching this again? 
 //					videoPresence = getElementbyName(videos.videos_holder, userInfo.suid.toString());
-					if(!videoPresence.isInitialized())
+					
+					if(!videoPresence.isInitialized()) {
+						// what about the rest of the collection?
 						return;
-
+					}
+							
 					videoPresence.is_local = userInfo.suid == dataProxy.my_info.suid;
 					
 					if(userInfo.suid == dataProxy.my_info.suid){
@@ -148,6 +190,7 @@ package com.infrno.chat.view.mediators
 					} else {
 						setupOtherPresenceComponent(videoPresence);
 					}
+					
 				}
 				
 //				if(userInfo.suid == dataProxy.my_info.suid){
@@ -189,7 +232,7 @@ package com.infrno.chat.view.mediators
 		
 		private function setupMyPresenceComponent(videoPresence:VideoPresence):void
 		{
-			trace("VideosMediator.updateVideos() this is my video.. so showing my camera");
+			trace("VideosMediator.setupMyPresenceComponent()");
 			videoPresence.is_local = true;
 			videoPresence.camera = deviceProxy.camera;
 			videoPresence.audio_level.value = deviceProxy.mic.gain;
@@ -200,41 +243,33 @@ package com.infrno.chat.view.mediators
 		
 		private function setupOtherPresenceComponent(videoPresence:VideoPresence):void
 		{
+			trace("VideosMediator.setupOtherPresenceComponent()");
 			var userInfo:UserInfoVO = videoPresence.data;
 			
 			if(dataProxy.use_peer_connection && userInfo.nearID && dataProxy.peer_capable && !(userInfo.ns is NetStreamPeer) ){
-				trace("VideosMediator.updateVideos() setting up and playing from the peer connection: "+userInfo.suid.toString());
+				trace("VideosMediator.setupOtherPresenceComponent() setting up and playing from the peer connection: "+userInfo.suid.toString());
 				userInfo.ns = peerService.getNewNetStream(userInfo.nearID);
 				userInfo.ns.play(userInfo.suid.toString());
 				videoPresence.netstream = userInfo.ns;
 				videoPresence.toggleAudio();
 				videoPresence.toggleVideo();
 			} else if(!dataProxy.use_peer_connection && !(userInfo.ns is NetStreamMS) ){
-				trace("VideosMediator.updateVideos() setting up and playing from the stream server");
+				trace("VideosMediator.setupOtherPresenceComponent() setting up and playing from the stream server");
 				userInfo.ns = msService.getNewNetStream();
 				userInfo.ns.play(userInfo.suid.toString(),-1);
 				videoPresence.netstream = userInfo.ns;
 				videoPresence.toggleAudio();
 				videoPresence.toggleVideo();
 			}
+			
 			try{
 				videoPresence.audio_level.value = userInfo.ns.soundTransform.volume*100
 			} catch(e:Object){
-				//something didn't initialze
+				trace("VideosMediator.setupOtherPresenceComponent() setting videoPresence.audio_level.value threw an error: " + e.toString());
 			}
 		}
 		
-		private function getElementbyName(visible_element:spark.components.List, name:String):VideoPresence
-		{
-			var num_elements:int = visible_element.numChildren;
-			for(var i:int=0;i<num_elements;i++){
-				var curr_element:VideoPresence = visible_element.getChildAt(i) as VideoPresence;
-				if(curr_element.name == name){
-					return curr_element;
-				}
-			}
-			return null;
-		}
+
 		
 	}
 }

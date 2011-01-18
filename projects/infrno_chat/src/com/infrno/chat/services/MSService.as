@@ -45,10 +45,9 @@ package com.infrno.chat.services
 		{
 			var connection_uri:String = dataProxy.media_server +":"+ dataProxy.media_port +"/"+ dataProxy.media_app +"/"+ dataProxy.room_id;
 			
-			trace("MSService.connect() connecting to media server: "
-				+connection_uri);
+			trace("MSService.connect() connection_uri="+connection_uri);
 			
-			trace("MSService.connect() dataProxy params available:" 
+			trace("MSService.connect() dataProxy params:" 
 				+ dataProxy.room_name 
 				+":"+ dataProxy.my_info.user_name 
 				+":"+ dataProxy.room_id 
@@ -122,7 +121,7 @@ package com.infrno.chat.services
 		
 		public function updateUserInfo():void
 		{
-			trace(typeof(dataProxy));
+			trace("MSService.updateUserInfo() typeof(dataProxy)="+typeof(dataProxy));
 			_nc.call("updateUserInfo",null,dataProxy.my_info);
 		}
 		
@@ -134,6 +133,7 @@ package com.infrno.chat.services
 		{
 			trace("MSService.netStatusHandler() Media: "+e.info.code);
 			switch(e.info.code){
+				
 				case "NetConnection.Connect.Closed":
 					dispatch(new MSEvent(MSEvent.NETCONNECTION_DISCONNECTED));
 					break;
@@ -145,6 +145,7 @@ package com.infrno.chat.services
 					updateUserInfo();
 					dispatch(new MSEvent(MSEvent.NETCONNECTION_CONNECTED));
 					break;
+				
 				case "NetStream.Publish.BadName":
 					_publishing = false;
 					updatePublishStream();
@@ -164,6 +165,7 @@ package com.infrno.chat.services
 			_nc_client.initUser = function(user_info:Object):void
 			{
 //				dataProxy.my_info = new UserInfoVO(user_info);
+				trace("MSService._nc_client.initUser()" + user_info.toString());
 				dataProxy.my_info.updateInfo(user_info);
 			}
 			_nc_client.chatToUser = function(msgIn:String):void
@@ -187,24 +189,29 @@ package com.infrno.chat.services
 		
 		private function updateUsers(users_obj:Object):void
 		{
-			trace("MSService.updateUsers() users object has been updated");
+			trace("MSService.updateUsers()");
 			
 			//removing data
 			for(var n:String in dataProxy.users_collection)
 			{
+				trace("MSService.updateUsers() looking to delete n="+n);
 				if(users_obj[n] == null)
 					delete dataProxy.users_collection[n];
 			}
 			
 			//adding/updating info
-			for(var i:String in users_obj){
-				if(dataProxy.users_collection[i] == null){
-					dataProxy.users_collection[i] = new UserInfoVO(users_obj[i]);
+			for(var m:String in users_obj){
+				trace("MSService.updateUsers() looking to add m="+m);				
+				if(dataProxy.users_collection[m] == null){
+					trace("MSService.updateUsers() creating new UserInfoVO for m="+m);				
+					dataProxy.users_collection[m] = new UserInfoVO(users_obj[m]);
 				} else {
-					dataProxy.users_collection[i].updateInfo(users_obj[i]);
+					trace("MSService.updateUsers() updating UserInfoVO for m="+m);				
+					dataProxy.users_collection[m].updateInfo(users_obj[m]);
 				}
 			}
 			
+			trace("MSService.updateUsers() dispatching MSEvent.USERS_OBJ_UPDATE)");	
 			dispatch(new MSEvent(MSEvent.USERS_OBJ_UPDATE));
 		}
 		

@@ -90,7 +90,7 @@
 			
 			public function toggleAudio():void
 			{
-				trace( "toggelAudio" );
+				trace( "VideoPresence.toggleAudio()" );
 				if(audioToggleButton.selected){
 					if(_is_local){
 						dispatchEvent(new VideoPresenceEvent(VideoPresenceEvent.AUDIO_MUTED,true))
@@ -132,7 +132,7 @@
 			
 			public function toggleVideo():void
 			{
-				trace("hit toggleVideo");
+				trace("VideoPresence.toggleVideo()");
 				
 				//if( null == videoToggleButton ) 
 				//{

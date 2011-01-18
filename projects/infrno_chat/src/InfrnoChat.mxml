@@ -16,11 +16,19 @@
 				
 				// This event fires before everything is in place, so mind your nulls
 				if (ChatVGroup) {
-					ChatVGroup.width = this.width
-//						
+//					updateDimensions(this.width, this.height);
+					ChatVGroup.width = this.width;
+
 //					// This does not seem to have an effect
 //					 ChatVGroup.height = this.height
 				}
+			}
+			
+			public function updateDimensions(width:int, height:int):void{
+				ChatVGroup.width = width;
+				ChatVGroup.height = height;
+				
+				videosComponent.height = height - chatComponent.height - 10;
 			}
 
 		]]>
@@ -34,8 +42,8 @@
 	
 
 	<s:VGroup id="ChatVGroup" height="100%">
-		<components:Videos width="100%" height="100%" />
-		<components:Chat width="100%" />
+		<components:Videos id="videosComponent" width="100%" height="100%" />
+		<components:Chat id="chatComponent" width="100%" />
 	</s:VGroup>
 
 		

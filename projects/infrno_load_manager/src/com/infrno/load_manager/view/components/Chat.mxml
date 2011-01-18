@@ -15,10 +15,18 @@
 				loadedChatSwf.width = this.width;	
 				loadedChatSwf.height = this.height;
 
+				try {
 				Object(loadedChatSwf.content).setActualSize(this.width, this.height);
+				} catch(e:Error) {
+					trace("Object(loadedChatSwf.content).setActualSize threw:" + e);
+				}
 				
-				var loadedSM:SystemManager = SystemManager(loadedChatSwf.content);
-//				loadedSM.application["updateDimensions"] (this.width, this.height);
+				try {
+					var loadedSM:SystemManager = SystemManager(loadedChatSwf.content);
+					loadedSM.application["updateDimensions"] (this.width, this.height);
+				} catch(e:Error) {
+					trace("loadedSM.application[updateDimensions]  threw:" + e);
+				}
 			}
 
 		]]>
@@ -28,6 +36,5 @@
 	<mx:SWFLoader id="loadedChatSwf" 
 			source="InfrnoChat.swf" 
 			width="168"
-
 			height="100%" />
 </s:Group>

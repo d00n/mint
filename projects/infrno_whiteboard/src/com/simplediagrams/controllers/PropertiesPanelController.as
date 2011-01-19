@@ -179,7 +179,7 @@ package com.simplediagrams.controllers
 				}
 				else
 				{
-					propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_IMAGE
+//					propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_IMAGE
 				}	
 			}
   			else

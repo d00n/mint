@@ -26,7 +26,7 @@ package com.simplediagrams.model
 		public static const STYLE_BORDER_AND_TAPE:String = "photoStyle";
 		
 		private var _imageData:ByteArray
-		private var _styleName:String = STYLE_BORDER_AND_TAPE;
+		private var _styleName:String = STYLE_NONE;
 		
 		[Transient]
 		public var origWidth:int

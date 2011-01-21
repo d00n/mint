@@ -1,3 +1,5 @@
+import com.simplediagrams.events.RemoteSharedObjectEvent;
+
 import com.simplediagrams.controllers.MenuController;
 import com.simplediagrams.events.ApplicationEvent;
 import com.simplediagrams.events.CloseDiagramEvent;
@@ -20,6 +22,8 @@ import com.simplediagrams.events.RemoteSharedObjectEvent;
 private var _isWin:Boolean; 
 private var _isMac:Boolean; 
 
+[Dispatcher]
+public var dispatcher:IEventDispatcher;
 
 protected function onPreInit():void
 {	
@@ -119,26 +123,27 @@ protected function onPreInit():void
 
 protected function onApplicationComplete():void
 {
-	//	Security.loadPolicyFile("http://admin.infrno.net/crossdomain.xml");
-	
+//	Security.loadPolicyFile("http://admin.infrno.net/crossdomain.xml");
+//	dispatcher.dispatchEvent(new ApplicationEvent(ApplicationEvent.INIT_APP, true));
+		
 	var loader_info:LoaderInfo = this.loaderInfo;
 	var flash_vars:Object = loader_info.parameters;
-	
+
 	var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LOAD_FLASHVARS);
-	
+
 	try{
 		Logger.debug("SimpleDiagrams.as onAppComplete() parent load parameters");
 		flash_vars = loader_info.loader.loaderInfo.parameters;
 	}catch(e:Object){
 		Logger.debug("SimpleDiagrams.as onAppComplete() not loaded by another movie");
-		
+
 		// To facilitate dev work, rsoEvent has default values set for auth_key and room_id. 
 		// Wowza will accept these values for specified hosts.
-		dispatchEvent(rsoEvent);
+		dispatcher.dispatchEvent(rsoEvent);
 		return;
 	}
-	
-	
+		
+
 	if (flash_vars.auth_key != null)
 		rsoEvent.auth_key = flash_vars.auth_key;
 	
@@ -163,16 +168,15 @@ protected function onApplicationComplete():void
 	if (flash_vars.image_server != null)
 		rsoEvent.image_server = flash_vars.image_server;
 	
-	dispatchEvent(rsoEvent);
+	
+	dispatcher.dispatchEvent(rsoEvent);
 }
+
 
 //TODO: implement this when Swiz remote calls are implemented
 protected function genericFault(fe:FaultEvent):void
 {
 	Logger.error("#FAULT EVENT: " + fe)
 }
-
-
-
 
 

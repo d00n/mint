@@ -121,7 +121,7 @@ package com.simplediagrams.controllers
 			// Look at ReportStatsCommand.execute for what to report
 			clientObj.getUserStats = function():void
 			{
-				Logger.info("getUserStats", this);
+//				Logger.info("getUserStats", this);
 				
 				var user_stats:Object = new Object();
 				var ns_info:NetStreamInfo = _netStream.info;
@@ -215,7 +215,7 @@ package com.simplediagrams.controllers
 		public function asyncErrorHandler(event : AsyncErrorEvent) : void {  Logger.info('Async Error: '+event, this);  }  		
 		
 		private function onSyncEventHandler(event : SyncEvent):void {
-			Logger.info("onSyncEventHandler event:" + event,this);	
+			Logger.info("onSyncEventHandler event:" + event.type,this);	
 			
 			Logger.info("onSyncEventHandler event.changeList.length:" + event.changeList.length,this);	
 			for (var i:Number = 0; i < event.changeList.length; i++) {
@@ -252,11 +252,11 @@ package com.simplediagrams.controllers
 		[Mediate(event="RemoteSharedObjectEvent.LOAD_IMAGE")]
 		public function dispatchUpdate_LoadImage(rsoEvent:RemoteSharedObjectEvent):void
 		{
-			Logger.info("dispatchUpdate_LoadImage() rsoEvent.sdImageModel.sdID = " + rsoEvent.sdImageModel.sdID,this);
+			Logger.info("dispatchUpdate_LoadImage() sdID="+rsoEvent.sdImageModel.sdID,this);
 			
 			var returnValueFunction:Function = function(imageDetails:Object):void
 			{
-				Logger.info("dispatchUpdate_LoadImage() responder.result() imageDetails[sdID] = " + imageDetails["sdID"],this);
+				Logger.info("dispatchUpdate_LoadImage() responder.result() sdID="+imageDetails["sdID"]+", url="+imageDetails["imageURL"],this);
 
 				var sdImageModel:SDImageModel = diagramModel.getModelByID(imageDetails["sdID"]) as SDImageModel;
 				sdImageModel.imageURL = imageDetails["imageURL"];
@@ -353,7 +353,7 @@ package com.simplediagrams.controllers
 		[Mediate(event="RemoteSharedObjectEvent.ADD_SD_OBJECT_MODEL")]
 		public function dispatchUpdate_ObjectChanged(event:RemoteSharedObjectEvent) : void
 		{
-			Logger.info("dispatchUpdate_ObjectChanged()",this);
+			Logger.info("dispatchUpdate_ObjectChanged() event:"+event.type,this);
 			
 			for each (var sdObjectModel:SDObjectModel in event.changedSDObjectModelArray)
 			{			
@@ -383,8 +383,11 @@ package com.simplediagrams.controllers
 				else if (sdObjectModel is SDImageModel){
 					var sdImageModel:SDImageModel = sdObjectModel as SDImageModel;
 					
-					sd_obj.sdObjectModelType 	= "SDImageModel";					
-					sd_obj.imageURL				= sdImageModel.imageURL;
+					Logger.info("dispatchUpdate_ObjectChanged() sd_obj.imageURL="+sd_obj.imageURL,this);
+					
+					sd_obj.sdObjectModelType 	= "SDImageModel";	
+					if (sdImageModel.imageURL != undefined) 
+						sd_obj.imageURL				= sdImageModel.imageURL;
 				}
 				else if (sdObjectModel is SDLineModel){
 					var sdLineModel:SDLineModel = sdObjectModel as SDLineModel;
@@ -457,7 +460,9 @@ package com.simplediagrams.controllers
 					}
 					
 					Logger.info("processUpdate_ObjectChanged() changeObject.imageURL = " + changeObject.imageURL,this);
-					sdImageModel.imageURL = changeObject.imageURL;
+					if (changeObject.imageURL != undefined ) {
+						sdImageModel.imageURL = changeObject.imageURL;
+					}
 					
 					sdObjectModel = sdImageModel;
 					break;

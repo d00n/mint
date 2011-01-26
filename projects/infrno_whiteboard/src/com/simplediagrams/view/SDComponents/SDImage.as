@@ -33,6 +33,7 @@ package com.simplediagrams.view.SDComponents
 		
 		public function SDImage()
 		{
+
 			super();
 			this.setStyle("skinClass", Class(SDImageSkin))
 		}
@@ -101,6 +102,7 @@ package com.simplediagrams.view.SDComponents
 						imageSource = _model.imageURL
 						this.invalidateProperties()
 					}
+					break
 				case "styleName":
 					Logger.debug("imageData changed", this)
 					imageStyle = _model.styleName

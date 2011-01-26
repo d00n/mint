@@ -288,7 +288,9 @@ package com.simplediagrams.model
 		 *  */
 		 
 		public function addSDObjectModel(newSDObjectModel:SDObjectModel, fromFile:Boolean = false, isPaste:Boolean = false):void
-		{							
+		{					
+			Logger.info("addSDObjectModel() sdID="+newSDObjectModel.sdID,this);
+			
 			//if this objectModel doesn't have an id, give it a new unique one
 			if (newSDObjectModel.sdID=="")
 			{

@@ -552,6 +552,7 @@ package com.simplediagrams.model
 				{
 					sdObjectHandles.unregisterComponent(sdObjectModel.sdComponent as EventDispatcher)  	//remove from object handles
 					sdObjectModelsAC.removeItemAt(i)													//remove from our local arrayCollection
+					removeEmptyDepthSlot(sdObjectModel.depth);
 					break	
 				}
 			}
@@ -571,6 +572,19 @@ package com.simplediagrams.model
 			{
 				deleteSDObjectModel(sdObjectModel)
 			}
+		}
+		
+		public function removeEmptyDepthSlot(depth:int): void {
+			var len:uint = sdObjectModelsAC.length
+			for (var i:uint=0;i<len;i++)			 
+			{
+				var sdObjectModel:SDObjectModel = sdObjectModelsAC.getItemAt(i) as SDObjectModel;
+				if (sdObjectModel.depth > depth)
+				{
+					sdObjectModel.depth--;	
+				}
+			}
+			
 		}
 		
 		

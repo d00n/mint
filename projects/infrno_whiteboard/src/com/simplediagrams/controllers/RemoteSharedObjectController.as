@@ -459,8 +459,10 @@ package com.simplediagrams.controllers
 						sdImageModel = new SDImageModel();
 					}
 					
-					Logger.info("processUpdate_ObjectChanged() changeObject.imageURL = " + changeObject.imageURL,this);
-					if (changeObject.imageURL != undefined ) {
+					if (changeObject.imageURL == undefined ) {
+						Logger.error("processUpdate_ObjectChanged() changeObject.imageURL is undefined, sdID="+sdID,this);
+					} else {
+						Logger.info("processUpdate_ObjectChanged() changeObject.imageURL = " + changeObject.imageURL,this);
 						sdImageModel.imageURL = changeObject.imageURL;
 					}
 					

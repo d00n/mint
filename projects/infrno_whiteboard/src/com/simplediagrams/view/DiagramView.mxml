@@ -111,6 +111,15 @@
 //						
 						break;
 					
+					case 65:  // a				
+						if (event.ctrlKey)
+						{
+							Logger.debug("dispatching select all event...",this)
+							var selectAllEvent:SelectionEvent = new SelectionEvent(SelectionEvent.SELECT_ALL, true)
+							dispatchEvent(selectAllEvent)	
+						}
+						break
+										
 					case 67:  // c				
 						if (event.ctrlKey)
 						{
@@ -153,12 +162,12 @@
 				}
 			}
 			
-			public function onSelectAll(event:Event):void
-			{				
-				Logger.debug("dispatching select all event...",this)
-				var selectAllEvent:SelectionEvent = new SelectionEvent(SelectionEvent.SELECT_ALL, true)
-				dispatchEvent(selectAllEvent)				
-			}
+//			public function onSelectAll(event:Event):void
+//			{				
+//				Logger.debug("dispatching select all event...",this)
+//				var selectAllEvent:SelectionEvent = new SelectionEvent(SelectionEvent.SELECT_ALL, true)
+//				dispatchEvent(selectAllEvent)				
+//			}
 			
 			[Mediate(event='ShapesPanelEvent.TOGGLE_DISPLAY')]
 			public function onShapesPanelToggle(): void

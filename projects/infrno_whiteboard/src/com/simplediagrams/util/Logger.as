@@ -72,13 +72,14 @@ package com.simplediagrams.util
 				}
 											
 				var type:String
+				var targetName:String
 				switch(lvl)
 	            {
 	            	case LogEventLevel.DEBUG:
 						type = "DEBUG:"
 	                	if (Log.isDebug()) 
 						{
-							var targetName:String = getTargetClassName(target)
+							targetName = getTargetClassName(target)
 	                    	myLogger.debug(targetName + " : " + o.toString()) 
 	                    }
 	                    break;
@@ -86,7 +87,7 @@ package com.simplediagrams.util
 						type = "INFO:"
 						if (Log.isInfo()) 
 						{							
-							var targetName:String = getTargetClassName(target)
+							targetName = getTargetClassName(target)
 							myLogger.info(targetName + " : " +o.toString()); 
 						}
 						break;
@@ -94,7 +95,7 @@ package com.simplediagrams.util
 						type = "WARN:"
 						if (Log.isWarn()) 
 						{							
-							var targetName:String = getTargetClassName(target)
+							targetName = getTargetClassName(target)
 	                        myLogger.warn(targetName + " : " + o.toString());
 	                    }
 	                    break;
@@ -102,7 +103,7 @@ package com.simplediagrams.util
 						type = "ERROR:"
 	                    if (Log.isError()) 
 						{							
-							var targetName:String = getTargetClassName(target)
+							targetName = getTargetClassName(target)
 	                        myLogger.error(targetName + " : " + o.toString());
 	                    }
 	                    break;
@@ -110,13 +111,13 @@ package com.simplediagrams.util
 						type = "FATAL:"
 	                    if (Log.isFatal()) 
 						{
-							var targetName:String = getTargetClassName(target)
+							targetName = getTargetClassName(target)
 	                        myLogger.fatal(targetName + " : " + o.toString());
 	                    }
 	                    break;
 					case LogEventLevel.ALL:
 						type = "ALL:"
-						var targetName:String = getTargetClassName(target)
+						targetName = getTargetClassName(target)
 						myLogger.log(lvl, targetName + " : " +  o.toString());
 						break;
 	            }

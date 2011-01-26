@@ -114,7 +114,7 @@ package tests
 			Assert.assertEquals('a', subject.sdID);
 			Assert.assertEquals(0, subject.depth);
 			
-			var subject:SDObjectModel = diagramModel.sdObjectModelsAC.getItemAt(1) as SDObjectModel;
+			subject = diagramModel.sdObjectModelsAC.getItemAt(1) as SDObjectModel;
 			Assert.assertEquals('c', subject.sdID);
 			Assert.assertEquals(1, subject.depth);
 			
@@ -123,15 +123,15 @@ package tests
 			
 			diagramModel.addSDObjectModel(sdObjectModel_b);
 
-			var subject:SDObjectModel = diagramModel.sdObjectModelsAC.getItemAt(0) as SDObjectModel;
+			subject = diagramModel.sdObjectModelsAC.getItemAt(0) as SDObjectModel;
 			Assert.assertEquals('a', subject.sdID);
 			Assert.assertEquals(0, subject.depth);
 			
-			var subject:SDObjectModel = diagramModel.sdObjectModelsAC.getItemAt(1) as SDObjectModel;
+			subject = diagramModel.sdObjectModelsAC.getItemAt(1) as SDObjectModel;
 			Assert.assertEquals('c', subject.sdID);
 			Assert.assertEquals(1, subject.depth);
 			
-			var subject:SDObjectModel = diagramModel.sdObjectModelsAC.getItemAt(2) as SDObjectModel;
+			subject = diagramModel.sdObjectModelsAC.getItemAt(2) as SDObjectModel;
 			Assert.assertEquals('b', subject.sdID);
 			Assert.assertEquals(2, subject.depth);
 			

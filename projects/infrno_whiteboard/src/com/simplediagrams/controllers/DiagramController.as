@@ -918,8 +918,7 @@ package com.simplediagrams.controllers
 			}
 			dumpDepths()
 			
-			dispatcher.dispatchEvent(new ChangeDepthEvent(ChangeDepthEvent.OBJECT_MOVED, true))
-			
+			throw_ObjectChanged_RSOEvent(diagramModel.sdObjectModelsAC.toArray());			
 		}
 		
 		[Mediate(event='ChangeDepthEvent.MOVE_FORWARD')]		
@@ -945,7 +944,7 @@ package com.simplediagrams.controllers
 			}
 			dumpDepths()
 
-			dispatcher.dispatchEvent(new ChangeDepthEvent(ChangeDepthEvent.OBJECT_MOVED, true))			
+			throw_ObjectChanged_RSOEvent(diagramModel.sdObjectModelsAC.toArray());	
 		}
 		
 		private function dumpDepths():void{
@@ -960,7 +959,7 @@ package com.simplediagrams.controllers
 		}
 			
 		public function throw_ObjectChanged_RSOEvent(sdObjectModelArray:Array):void{
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_DEPTH_CHANGED);
 			rsoEvent.changedSDObjectModelArray = sdObjectModelArray;
 			dispatcher.dispatchEvent(rsoEvent);
 		}	

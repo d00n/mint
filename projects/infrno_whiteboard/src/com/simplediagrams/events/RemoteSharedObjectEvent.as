@@ -22,6 +22,7 @@ package com.simplediagrams.events
 		public static const ADD_SD_OBJECT_MODEL:String = "rso_addSDObjectModel";
 		public static const DELETE_SELECTED_SD_OBJECT_MODEL:String = "rso_DeleteSelectedSDObjectModel";
 		public static const OBJECT_CHANGED:String = "rso_ObjectChanged";
+		public static const OBJECT_DEPTH_CHANGED:String = "rso_ObjectDepthChanged";
 		
 		public static const REFRESH_Z_ORDER:String = "rso_refreshZOrder";
 		public static const TEXT_WIDGET_ADDED:String = "rso_TextWidgetAdded";

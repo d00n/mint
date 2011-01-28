@@ -347,6 +347,7 @@ package com.simplediagrams.controllers
 		}		
 			
 		[Mediate(event="RemoteSharedObjectEvent.OBJECT_CHANGED")]
+		[Mediate(event="RemoteSharedObjectEvent.OBJECT_DEPTH_CHANGED")]
 		[Mediate(event="RemoteSharedObjectEvent.TEXT_WIDGET_ADDED")]
 		[Mediate(event="RemoteSharedObjectEvent.TEXT_WIDGET_CREATED")]
 		[Mediate(event="RemoteSharedObjectEvent.PENCIL_DRAWING_CREATED")]
@@ -383,11 +384,11 @@ package com.simplediagrams.controllers
 				else if (sdObjectModel is SDImageModel){
 					var sdImageModel:SDImageModel = sdObjectModel as SDImageModel;
 					
-					Logger.info("dispatchUpdate_ObjectChanged() sd_obj.imageURL="+sd_obj.imageURL,this);
-					
 					sd_obj.sdObjectModelType 	= "SDImageModel";	
-					if (sdImageModel.imageURL.length > 0) 
+					if (sdImageModel.imageURL != undefined) {
+						Logger.info("dispatchUpdate_ObjectChanged() sdImageModel.imageURL="+sdImageModel.imageURL,this);
 						sd_obj.imageURL				= sdImageModel.imageURL;
+					}
 				}
 				else if (sdObjectModel is SDLineModel){
 					var sdLineModel:SDLineModel = sdObjectModel as SDLineModel;

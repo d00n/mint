@@ -23,7 +23,7 @@ package com.simplediagrams.model
 	[Bindable]
 	public class ApplicationModel extends EventDispatcher
 	{
-		public static const VERSION:String		= "v0.1.5-4";
+		public static const VERSION:String		= "v0.1.6";
 		
 		public static var menuDataArr:Array
 		
@@ -35,6 +35,9 @@ package com.simplediagrams.model
 			
 		/* ********************* */
 		
+		/**
+		 * 
+		 */
 		public static var testMode:Boolean = false
 			
 		public static var alwaysCopyDB:Boolean = false

@@ -97,8 +97,8 @@ package com.simplediagrams.controllers
 			
 		}	
 		
-		[Mediate(event="PasteEvent.PASTE")]
-		public function onPaste(event:PasteEvent):void
+		[Mediate(event="Event.PASTE")]
+		public function onPaste(event:Event):void
 		{
 			
 			//make sure user isn't working in TextArea

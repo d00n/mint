@@ -552,10 +552,14 @@ package com.simplediagrams.model
 				{
 					sdObjectHandles.unregisterComponent(sdObjectModel.sdComponent as EventDispatcher)  	//remove from object handles
 					sdObjectModelsAC.removeItemAt(i)													//remove from our local arrayCollection
-					removeEmptyDepthSlot(sdObjectModel.depth);
+					packDepthSlots(sdObjectModel.depth);
 					break	
 				}
 			}
+			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_DEPTH_CHANGED);
+			rsoEvent.changedSDObjectModelArray = sdObjectModelsAC.toArray();
+			dispatcher.dispatchEvent(rsoEvent);
 				
 			var evt:DeleteSDComponentEvent = new DeleteSDComponentEvent(DeleteSDComponentEvent.DELETE_FROM_DIAGRAM, true)
 			evt.sdComponent = sdObjectModel.sdComponent
@@ -565,16 +569,8 @@ package com.simplediagrams.model
 			isDirty = true
 		}
 		
-		public function deleteSDObjectModelByID(id:String):void
-		{
-			var sdObjectModel:SDObjectModel = this.getModelByID(id)
-			if (sdObjectModel!=null)
-			{
-				deleteSDObjectModel(sdObjectModel)
-			}
-		}
 		
-		public function removeEmptyDepthSlot(depth:int): void {
+		public function packDepthSlots(depth:int): void {
 			var len:uint = sdObjectModelsAC.length
 			for (var i:uint=0;i<len;i++)			 
 			{
@@ -583,11 +579,18 @@ package com.simplediagrams.model
 				{
 					sdObjectModel.depth--;	
 				}
-			}
-			
+			}			
 		}
-		
-		
+						
+		public function deleteSDObjectModelByID(id:String):void
+		{
+			var sdObjectModel:SDObjectModel = this.getModelByID(id)
+			if (sdObjectModel!=null)
+			{
+				deleteSDObjectModel(sdObjectModel)
+			}
+		}
+	
 		/* Do all things necessary to init DiagramModel for a new diagram */		
 		public function createNew():void
 		{

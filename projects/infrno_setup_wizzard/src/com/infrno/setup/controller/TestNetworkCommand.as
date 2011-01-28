@@ -77,7 +77,7 @@ package com.infrno.setup.controller
 				runStratusConnectionTest();
 				cleanup_listeners = true;
 			} else if(e.type == NetConnectionEvent.NETCONNECTION_DISCONNECTED){
-				dispatch(new MessageEvent(MessageEvent.ERROR,"Server connection failed.\nPlease check your networks settings and try again."));
+				dispatch(new MessageEvent(MessageEvent.ERROR,"Server connection failed.\nPlease check your network settings and try again."));
 				cleanup_listeners = true;
 			}
 			

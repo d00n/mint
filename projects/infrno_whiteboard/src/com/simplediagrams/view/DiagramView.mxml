@@ -131,7 +131,7 @@
 							dispatcher.addEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
 							dispatcher.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
 							
-							var request:URLRequest = new URLRequest("XMLFile.xml");
+							var request:URLRequest = new URLRequest("http://infrno.net/games/19");
 							try {
 								loader.load(request);
 							} catch (error:Error) {

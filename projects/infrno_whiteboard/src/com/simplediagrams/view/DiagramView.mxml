@@ -132,10 +132,10 @@
 					case 86:  // v		
 						if (event.ctrlKey )
 						{
-							Logger.debug("dispatching PasteEvent...",this);
-							var e:Event = new Event(Event.PASTE);
-//							var pasteEvent:PasteEvent = new PasteEvent(PasteEvent.PASTE, true)
-							dispatcher.dispatchEvent(e)
+//							Logger.debug("dispatching Event.PASTE...",this);
+//							var e:Event = new Event(Event.PASTE);
+////							var pasteEvent:PasteEvent = new PasteEvent(PasteEvent.PASTE, true)
+//							dispatcher.dispatchEvent(e)
 						}
 						break
 					

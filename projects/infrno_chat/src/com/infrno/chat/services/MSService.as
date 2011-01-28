@@ -94,7 +94,7 @@ package com.infrno.chat.services
 		
 		public function reportUserStats(statsIn:Object):void
 		{
-			trace("MSService.reportUserStats()");
+//			trace("MSService.reportUserStats()");
 			_nc.call("reportUserStats",null,statsIn);
 		}
 		

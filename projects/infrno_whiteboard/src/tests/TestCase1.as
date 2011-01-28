@@ -2,8 +2,10 @@ package tests
 {
 	import com.roguedevelopment.objecthandles.ObjectHandlesSelectionManager;
 	import com.simplediagrams.controllers.DiagramController;
+	import com.simplediagrams.controllers.RemoteSharedObjectController;
 	import com.simplediagrams.events.ChangeDepthEvent;
 	import com.simplediagrams.model.DiagramModel;
+	import com.simplediagrams.model.SDImageModel;
 	import com.simplediagrams.model.SDLineModel;
 	import com.simplediagrams.model.SDObjectHandles;
 	import com.simplediagrams.model.SDObjectModel;
@@ -24,22 +26,26 @@ package tests
 	public class TestCase1 
 	{
 		private var diagramController:DiagramController;
-		public var diagramModel:DiagramModel;
+		private var diagramModel:DiagramModel;
+		private var remoteSharedObjectController:RemoteSharedObjectController;
 		
 		[Before(async, timeout=5000)]
 		public function runBeforeEveryTest():void { 
 			Async.proceedOnEvent(this,
 				prepare(IEventDispatcher,SDObjectHandles,ObjectHandlesSelectionManager),
 				Event.COMPLETE);		
-
 		}   
 		
 		[Before(order=2)]
 		public function setup():void {
 			diagramModel = new DiagramModel();
 			diagramModel.sdObjectModelsAC = new ArrayCollection();
+			
 			diagramController = new DiagramController();
 			diagramController.diagramModel = diagramModel;
+			
+			remoteSharedObjectController = new RemoteSharedObjectController;
+			remoteSharedObjectController.diagramModel = diagramModel;
 			
 			var dispatcher:IEventDispatcher = strict(IEventDispatcher);
 			mock(dispatcher).method("dispatchEvent");
@@ -62,8 +68,39 @@ package tests
 		} 
 		
 		[Test]  
-		public function moveToBack():void { 
+		public function rsoController_only_add_item_once_to_DiagraModel_sdObjectModelsAC():void { 
+			var sdImageModel_a:SDImageModel = new SDImageModel();
+			sdImageModel_a.sdID = "a";
+			sdImageModel_a.depth = 0;			
+			var changeObject:Object = new Object();
+			changeObject.sdID = 'a';
+			changeObject.sdObjectModelType = 'SDImageModel';
+
 			
+			Assert.assertEquals(0, diagramModel.sdObjectModelsAC.length);
+
+			
+			remoteSharedObjectController.processUpdate_ObjectChanged(changeObject);					
+			Assert.assertEquals(1, diagramModel.sdObjectModelsAC.length);			
+			var subject:SDImageModel = diagramModel.getModelByID(sdImageModel_a.sdID) as SDImageModel;
+			Assert.assertEquals(sdImageModel_a.sdID, subject.sdID);
+			Assert.assertEquals(sdImageModel_a.depth, subject.depth);
+
+			
+			changeObject = new Object();
+			changeObject.sdID = 'a';
+			changeObject.sdObjectModelType = 'SDImageModel';
+			remoteSharedObjectController.processUpdate_ObjectChanged(changeObject);					
+			Assert.assertEquals(1, diagramModel.sdObjectModelsAC.length);			
+			subject = diagramModel.getModelByID(sdImageModel_a.sdID) as SDImageModel;
+			Assert.assertEquals(sdImageModel_a.sdID, subject.sdID);
+			Assert.assertEquals(sdImageModel_a.depth, subject.depth);
+			
+			Assert.assertEquals(1, diagramModel.sdObjectModelsAC.length);
+		}
+		
+		[Test]  
+		public function moveToBack():void {
 			var sdObjectModel_a:SDObjectModel = new SDObjectModel();
 			sdObjectModel_a.sdID = "a";
 			sdObjectModel_a.depth = 0;

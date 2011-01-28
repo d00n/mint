@@ -950,11 +950,12 @@ package com.simplediagrams.controllers
 		
 		private function dumpDepths():void{
 			var numElements:uint = diagramModel.sdObjectModelsAC.length;
+			Logger.debug("dumpDepths() diagramModel.sdObjectModelsAC.length="+numElements, this)		
 			
 			for (var i:uint = 0; i<numElements; i++)
 			{
 				var sdObjectModel:SDObjectModel = diagramModel.sdObjectModelsAC.getItemAt(i) as SDObjectModel;
-				Logger.debug("dumpDepths() sdObjectModel.sdID=" + sdObjectModel.sdID.toString() + " sdObjectModel.depth=" + sdObjectModel.depth.toString() )		
+				Logger.debug("dumpDepths() sdObjectModel.sdID=" + sdObjectModel.sdID.toString() + " sdObjectModel.depth=" + sdObjectModel.depth.toString(), this)		
 			}	
 		}
 			

@@ -386,7 +386,7 @@ package com.simplediagrams.controllers
 					Logger.info("dispatchUpdate_ObjectChanged() sd_obj.imageURL="+sd_obj.imageURL,this);
 					
 					sd_obj.sdObjectModelType 	= "SDImageModel";	
-					if (sdImageModel.imageURL != undefined) 
+					if (sdImageModel.imageURL.length > 0) 
 						sd_obj.imageURL				= sdImageModel.imageURL;
 				}
 				else if (sdObjectModel is SDLineModel){
@@ -430,8 +430,12 @@ package com.simplediagrams.controllers
 		{
 			Logger.info("processUpdate_ObjectChanged()",this);
 			
-			var sdID:String = changeObject.sdID;			
+			var sdID:String = changeObject.sdID;
+			
+			// probably should see if sdObjectModelsAC already contains something with this sdID 
+			// before creating a new sdObjectModel.
 			var sdObjectModel:SDObjectModel;
+			
 			switch ( changeObject.sdObjectModelType) {
 				case "SDSymbolModel": {
 					var sdSymbolModel:SDSymbolModel = diagramModel.getModelByID(sdID) as SDSymbolModel;
@@ -516,7 +520,7 @@ package com.simplediagrams.controllers
 					
 					sdObjectModel = sdTextAreaModel;
 					
-					Logger.info("processUpdate_ObjectChanged() sdTextAreaModel.text=" + sdTextAreaModel.text + ", depth=" + sdTextAreaModel.depth.toString() + ", depth=" + sdTextAreaModel.depth.toString(), this);
+					Logger.info("processUpdate_ObjectChanged() sdTextAreaModel.text=" + sdTextAreaModel.text + ", depth=" + sdTextAreaModel.depth.toString(), this);
 					break;
 				}
 			}
@@ -534,10 +538,10 @@ package com.simplediagrams.controllers
 			// To prevent throwing an RSOEvent from within diagramModel.addSDObjectModel()
 			// we perform it's responsibilities here:	
 			if (diagramModel.sdObjectModelsAC.contains(sdObjectModel) == false) {
-				diagramModel.sdObjectModelsAC.addItem(sdObjectModel);
+				Logger.info("processUpdate_ObjectChanged() about to call diagramModel.addSDObjectModel(sdObjectModel) with sdObjectModel.sdID=" + sdObjectModel.sdID, this);
 				diagramModel.addSDObjectModel(sdObjectModel);
 			}
-		}	
+		}		
 		
 		[Mediate(event="RemoteSharedObjectEvent.CUT")]
 		public function dispatchUpdate_CutEvent(event:RemoteSharedObjectEvent) : void

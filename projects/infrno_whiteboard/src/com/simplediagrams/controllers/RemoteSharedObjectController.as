@@ -12,7 +12,6 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.commands.CutCommand;
 	import com.simplediagrams.commands.DeleteSDObjectModelCommand;
 	import com.simplediagrams.commands.DeleteSelectedSDObjectModelsCommand;
-	import com.simplediagrams.commands.PasteCommand;
 	import com.simplediagrams.commands.TransformCommand;
 	import com.simplediagrams.events.*;
 	import com.simplediagrams.model.ApplicationModel;

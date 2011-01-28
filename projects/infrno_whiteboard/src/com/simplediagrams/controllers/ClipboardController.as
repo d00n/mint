@@ -40,12 +40,18 @@ package com.simplediagrams.controllers
 		private var _startCopyY:Number
 		
 		public function ClipboardController()
-		{									
+		{
+			
+			//FlexGlobals.topLevelApplication.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown)
+			FlexGlobals.topLevelApplication.addEventListener(Event.CUT, onCutEvent)
+			FlexGlobals.topLevelApplication.addEventListener(Event.COPY, onCopy)
+			FlexGlobals.topLevelApplication.addEventListener(Event.PASTE, onPaste)
+								
 		}
 		
 		
-		[Mediate(event="CutEvent.CUT")]
-		public function onCutEvent(event:CutEvent):void
+//		[Mediate(event="CutEvent.CUT")]
+		public function onCutEvent(event:Event):void
 		{
 			//make sure user isn't working in TextArea
 			if (event.target == TextArea) return
@@ -70,8 +76,8 @@ package com.simplediagrams.controllers
 		}	
 		
 		
-		[Mediate(event="CopyEvent.COPY")]
-		public function onCopy(event:CopyEvent):void
+//		[Mediate(event="CopyEvent.COPY")]
+		public function onCopy(event:Event):void
 		{		
 			//make sure user isn't working in TextArea
 			if (event.target == TextArea) return
@@ -97,8 +103,8 @@ package com.simplediagrams.controllers
 			
 		}	
 		
-		[Mediate(event="PasteEvent.PASTE")]
-		public function onPaste(event:PasteEvent):void
+//		[Mediate(event="PasteEvent.PASTE")]
+		public function onPaste(event:Event):void
 		{
 			
 			//make sure user isn't working in TextArea

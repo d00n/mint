@@ -12,7 +12,6 @@
 	<fx:Script> 
 	
 		<![CDATA[
-			import com.simplediagrams.controllers.ClipboardController;
 			import com.simplediagrams.events.CopyEvent;
 			import com.simplediagrams.events.DeleteSDObjectModelEvent;
 			import com.simplediagrams.events.ExportDiagramEvent;
@@ -44,16 +43,12 @@
 			[Bindable]
 			[Inject]
 			public var diagramModel:DiagramModel;  	
-			
-			[Bindable]
-			[Inject]
-			public var clipboardController:ClipboardController;  		
+		
 			
 			/* This page catches all keyboard events not handled by menu controller. Later these should be moved to a special manager */			
 			public function onCC():void
 			{
-				FlexGlobals.topLevelApplication.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown)	;
-				addEventListener(Event.PASTE, clipboardController.onPaste);
+				FlexGlobals.topLevelApplication.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			}
 			
 			

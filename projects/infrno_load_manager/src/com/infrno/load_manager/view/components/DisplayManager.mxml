@@ -24,16 +24,9 @@
 		<components:Wizzard id="wizzard" />
 	</s:BorderContainer>
 
-	<mx:TabBar labelField="name">
-		<mx:dataProvider>
-			<mx:HDividedBox label="Game table" width="100%" height="100%" includeIn="chat">
-				<components:Chat  minWidth="168" height="100%"  />
-				<components:WhiteBoard width="100%" height="100%" />
-			</mx:HDividedBox>	
-			<s:TextArea name="Bill" />
-			<s:TextArea name="Bill" />
-			<s:TextArea name="Bill" />
-			
-		</mx:dataProvider>
-	</mx:TabBar>
+	
+	<mx:HDividedBox width="100%" height="100%" includeIn="chat">
+		<components:Chat  minWidth="168" height="100%"  />
+		<components:WhiteBoard width="100%" height="100%" />
+	</mx:HDividedBox>
 </s:Group>

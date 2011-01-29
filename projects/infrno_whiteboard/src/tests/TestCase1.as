@@ -67,6 +67,12 @@ package tests
 		public function runAfterEveryTest():void {   
 		} 
 		
+		
+		[Test]  
+		public function rsoController_disable_delete_events_while_cutting():void { 
+
+		}		
+		
 		[Test]  
 		public function rsoController_only_add_item_once_to_DiagraModel_sdObjectModelsAC():void { 
 			var sdImageModel_a:SDImageModel = new SDImageModel();

@@ -18,11 +18,11 @@ package com.simplediagrams.events
 		public static const STOP:String = "rso_stop";
 		public static const START:String = "rso_start";
 		public static const LOAD_IMAGE:String = "rso_loadImage";
-		public static const DISPATCH_TEXT_AREA_CHANGE:String = "rso_dispatchTextAreaChange";
+		public static const TEXT_AREA_CHANGE:String = "rso_TextAreaChange";
 		public static const ADD_SD_OBJECT_MODEL:String = "rso_addSDObjectModel";
 		public static const DELETE_SELECTED_SD_OBJECT_MODEL:String = "rso_DeleteSelectedSDObjectModel";
-		public static const OBJECT_CHANGED:String = "rso_ObjectChanged";
-		public static const OBJECT_DEPTH_CHANGED:String = "rso_ObjectDepthChanged";
+		public static const OBJECT_CHANGED:String = "rso_ObjectChanged";	
+		public static const UPDATE_DEPTHS:String = "rso_ObjectUpdateDepths";
 		
 		public static const REFRESH_Z_ORDER:String = "rso_refreshZOrder";
 		public static const TEXT_WIDGET_ADDED:String = "rso_TextWidgetAdded";

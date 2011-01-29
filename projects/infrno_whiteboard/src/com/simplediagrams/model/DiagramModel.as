@@ -557,7 +557,9 @@ package com.simplediagrams.model
 				}
 			}
 			
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_DEPTH_CHANGED);
+			// todo: this should be dispatched after all the deletes are done
+			// PasteCommand.redo() and ClipboardController.onPaste() call this in a loop
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
 			rsoEvent.changedSDObjectModelArray = sdObjectModelsAC.toArray();
 			dispatcher.dispatchEvent(rsoEvent);
 				

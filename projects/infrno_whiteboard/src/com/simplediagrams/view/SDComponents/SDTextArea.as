@@ -213,7 +213,7 @@ package com.simplediagrams.view.SDComponents
 			Logger.info("onTextAreaChange",this);
 			_model.text = mainTextArea.text;		
 			
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.DISPATCH_TEXT_AREA_CHANGE);
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_AREA_CHANGE);
 			rsoEvent.sdID = _model.sdID;
 			dispatcher.dispatchEvent(rsoEvent);			
 		}

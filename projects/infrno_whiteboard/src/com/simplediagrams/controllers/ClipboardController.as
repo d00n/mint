@@ -50,7 +50,6 @@ package com.simplediagrams.controllers
 		}
 		
 		
-//		[Mediate(event="CutEvent.CUT")]
 		public function onCutEvent(event:Event):void
 		{
 			//make sure user isn't working in TextArea
@@ -58,14 +57,13 @@ package com.simplediagrams.controllers
 			
 			if (diagramModel.selectedArray.length>=1)
 			{
-				var cmd:CutCommand = new CutCommand(diagramModel)
-				cmd.execute()
-				undoRedoManager.push(cmd)
-					
-				//remoteSharedObjectController.dispatchUpdate_CutEvent(cmd);	
 				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.CUT);	
 				rsoEvent.cutCommand = cmd;
 				dispatcher.dispatchEvent(rsoEvent);
+
+				var cmd:CutCommand = new CutCommand(diagramModel)
+				cmd.execute()
+				undoRedoManager.push(cmd)					
 			}
 			else
 			{
@@ -76,7 +74,6 @@ package com.simplediagrams.controllers
 		}	
 		
 		
-//		[Mediate(event="CopyEvent.COPY")]
 		public function onCopy(event:Event):void
 		{		
 			//make sure user isn't working in TextArea
@@ -103,7 +100,6 @@ package com.simplediagrams.controllers
 			
 		}	
 		
-//		[Mediate(event="PasteEvent.PASTE")]
 		public function onPaste(event:Event):void
 		{
 			

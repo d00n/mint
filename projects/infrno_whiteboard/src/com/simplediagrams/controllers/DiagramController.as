@@ -379,11 +379,10 @@ package com.simplediagrams.controllers
 				
 			}
 			
-//			remoteSharedObjectController.dispatchUpdate_DeleteSelectedSDObjectModel(sdIDArray);	
-
 			cmd.execute()
 			undoRedoManager.push(cmd);
 			
+			// doon: should this go in DiagramModel.deleteSDObjectModel ?
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.DELETE_SELECTED_SD_OBJECT_MODEL);	
 			rsoEvent.sdIDArray = sdIDArray;
 			dispatcher.dispatchEvent(rsoEvent);
@@ -959,7 +958,7 @@ package com.simplediagrams.controllers
 		}
 			
 		public function throw_ObjectChanged_RSOEvent(sdObjectModelArray:Array):void{
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_DEPTH_CHANGED);
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
 			rsoEvent.changedSDObjectModelArray = sdObjectModelArray;
 			dispatcher.dispatchEvent(rsoEvent);
 		}	

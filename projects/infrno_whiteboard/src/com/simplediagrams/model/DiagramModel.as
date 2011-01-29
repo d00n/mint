@@ -557,6 +557,12 @@ package com.simplediagrams.model
 				}
 			}
 			
+			// trying this out here instead of DiagramController.onDeleteSelectedSDObjectModel
+//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.DELETE_SELECTED_SD_OBJECT_MODEL);	
+//			rsoEvent.sdIDArray = new Array();	
+//			rsoEvent.sdIDArray.push(sdObjectModel);
+//			dispatcher.dispatchEvent(rsoEvent);
+			
 			// todo: this should be dispatched after all the deletes are done
 			// PasteCommand.redo() and ClipboardController.onPaste() call this in a loop
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);

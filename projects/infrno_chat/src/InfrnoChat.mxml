@@ -12,7 +12,6 @@
 			import mx.events.ResizeEvent;
 			
 			protected function InfrnoChat_Application_resizeHandler(event:ResizeEvent):void {
-				trace("InfrnoChat_Application_resizeHandler  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 				
 				// This event fires before everything is in place, so mind your nulls
 				if (ChatVGroup) {

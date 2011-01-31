@@ -159,8 +159,12 @@ package com.simplediagrams.controllers
 			
 			
 			var userInfoObj:Object = new Object();
-			userInfoObj.user_name = "whiteboard_default";
-			userInfoObj.user_id = "whiteboard_default";
+			userInfoObj.room_name = "whiteboard_default_room_name";
+			userInfoObj.room_id = "whiteboard_default_room_id";
+			userInfoObj.user_name = "whiteboard_default_user_name";
+			userInfoObj.user_id = "whiteboard_default_user_id";
+			userInfoObj.application_name = "whiteboard";
+			userInfoObj.application_version = ApplicationModel.VERSION;
 			var userInfoVO:UserInfoVO = new UserInfoVO(userInfoObj);
 			
 			
@@ -169,8 +173,6 @@ package com.simplediagrams.controllers
 				_auth_key, 
 				_room_id, 
 				_room_name, 
-				_user_name, 
-				_user_id,
 				_wowza_whiteboard_app, 
 				ApplicationModel.VERSION, 
 				Capabilities.serverString);     

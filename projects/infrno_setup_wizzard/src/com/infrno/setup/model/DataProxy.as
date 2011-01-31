@@ -18,10 +18,10 @@ package com.infrno.setup.model
 		
 		// Wowza will accept these values for specified hosts.
 		public var auth_key:String		= "sample_auth_key";		
-		public var room_id:String 		= "setup_default";
-		public var room_name:String 	= "setup_default";
-		public var user_id:String 		= "setup_default";
-		public var user_name:String 	= "setup_default";
+		public var room_id:String 		= "setup_default_room_id";
+		public var room_name:String 	= "setup_default_room_name";
+		public var user_id:String 		= "setup_default_user_id";
+		public var user_name:String 	= "setup_default_user_name";
 		
 		public var media_server:String	= "rtmp://localhost";
 		public var media_app:String		= "chat";

@@ -27,19 +27,19 @@
 			
 			public function handleNextFromVideo( event:Event ) : void 
 			{
-				dispatchEvent( new Event( "WIZZARD_NEXT_VIDEO", true, true ) );
+				dispatchEvent( new Event( "WIZARD_NEXT_VIDEO", true, true ) );
 				myViewStack.selectedChild = mic;
 			}
 			
 			public function handleNextFromAudio( event:Event ) : void 
 			{
-				dispatchEvent( new Event( "WIZZARD_NEXT_AUDIO", true, true ) );
+				dispatchEvent( new Event( "WIZARD_NEXT_AUDIO", true, true ) );
 				myViewStack.selectedChild = save;
 			}
 			
-			public function handleCloseWizzard( event:Event ) : void 
+			public function handleCloseWizard( event:Event ) : void 
 			{
-				dispatchEvent( new Event( "WIZZARD_CLOSE", true, true ) );
+				dispatchEvent( new Event( "WIZARD_CLOSE", true, true ) );
 			}
 		]]>
 	</fx:Script>
@@ -160,7 +160,7 @@
 			</s:Group>
 			<s:Button
 				label="close"
-				click="handleCloseWizzard(event);" 
+				click="handleCloseWizard(event);" 
 				bottom="5"
 				right="5" />
 		</s:NavigatorContent> 

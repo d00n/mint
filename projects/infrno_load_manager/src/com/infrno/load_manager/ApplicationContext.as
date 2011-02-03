@@ -21,11 +21,11 @@ package com.infrno.load_manager
 		
 		override public function startup():void
 		{
-			commandMap.mapEvent(EventConstants.DISPLAY_MANAGER_LOADED,LoadWizzardCommand);
-			commandMap.mapEvent(EventConstants.WIZZARD_COMPLETE,LoadChatCommand);
+			commandMap.mapEvent(EventConstants.DISPLAY_MANAGER_LOADED,LoadWizardCommand);
+			commandMap.mapEvent(EventConstants.WIZARD_COMPLETE,LoadChatCommand);
 			
 			mediatorMap.mapView(DisplayManager,DisplayManagerMediator);
-			mediatorMap.mapView(Wizzard,WizzardMediator);
+			mediatorMap.mapView(Wizard,WizardMediator);
 			
 			//startup done
 			super.startup();

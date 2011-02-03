@@ -140,10 +140,10 @@ package com.simplediagrams.controllers
 				user_stats.dataBytesPerSecond 		= int(ns_info.dataBytesPerSecond);
 				
 				user_stats.currentBytesPerSecond 	= int(ns_info.currentBytesPerSecond);
-				user_stats.maxBytesPerSecond 		= int(ns_info.maxBytesPerSecond);
-				user_stats.byteCount 				= ns_info.byteCount;
-				user_stats.dataByteCount 			= ns_info.dataByteCount;
-				user_stats.videoByteCount			= ns_info.videoByteCount;
+				user_stats.maxBytesPerSecond 		  = int(ns_info.maxBytesPerSecond);
+				user_stats.byteCount 				      = ns_info.byteCount;
+				user_stats.dataByteCount 			    = ns_info.dataByteCount;
+				user_stats.videoByteCount			    = ns_info.videoByteCount;
 				
 				user_stats.audioLossRate 			= ns_info.audioLossRate;
 				user_stats.droppedFrames 			= ns_info.droppedFrames;
@@ -159,10 +159,10 @@ package com.simplediagrams.controllers
 			
 			
 			var userInfoObj:Object = new Object();
-			userInfoObj.room_name = "whiteboard_default_room_name";
-			userInfoObj.room_id = "whiteboard_default_room_id";
-			userInfoObj.user_name = "whiteboard_default_user_name";
-			userInfoObj.user_id = "whiteboard_default_user_id";
+			userInfoObj.room_name = _room_name;
+			userInfoObj.room_id = _room_id;
+			userInfoObj.user_name = _user_name;
+			userInfoObj.user_id = _user_id;
 			userInfoObj.application_name = "whiteboard";
 			userInfoObj.application_version = ApplicationModel.VERSION;
 			var userInfoVO:UserInfoVO = new UserInfoVO(userInfoObj);
@@ -433,7 +433,7 @@ package com.simplediagrams.controllers
 					var sdImageModel:SDImageModel = sdObjectModel as SDImageModel;
 					
 					sd_obj.sdObjectModelType 	= "SDImageModel";	
-					if (sdImageModel.imageURL != undefined) {
+					if (sdImageModel.imageURL.length > 0) {
 						Logger.info("dispatchUpdate_ObjectChanged() sdImageModel.imageURL="+sdImageModel.imageURL,this);
 						sd_obj.imageURL				= sdImageModel.imageURL;
 					}

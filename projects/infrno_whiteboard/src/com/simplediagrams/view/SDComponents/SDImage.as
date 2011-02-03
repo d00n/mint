@@ -9,8 +9,8 @@ package com.simplediagrams.view.SDComponents
 	import flash.utils.ByteArray;
 	
 	import mx.controls.Image
-	import mx.events.PropertyChangeEvent;
-
+		import mx.events.PropertyChangeEvent;
+	
 	[SkinState("normal")]
 	[SkinState("border")]
 	[SkinState("tape")]
@@ -18,7 +18,7 @@ package com.simplediagrams.view.SDComponents
 	[Bindable]	
 	public class SDImage extends SDBase implements ISDComponent
 	{	
-					
+		
 		private var _model:SDImageModel
 		
 		public var imageData:ByteArray		
@@ -33,7 +33,7 @@ package com.simplediagrams.view.SDComponents
 		
 		public function SDImage()
 		{
-
+			
 			super();
 			this.setStyle("skinClass", Class(SDImageSkin))
 		}
@@ -43,7 +43,7 @@ package com.simplediagrams.view.SDComponents
 			_model.origWidth = imageHolder.width
 			_model.origHeight = imageHolder.height
 		}
-	
+		
 		public function onAddImageClick():void
 		{
 			Logger.debug("onAddImageClick()", this)
@@ -55,17 +55,17 @@ package com.simplediagrams.view.SDComponents
 		public function set objectModel(objectModel:SDObjectModel):void
 		{
 			Logger.debug("SDImage set objectModel(): " + objectModel, this)         
-            _model = SDImageModel(objectModel)
-            
-            //redraw();
-            x = _model.x;
-            y = _model.y;         
+			_model = SDImageModel(objectModel)
+			
+			//redraw();
+			x = _model.x;
+			y = _model.y;         
 			this.width = _model.width
 			this.height = _model.height  
 			this.rotation = _model.rotation
-//			this.imageData = _model.imageData
+			//			this.imageData = _model.imageData
 			this.depth = _model.depth;
-            imageStyle = _model.styleName
+			imageStyle = _model.styleName
 			
 			if (_model.imageURL != null && _model.imageURL.length != 0)
 				this.imageSource = _model.imageURL;
@@ -76,18 +76,18 @@ package com.simplediagrams.view.SDComponents
 			this.invalidateSkinState()
 		}
 		
-
+		
 		
 		public override function get objectModel():SDObjectModel
 		{
 			return _model
 		}
-				
 		
-        override protected function onModelChange(event:PropertyChangeEvent):void
+		
+		override protected function onModelChange(event:PropertyChangeEvent):void
 		{
 			super.onModelChange(event)
-				
+			
 			switch(event.property)
 			{    
 				
@@ -108,12 +108,12 @@ package com.simplediagrams.view.SDComponents
 					imageStyle = _model.styleName
 					this.invalidateSkinState()
 					break
-							
+				
 			}
 			
 			
 		}        
-       
+		
 		override protected function getCurrentSkinState():String 
 		{
 			if (imageStyle=="none") return "normal"
@@ -125,15 +125,15 @@ package com.simplediagrams.view.SDComponents
 		override protected function partAdded(partName:String, instance:Object) : void
 		{
 			super.partAdded(partName, instance)
-	       		
+			
 			if (instance == imageHolder)
-       		{
-       			imageHolder.addEventListener(Event.COMPLETE, onImageLoaded)
-       		}
-	       	
-	    }
-        
-        																	
+			{
+				imageHolder.addEventListener(Event.COMPLETE, onImageLoaded)
+			}
+			
+		}
+		
+		
 		public override function destroy():void
 		{
 			super.destroy()

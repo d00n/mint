@@ -6,7 +6,7 @@ package com.infrno.setup.model
 	
 	public class DataProxy extends Actor
 	{
-		public static const VERSION				:String		= "v0.1.5";
+		public static const VERSION				:String		= "Setup Wizard v0.1.5";
 		
 		public var stream_connection_success	:Boolean;
 		public var stratus_connection_success	:Boolean;
@@ -24,7 +24,7 @@ package com.infrno.setup.model
 		public var user_name:String 	= "setup_default_user_name";
 		
 		public var media_server:String	= "rtmp://localhost";
-		public var media_app:String		= "chat";
+		public var media_app:String		= "setup_wizard";
 		public var media_port:String	= "1935";
 		
 		public var my_info:UserInfoVO 	= new UserInfoVO({user_name:"user"+Math.round(Math.random()*1000),user_id:"sample_user_id"});

@@ -6,14 +6,14 @@
 	
 	<s:states>
 		<s:State name="setup" />
-		<s:State name="wizzard" />
+		<s:State name="wizard" />
 		<s:State name="chat" />
 	</s:states>
 	
 	<s:BorderContainer 
 		horizontalCenter="0" 
 		verticalCenter="-100" 
-		includeIn="wizzard" 
+		includeIn="wizard" 
 		dropShadowVisible="true" >		
 		
 		<s:layout>
@@ -21,7 +21,7 @@
 		</s:layout>
 			
 		<mx:Spacer	height="3" />
-		<components:Wizzard id="wizzard" />
+		<components:Wizard id="wizard" />
 	</s:BorderContainer>
 
 	

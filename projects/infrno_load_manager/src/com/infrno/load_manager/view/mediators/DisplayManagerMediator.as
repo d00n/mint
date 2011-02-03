@@ -20,7 +20,7 @@ package com.infrno.load_manager.view.mediators
 		override public function onRegister():void
 		{
 			eventDispatcher.addEventListener(EventConstants.LOAD_CHAT,loadChat);
-			eventDispatcher.addEventListener(EventConstants.LOAD_WIZZARD,loadWizzard);
+			eventDispatcher.addEventListener(EventConstants.LOAD_WIZARD,loadWizard);
 			
 			dispatch(new Event(EventConstants.DISPLAY_MANAGER_LOADED));
 		}
@@ -29,9 +29,9 @@ package com.infrno.load_manager.view.mediators
 		{
 			displayManager.currentState = "chat";
 		}
-		private function loadWizzard(e:Event):void
+		private function loadWizard(e:Event):void
 		{
-			displayManager.currentState = "wizzard";
+			displayManager.currentState = "wizard";
 		}
 	}
 }

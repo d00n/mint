@@ -594,6 +594,8 @@ package com.simplediagrams.controllers
 				
 			Logger.debug("onLoadComplete() about to dispatch RemoteSharedObjectEvent.LOAD_IMAGE, _currModelForImageLoad.sdID=" + _currModelForImageLoad.sdID,this)
 				
+			// Load the image locally for the uploading user
+			// ..and fire the rsoEvent from DiagramModel.addSDObjectModel when imageURL is valid
 			// TODO: Throw a SimpleDiagramsImageLoadCompleteEvent instead 	
 			var remoteSharedObjectEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LOAD_IMAGE, true, true);
 			remoteSharedObjectEvent.imageData = _fileReference.data;
@@ -957,7 +959,7 @@ package com.simplediagrams.controllers
 			}	
 		}
 			
-		public function throw_ObjectChanged_RSOEvent(sdObjectModelArray:Array):void{
+		private function throw_ObjectChanged_RSOEvent(sdObjectModelArray:Array):void{
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
 			rsoEvent.changedSDObjectModelArray = sdObjectModelArray;
 			dispatcher.dispatchEvent(rsoEvent);

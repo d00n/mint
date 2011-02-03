@@ -27,7 +27,7 @@ package com.infrno.setup.view.mediators
 			tab_selection.addEventListener(SettingsEvent.SHOW_CAMERA_SETTINGS,showSettings);
 			tab_selection.addEventListener(SettingsEvent.SHOW_MIC_SETTINGS,showSettings);
 			tab_selection.addEventListener(SettingsEvent.SHOW_SAVE_SETTINGS,showSettings);
-			tab_selection.addEventListener("WIZZARD_CLOSE", handleWizzardClose, false, 0, true );
+			tab_selection.addEventListener("WIZARD_CLOSE", handleWizardClose, false, 0, true );
 		}
 		
 		override public function onRemove():void
@@ -37,7 +37,7 @@ package com.infrno.setup.view.mediators
 			tab_selection.removeEventListener(SettingsEvent.SHOW_SAVE_SETTINGS,showSettings);
 		}
 		
-		public function handleWizzardClose( event:Event ) : void
+		public function handleWizardClose( event:Event ) : void
 		{
 			deviceProxy.releaseResources( );
 		}

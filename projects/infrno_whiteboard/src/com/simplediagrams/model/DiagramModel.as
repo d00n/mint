@@ -319,11 +319,24 @@ package com.simplediagrams.model
 			}
 		
 			// This is how add/delete/modify/cut/copy/paste actions hit the RSO
+			var newSDImageModel:SDImageModel = newSDObjectModel as SDImageModel;
+			if (newSDImageModel && newSDImageModel.imageURL.length == 0) {				
+				Logger.info("addSDObjectModel() skipping rsoEvent for sdImageModel with empty imageURL, sdID="+newSDObjectModel.sdID,this);
+			} else if(newSDImageModel && newSDImageModel.imageURL.length != 0) {				
+				Logger.info("addSDObjectModel() firing rsoEvent for sdImageModel.imageURL="+newSDImageModel.imageURL+", sdID="+newSDObjectModel.sdID,this);
+				throw_ObjectChanged_RSOEvent(newSDObjectModel);
+			}	else {
+				Logger.info("addSDObjectModel() firing rsoEvent for non-image, sdID="+newSDObjectModel.sdID,this);
+				throw_ObjectChanged_RSOEvent(newSDObjectModel);
+			}
+		}
+		
+		private function throw_ObjectChanged_RSOEvent(newSDObjectModel:SDObjectModel):void{
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.ADD_SD_OBJECT_MODEL);
 			rsoEvent.changedSDObjectModelArray = new Array;
 			rsoEvent.changedSDObjectModelArray.push(newSDObjectModel);
 			dispatcher.dispatchEvent(rsoEvent);		
-		}
+		}	 
 		
 		protected function addComponentForModel(sdModel:SDObjectModel, setSelected:Boolean = true):Object
 		{

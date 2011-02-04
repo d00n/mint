@@ -408,26 +408,27 @@ package com.simplediagrams.controllers
 			{			
 				var sd_obj:Object = {};
 				sd_obj.commandName 	= "ObjectChanged";
-				sd_obj.sdID 		= sdObjectModel.sdID;							
-				sd_obj.x 			= sdObjectModel.x;
-				sd_obj.y 			= sdObjectModel.y;		
-				sd_obj.height 		= sdObjectModel.height;		
-				sd_obj.width 		= sdObjectModel.width;		
-				sd_obj.rotation 	= sdObjectModel.rotation;		
-				sd_obj.color 		= sdObjectModel.color;	
-				sd_obj.depth 		= sdObjectModel.depth;	
+				sd_obj.sdID 				= sdObjectModel.sdID;							
+				sd_obj.x 						= sdObjectModel.x;
+				sd_obj.y 						= sdObjectModel.y;		
+				sd_obj.height 			= sdObjectModel.height;		
+				sd_obj.width 				= sdObjectModel.width;		
+				sd_obj.rotation			= sdObjectModel.rotation;		
+				sd_obj.color 				= sdObjectModel.color;	
+				sd_obj.depth 				= sdObjectModel.depth;	
 				
 				if (sdObjectModel is SDSymbolModel){
 					var sdSymbolModel:SDSymbolModel = sdObjectModel as SDSymbolModel;
 					
 					sd_obj.sdObjectModelType 	= "SDSymbolModel";
-					sd_obj.libraryName 			= sdSymbolModel.libraryName;				
-					sd_obj.symbolName 			= sdSymbolModel.symbolName;		
-					sd_obj.textAlign 			= sdSymbolModel.textAlign;
-					sd_obj.fontSize 			= sdSymbolModel.fontSize;
-					sd_obj.fontWeight 			= sdSymbolModel.fontWeight;
-					sd_obj.textPosition			= sdSymbolModel.textPosition;	
-					sd_obj.text					= sdSymbolModel.text;	
+					sd_obj.libraryName 				= sdSymbolModel.libraryName;				
+					sd_obj.symbolName 				= sdSymbolModel.symbolName;		
+					sd_obj.fontSize 					= sdSymbolModel.fontSize;
+					sd_obj.fontWeight 				= sdSymbolModel.fontWeight;
+					sd_obj.fontFamily 				= sdSymbolModel.fontFamily;
+					sd_obj.textAlign 					= sdSymbolModel.textAlign;
+					sd_obj.textPosition				= sdSymbolModel.textPosition;	
+					sd_obj.text								= sdSymbolModel.text;	
 				}
 				else if (sdObjectModel is SDImageModel){
 					var sdImageModel:SDImageModel = sdObjectModel as SDImageModel;
@@ -437,36 +438,39 @@ package com.simplediagrams.controllers
 						Logger.info("dispatchUpdate_ObjectChanged() sdImageModel.imageURL="+sdImageModel.imageURL,this);
 						sd_obj.imageURL				= sdImageModel.imageURL;
 					}
+					
+					sd_obj.styleName =  sdImageModel.styleName;
 				}
 				else if (sdObjectModel is SDLineModel){
 					var sdLineModel:SDLineModel = sdObjectModel as SDLineModel;
 					
 					sd_obj.sdObjectModelType 	= "SDLineModel";
-					sd_obj.endX 				= sdLineModel.endX;
-					sd_obj.endY 				= sdLineModel.endY;	
-					sd_obj.bendX 				= sdLineModel.bendX;
-					sd_obj.bendY 				= sdLineModel.bendY;
+					sd_obj.endX 							= sdLineModel.endX;
+					sd_obj.endY 							= sdLineModel.endY;	
+					sd_obj.bendX 							= sdLineModel.bendX;
+					sd_obj.bendY 							= sdLineModel.bendY;
 					sd_obj.startLineStyle 		= sdLineModel.startLineStyle;
-					sd_obj.endLineStyle 		= sdLineModel.endLineStyle;
-					sd_obj.lineWeight 			= sdLineModel.lineWeight;
+					sd_obj.endLineStyle 			= sdLineModel.endLineStyle;
+					sd_obj.lineWeight 				= sdLineModel.lineWeight;
 				}
 				else if (sdObjectModel is SDPencilDrawingModel){
 					var sdPencilDrawingModel:SDPencilDrawingModel = sdObjectModel as SDPencilDrawingModel;
 					
 					sd_obj.sdObjectModelType 	= "SDPencilDrawingModel";
-					sd_obj.linePath 			= sdPencilDrawingModel.linePath;
-					sd_obj.lineWeight 			= sdPencilDrawingModel.lineWeight;
+					sd_obj.linePath 					= sdPencilDrawingModel.linePath;
+					sd_obj.lineWeight 				= sdPencilDrawingModel.lineWeight;
 				}
 				else if (sdObjectModel is SDTextAreaModel){
 					var sdTextAreaModel:SDTextAreaModel = sdObjectModel as SDTextAreaModel;
 					
-					sd_obj.sdObjectModelType 	= "SDTextAreaModel";
-					sd_obj.styleName 			= sdTextAreaModel.styleName;
+					sd_obj.sdObjectModelType 		= "SDTextAreaModel";
+					sd_obj.styleName 						= sdTextAreaModel.styleName;
 					sd_obj.maintainProportion 	= sdTextAreaModel.maintainProportion;		
-					sd_obj.textAlign 			= sdTextAreaModel.textAlign;
-					sd_obj.fontSize 			= sdTextAreaModel.fontSize;
-					sd_obj.fontWeight 			= sdTextAreaModel.fontWeight;				
-					sd_obj.text					= sdTextAreaModel.text;	
+					sd_obj.textAlign 						= sdTextAreaModel.textAlign;
+					sd_obj.fontSize 						= sdTextAreaModel.fontSize;
+					sd_obj.fontWeight 					= sdTextAreaModel.fontWeight;				
+					sd_obj.fontFamily 					= sdTextAreaModel.fontFamily;				
+					sd_obj.text									= sdTextAreaModel.text;	
 					
 					Logger.info("dispatchUpdate_ObjectChanged() sdTextAreaModel.text=" + sdTextAreaModel.text + ", depth=" + sdTextAreaModel.depth.toString() + ", depth=" + sdTextAreaModel.depth.toString(), this);
 				}
@@ -496,11 +500,13 @@ package com.simplediagrams.controllers
 						sdSymbolModel = libraryManager.getSDObjectModel(libraryName, symbolName) as SDSymbolModel;
 					}
 					
-					sdSymbolModel.textAlign 	= changeObject.textAlign;
-					sdSymbolModel.fontWeight 	= changeObject.fontWeight;
-					sdSymbolModel.fontSize 		= parseInt(changeObject.fontSize);
+					sdSymbolModel.fontWeight 		= changeObject.fontWeight;
+					sdSymbolModel.fontSize 			= parseInt(changeObject.fontSize);
+					sdSymbolModel.fontFamily		= changeObject.fontFamily;
+					sdSymbolModel.textAlign 		= changeObject.textAlign;
 					sdSymbolModel.textPosition 	= changeObject.textPosition;
-					sdSymbolModel.text		 	= changeObject.text;
+					sdSymbolModel.text		 			= changeObject.text;
+					
 					
 					sdObjectModel = sdSymbolModel;
 					break;
@@ -518,6 +524,8 @@ package com.simplediagrams.controllers
 						Logger.info("processUpdate_ObjectChanged() changeObject.imageURL = " + changeObject.imageURL,this);
 						sdImageModel.imageURL = changeObject.imageURL;
 					}
+										  
+					sdImageModel.styleName = changeObject.styleName;
 					
 					sdObjectModel = sdImageModel;
 					break;
@@ -529,13 +537,13 @@ package com.simplediagrams.controllers
 						sdLineModel = new SDLineModel();
 					}
 					
-					sdLineModel.endX 			= changeObject.endX;
-					sdLineModel.endY 			= changeObject.endY;	
-					sdLineModel.bendX 			= changeObject.bendX;
-					sdLineModel.bendY 			= changeObject.bendY;
+					sdLineModel.endX 						= changeObject.endX;
+					sdLineModel.endY 						= changeObject.endY;	
+					sdLineModel.bendX 					= changeObject.bendX;
+					sdLineModel.bendY 					= changeObject.bendY;
 					sdLineModel.startLineStyle 	= changeObject.startLineStyle;
-					sdLineModel.endLineStyle 	= changeObject.endLineStyle;
-					sdLineModel.lineWeight 		= changeObject.lineWeight;
+					sdLineModel.endLineStyle 		= changeObject.endLineStyle;
+					sdLineModel.lineWeight 			= changeObject.lineWeight;
 					
 					sdObjectModel = sdLineModel;
 					break;
@@ -547,7 +555,7 @@ package com.simplediagrams.controllers
 						sdPencilDrawingModel = new SDPencilDrawingModel();						
 					}
 					
-					sdPencilDrawingModel.linePath = changeObject.linePath;
+					sdPencilDrawingModel.linePath 	= changeObject.linePath;
 					sdPencilDrawingModel.lineWeight = changeObject.lineWeight;
 					
 					sdObjectModel = sdPencilDrawingModel;
@@ -560,12 +568,13 @@ package com.simplediagrams.controllers
 						sdTextAreaModel = new SDTextAreaModel();
 					}
 					
-					sdTextAreaModel.styleName 			= changeObject.styleName;
+					sdTextAreaModel.styleName 					= changeObject.styleName;
 					sdTextAreaModel.maintainProportion 	= changeObject.maintainProportion;		
-					sdTextAreaModel.textAlign 			= changeObject.textAlign;
-					sdTextAreaModel.fontSize 			= changeObject.fontSize;
-					sdTextAreaModel.fontWeight 			= changeObject.fontWeight;
-					sdTextAreaModel.text			 	= changeObject.text;
+					sdTextAreaModel.fontSize 						= changeObject.fontSize;
+					sdTextAreaModel.fontWeight 					= changeObject.fontWeight;
+					sdTextAreaModel.fontFamily					= changeObject.fontFamily;
+					sdTextAreaModel.textAlign 					= changeObject.textAlign;
+					sdTextAreaModel.text			 					= changeObject.text;
 					
 					sdObjectModel = sdTextAreaModel;
 					
@@ -576,11 +585,11 @@ package com.simplediagrams.controllers
 			
 			sdObjectModel.sdID			= changeObject.sdID;
 			sdObjectModel.color	 		= changeObject.color;
-			sdObjectModel.x 			= changeObject.x;
-			sdObjectModel.y 			= changeObject.y;
+			sdObjectModel.x 				= changeObject.x;
+			sdObjectModel.y 				= changeObject.y;
 			sdObjectModel.width 		= changeObject.width;
 			sdObjectModel.height		= changeObject.height;
-			sdObjectModel.rotation		= changeObject.rotation;
+			sdObjectModel.rotation	= changeObject.rotation;
 			sdObjectModel.depth 		= changeObject.depth;
 			
 			// TODO Clean this up. The coupling is too tight.

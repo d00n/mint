@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
-	xmlns:s="library://ns.adobe.com/flex/spark" 
-	xmlns:mx="library://ns.adobe.com/flex/mx"
-	xmlns:components="com.simplediagrams.view.SDComponents.*" 
-	xmlns:view="com.simplediagrams.view.*" 
-	xmlns:properties="com.simplediagrams.view.properties.*"
-	xmlns:myComps="*" 
-    dragEnter="onDragEnter(event)"
-    dragDrop="onDragDrop(event)"
-    mouseChildren="true">
+				 xmlns:s="library://ns.adobe.com/flex/spark" 
+				 xmlns:mx="library://ns.adobe.com/flex/mx"
+				 xmlns:components="com.simplediagrams.view.SDComponents.*" 
+				 xmlns:view="com.simplediagrams.view.*" 
+				 xmlns:properties="com.simplediagrams.view.properties.*"
+				 xmlns:myComps="*" 
+				 dragEnter="onDragEnter(event)"
+				 dragDrop="onDragDrop(event)"
+				 mouseChildren="true">
 	
 	<fx:Script>
 		<![CDATA[
@@ -33,15 +33,18 @@
 			import mx.events.DynamicEvent;
 			import mx.managers.DragManager;
 			
-						
+			
 			//Autowire isn't working here, even though I'm using the "immediate" property at the top screen
 			//[Bindable]
 			[Inject]
 			[Bindable]
 			public var diagramModel:DiagramModel
-						
+			
 			[Inject]
 			public var diagramStyleManager:DiagramStyleManager
+			
+			[Dispatcher]
+			public var dispatcher:IEventDispatcher;
 			
 			protected var _dragProxy:DragCircle 
 			
@@ -50,15 +53,15 @@
 			protected var _marqueeDrawn:Boolean = false
 			protected var _clickedBackground:Boolean = false; //  a flag that helps us decide if a user really wants to clear the selection (by mouse down and mouse up on background)
 			
-				
+			
 			[PostConstruct]
 			public function onPostConstruct():void
 			{				
 				initDrawingBoard()
-            	       				
+				
 				diagramModel.setContainer(sdObjectsHolder)
 				diagramModel.setHandlesContainer(sdObjectsHandlesHolder)
-						            	   	   
+				
 				drawingSurface.pencilColor = drawingSurface.lineColor = diagramModel.getColor()            	
 				setMouseListeners()
 				
@@ -75,7 +78,7 @@
 				}			
 			}
 			
-		
+			
 			
 			protected function setMouseListeners():void
 			{				
@@ -87,8 +90,8 @@
 			/*
 			protected function removeListeners():void
 			{
-				this.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown)
-				this.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp)
+			this.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown)
+			this.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp)
 			}
 			*/
 			
@@ -106,10 +109,10 @@
 			}
 			
 			
-            
+			
 			[Mediate(event="ColorEvent.CHANGE_COLOR")]
-            public function onChangeColor(event:ColorEvent):void
-            {
+			public function onChangeColor(event:ColorEvent):void
+			{
 				if (diagramModel.currToolType==DiagramModel.PENCIL_TOOL) 
 				{	
 					/* If user is drawing with pencil and color changed, we need to 
@@ -122,11 +125,11 @@
 				}
 				drawingSurface.pencilColor = event.color
 				drawingSurface.lineColor = event.color				
-            }
-            
-          
-				
-            			
+			}
+			
+			
+			
+			
 			
 			/*  IMPORTANT FUNCTION: RESPONSIBLE FOR ADDING STUFF TO STAGE
 			
@@ -145,7 +148,7 @@
 				{
 					newSDComponent.focusManager.getFocus()
 				}
-						
+				
 				sdObjectsHolder.invalidateDisplayList()
 				sdObjectsHolder.invalidateSize()
 			}
@@ -156,59 +159,59 @@
 			{
 				initDrawingBoard()
 				
-            	diagramBackground.width = diagramModel.width
+				diagramBackground.width = diagramModel.width
 				diagramBackground.height = diagramModel.height
-            	sdObjectsHolder.width = diagramModel.width
-            	sdObjectsHolder.height = diagramModel.height
+				sdObjectsHolder.width = diagramModel.width
+				sdObjectsHolder.height = diagramModel.height
 			}
-							
+			
 			private function onDragEnter(event:DragEvent):void 
-            {
-                if (event.dragSource.hasFormat('libraryItem') || event.dragSource.hasFormat('defaultTool')|| event.dragSource.hasFormat('backgroundLibraryItem')) 
-                {
-                    DragManager.acceptDragDrop(this);          
-                }
-            }            
-            
-//            private function onNativeDragEnter(event:NativeDragEvent):void
-//            {            	
-//            	if (event.clipboard.hasFormat(ClipboardFormats.FILE_LIST_FORMAT))
-//    			{    				
-//    				NativeDragManager.acceptDragDrop(this)
-//    			}
-//            }
-              		
-//			private function onNativeDragDrop(event:NativeDragEvent):void
-//          	{
-//            	NativeDragManager.dropAction = NativeDragActions.COPY;
-//            	var dropFiles:Array = NativeDragEvent(event).clipboard.getData(ClipboardFormats.FILE_LIST_FORMAT) as Array;		
-//            	if (dropFiles==null) return
-//            	
-//				var file:File = dropFiles[0]
-//				
-//				if (file.extension != "png" && file.extension!= "jpg")
-//				{
-//					Alert.show("Image files can only be .png or .jpg formats","Wrong image format")
-//					return
-//				}
-//				
-//				var p:Point = new Point(event.stageX, event.stageY)
-//				p = sdObjectsHolder.globalToLocal(p)
-//				var evt:LoadImageEvent = new LoadImageEvent(LoadImageEvent.LOAD_IMAGE_FILE, true)
-//				evt.file = file				
-//				evt.dropX = p.x
-//                evt.dropY = p.y
-//                dispatchEvent(evt)
-//				
-//			}
-           
-            private function onDragDrop(event:DragEvent):void
-            {            	
+			{
+				if (event.dragSource.hasFormat('libraryItem') || event.dragSource.hasFormat('defaultTool')|| event.dragSource.hasFormat('backgroundLibraryItem')) 
+				{
+					DragManager.acceptDragDrop(this);          
+				}
+			}            
+			
+			//            private function onNativeDragEnter(event:NativeDragEvent):void
+			//            {            	
+			//            	if (event.clipboard.hasFormat(ClipboardFormats.FILE_LIST_FORMAT))
+			//    			{    				
+			//    				NativeDragManager.acceptDragDrop(this)
+			//    			}
+			//            }
+			
+			//			private function onNativeDragDrop(event:NativeDragEvent):void
+			//          	{
+			//            	NativeDragManager.dropAction = NativeDragActions.COPY;
+			//            	var dropFiles:Array = NativeDragEvent(event).clipboard.getData(ClipboardFormats.FILE_LIST_FORMAT) as Array;		
+			//            	if (dropFiles==null) return
+			//            	
+			//				var file:File = dropFiles[0]
+			//				
+			//				if (file.extension != "png" && file.extension!= "jpg")
+			//				{
+			//					Alert.show("Image files can only be .png or .jpg formats","Wrong image format")
+			//					return
+			//				}
+			//				
+			//				var p:Point = new Point(event.stageX, event.stageY)
+			//				p = sdObjectsHolder.globalToLocal(p)
+			//				var evt:LoadImageEvent = new LoadImageEvent(LoadImageEvent.LOAD_IMAGE_FILE, true)
+			//				evt.file = file				
+			//				evt.dropX = p.x
+			//                evt.dropY = p.y
+			//                dispatchEvent(evt)
+			//				
+			//			}
+			
+			private function onDragDrop(event:DragEvent):void
+			{            	
 				
 				
 				var p:Point = new Point(event.stageX, event.stageY)
 				p = this.sdObjectsHolder.globalToLocal(p)
-					
+				
 				if (event.dragSource.hasFormat("libraryItem"))
 				{					
 					//grab SDObjectModel from dropped item and launch and event to begin adding item to drawingBoard
@@ -263,16 +266,16 @@
 					dispatchEvent(defaultToolDroppedEvent)		 
 				}
 				
-						
-            }
-            
-            
+				
+			}
+			
+			
 			protected function onMouseOver(event:MouseEvent):void
 			{
 				dispatchEvent(new DrawingBoardEvent(DrawingBoardEvent.MOUSE_OVER, true))
 			}
 			
-            /* TOOOO DOOO: Finish this so that we find out what object a model relates to and delete both of them (through the controller) */
+			/* TOOOO DOOO: Finish this so that we find out what object a model relates to and delete both of them (through the controller) */
 			[Mediate(event="DeleteSDComponentEvent.DELETE_FROM_DIAGRAM")]                                    
 			public function onDeleteSDComponentFromDiagram(event:DeleteSDComponentEvent):void 
 			{
@@ -281,75 +284,75 @@
 				var removedElement:UIComponent =  sdObjectsHolder.removeElement(UIComponent(event.sdComponent))	as UIComponent			
 				event.sdComponent.objectModel.destroy()
 				Logger.debug("removedElement: " + removedElement, this)
-   			}
-                                             
-            
+			}
+			
+			
 			
 			[Mediate(event="ToolEvent.TOOL_CHANGED")]
-            public function onToolChange(event:ToolEvent):void
-            {           	
-            	
-            	//cleanup after previous tool
-            	if (event.prevTool==DiagramModel.ZOOM_TOOL)
-            	{
-            		this.removeEventListener(MouseEvent.CLICK, onZoomEvent)
-            	}
-            	            	
-            	if (event.prevTool==DiagramModel.PENCIL_TOOL || event.prevTool == DiagramModel.LINE_TOOL)
-            	{
-            		
-            		if (event.prevTool==DiagramModel.PENCIL_TOOL && drawingSurface.mouseEnabled) finishPencilDrawing()
-            		
-            		drawingSurface.visible = false   
-            		drawingSurface.mouseEnabled = false          		
-	            		
-	            }
-            	
-            	//update state to reflect current tool  	            	
-            	if (diagramModel.currToolType==DiagramModel.LINE_TOOL || diagramModel.currToolType==DiagramModel.PENCIL_TOOL)
-            	{           		
-            		drawingSurface.visible = true
+			public function onToolChange(event:ToolEvent):void
+			{           	
+				
+				//cleanup after previous tool
+				if (event.prevTool==DiagramModel.ZOOM_TOOL)
+				{
+					this.removeEventListener(MouseEvent.CLICK, onZoomEvent)
+				}
+				
+				if (event.prevTool==DiagramModel.PENCIL_TOOL || event.prevTool == DiagramModel.LINE_TOOL)
+				{
+					
+					if (event.prevTool==DiagramModel.PENCIL_TOOL && drawingSurface.mouseEnabled) finishPencilDrawing()
+					
+					drawingSurface.visible = false   
+					drawingSurface.mouseEnabled = false          		
+					
+				}
+				
+				//update state to reflect current tool  	            	
+				if (diagramModel.currToolType==DiagramModel.LINE_TOOL || diagramModel.currToolType==DiagramModel.PENCIL_TOOL)
+				{           		
+					drawingSurface.visible = true
 					drawingSurface.mouseEnabled = true      
-            		drawingSurface.toolType = diagramModel.currToolType            		
-            	}	   
-            	
-            	if (diagramModel.currToolType == DiagramModel.ZOOM_TOOL)
-            	{
-            		this.addEventListener(MouseEvent.CLICK, onZoomEvent)
-            	}         	
-            	
-            }
-            
-            protected function onZoomEvent(event:MouseEvent):void
-            {
-            	if (event.shiftKey)
-            	{
-            		var zoomOutEvent:ZoomEvent = new ZoomEvent(ZoomEvent.ZOOM_OUT, true)
-            		dispatchEvent(zoomOutEvent)
-            	}
-            	else
-            	{
-            		var zoomInEvent:ZoomEvent = new ZoomEvent(ZoomEvent.ZOOM_IN, true)
-            		dispatchEvent(zoomInEvent)
-            	}
-            }
-            
-            protected function finishPencilDrawing():void
-            {
-            	var evt:PencilDrawingEvent = new PencilDrawingEvent(PencilDrawingEvent.DRAWING_CREATED, true)
-        		evt.path = drawingSurface.getPath(1/diagramModel.scaleX)
-        		evt.color = drawingSurface.pencilColor
+					drawingSurface.toolType = diagramModel.currToolType            		
+				}	   
+				
+				if (diagramModel.currToolType == DiagramModel.ZOOM_TOOL)
+				{
+					this.addEventListener(MouseEvent.CLICK, onZoomEvent)
+				}         	
+				
+			}
+			
+			protected function onZoomEvent(event:MouseEvent):void
+			{
+				if (event.shiftKey)
+				{
+					var zoomOutEvent:ZoomEvent = new ZoomEvent(ZoomEvent.ZOOM_OUT, true)
+					dispatchEvent(zoomOutEvent)
+				}
+				else
+				{
+					var zoomInEvent:ZoomEvent = new ZoomEvent(ZoomEvent.ZOOM_IN, true)
+					dispatchEvent(zoomInEvent)
+				}
+			}
+			
+			protected function finishPencilDrawing():void
+			{
+				var evt:PencilDrawingEvent = new PencilDrawingEvent(PencilDrawingEvent.DRAWING_CREATED, true)
+				evt.path = drawingSurface.getPath(1/diagramModel.scaleX)
+				evt.color = drawingSurface.pencilColor
 				//adjust drawing position based on where the user has scrolled to
-        		var p:Point = drawingSurface.getInitialPoint()
+				var p:Point = drawingSurface.getInitialPoint()
 				p.x = (scrollingHolder.viewport.horizontalScrollPosition + p.x) / diagramModel.scaleX
 				p.y = (scrollingHolder.viewport.verticalScrollPosition + p.y) / diagramModel.scaleY
 				evt.initialPoint = p
-        		evt.width = drawingSurface.getWidth() / diagramModel.scaleX
-        		evt.height = drawingSurface.getHeight() / diagramModel.scaleY
-        		dispatchEvent(evt)
-            }
-            
-            
+				evt.width = drawingSurface.getWidth() / diagramModel.scaleX
+				evt.height = drawingSurface.getHeight() / diagramModel.scaleY
+				dispatchEvent(evt)
+			}
+			
+			
 			
 			protected function onDragMarquee(event:MouseEvent):void
 			{		
@@ -365,17 +368,17 @@
 			}
 			
 			
-            protected function onMouseDown(event:MouseEvent):void
-            {
-									
-            	//make sure marquee listener isn't hanging around
-            	this.removeEventListener(MouseEvent.MOUSE_MOVE, onDragMarquee)
-            	            	            	
-            	///don't do anything if the original target of the click was something other than the background
-            	if (event.target!=diagramBackground && diagramModel.currToolType!=DiagramModel.TEXT_TOOL) return
-            						
-				_clickedBackground = true 	
-									
+			protected function onMouseDown(event:MouseEvent):void
+			{
+				
+				//make sure marquee listener isn't hanging around
+				this.removeEventListener(MouseEvent.MOUSE_MOVE, onDragMarquee)
+				
+				///don't do anything if the original target of the click was something other than the background
+				if (event.target!=diagramBackground && diagramModel.currToolType!=DiagramModel.TEXT_TOOL) return
+					
+					_clickedBackground = true 	
+				
 				if (diagramModel.currToolType == DiagramModel.POINTER_TOOL)
 				{
 					
@@ -389,7 +392,7 @@
 				{
 					// if a something is already selected, just deselect that text (don't add a new text field...it's annoying when
 					// you add a text field and then click on the background to deselect it and wind up with a new text field
-														
+					
 					var textAreaEvent:TextAreaCreatedEvent = new TextAreaCreatedEvent(TextAreaCreatedEvent.CREATED, true)      					
 					var p:Point = new Point(event.stageX, event.stageY)					
 					p = this.sdObjectsHolder.globalToLocal(p)
@@ -398,13 +401,13 @@
 					dispatchEvent(textAreaEvent)	
 				}
 			}
-            
-          
 			
-            protected function onMouseUp(event:MouseEvent):void
-            {   
-								
-					
+			
+			
+			protected function onMouseUp(event:MouseEvent):void
+			{   
+				
+				
 				//this is a hack, but I have to check here whether we were rotating an object, because the mouse won't
 				//be on the actual handle, so this is the only function called when the user mouses up
 				//We need to make sure the transformation was captured by the ObjectHandles controller before clearing
@@ -414,32 +417,32 @@
 					var changedEvt:ObjectChangedEvent = new ObjectChangedEvent(diagramModel.selectedArray, ObjectChangedEvent.OBJECT_RESIZED, true)
 					dispatchEvent(changedEvt)
 				}
-									
+				
 				this.removeEventListener(MouseEvent.MOUSE_MOVE, onDragMarquee)
-									
+				
 				//If user clicked background, then we should deselect anything that's selected
 				if (event.target == diagramBackground  &&	_clickedBackground  )
 				{
 					diagramModel.sdObjectHandles.selectionManager.clearSelection() 
 					_clickedBackground = false
 				}
-										
-            	if (_marqueeDrawn)
-            	{	          		
+				
+				if (_marqueeDrawn)
+				{	          		
 					_marqueeDrawn = false
-						
-				    //don't do anything if marquee is small .. user probably didn't mean to draw it
-				    if (Math.abs(mw)<10 && Math.abs(mh)<10)
-				    {
+					
+					//don't do anything if marquee is small .. user probably didn't mean to draw it
+					if (Math.abs(mw)<10 && Math.abs(mh)<10)
+					{
 						marqueeSurface.graphics.clear()
-				    	return
-				    }
-            		
-            		var evt:MultiSelectEvent = new MultiSelectEvent(MultiSelectEvent.DRAG_MULTI_SELECTION_MADE, true)
-										
-            		//see if any objects were in drawn marquee
-            		var numChildren:uint = this.sdObjectsHolder.numChildren
-						
+						return
+					}
+					
+					var evt:MultiSelectEvent = new MultiSelectEvent(MultiSelectEvent.DRAG_MULTI_SELECTION_MADE, true)
+					
+					//see if any objects were in drawn marquee
+					var numChildren:uint = this.sdObjectsHolder.numChildren
+					
 					for (var i:uint=0;i<numChildren;i++)
 					{
 						var sdBase:SDBase = this.sdObjectsHolder.getChildAt(i) as SDBase
@@ -454,10 +457,10 @@
 						return    		
 					} 
 					
-            		// collect info and dispatch multiSelect event							
+					// collect info and dispatch multiSelect event							
 					var mw:Number = diagramBackground.mouseX - _marqueeX
 					var mh:Number = diagramBackground.mouseY - _marqueeY
-				   				     				  	
+					
 					if (mw<_marqueeX) 
 					{
 						evt.startX = mw 
@@ -479,22 +482,22 @@
 						evt.startY =  _marqueeY
 						evt.endY = mw					
 					}
-														
+					
 					marqueeSurface.graphics.clear()					
-									
+					
 					dispatchEvent(evt)	
 					return
-							            	            	
-            	}
+					
+				}
 				
 				
 				
 				
-            }
-       			
-			      		
-      		protected function onLineDrawn(event:Event):void
-      		{
+			}
+			
+			
+			protected function onLineDrawn(event:Event):void
+			{
 				//create a line component
 				var evt:CreateLineComponentEvent = new CreateLineComponentEvent(CreateLineComponentEvent.CREATE, true) 
 				
@@ -503,66 +506,66 @@
 				
 				initialPoint = sdObjectsHolder.globalToLocal(this.localToGlobal(initialPoint))
 				finalPoint = sdObjectsHolder.globalToLocal(this.localToGlobal(finalPoint))
-				 
+				
 				evt.initialX = initialPoint.x
 				evt.initialY = initialPoint.y 
 				evt.finalX = finalPoint.x 
 				evt.finalY = finalPoint.y 
 				
 				dispatchEvent(evt)
-      		}
-      	
-      		
-
-      		
-      		/* CONNECTION DRAGGER 
-      		
-      		/*
-      		 public function onConnectorAdded(event:ConnectorAddedEvent):void
-            {
-            	Logger.debug("onConnectorAdded()", this)
-            	//the drawingboard doesn't catch the mouseUp when the drag is accepted, so call it explicitly here to stop dragLine being drawn
-            	stopDrawDragLine(null)
-            	sdObjectsHolder.addChild(event.connector)
-            }
-      		
+			}
+			
+			
+			
+			
+			/* CONNECTION DRAGGER 
+			
+			/*
+			public function onConnectorAdded(event:ConnectorAddedEvent):void
+			{
+			Logger.debug("onConnectorAdded()", this)
+			//the drawingboard doesn't catch the mouseUp when the drag is accepted, so call it explicitly here to stop dragLine being drawn
+			stopDrawDragLine(null)
+			sdObjectsHolder.addChild(event.connector)
+			}
+			
 			[Mediate(event='ConnectionEvent.START_CONNECTION_DRAG')]
 			public function onStartConnectionDrag(event:ConnectionEvent):void
 			{
-	        	dragCircle.visible = false
-				var dragInitiator:SDBase = event.startingComponent
-	            var dragSource:DragSource = new DragSource();
-	            dragSource.addData(event.startingComponent.id, 'dragConnection');
-	            var offsetX:Number = - ((dragInitiator.width / 2) + 5)
-	            var offsetY:Number = - ((dragInitiator.height /2 ) + 5)
-	            _dragProxy = new DragCircle()       
-	           	      
-	            this.addEventListener(MouseEvent.MOUSE_MOVE, drawDragLine)
-	            this.addEventListener(MouseEvent.MOUSE_UP, stopDrawDragLine)
-	            DragManager.doDrag(dragInitiator, dragSource, event.mouseEvent, _dragProxy, offsetX, offsetY);
+			dragCircle.visible = false
+			var dragInitiator:SDBase = event.startingComponent
+			var dragSource:DragSource = new DragSource();
+			dragSource.addData(event.startingComponent.id, 'dragConnection');
+			var offsetX:Number = - ((dragInitiator.width / 2) + 5)
+			var offsetY:Number = - ((dragInitiator.height /2 ) + 5)
+			_dragProxy = new DragCircle()       
+			
+			this.addEventListener(MouseEvent.MOUSE_MOVE, drawDragLine)
+			this.addEventListener(MouseEvent.MOUSE_UP, stopDrawDragLine)
+			DragManager.doDrag(dragInitiator, dragSource, event.mouseEvent, _dragProxy, offsetX, offsetY);
 			}
-			      		
+			
 			public function drawDragLine(event:MouseEvent):void
-	        {
-	        	var g:Graphics = drawingSurface.graphics
-	        	g.clear()
-	        	g.lineStyle(3, 0x00CC00)
-	        	g.moveTo(dragCircle.x, dragCircle.y)
-	        	g.lineTo(this.mouseX, this.mouseY)
-	        }
-	        
-	        public function stopDrawDragLine(event:MouseEvent):void
-	        {
-	        	Logger.debug("stopDrawDragLine()",this)
-	        	this.removeEventListener(MouseEvent.MOUSE_MOVE, drawDragLine)
-	            this.removeEventListener(MouseEvent.MOUSE_UP, stopDrawDragLine)
-	        	drawingSurface.graphics.clear()
-	        	_dragProxy = null
-	        	dragCircle.visible = false
-	        	drawingSurface.invalidateProperties()
-	        }
-	      		
-		
+			{
+			var g:Graphics = drawingSurface.graphics
+			g.clear()
+			g.lineStyle(3, 0x00CC00)
+			g.moveTo(dragCircle.x, dragCircle.y)
+			g.lineTo(this.mouseX, this.mouseY)
+			}
+			
+			public function stopDrawDragLine(event:MouseEvent):void
+			{
+			Logger.debug("stopDrawDragLine()",this)
+			this.removeEventListener(MouseEvent.MOUSE_MOVE, drawDragLine)
+			this.removeEventListener(MouseEvent.MOUSE_UP, stopDrawDragLine)
+			drawingSurface.graphics.clear()
+			_dragProxy = null
+			dragCircle.visible = false
+			drawingSurface.invalidateProperties()
+			}
+			
+			
 			
 			*/
 			
@@ -570,12 +573,12 @@
 			{
 				
 			}
-		
+			
 			protected var _watchTextAreaYPos:ChangeWatcher 		
 			protected var _watchTextAreaAlign:ChangeWatcher 	
 			protected var _watchTextAreaFontSize:ChangeWatcher 		
 			protected var _watchTextAreaFontWeight:ChangeWatcher
-
+			
 			
 			[Mediate(event="EditSymbolTextEvent.EDIT_SYMBOL_TEXT")]    
 			public function onEditSymbolText(event:EditSymbolTextEvent):void
@@ -613,7 +616,7 @@
 				symbolTextArea.y = sdSymbolModel.y + sdSymbolModel.getTextYPosition()	
 				symbolTextArea.setStyle("fontSize", sdSymbolModel.fontSize)	
 				symbolTextArea.setStyle("fontWeight", sdSymbolModel.fontWeight)	
-					
+				
 				symbolTextArea.visible = true
 				symbolTextArea.setStyle("textAlign", sdSymbolModel.textAlign)
 				symbolTextArea.addEventListener(MouseEvent.MOUSE_DOWN, onSymbolTextAreaMouseDown)
@@ -647,12 +650,12 @@
 				var sdSymbolModel:SDSymbolModel = event.target as SDSymbolModel
 				symbolTextArea.setStyle("textAlign", sdSymbolModel.textAlign)
 			}
-				
+			
 			protected function onInterceptKeyEvent(event:Event):void
 			{
 				event.stopPropagation()
 			}
-									
+			
 			protected function onSymbolTextAreaMouseDown(event:MouseEvent):void
 			{
 				event.stopPropagation()
@@ -661,24 +664,28 @@
 			protected function completeSymbolTextEdit(event:MouseEvent):void
 			{
 				event.stopPropagation()
-					
-				if (event.target == symbolTextArea) return
 				
-				SDSymbolModel(diagramModel.selectedArray[0]).text = symbolTextArea.text
+				if (event.target == symbolTextArea) return
+					
+					SDSymbolModel(diagramModel.selectedArray[0]).text = symbolTextArea.text
 				
 				symbolTextArea.visible = false
 				symbolTextArea.text = ""
-					
+				
 				symbolTextArea.removeEventListener(MouseEvent.MOUSE_DOWN, onSymbolTextAreaMouseDown)
 				symbolTextArea.removeEventListener(Event.COPY, onInterceptKeyEvent)
 				symbolTextArea.removeEventListener(Event.PASTE, onInterceptKeyEvent)
 				editHolder.removeEventListener(MouseEvent.MOUSE_DOWN, completeSymbolTextEdit)
-					
+				
 				_watchTextAreaYPos.unwatch()
 				_watchTextAreaYPos = null
-					
+				
 				_watchTextAreaFontWeight.unwatch()
 				_watchTextAreaFontWeight= null
+					
+				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+				rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
+				dispatcher.dispatchEvent(rsoEvent);	
 			}
 			
 			
@@ -694,97 +701,97 @@
 	<s:Scroller id="scrollingHolder" width="100%" height="100%">
 		
 		<s:Group id="holderGroup"  >
-					
+			
 			<s:layout>
 				<s:BasicLayout />
 			</s:layout>
 			
 			<view:Background 
 				id="diagramBackground"
-		   	 	width="{diagramModel.width}"
-		    	height="{diagramModel.height}"
+				width="{diagramModel.width}"
+				height="{diagramModel.height}"
 				scaleX="{diagramModel.scaleX}"
 				scaleY="{diagramModel.scaleY}"	
-			    skinClass="com.simplediagrams.view.skins.BackgroundSkin"
+				skinClass="com.simplediagrams.view.skins.BackgroundSkin"
 				/>
 			
 			<s:Group id="sdObjectsHolder"  
-		   	 	width="{diagramModel.width}"
-		   		height="{diagramModel.height}"
-				scaleX="{diagramModel.scaleX}"
-				scaleY="{diagramModel.scaleY}"  
-			    >	 
+							 width="{diagramModel.width}"
+							 height="{diagramModel.height}"
+							 scaleX="{diagramModel.scaleX}"
+							 scaleY="{diagramModel.scaleY}"  
+							 >	 
 				<s:layout>
 					<s:BasicLayout />
 				</s:layout>
 			</s:Group>
 			
 			<s:Group id="sdObjectsHandlesHolder"  
-					 x="-5"
-					 y="-5"
-			   	width="{diagramModel.width}"
-			   	height="{diagramModel.height}"
-			   	scaleX="{diagramModel.scaleX}"
-			   	scaleY="{diagramModel.scaleY}"    
-			   >	
+							 x="-5"
+							 y="-5"
+							 width="{diagramModel.width}"
+							 height="{diagramModel.height}"
+							 scaleX="{diagramModel.scaleX}"
+							 scaleY="{diagramModel.scaleY}"    
+							 >	
 			</s:Group>
-				
+			
 			<s:Group id="editHolder"
-					 
-					 width="{diagramModel.width}"
-					 height="{diagramModel.height}"
-					 scaleX="{diagramModel.scaleX}"
-					 scaleY="{diagramModel.scaleY}">
+							 
+							 width="{diagramModel.width}"
+							 height="{diagramModel.height}"
+							 scaleX="{diagramModel.scaleX}"
+							 scaleY="{diagramModel.scaleY}">
 				
 				<s:TextArea id="symbolTextArea"
-							contentBackgroundAlpha="1"
-							doubleClickEnabled="true"
-							selectable="true"
-							borderColor="#555555"
-						    contentBackgroundColor="#FFFFFF"
-							color="#000000"
-							horizontalScrollPolicy="off"
-							verticalScrollPolicy="off"
-							visible="false"
-							x="0"
-							y="0"
-							/>
+										contentBackgroundAlpha="1"
+										doubleClickEnabled="true"
+										selectable="true"
+										borderColor="#555555"
+										contentBackgroundColor="#FFFFFF"
+										color="#000000"
+										horizontalScrollPolicy="off"
+										verticalScrollPolicy="off"
+										visible="false"
+										x="0"
+										y="0"
+										/>
 			</s:Group>
-													 
-		
+			
+			
 		</s:Group>	
 	</s:Scroller>
 	
-
-		  
+	
+	
 	<mx:Canvas id="marqueeSurface" 
-		width="100%" 
-		height="100%" />
-				
+						 width="100%" 
+						 height="100%" />
+	
 	<mx:Canvas id="sdAnnotationsHolder" 	
-		backgroundAlpha="0"/>
-			
-		
+						 backgroundAlpha="0"/>
+	
+	
 	<view:DrawingSurface id="drawingSurface" 
-		width="100%" 
-		height="100%" 
-		lineDrawn="onLineDrawn(event)"
-		backgroundColor="0x000000"
-		backgroundAlpha="0"
-		visible="false"
-		 />
-		
+											 width="100%" 
+											 height="100%" 
+											 lineDrawn="onLineDrawn(event)"
+											 backgroundColor="0x000000"
+											 backgroundAlpha="0"
+											 visible="false"
+											 />
+	
 	
 	<properties:PropertiesPanel id="propPanel" x="0" y="0" height="32" width="100%"/>
 	
 	<!--
 	<myComps:DragCircle 
-   		id="dragCircle" 
-   		x="{diagramModel.objectConnectors.dragCircleX}"
-   		y="{diagramModel.objectConnectors.dragCircleY}"
-   		visible="false"
-   		 />
-   	--> 
+	id="dragCircle" 
+	x="{diagramModel.objectConnectors.dragCircleX}"
+	y="{diagramModel.objectConnectors.dragCircleY}"
+	visible="false"
+	/>
+	--> 
 	
 	
 </s:Group>

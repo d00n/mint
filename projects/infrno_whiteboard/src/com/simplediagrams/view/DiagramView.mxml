@@ -88,8 +88,14 @@
 			public function onKeyDown(event:KeyboardEvent):void
 			{   			
 				Logger.debug("onKeyDown() event:" + event.toString(),this)
-				if (event.target is UITextField) return //user is typing in a text component
-				if (event.target is RichEditableText) return //user is typing in a text area
+				if (event.target is UITextField) {
+					Logger.debug("onKeyDown() user is typing in a text component",this)
+					return //user is typing in a text component
+				} 
+				if (event.target is RichEditableText){
+					Logger.debug("onKeyDown() user is typing in a text area",this)
+					return
+				}
 				
 				
 				switch(event.keyCode)

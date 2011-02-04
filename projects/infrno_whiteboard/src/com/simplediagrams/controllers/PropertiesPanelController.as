@@ -27,7 +27,7 @@ package com.simplediagrams.controllers
 	import flash.events.Event;
 	
 	import org.swizframework.controller.AbstractController;
-
+	
 	public class PropertiesPanelController extends AbstractController
 	{
 		
@@ -47,27 +47,27 @@ package com.simplediagrams.controllers
 		{
 		}
 		
-		  		
-  		/* Watch which objects are selected within ObjectHandles so we know what properties panel to show */
-  		    		 		
-  		[Mediate(event="SelectionEvent.ADDED_TO_SELECTION")]
-  		public function onAddedToSelection(event:SelectionEvent):void
-  		{
-  			setPropertiesPanel()
-  		}
-  		
-  		
-  		[Mediate(event="SelectionEvent.REMOVED_FROM_SELECTION")]
-  		public function onRemovedFromSelection(event:SelectionEvent):void
-  		{
-  			setPropertiesPanel()
-  		}
-  		
-  		[Mediate(event="SelectionEvent.SELECTION_CLEARED")]
-  		public function onSelectionCleared(event:SelectionEvent):void
-  		{
-  			propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_NONE
-  		}	
+		
+		/* Watch which objects are selected within ObjectHandles so we know what properties panel to show */
+		
+		[Mediate(event="SelectionEvent.ADDED_TO_SELECTION")]
+		public function onAddedToSelection(event:SelectionEvent):void
+		{
+			setPropertiesPanel()
+		}
+		
+		
+		[Mediate(event="SelectionEvent.REMOVED_FROM_SELECTION")]
+		public function onRemovedFromSelection(event:SelectionEvent):void
+		{
+			setPropertiesPanel()
+		}
+		
+		[Mediate(event="SelectionEvent.SELECTION_CLEARED")]
+		public function onSelectionCleared(event:SelectionEvent):void
+		{
+			propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_NONE
+		}	
 		
 		[Mediate(event="MultiSelectEvent.DRAG_MULTI_SELECTION_FINISHED")]
 		public function onSelectionChanged(event:MultiSelectEvent):void
@@ -76,16 +76,16 @@ package com.simplediagrams.controllers
 		}	
 		
 		
-  		
-  		protected function setPropertiesPanel():void
-  		{
-  			var selectedArr:Array = diagramModel.selectedArray		
-  			
-  			if (selectedArr.length==0) 
-  			{  				
-  				propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_NONE  
-  				return
-  			}
+		
+		protected function setPropertiesPanel():void
+		{
+			var selectedArr:Array = diagramModel.selectedArray		
+			
+			if (selectedArr.length==0) 
+			{  				
+				propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_NONE  
+				return
+			}
 			
 			if (selectedArr.length==1)
 			{				
@@ -107,25 +107,25 @@ package com.simplediagrams.controllers
 				}
 				else if (selectectObj is SDImageModel)
 				{					
-//					propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_IMAGE 
+					propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_IMAGE 
 					return
 				}
 			}
-  			
-  			var allText:Boolean = true
-  			var allLines:Boolean = true  
+			
+			var allText:Boolean = true
+			var allLines:Boolean = true  
 			var allSymbols:Boolean = true  	
 			var allImages:Boolean = true  			
-  			for each (var obj:Object in selectedArr)
-  			{
-  				if (obj is SDTextAreaModel == false)
-  				{
-  					allText = false
-  				}
-  				if (obj is SDLineModel == false)
-  				{
-  					allLines = false
-  				}
+			for each (var obj:Object in selectedArr)
+			{
+				if (obj is SDTextAreaModel == false)
+				{
+					allText = false
+				}
+				if (obj is SDLineModel == false)
+				{
+					allLines = false
+				}
 				if (obj is SDSymbolModel == false)
 				{
 					allSymbols = false
@@ -134,11 +134,11 @@ package com.simplediagrams.controllers
 				{
 					allImages = false
 				}
-  			}	
-  				
+			}	
 			
-  			if (allText)
-  			{
+			
+			if (allText)
+			{
 				if (propertiesPanelModel.viewing == PropertiesPanelModel.PROPERTIES_TEXT)
 				{
 					propertiesPanelModel.dispatchEvent(new Event(PropertiesPanelModel.SELECTION_CHANGED))
@@ -147,10 +147,10 @@ package com.simplediagrams.controllers
 				{
 					propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_TEXT
 				}
-  				
-  			}
-  			else if (allLines)
-  			{
+				
+			}
+			else if (allLines)
+			{
 				if (propertiesPanelModel.viewing == PropertiesPanelModel.PROPERTIES_LINE)
 				{
 					propertiesPanelModel.dispatchEvent(new Event(PropertiesPanelModel.SELECTION_CHANGED))
@@ -159,7 +159,7 @@ package com.simplediagrams.controllers
 				{
 					propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_LINE
 				}			
-  			}
+			}
 			else if (allSymbols)
 			{
 				if (propertiesPanelModel.viewing == PropertiesPanelModel.PROPERTIES_SYMBOL)
@@ -179,48 +179,48 @@ package com.simplediagrams.controllers
 				}
 				else
 				{
-//					propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_IMAGE
+  				propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_IMAGE
 				}	
 			}
-  			else
-  			{
-  				propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_NONE  	
-  			}
-  		}
-  		
-  		
-  		protected function clearPropertiesPanel():void
-  		{
-  			
-  		}
+			else
+			{
+				propertiesPanelModel.viewing = PropertiesPanelModel.PROPERTIES_NONE  	
+			}
+		}
+		
+		
+		protected function clearPropertiesPanel():void
+		{
+			
+		}
 		
 		
 		
-	
-  		  		
-  		[Mediate(event="TextPropertyChangeEvent.CHANGE_FONT_SIZE")]
-  		public function onFontSizeChange(event:TextPropertyChangeEvent):void
-  		{
+		
+		
+		[Mediate(event="TextPropertyChangeEvent.CHANGE_FONT_SIZE")]
+		public function onFontSizeChange(event:TextPropertyChangeEvent):void
+		{
 			
 			if (event.fontSize==0)
 			{
 				Logger.error("onFontSizeChange() event.fontSize cannot be 0")
 				return
 			}
-						
-  			var selectedArr:Array = diagramModel.selectedArray		
-  			
-  			for each (var obj:Object in selectedArr)
-  			{
-  				if (obj is SDTextAreaModel)
-  				{
+			
+			var selectedArr:Array = diagramModel.selectedArray		
+			
+			for each (var obj:Object in selectedArr)
+			{
+				if (obj is SDTextAreaModel)
+				{
 					var sdTextAreaModel:SDTextAreaModel = SDTextAreaModel(obj)
 					var oldMemento:SDTextAreaMemento = sdTextAreaModel.getMemento() as SDTextAreaMemento
 					sdTextAreaModel.fontSize = event.fontSize
 					var cmd:ChangeTextFieldPropertiesCommand = new ChangeTextFieldPropertiesCommand(diagramModel, oldMemento, sdTextAreaModel)
 					cmd.execute()
 					undoRedoManager.push(cmd)
-  				}
+				}
 				else if (obj is SDSymbolModel)
 				{
 					var sdSymbolModel:SDSymbolModel = SDSymbolModel(obj)
@@ -230,18 +230,22 @@ package com.simplediagrams.controllers
 					symbolCmd.execute()
 					undoRedoManager.push(symbolCmd)
 				}
-  			}
+			}
 			
 			settingsModel.defaultFontSize = event.fontSize
-				
-  		}
+			
+			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
+			dispatcher.dispatchEvent(rsoEvent);				
+		}
 		
 		[Mediate(event="TextPropertyChangeEvent.CHANGE_FONT_FAMILY")]
 		public function onFontFamilyChange(event:TextPropertyChangeEvent):void
 		{
 			var selectedArr:Array = diagramModel.selectedArray		
 			
-				
+			
 			for each (var obj:Object in selectedArr)
 			{
 				if (obj is SDTextAreaModel)
@@ -268,8 +272,7 @@ package com.simplediagrams.controllers
 			
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
 			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
-			dispatcher.dispatchEvent(rsoEvent);
-			
+			dispatcher.dispatchEvent(rsoEvent);			
 		}
 		
 		[Mediate(event="TextPropertyChangeEvent.CHANGE_FONT_WEIGHT")]
@@ -277,7 +280,7 @@ package com.simplediagrams.controllers
 		{
 			var selectedArr:Array = diagramModel.selectedArray		
 			
-				
+			
 			for each (var obj:Object in selectedArr)
 			{
 				if (obj is SDTextAreaModel)
@@ -312,7 +315,7 @@ package com.simplediagrams.controllers
 		{
 			var selectedArr:Array = diagramModel.selectedArray		
 			
-				
+			
 			for each (var obj:Object in selectedArr)
 			{
 				if (obj is SDTextAreaModel)
@@ -366,17 +369,21 @@ package com.simplediagrams.controllers
 		}
 		
 		
-  		
-  		[Mediate(event="ImageStyleEvent.IMAGE_STYLE_CHANGE")]
-  		public function onImageStyleChange(event:ImageStyleEvent):void
-  		{  			
+		
+		[Mediate(event="ImageStyleEvent.IMAGE_STYLE_CHANGE")]
+		public function onImageStyleChange(event:ImageStyleEvent):void
+		{  			
 			Logger.debug("onImageStyleChange() setting imageStyle to: " + event.imageStyle,this)
 			var cmd:ChangeImageStyleCommand = new ChangeImageStyleCommand(diagramModel)	
 			cmd.newImageStyle = event.imageStyle
 			cmd.execute()
 			undoRedoManager.push(cmd)	  			
 			settingsModel.defaultImageStyle = event.imageStyle  		
-  		}
+			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
+			dispatcher.dispatchEvent(rsoEvent);								
+		}
 		
 		
 		[Mediate(event="LineStyleEvent.LINE_START_STYLE_CHANGE")]
@@ -388,31 +395,43 @@ package com.simplediagrams.controllers
 			cmd.execute()
 			undoRedoManager.push(cmd)	  			
 			settingsModel.defaultStartLineStyle = event.lineStyle  		
+			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
+			dispatcher.dispatchEvent(rsoEvent);				
 		}
-  		
-  		[Mediate(event="LineStyleEvent.LINE_END_STYLE_CHANGE")]
-  		public function onLineEndStyleChange(event:LineStyleEvent):void
-  		{			
+		
+		[Mediate(event="LineStyleEvent.LINE_END_STYLE_CHANGE")]
+		public function onLineEndStyleChange(event:LineStyleEvent):void
+		{			
 			var cmd:ChangeLineStyleCommand = new ChangeLineStyleCommand(diagramModel)
 			cmd.endLineStyle = event.lineStyle
 			cmd.execute()
 			undoRedoManager.push(cmd)	
-  			  			
+			
 			settingsModel.defaultEndLineStyle = event.lineStyle  		
-  		}
-  		
-  		
-  		[Mediate(event="LineStyleEvent.LINE_WEIGHT_CHANGE")]
-  		public function onLineWeightChange(event:LineStyleEvent):void
-  		{
+			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
+			dispatcher.dispatchEvent(rsoEvent);				
+		}
+		
+		
+		[Mediate(event="LineStyleEvent.LINE_WEIGHT_CHANGE")]
+		public function onLineWeightChange(event:LineStyleEvent):void
+		{
 			var cmd:ChangeLineStyleCommand = new ChangeLineStyleCommand(diagramModel)	
 			cmd.lineWeight = event.lineWeight
 			cmd.execute()
 			undoRedoManager.push(cmd)	
-  		
+			
 			settingsModel.defaultLineWeight = event.lineWeight
-  		}
-  
+			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
+			dispatcher.dispatchEvent(rsoEvent);				
+		}
+		
 		
 	}
 }

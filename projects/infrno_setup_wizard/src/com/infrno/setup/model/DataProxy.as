@@ -6,7 +6,7 @@ package com.infrno.setup.model
 	
 	public class DataProxy extends Actor
 	{
-		public static const VERSION				:String		= "Setup Wizard v0.1.5";
+		public static const VERSION				:String		= "Wizard v0.1.5";
 		
 		public var stream_connection_success	:Boolean;
 		public var stratus_connection_success	:Boolean;
@@ -18,20 +18,24 @@ package com.infrno.setup.model
 		
 		// Wowza will accept these values for specified hosts.
 		public var auth_key:String		= "sample_auth_key";		
-		public var room_id:String 		= "setup_default_room_id";
-		public var room_name:String 	= "setup_default_room_name";
-		public var user_id:String 		= "setup_default_user_id";
-		public var user_name:String 	= "setup_default_user_name";
+		public var room_id:String 		= "0";
+		public var room_name:String 	= "";
+		public var user_id:String 		= "";
+		public var user_name:String 	= "";
 		
 		public var media_server:String	= "rtmp://localhost";
 		public var media_app:String		= "setup_wizard";
 		public var media_port:String	= "1935";
 		
-		public var my_info:UserInfoVO 	= new UserInfoVO({user_name:"user"+Math.round(Math.random()*1000),user_id:"sample_user_id"});
-
+		//		public var my_info					:UserInfoVO = new UserInfoVO({user_name:"user"+Math.round(Math.random()*1000),user_id:"sample_user_id"});
+		public var my_info					:UserInfoVO ;
 		
 		public function DataProxy()
 		{
+			user_name= "user" + Math.round(Math.random()*1000);
+			user_id = user_name
+			my_info	= new UserInfoVO({user_name:user_name, user_id:user_id});
+			
 			super();
 		}
 		

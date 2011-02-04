@@ -23,8 +23,10 @@ package com.infrno.chat.model
 		// Wowza will accept these values for specified hosts.
 		public var auth_key:String		= "sample_auth_key";
 		
-		public var room_id:String 		= "chat_default_room_id";
-		public var room_name:String 	= "chat_default_room_name";
+		public var room_id:String 		= "0";
+		public var room_name:String 	= "";
+		public var user_name:String 	= "";
+		public var user_id:String 	= "";
 
 		//using personal stratus key for now
 		public var peer_server_key			:String		= "4b9d915ef5ee88cfd38eb359-abf46599bf1f";
@@ -40,12 +42,16 @@ package com.infrno.chat.model
 		private var m_mediaApp				:String		= "chat";
 		private var m_mediaPort				:String		= "1935";
 		
-		public var my_info					:UserInfoVO = new UserInfoVO({user_name:"user"+Math.round(Math.random()*1000),user_id:"sample_user_id"});
+//		public var my_info					:UserInfoVO = new UserInfoVO({user_name:"user"+Math.round(Math.random()*1000),user_id:"sample_user_id"});
+		public var my_info					:UserInfoVO ;
 		
 		public function DataProxy( )
 		{
 			users_collection = new Object();
-//			my_info	= new UserInfoVO({user_name:"user"+Math.round(Math.random()*1000), user_id:"sample_user_id"});
+			
+			user_name= "user" + Math.round(Math.random()*1000);
+			user_id = user_name
+			my_info	= new UserInfoVO({user_name:user_name, user_id:user_id});
 		}
 	
 		public function get media_server( ):String 

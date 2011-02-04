@@ -8,16 +8,16 @@ package com.infrno.chat.model.vo
 	public class UserInfoVO
 	{
 //		public var peer_capable				:Boolean;
-		public var report_connection_status	:Boolean;
+		public var report_connection_status:Boolean;
 
-		public var suid						:int;
+		public var suid:int;
 		
-		public var peer_connection_status	:String;
-		public var user_name				:String;
-		public var user_id					:String;
-		public var nearID					:String;
+		public var peer_connection_status:String;
+		public var user_name:String;
+		public var user_id:String;
+		public var nearID:String;
 
-		private var _netStream				:NetStream;
+		private var _netStream:NetStream;
 		
 		public function UserInfoVO(infoObj:Object=null)
 		{

@@ -841,8 +841,6 @@ package com.simplediagrams.controllers
 			//don't execute command since transformation has already happened
 			undoRedoManager.push(cmd)
 				
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.CHANGE_LINE_POSITION);
-
 			var changedSDObjectArray:Array = new Array();
 			changedSDObjectArray.push(diagramModel.getModelByID(cmd.sdID));
 			throw_ObjectChanged_RSOEvent(changedSDObjectArray);

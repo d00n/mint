@@ -126,14 +126,14 @@ package com.simplediagrams.controllers
 				var user_stats:Object = new Object();
 				var ns_info:NetStreamInfo = _netStream.info;
 				
-				user_stats.application_name			= "whiteboard";
-				user_stats.room_name				= _room_name;
-				user_stats.room_id					= _room_id;
-				user_stats.user_name				= _user_name;
-				user_stats.user_id					= _user_id;
+				user_stats.application_name			  = "whiteboard";
+				user_stats.room_name				      = _room_name;
+				user_stats.room_id					      = _room_id;
+				user_stats.user_name			      	= _user_name;
+				user_stats.user_id					      = _user_id;
 				
-				user_stats.wowza_protocol			= _netConnection.protocol;
-				user_stats.SRTT 					= ns_info.SRTT;
+				user_stats.wowza_protocol			    = _netConnection.protocol;
+				user_stats.SRTT 					        = ns_info.SRTT;
 				
 				user_stats.audioBytesPerSecond 		= int(ns_info.audioBytesPerSecond);
 				user_stats.videoBytesPerSecond 		= int(ns_info.videoBytesPerSecond);
@@ -145,8 +145,8 @@ package com.simplediagrams.controllers
 				user_stats.dataByteCount 			    = ns_info.dataByteCount;
 				user_stats.videoByteCount			    = ns_info.videoByteCount;
 				
-				user_stats.audioLossRate 			= ns_info.audioLossRate;
-				user_stats.droppedFrames 			= ns_info.droppedFrames;
+				user_stats.audioLossRate 			    = ns_info.audioLossRate;
+				user_stats.droppedFrames 			    = ns_info.droppedFrames;
 				
 				_netConnection.call("reportUserStats",null,user_stats);
 			}
@@ -212,9 +212,9 @@ package com.simplediagrams.controllers
 			_remoteSharedObject.connect(_netConnection); 
 		}
 		
-		public function securityErrorHandler(event : SecurityErrorEvent) : void {  Logger.info('Security Error: '+event, this);  }
-		public function ioErrorHandler(event : IOErrorEvent) : void {  Logger.info('IO Error: '+event, this);  }
-		public function asyncErrorHandler(event : AsyncErrorEvent) : void {  Logger.info('Async Error: '+event, this);  }  		
+		public function securityErrorHandler(event : SecurityErrorEvent) : void {  Logger.error('securityErrorHandler() '+event, this);  }
+		public function ioErrorHandler(event : IOErrorEvent) : void {  Logger.error('ioErrorHandler() :'+event, this);  }
+		public function asyncErrorHandler(event : AsyncErrorEvent) : void {  Logger.error('asyncErrorHandler() :'+event, this);  }  		
 		
 		private function onSyncEventHandler(event : SyncEvent):void {
 			Logger.info("onSyncEventHandler event:" + event.type,this);	
@@ -222,6 +222,7 @@ package com.simplediagrams.controllers
 			Logger.info("onSyncEventHandler event.changeList.length:" + event.changeList.length,this);	
 			for (var i:Number = 0; i < event.changeList.length; i++) {
 				Logger.info("onSyncEventHandler event.changeList[" +i + "].code:" + event.changeList[i].code,this);	
+
 				switch (event.changeList[i].code){
 					case SUCCESS:   
 						break;
@@ -233,6 +234,7 @@ package com.simplediagrams.controllers
 						break;
 					}
 				}
+					
 			}
 		}				
 		
@@ -475,6 +477,11 @@ package com.simplediagrams.controllers
 					Logger.info("dispatchUpdate_ObjectChanged() sdTextAreaModel.text=" + sdTextAreaModel.text + ", depth=" + sdTextAreaModel.depth.toString() + ", depth=" + sdTextAreaModel.depth.toString(), this);
 				}
 				
+				if (sd_obj.sdID == '1295068066312')
+				{
+					Logger.info("whaszzzup!!!")
+				}
+				
 				_remoteSharedObject.setProperty(sd_obj.sdID.toString(), sd_obj);
 			}
 		}
@@ -482,6 +489,11 @@ package com.simplediagrams.controllers
 		public function processUpdate_ObjectChanged(changeObject:Object) : void 
 		{
 			Logger.info("processUpdate_ObjectChanged()",this);
+			
+			if (changeObject.sdID == '1295068066312')
+			{
+				Logger.info("whaszzzup!!!")
+			}
 			
 			var sdID:String = changeObject.sdID;
 			

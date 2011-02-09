@@ -609,7 +609,8 @@ package com.simplediagrams.controllers
 			// we perform it's responsibilities here:	
 			if (diagramModel.sdObjectModelsAC.contains(sdObjectModel) == false) {
 				Logger.info("processUpdate_ObjectChanged() about to call diagramModel.addSDObjectModel(sdObjectModel) with sdObjectModel.sdID=" + sdObjectModel.sdID, this);
-				diagramModel.addSDObjectModel(sdObjectModel);
+				diagramModel.sdObjectModelsAC.addItem(sdObjectModel);
+				diagramModel.addComponentForModel(sdObjectModel, false);
 			}
 		}		
 		

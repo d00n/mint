@@ -338,7 +338,7 @@ package com.simplediagrams.model
 			dispatcher.dispatchEvent(rsoEvent);		
 		}	 
 		
-		protected function addComponentForModel(sdModel:SDObjectModel, setSelected:Boolean = true):Object
+		public function addComponentForModel(sdModel:SDObjectModel, setSelected:Boolean = true):Object
 		{
 			//create visual object and add to ObjectHandles				
 			var newSDComponent:ISDComponent = sdModel.createSDComponent()

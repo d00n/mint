@@ -21,7 +21,7 @@ package com.simplediagrams.view.SDComponents
 	import spark.effects.RemoveAction;
 	import spark.events.TextOperationEvent;
 	
-
+	
 	[SkinState("normal")] 
 	[SkinState("selected")] 
 	[Bindable]
@@ -29,7 +29,7 @@ package com.simplediagrams.view.SDComponents
 	{
 		[Dispatcher]
 		public var dispatcher:IEventDispatcher;
-
+		
 		[SkinPart(required="true")]		
 		public var mainTextArea:TextArea;
 		
@@ -46,80 +46,80 @@ package com.simplediagrams.view.SDComponents
 		
 		protected var _cwTextArea:ChangeWatcher
 		protected var _model:SDTextAreaModel;
-						
+		
 		public function SDTextArea()
 		{
 			this.setStyle("skinClass", Class(SDTextAreaBasicSkin))  
 		}
-	    
-        public function set objectModel( objectModel:SDObjectModel ) : void
-        {     
-            _model = SDTextAreaModel(objectModel) 
-            
-            x = _model.x;
-            y = _model.y;            
-            
-            width= _model.width;
-            height= _model.height;
-   			text = _model.text			
-            fontColor = _model.color
+		
+		public function set objectModel( objectModel:SDObjectModel ) : void
+		{     
+			_model = SDTextAreaModel(objectModel) 
+			
+			x = _model.x;
+			y = _model.y;            
+			
+			width= _model.width;
+			height= _model.height;
+			text = _model.text			
+			fontColor = _model.color
 			fontWeight = _model.fontWeight
 			fontFamily = _model.fontFamily
-            fontSize = _model.fontSize
-            textAlign = _model.textAlign
+			fontSize = _model.fontSize
+			textAlign = _model.textAlign
 			rotation = _model.rotation
-										
-            setSkinStyle()
+			
+			setSkinStyle()
 			depth = _model.depth;
-            
-            _model.addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );
-        			        
-        }
-        
-        protected override function getCurrentSkinState():String
-    	{
-      		if (_model && _model.selected)
-      		{
-      			return "selected"
-      		}
-      		else
-      		{
-      			return "normal"
-      		}
-     	}
-     
-      	override public function get objectModel():SDObjectModel
-        {
-        	return _model
-        }
-	
-  
-        
-        override protected function onModelChange(event:PropertyChangeEvent):void
+			
+			_model.addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );
+			
+		}
+		
+		protected override function getCurrentSkinState():String
+		{
+			if (_model && _model.selected)
+			{
+				return "selected"
+			}
+			else
+			{
+				return "normal"
+			}
+		}
+		
+		override public function get objectModel():SDObjectModel
+		{
+			return _model
+		}
+		
+		
+		
+		override protected function onModelChange(event:PropertyChangeEvent):void
 		{
 			super.onModelChange(event)
-				
+			
 			switch(event.property)
 			{    
-								
-    			case "selected":    			
-    				
+				
+				case "selected":    			
+					
 					
 					if (event.newValue==false)
-    				{
-    				} 
+					{
+					} 
 					
-    				this.invalidateSkinState()
-    				break
-    			
-    			case "fontSize":
-    				this.fontSize = Number(event.newValue)
-    				break
-    				
-    			case "color":
-    				this.fontColor = Number(event.newValue)
-    				break
-    			
+					this.invalidateSkinState()
+					break
+				
+				case "fontSize":
+					this.fontSize = Number(event.newValue)
+					break
+				
+				case "color":
+					this.fontColor = Number(event.newValue)
+					break
+				
 				case "textAlign":
 					this.textAlign = String(event.newValue)
 					break
@@ -132,60 +132,60 @@ package com.simplediagrams.view.SDComponents
 					this.fontFamily = String(event.newValue)
 					break
 				
-    			case "skinStyle":
-    				setSkinStyle()    				
-    				break
+				case "skinStyle":
+					setSkinStyle()    				
+					break
 				
-    				
-    			case "text":
-    				text = String(event.newValue)
-    				this.invalidateProperties()
-    				
+				
+				case "text":
+					text = String(event.newValue)
+					this.invalidateProperties()
+					
 			}
-                    
-        }
-      
-        
-        /* Set a skin based on the style defined in the model */
-        protected function setSkinStyle():void
-        {
-        	switch(_model.styleName)
-        	{
-        		case SDTextAreaModel.NO_BACKGROUND:
-        			this.setStyle("skinClass", Class(SDTextAreaBasicSkin))
-        			break
-        		
-        		case SDTextAreaModel.PAPER_WITH_TAPE:
-        			this.setStyle("skinClass", Class(SDTextAreaPaperWithTapeSkin))
-        			break
-        		
-        		case SDTextAreaModel.STICKY_NOTE:
-        			this.setStyle("skinClass", Class(SDTextAreaStickyNoteSkin))
-        			break
-        			
-        		case SDTextAreaModel.INDEX_CARD:
-        			this.setStyle("skinClass", Class(SDTextAreaIndexCardSkin))
-        			break
-        			
-        		default:
-        			Logger.warn("setSkinStyle() unrecognized style :  " + _model.styleName, this)
-        	}
-        	this.invalidateSkinState()
-        	this.invalidateDisplayList()
-        	
-        	
-        }
-        
-        protected function onTextAreaMouseDown(event:MouseEvent):void
-	    { 
+			
+		}
+		
+		
+		/* Set a skin based on the style defined in the model */
+		protected function setSkinStyle():void
+		{
+			switch(_model.styleName)
+			{
+				case SDTextAreaModel.NO_BACKGROUND:
+					this.setStyle("skinClass", Class(SDTextAreaBasicSkin))
+					break
+				
+				case SDTextAreaModel.PAPER_WITH_TAPE:
+					this.setStyle("skinClass", Class(SDTextAreaPaperWithTapeSkin))
+					break
+				
+				case SDTextAreaModel.STICKY_NOTE:
+					this.setStyle("skinClass", Class(SDTextAreaStickyNoteSkin))
+					break
+				
+				case SDTextAreaModel.INDEX_CARD:
+					this.setStyle("skinClass", Class(SDTextAreaIndexCardSkin))
+					break
+				
+				default:
+					Logger.warn("setSkinStyle() unrecognized style :  " + _model.styleName, this)
+			}
+			this.invalidateSkinState()
+			this.invalidateDisplayList()
+			
+			
+		}
+		
+		protected function onTextAreaMouseDown(event:MouseEvent):void
+		{ 
 			Logger.debug("depth: " + this.depth, this)
 			this.invalidateSkinState()
-		    event.stopPropagation()    // this allows us to drag to select within the text area without having objecthandles think we want to drag the component!
-	    }
-
-        
-        
-        override protected function partAdded(partName:String, instance:Object):void
+			event.stopPropagation()    // this allows us to drag to select within the text area without having objecthandles think we want to drag the component!
+		}
+		
+		
+		
+		override protected function partAdded(partName:String, instance:Object):void
 		{
 			super.partAdded(partName, instance);		 
 			
@@ -197,7 +197,7 @@ package com.simplediagrams.view.SDComponents
 				mainTextArea.addEventListener(MouseEvent.ROLL_OUT, onTextAreaMouseOut, false, 0, true)				
 				if (focusManager)
 					focusManager.setFocus(mainTextArea)
-			
+				
 				if (this.text!="")
 					mainTextArea.setStyle("borderVisible", false)
 			}	
@@ -205,8 +205,8 @@ package com.simplediagrams.view.SDComponents
 			{
 				backgroundImage.addEventListener(MouseEvent.MOUSE_DOWN, onBackgroundClick, false, 0, true)	
 			}
-				
-        }
+			
+		}
 		
 		protected function onTextAreaChange(event:Event):void
 		{
@@ -217,13 +217,13 @@ package com.simplediagrams.view.SDComponents
 			rsoEvent.sdID = _model.sdID;
 			dispatcher.dispatchEvent(rsoEvent);			
 		}
-
+		
 		protected function onTextAreaMouseOut(event:Event):void
 		{
 			/*
 			if (mainTextArea.focusManager)
 			{
-				mainTextArea.focusManager.deactivate()
+			mainTextArea.focusManager.deactivate()
 			}
 			*/
 			
@@ -233,16 +233,16 @@ package com.simplediagrams.view.SDComponents
 		{
 			Logger.debug("onBackgroundClick!", this)
 		}
-       
-        
-        
+		
+		
+		
 		public override function destroy():void
 		{
 			super.destroy()
 			mainTextArea.removeEventListener(Event.CHANGE, onTextAreaChange)				
 			mainTextArea.removeEventListener(MouseEvent.MOUSE_DOWN, onTextAreaMouseDown)	
 			mainTextArea.removeEventListener(MouseEvent.MOUSE_OUT, onTextAreaMouseOut)	
-            _model.removeEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );
+			_model.removeEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );
 			if (backgroundImage) backgroundImage.removeEventListener(MouseEvent.MOUSE_DOWN, onBackgroundClick)	
 			_model = null
 		}

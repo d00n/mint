@@ -57,11 +57,14 @@ package com.simplediagrams.controllers
 			
 			if (diagramModel.selectedArray.length>=1)
 			{
+					
+				var sdIDArray:Array = new Array();	
+				for each (var sdObjectModel:SDObjectModel in diagramModel.selectedArray)
+					sdIDArray.push(sdObjectModel.sdID);					
 				
-				// TODO - don't try to fire a cutevent on other peers, just send them delete events
-				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.CUT);	
-				rsoEvent.cutCommand = cmd;
-//				dispatcher.dispatchEvent(rsoEvent);
+				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.DELETE_SELECTED_SD_OBJECT_MODEL);	
+				rsoEvent.sdIDArray = sdIDArray;
+				dispatcher.dispatchEvent(rsoEvent);
 
 				var cmd:CutCommand = new CutCommand(diagramModel)
 				cmd.execute()

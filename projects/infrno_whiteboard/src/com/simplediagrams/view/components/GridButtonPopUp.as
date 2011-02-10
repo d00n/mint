@@ -13,8 +13,6 @@ package com.simplediagrams.view.components
 	
 	import flashx.textLayout.formats.VerticalAlign;
 	
-	import flexlib.controls.HSlider;
-	
 	import mx.events.FlexEvent;
 	import mx.events.SandboxMouseEvent;
 	import mx.graphics.SolidColor;
@@ -22,7 +20,8 @@ package com.simplediagrams.view.components
 	import spark.components.Button;
 	import spark.components.CheckBox;
 	import spark.components.Group;
-	import spark.components.VGroup;
+	import spark.components.HSlider;
+	import spark.components.HGroup;
 	import spark.components.supportClasses.SkinnableComponent;
 	import spark.events.DropDownEvent;
 	import spark.primitives.Rect;
@@ -58,7 +57,7 @@ package com.simplediagrams.view.components
 		public var openButton:Button
 		
 		[SkinPart(required="true")]
-		public var buttonGroup:VGroup;		
+		public var buttonGroup:HGroup;		
 		
 		
 		
@@ -137,23 +136,15 @@ package com.simplediagrams.view.components
 				openButton.addEventListener(MouseEvent.MOUSE_DOWN, dropDownButton_buttonDownHandler);
 				openButton.addEventListener(MouseEvent.MOUSE_OVER, dropDownButton_buttonOverHandler);
 				openButton.addEventListener(MouseEvent.MOUSE_OUT, dropDownButton_buttonOutHandler);
-			}
-			
+				
+				cellWidthSlider.addEventListener(Event.CHANGE, onCellWidthSliderChange);
+			}			
 			
 
 			if (instance == showGridCheckBox)
 			{
-				showGridCheckBox.addEventListener(MouseEvent.MOUSE_DOWN, onShowGridCheckBox)
-			}
-			if (instance == cellWidthSlider)
-			{
-				cellWidthSlider.addEventListener(MouseEvent.MOUSE_DOWN, onCellWidthSlider)
-			}
-			if (instance == alphaSlider)
-			{
-				alphaSlider.addEventListener(MouseEvent.MOUSE_DOWN, onAlphaSlider)
-			}
-		
+				showGridCheckBox.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown)
+			}		
 		}
 		
 		/**
@@ -173,16 +164,16 @@ package com.simplediagrams.view.components
 
 			if (instance == showGridCheckBox)
 			{
-				showGridCheckBox.removeEventListener(MouseEvent.MOUSE_DOWN, onShowGridCheckBox)
+				showGridCheckBox.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown)
 			}
 			if (instance == cellWidthSlider)
 			{
-				cellWidthSlider.removeEventListener(MouseEvent.MOUSE_DOWN, onCellWidthSlider)
+				cellWidthSlider.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown)
 			}
-			if (instance == alphaSlider)
-			{
-				alphaSlider.removeEventListener(MouseEvent.MOUSE_DOWN, onAlphaSlider)
-			}
+//			if (instance == alphaSlider)
+//			{
+//				alphaSlider.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown)
+//			}
 			
 			super.partRemoved(partName, instance);
 		}
@@ -197,16 +188,16 @@ package com.simplediagrams.view.components
 			super.commitProperties();
 		}  
 		
-		//--------------------------------------------------------------------------
-		//
-		//  New Methods
-		//
-		//--------------------------------------------------------------------------   
+		public function onCellWidthSliderChange(event:Event):void {
+			var evt:GridEvent;
+			evt = new GridEvent(GridEvent.CELL_WIDTH)
+			dispatcher.dispatchEvent(evt)				
+		}
 		
 		
-		public function onAlignButton(event:MouseEvent):void
+		public function onMouseDown(event:MouseEvent):void
 		{
-			var evt:GridEvent
+			var evt:GridEvent;
 			
 
 			if (event.target==showGridCheckBox)
@@ -217,10 +208,10 @@ package com.simplediagrams.view.components
 			{
 				evt = new GridEvent(GridEvent.CELL_WIDTH, true)
 			}
-			else if (event.target==alphaSlider)
-			{
-				evt = new GridEvent(GridEvent.ALPHA, true)
-			}
+//			else if (event.target==alphaSlider)
+//			{
+//				evt = new GridEvent(GridEvent.ALPHA, true)
+//			}
 			
 			dispatcher.dispatchEvent(evt)	
 		}
@@ -256,13 +247,13 @@ package com.simplediagrams.view.components
 		
 			
 		protected function systemManager_mouseUpHandler(event:Event):void {
-			closeDropDown();
+//			closeDropDown();
 		}
 		
 		protected function dropDownButton_buttonDownHandler (event:Event):void {
 			if (_isOpen) 
 			{
-				closeDropDown();
+//				closeDropDown();
 			} 
 			else 
 			{

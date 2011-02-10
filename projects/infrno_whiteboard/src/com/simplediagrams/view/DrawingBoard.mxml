@@ -689,8 +689,13 @@
 			
 			
 			[Mediate(event="GridEvent.TOGGLE_GRID")]    
-			public function onToggleGrid(event:GridEvent):void{
+			public function onGridToggleGrid(event:GridEvent):void{
 				drawingBoardGrid.visible = !drawingBoardGrid.visible;
+			}			
+			
+			[Mediate(event="GridEvent.CELL_WIDTH")]    
+			public function onGridCellWidth(event:GridEvent):void{
+				drawingBoardGrid.gridInterval = event.cell_width;
 			}			
 			
 			
@@ -769,6 +774,7 @@
 																	 gridThickness="2"
 																	 gridInterval="50"
 																	 mouseEnabled="false"
+																	 visible="false"
 																	 />		
 			
 		</s:Group>	

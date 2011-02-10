@@ -53,22 +53,21 @@
 			</s:Rect>
 			
 			<s:Group id="buttonHolder" left="10" right="10" top="5" bottom="5" alpha="0" alpha.open="1" >
-				<s:VGroup id="buttonGroup" gap="3">
+				<s:HGroup id="buttonGroup" gap="3">
 					
-					<s:HGroup id="buttonGroup1" width="100%" height="100%" gap="3"  >		
-						<mx:Text text="Show grid" />
-						<s:CheckBox id="showGridCheckBox" />						
-					</s:HGroup>
-					<s:HGroup id="buttonGroup2" width="100%" height="100%" gap="3"  >	
-						<mx:Text text="Cell width" />
-						<mx:HSlider id="cellWidthSlider" height="30" width="150" />
-					</s:HGroup>	
-					<s:HGroup id="buttonGroup3" width="100%" height="100%" gap="3"  >	
+					<s:VGroup id="buttonGroup1" width="100%" height="100%" gap="3" horizontalAlign="right" >		
+						<mx:Text text="Show grid"  />
 						<mx:Text text="Opacity" />
-						<mx:HSlider id="alphaSlider" height="30" width="150"/>
-					</s:HGroup>	
+						<mx:Text text="Cell width" />
+					</s:VGroup>
 					
-				</s:VGroup>	
+					<s:VGroup id="buttonGroup2" width="100%" height="100%" gap="3"  >	
+						<s:CheckBox id="showGridCheckBox" />						
+						<s:HSlider id="cellWidthSlider" minimum="10" maximum="200" value="20" snapInterval="1" width="150"  />
+						<s:HSlider id="alphaSlider" minimum="0" maximum="1" value="1" snapInterval=".01" width="150"/>
+					</s:VGroup>	
+					
+				</s:HGroup>	
 			</s:Group>
 			
 			<s:filters>

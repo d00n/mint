@@ -250,8 +250,6 @@
 
 		<mx:ColorPicker id="cp" width="20" height="20"  close="onColorChange()" doubleClickEnabled="true" doubleClick="onColorChange()" color="0xFFFFFF"/>
 		
-		<mx:Button icon="{addShapeDrawerIcon}" click="onToggleGrid()" width="20" height="20" toolTip="Show/hide grid"/>		
-		
 		<components:GridButtonPopUp 
 			id="gridButtonPopUp"
 			skinClass="com.simplediagrams.view.skins.GridButtonPopUpSkin"

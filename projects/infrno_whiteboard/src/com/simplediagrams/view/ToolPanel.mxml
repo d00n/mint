@@ -235,7 +235,6 @@
 		
 		<mx:Button icon="{addShapeDrawerIcon}" click="onToggleShapeDrawer()" width="20" height="20" toolTip="Open/close shape drawer"/>
 		
-		<mx:Button icon="{addShapeDrawerIcon}" click="onToggleGrid()" width="20" height="20" toolTip="Show/hide grid"/>
 		
 		<!--
 		<mx:Button icon="{undoIcon}" click="onUndoIcon()" width="20" height="20" toolTip="Undo"/>
@@ -249,8 +248,15 @@
 		
 		<mx:Button icon="{moveBackward}" click="onMoveBackward()" width="20" height="20" toolTip="Move selected object backward"/>	
 
-		
 		<mx:ColorPicker id="cp" width="20" height="20"  close="onColorChange()" doubleClickEnabled="true" doubleClick="onColorChange()" color="0xFFFFFF"/>
+		
+		<mx:Button icon="{addShapeDrawerIcon}" click="onToggleGrid()" width="20" height="20" toolTip="Show/hide grid"/>		
+		
+		<components:GridButtonPopUp 
+			id="gridButtonPopUp"
+			skinClass="com.simplediagrams.view.skins.GridButtonPopUpSkin"
+			/>
+		
 
 		<components:AlignButtonPopUp 
 					id="alignButtonPopUp"

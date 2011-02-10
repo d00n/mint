@@ -90,6 +90,7 @@ package com.simplediagrams.view.components
 		
 		private var _isOpen:Boolean = false;
 		private var _isOver:Boolean = false;
+		private var _isOverPopup:Boolean = false;
 		private var gap:Number = 0;
 		
 		override public function set enabled(value:Boolean):void
@@ -195,30 +196,21 @@ package com.simplediagrams.view.components
 		
 		
 		public function onMouseDown(event:MouseEvent):void
-		{
-			var evt:GridEvent;
-			
-			
+		{			
 			if (event.target==showGridCheckBox)
 			{
+				var evt:GridEvent;
 				evt = new GridEvent(GridEvent.TOGGLE_GRID, true)
+				dispatcher.dispatchEvent(evt)	
 			}
-//			else if (event.target==cellWidthSlider)
-//			{
-//				evt = new GridEvent(GridEvent.CELL_WIDTH, true)
-//			}
-			//			else if (event.target==alphaSlider)
-			//			{
-			//				evt = new GridEvent(GridEvent.ALPHA, true)
-			//			}
-			
-			dispatcher.dispatchEvent(evt)	
 		}
 		
 		public function openDropDown():void
 		{
 			_isOpen = true;
 			addMoveHandlers();
+			buttonGroup.addEventListener(MouseEvent.MOUSE_OVER, buttonHolder_mouseOverHandler);
+			buttonGroup.addEventListener(MouseEvent.MOUSE_OUT, buttonHolder_mouseOutHandler);
 			invalidateSkinState();
 			this.dispatchEvent(new DropDownEvent(DropDownEvent.OPEN));
 		}
@@ -228,6 +220,8 @@ package com.simplediagrams.view.components
 			_isOpen = false;
 			_isOver = false;
 			removeMoveHandlers();
+			buttonGroup.removeEventListener(MouseEvent.MOUSE_OVER, buttonHolder_mouseOverHandler);
+			buttonGroup.removeEventListener(MouseEvent.MOUSE_OUT, buttonHolder_mouseOutHandler);			
 			invalidateSkinState();
 			this.dispatchEvent(new DropDownEvent(DropDownEvent.CLOSE));
 		}
@@ -246,7 +240,10 @@ package com.simplediagrams.view.components
 		
 		
 		protected function systemManager_mouseUpHandler(event:Event):void {
-//						closeDropDown();
+			trace("systemManager_mouseUpHandler, _isOverPopup:"+_isOverPopup);
+			if (!_isOverPopup) {
+					closeDropDown();
+			}
 		}
 		
 		protected function dropDownButton_buttonDownHandler (event:Event):void {
@@ -265,9 +262,22 @@ package com.simplediagrams.view.components
 			invalidateSkinState();
 		}
 		
-		protected function dropDownButton_buttonOutHandler (event:Event):void {
+		protected function dropDownButton_buttonOutHandler (event:Event):void {		
 			_isOver = false;
 			invalidateSkinState();
 		}
+		
+		protected function buttonHolder_mouseOverHandler (event:Event):void {
+			trace("buttonHolder_mouseOverHandler");			
+			_isOverPopup = true;
+			invalidateSkinState();
+		}
+		
+		protected function buttonHolder_mouseOutHandler (event:Event):void {
+			trace("buttonHolder_mouseOutHandler");			
+			_isOverPopup = false;
+			invalidateSkinState();
+		}		
+		
 	}
 }

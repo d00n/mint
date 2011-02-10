@@ -245,11 +245,7 @@
 
 		<mx:ColorPicker id="cp" width="20" height="20"  close="onColorChange()" doubleClickEnabled="true" doubleClick="onColorChange()" color="0xFFFFFF"/>
 		
-		<components:GridButtonPopUp 
-			id="gridButtonPopUp"
-			skinClass="com.simplediagrams.view.skins.GridButtonPopUpSkin"
-			/>
-		
+		<components:GridButtonPopUp id="gridButtonPopUpd" skinClass="com.simplediagrams.view.skins.GridButtonPopUpSkin" />		
 
 		<components:AlignButtonPopUp 
 					id="alignButtonPopUp"

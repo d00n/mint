@@ -614,6 +614,18 @@ package com.simplediagrams.controllers
 			}
 		}		
 		
+		[Mediate(event="GridEvent.TOGGLE_GRID")]    
+		[Mediate(event="GridEvent.CELL_WIDTH")]    
+		[Mediate(event="GridEvent.ALPHA")]
+		public function onGridEvent(event:GridEvent):void{
+			var grid_obj:Object = {};
+			grid_obj.cell_width = event.cell_width;
+			grid_obj.alpha = event.alpha;
+			grid_obj.show_grid = event.show_grid;
+			_remoteSharedObject.setProperty("grid", grid_obj);
+		}			
+		
+		
 //		[Mediate(event="RemoteSharedObjectEvent.CUT")]
 //		public function dispatchUpdate_CutStart(event:RemoteSharedObjectEvent) : void
 //		{

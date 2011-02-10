@@ -61,10 +61,10 @@
 						<mx:Text text="Opacity" />
 					</s:VGroup>
 					
-					<s:VGroup id="buttonGroup2" width="100%" height="100%" gap="3"  >	
+					<s:VGroup id="buttonGroup2" width="100%" height="100%" gap="12">	
 						<s:CheckBox id="showGridCheckBox" />						
-						<s:HSlider id="cellWidthSlider" minimum="10" maximum="200" value="20" snapInterval="1" width="150"  />
-						<s:HSlider id="alphaSlider" minimum="0" maximum="1" value="1" snapInterval=".01" width="150"/>
+						<s:HSlider id="cellWidthSlider" minimum="5" maximum="200" value="20" snapInterval="1" width="150" />
+						<s:HSlider id="alphaSlider" minimum="0" maximum="1" value="1" snapInterval=".01" width="150" />
 					</s:VGroup>	
 					
 				</s:HGroup>	

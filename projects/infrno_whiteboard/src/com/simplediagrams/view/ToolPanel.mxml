@@ -16,12 +16,13 @@
 	<fx:Script>
 		<![CDATA[
 			import com.simplediagrams.events.ColorEvent;
+			import com.simplediagrams.events.GridEvent;
+			import com.simplediagrams.events.LoadImageEvent;
 			import com.simplediagrams.events.PositionEvent;
+			import com.simplediagrams.events.ShapesPanelEvent;
 			import com.simplediagrams.events.StyleEvent;
 			import com.simplediagrams.events.ToolPanelEvent;
-			import com.simplediagrams.events.LoadImageEvent;
 			import com.simplediagrams.events.UndoRedoEvent;
-			import com.simplediagrams.events.ShapesPanelEvent;
 			import com.simplediagrams.model.DiagramModel;
 			import com.simplediagrams.model.DiagramStyleManager;
 			import com.simplediagrams.util.Logger;
@@ -202,6 +203,11 @@
 				dispatcher.dispatchEvent(new ShapesPanelEvent(ShapesPanelEvent.TOGGLE_DISPLAY, true))				
 			}
 			
+			protected function onToggleGrid():void
+			{
+				dispatcher.dispatchEvent(new GridEvent(GridEvent.TOGGLE_GRID, true))				
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -228,6 +234,8 @@
 		<mx:Button icon="{addPictureIcon}" click="onAddPictureIcon()" width="20" height="20" toolTip="Add picture"/>
 		
 		<mx:Button icon="{addShapeDrawerIcon}" click="onToggleShapeDrawer()" width="20" height="20" toolTip="Open/close shape drawer"/>
+		
+		<mx:Button icon="{addShapeDrawerIcon}" click="onToggleGrid()" width="20" height="20" toolTip="Show/hide grid"/>
 		
 		<!--
 		<mx:Button icon="{undoIcon}" click="onUndoIcon()" width="20" height="20" toolTip="Undo"/>

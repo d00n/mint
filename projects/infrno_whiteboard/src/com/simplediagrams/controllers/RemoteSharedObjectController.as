@@ -614,22 +614,22 @@ package com.simplediagrams.controllers
 			}
 		}		
 		
-		[Mediate(event="RemoteSharedObjectEvent.CUT")]
-		public function dispatchUpdate_CutStart(event:RemoteSharedObjectEvent) : void
-		{
-			// Our goal now is to stop propagating updates until this cut action is finished.
-			
-			Logger.info("dispatchUpdate_CutEvent()",this);
-						
-			for each (var sdObjectModel:SDObjectModel in event.cutCommand.clonesArr) 
-			{
-				var sd_obj:Object = {};
-				sd_obj.commandName = "DeleteSelectedSDObjectModel";
-				sd_obj.sdID = sdObjectModel.sdID;						
-				_remoteSharedObject.setProperty(sd_obj.sdID.toString(), sd_obj);
-			}		
-			
-		}
+//		[Mediate(event="RemoteSharedObjectEvent.CUT")]
+//		public function dispatchUpdate_CutStart(event:RemoteSharedObjectEvent) : void
+//		{
+//			// TODO - don't try to fire a cutevent on other peers, just send them delete events
+//			
+//			Logger.info("dispatchUpdate_CutEvent()",this);
+//						
+//			for each (var sdObjectModel:SDObjectModel in event.cutCommand.clonesArr) 
+//			{
+//				var sd_obj:Object = {};
+//				sd_obj.commandName = "DeleteSelectedSDObjectModel";
+//				sd_obj.sdID = sdObjectModel.sdID;						
+//				_remoteSharedObject.setProperty(sd_obj.sdID.toString(), sd_obj);
+//			}		
+//			
+//		}
 		
 		
 //		public function processUpdate_ClearDiagram(event:SyncEvent):void

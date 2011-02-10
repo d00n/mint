@@ -57,9 +57,11 @@ package com.simplediagrams.controllers
 			
 			if (diagramModel.selectedArray.length>=1)
 			{
+				
+				// TODO - don't try to fire a cutevent on other peers, just send them delete events
 				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.CUT);	
 				rsoEvent.cutCommand = cmd;
-				dispatcher.dispatchEvent(rsoEvent);
+//				dispatcher.dispatchEvent(rsoEvent);
 
 				var cmd:CutCommand = new CutCommand(diagramModel)
 				cmd.execute()

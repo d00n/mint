@@ -8,7 +8,7 @@
 				 xmlns:myComps="*" 
 				 dragEnter="onDragEnter(event)"
 				 dragDrop="onDragDrop(event)"
-				 mouseChildren="true">
+				 mouseChildren="true" xmlns:components1="com.simplediagrams.view.components.*">
 	
 	<fx:Script>
 		<![CDATA[
@@ -579,7 +579,6 @@
 			protected var _watchTextAreaFontSize:ChangeWatcher 		
 			protected var _watchTextAreaFontWeight:ChangeWatcher
 			
-			
 			[Mediate(event="EditSymbolTextEvent.EDIT_SYMBOL_TEXT")]    
 			public function onEditSymbolText(event:EditSymbolTextEvent):void
 			{
@@ -689,6 +688,10 @@
 			}
 			
 			
+			[Mediate(event="GridEvent.TOGGLE_GRID")]    
+			public function onToggleGrid(event:GridEvent):void{
+				drawingBoardGrid.visible = !drawingBoardGrid.visible;
+			}			
 			
 			
 		]]>
@@ -758,6 +761,15 @@
 										/>
 			</s:Group>
 			
+			<components1:DrawingBoardGrid id="drawingBoardGrid" 
+																	 width="{diagramModel.width}"
+																	 height="{diagramModel.height}"
+																	 gridAlpha=".5"
+																	 gridColor="0xFF0000"
+																	 gridThickness="2"
+																	 gridInterval="50"
+																	 mouseEnabled="false"
+																	 />		
 			
 		</s:Group>	
 	</s:Scroller>

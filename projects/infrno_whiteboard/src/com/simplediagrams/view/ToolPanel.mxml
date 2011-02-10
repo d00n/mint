@@ -203,11 +203,6 @@
 				dispatcher.dispatchEvent(new ShapesPanelEvent(ShapesPanelEvent.TOGGLE_DISPLAY, true))				
 			}
 			
-			protected function onToggleGrid():void
-			{
-				dispatcher.dispatchEvent(new GridEvent(GridEvent.TOGGLE_GRID, true))				
-			}
-			
 		]]>
 	</fx:Script>
 	

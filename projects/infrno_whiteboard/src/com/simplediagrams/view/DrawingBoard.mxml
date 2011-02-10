@@ -696,6 +696,13 @@
 			[Mediate(event="GridEvent.CELL_WIDTH")]    
 			public function onGridCellWidth(event:GridEvent):void{
 				drawingBoardGrid.gridInterval = event.cell_width;
+				drawingBoardGrid.invalidateProperties();
+			}			
+			
+			[Mediate(event="GridEvent.ALPHA")]    
+			public function onGridAlpha(event:GridEvent):void{
+				drawingBoardGrid.gridAlpha = event.alpha;
+				drawingBoardGrid.invalidateProperties();
 			}			
 			
 			
@@ -769,10 +776,6 @@
 			<components1:DrawingBoardGrid id="drawingBoardGrid" 
 																	 width="{diagramModel.width}"
 																	 height="{diagramModel.height}"
-																	 gridAlpha=".5"
-																	 gridColor="0xFF0000"
-																	 gridThickness="2"
-																	 gridInterval="50"
 																	 mouseEnabled="false"
 																	 visible="false"
 																	 />		

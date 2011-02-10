@@ -16,10 +16,9 @@ package com.simplediagrams.view.components
 		[SkinPart(required="true")]
 		public var gridHolder:Graphic;
 			
-		public var gridInterval:Number = 15
-		
-		public var gridColor:Number = 0xFFFFFF
-		public var gridThickness:Number = 1
+		public var gridInterval:Number = 50		
+//		public var gridColor:uint = 0
+		public var gridThickness:Number = 0
 		public var gridAlpha:Number = 1
 			
 		public function DrawingBoardGrid()
@@ -52,7 +51,7 @@ package com.simplediagrams.view.components
 			var i:int=0;
 			var j:int=0;
 			gridHolder.graphics.clear();
-			gridHolder.graphics.lineStyle(gridThickness, gridColor, gridAlpha)
+			gridHolder.graphics.lineStyle(gridThickness, 0, gridAlpha)
 			while (i < width-gridInterval-2)
 			{
 				i +=gridInterval;
@@ -66,6 +65,12 @@ package com.simplediagrams.view.components
 				gridHolder.graphics.lineTo(width,j);
 			}     				   
 		}
+		
+		override protected function commitProperties():void
+		{
+			drawGrid(null);
+			super.commitProperties();
+		} 
 		
 		
 	}

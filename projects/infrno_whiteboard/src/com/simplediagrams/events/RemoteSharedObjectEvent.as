@@ -34,6 +34,10 @@ package com.simplediagrams.events
 		public static const SYMBOL_TEXT_EDIT:String = "rso_SymbolTextEdit";
 		public static const LOAD_FLASHVARS:String = "rso_LoadFlashvars";
 		
+		public static const GRID:String = "rso_Grid";
+		public var show_grid:Boolean;
+		public var cell_width:Number;
+		public var alpha:Number;		
 		
 		private var _imageData:ByteArray
 		public var imageName:String;

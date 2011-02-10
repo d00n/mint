@@ -3,6 +3,7 @@ package com.simplediagrams.view.components
 	
 	import com.simplediagrams.events.AlignEvent;
 	import com.simplediagrams.events.GridEvent;
+	import com.simplediagrams.events.RemoteSharedObjectEvent;
 	
 	import flash.display.DisplayObject;
 	import flash.events.Event;
@@ -15,13 +16,14 @@ package com.simplediagrams.view.components
 	
 	import mx.events.FlexEvent;
 	import mx.events.SandboxMouseEvent;
+	import mx.events.StateChangeEvent;
 	import mx.graphics.SolidColor;
 	
 	import spark.components.Button;
 	import spark.components.CheckBox;
 	import spark.components.Group;
-	import spark.components.HSlider;
 	import spark.components.HGroup;
+	import spark.components.HSlider;
 	import spark.components.supportClasses.SkinnableComponent;
 	import spark.events.DropDownEvent;
 	import spark.primitives.Rect;
@@ -119,21 +121,21 @@ package com.simplediagrams.view.components
 		override protected function partAdded(partName:String, instance:Object):void
 		{
 			super.partAdded(partName, instance);
-			if (instance == openButton)
-			{				
+			if (instance == openButton)			{				
 				openButton.addEventListener(MouseEvent.MOUSE_DOWN, dropDownButton_buttonDownHandler);
 				openButton.addEventListener(MouseEvent.MOUSE_OVER, dropDownButton_buttonOverHandler);
-				openButton.addEventListener(MouseEvent.MOUSE_OUT, dropDownButton_buttonOutHandler);
-				
-				cellWidthSlider.addEventListener(Event.CHANGE, onCellWidthSliderChange);
-				alphaSlider.addEventListener(Event.CHANGE, onAlphaSliderChange);						
+				openButton.addEventListener(MouseEvent.MOUSE_OUT, dropDownButton_buttonOutHandler);									
 			}			
+						
+			if (instance == alphaSlider)
+				alphaSlider.addEventListener(Event.CHANGE, onAlphaSliderChange);
 			
-			
+			if (instance == cellWidthSlider)
+				cellWidthSlider.addEventListener(Event.CHANGE, onCellWidthSliderChange);
+						
 			if (instance == showGridCheckBox)
-			{
-				showGridCheckBox.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown)
-			}		
+				showGridCheckBox.addEventListener(FlexEvent.VALUE_COMMIT, showGridCheckBox_onValueCommit);
+		
 		}
 		
 		/**
@@ -143,29 +145,20 @@ package com.simplediagrams.view.components
 		 */
 		override protected function partRemoved(partName:String, instance:Object):void
 		{
-			if (instance == openButton) 
-			{
+			if (instance == openButton) 			{
 				openButton.removeEventListener(FlexEvent.BUTTON_DOWN, dropDownButton_buttonDownHandler);
 				openButton.removeEventListener(MouseEvent.MOUSE_OVER, dropDownButton_buttonOverHandler);
 				openButton.removeEventListener(MouseEvent.MOUSE_OUT, dropDownButton_buttonOutHandler);
-				
-				cellWidthSlider.removeEventListener(Event.CHANGE, onCellWidthSliderChange);
-				alphaSlider.removeEventListener(Event.CHANGE, onAlphaSliderChange);					
-			}
+			}		
 			
+			if (instance == alphaSlider)
+				alphaSlider.removeEventListener(Event.CHANGE, onAlphaSliderChange);		
+			
+			if (instance == cellWidthSlider)
+				cellWidthSlider.removeEventListener(Event.CHANGE, onCellWidthSliderChange);
 			
 			if (instance == showGridCheckBox)
-			{
-				showGridCheckBox.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown)
-			}
-//			if (instance == cellWidthSlider)
-//			{
-//				cellWidthSlider.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown)
-//			}
-			//			if (instance == alphaSlider)
-			//			{
-			//				alphaSlider.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown)
-			//			}
+				showGridCheckBox.removeEventListener(FlexEvent.VALUE_COMMIT, showGridCheckBox_onValueCommit);
 			
 			super.partRemoved(partName, instance);
 		}
@@ -180,30 +173,25 @@ package com.simplediagrams.view.components
 			super.commitProperties();
 		}  
 		
-		public function onCellWidthSliderChange(event:Event):void {
-			var evt:GridEvent;
-			evt = new GridEvent(GridEvent.CELL_WIDTH);
-			evt.cell_width = cellWidthSlider.value;
-			dispatcher.dispatchEvent(evt)				
+		public function onCellWidthSliderChange(evt:Event):void {
+			var event:GridEvent = new GridEvent(GridEvent.CELL_WIDTH);
+			event.cell_width = cellWidthSlider.value;
+			dispatcher.dispatchEvent(event);				
 		}
 		
-		public function onAlphaSliderChange(event:Event):void {
-			var evt:GridEvent;
-			evt = new GridEvent(GridEvent.ALPHA);
-			evt.alpha = alphaSlider.value;
-			dispatcher.dispatchEvent(evt)				
+		public function onAlphaSliderChange(evt:Event):void {
+			var event:GridEvent = new GridEvent(GridEvent.ALPHA);
+			event.alpha = alphaSlider.value;
+			dispatcher.dispatchEvent(event);				
 		}
-		
-		
-		public function onMouseDown(event:MouseEvent):void
+				
+		public function showGridCheckBox_onValueCommit(evt:FlexEvent):void
 		{			
-			if (event.target==showGridCheckBox)
-			{
-				var evt:GridEvent;
-				evt = new GridEvent(GridEvent.TOGGLE_GRID, true)
-				dispatcher.dispatchEvent(evt)	
-			}
-		}
+			var event:GridEvent = new GridEvent(GridEvent.SHOW_GRID);
+			event.show_grid = showGridCheckBox.selected;
+			dispatcher.dispatchEvent(event);	
+		}	
+
 		
 		public function openDropDown():void
 		{
@@ -224,6 +212,13 @@ package com.simplediagrams.view.components
 			buttonGroup.removeEventListener(MouseEvent.MOUSE_OUT, buttonHolder_mouseOutHandler);			
 			invalidateSkinState();
 			this.dispatchEvent(new DropDownEvent(DropDownEvent.CLOSE));
+			
+			// Now that we're done previewing settings, broadcast the final values
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.GRID);
+			rsoEvent.show_grid = showGridCheckBox.selected;
+			rsoEvent.cell_width = cellWidthSlider.value;
+			rsoEvent.alpha = alphaSlider.value;
+			dispatcher.dispatchEvent(rsoEvent)	
 		}
 		
 		protected function addMoveHandlers():void 
@@ -240,7 +235,6 @@ package com.simplediagrams.view.components
 		
 		
 		protected function systemManager_mouseUpHandler(event:Event):void {
-			trace("systemManager_mouseUpHandler, _isOverPopup:"+_isOverPopup);
 			if (!_isOverPopup) {
 					closeDropDown();
 			}

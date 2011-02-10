@@ -688,9 +688,9 @@
 			}
 			
 			
-			[Mediate(event="GridEvent.TOGGLE_GRID")]    
+			[Mediate(event="GridEvent.SHOW_GRID")]    
 			public function onGridToggleGrid(event:GridEvent):void{
-				drawingBoardGrid.visible = !drawingBoardGrid.visible;
+				drawingBoardGrid.visible = event.show_grid;
 			}			
 			
 			[Mediate(event="GridEvent.CELL_WIDTH")]    

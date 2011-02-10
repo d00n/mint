@@ -4,7 +4,7 @@ package com.simplediagrams.events
 	
 	public class GridEvent extends Event
 	{
-		public static const TOGGLE_GRID:String = "gridEvent_ToggleGrid";
+		public static const SHOW_GRID:String = "gridEvent_ShowGrid";
 		public static const CELL_WIDTH:String = "gridEvent_CellWidth";
 		public static const ALPHA:String = "gridEvent_Alpha";
 		

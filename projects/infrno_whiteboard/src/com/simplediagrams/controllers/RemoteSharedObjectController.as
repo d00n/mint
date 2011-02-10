@@ -253,6 +253,10 @@ package com.simplediagrams.controllers
 					processUpdate_UpdateDepths(changeObject);
 					break;
 				}			
+				case "ConfigureGrid": {
+					processUpdate_ConfigureGrid(changeObject);
+					break;
+				}			
 			}
 		}
 
@@ -380,6 +384,33 @@ package com.simplediagrams.controllers
 			if (sdObjectModel) {
 				sdObjectModel.depth = changeObject.depth;
 			}
+		}
+		
+		
+		[Mediate(event="RemoteSharedObjectEvent.GRID")]    
+		public function onRsoGridEvent(event:RemoteSharedObjectEvent):void{
+			var grid_state_obj:Object = {};
+			grid_state_obj.commandName 	= "ConfigureGrid";
+			grid_state_obj.cell_width = event.cell_width;
+			grid_state_obj.alpha = event.alpha;
+			grid_state_obj.show_grid = event.show_grid;
+			_remoteSharedObject.setProperty("GridState", grid_state_obj);
+		}				
+		
+		public function processUpdate_ConfigureGrid(changeObject:Object) : void 
+		{
+			Logger.info("processUpdate_ConfigureGrid()",this);
+			
+			var cellWidthEvent:GridEvent = new GridEvent(GridEvent.CELL_WIDTH);
+			cellWidthEvent.cell_width = changeObject.cell_width;
+			var alphaEvent:GridEvent = new GridEvent(GridEvent.ALPHA);
+			alphaEvent.alpha = changeObject.alpha;	
+			var showGridEvent:GridEvent = new GridEvent(GridEvent.SHOW_GRID);
+			showGridEvent.show_grid = changeObject.show_grid;
+			
+			dispatcher.dispatchEvent(alphaEvent);				
+			dispatcher.dispatchEvent(cellWidthEvent);				
+			dispatcher.dispatchEvent(showGridEvent);				
 		}
 		
 
@@ -613,17 +644,7 @@ package com.simplediagrams.controllers
 				diagramModel.addComponentForModel(sdObjectModel, false);
 			}
 		}		
-		
-		[Mediate(event="GridEvent.TOGGLE_GRID")]    
-		[Mediate(event="GridEvent.CELL_WIDTH")]    
-		[Mediate(event="GridEvent.ALPHA")]
-		public function onGridEvent(event:GridEvent):void{
-			var grid_obj:Object = {};
-			grid_obj.cell_width = event.cell_width;
-			grid_obj.alpha = event.alpha;
-			grid_obj.show_grid = event.show_grid;
-			_remoteSharedObject.setProperty("grid", grid_obj);
-		}			
+	
 		
 		
 //		[Mediate(event="RemoteSharedObjectEvent.CUT")]

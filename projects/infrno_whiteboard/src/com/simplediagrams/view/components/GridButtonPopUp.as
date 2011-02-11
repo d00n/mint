@@ -14,6 +14,8 @@ package com.simplediagrams.view.components
 	
 	import flashx.textLayout.formats.VerticalAlign;
 	
+	import mx.binding.utils.BindingUtils;
+	import mx.binding.utils.ChangeWatcher;
 	import mx.events.FlexEvent;
 	import mx.events.SandboxMouseEvent;
 	import mx.events.StateChangeEvent;
@@ -30,28 +32,17 @@ package com.simplediagrams.view.components
 	import spark.primitives.supportClasses.FilledElement;
 	
 	
-	/**
-	 *  Open State of the DropDown component
-	 */
 	[SkinState("open")]
-	
-	/**
-	 * Over State of the DropDown component.
-	 * When the mouse is over the open element
-	 */
 	[SkinState("over")]
-	
-	
+
 	public class GridButtonPopUp extends SkinnableComponent
-	{
-		
-		
+	{		
 		[Dispatcher]
 		public var dispatcher:IEventDispatcher
 		
-		/**
-		 * 
-		 */
+//		[Inject]
+//		public var drawingBoardGrid:DrawingBoardGrid;
+		
 		[SkinPart(required="true")]
 		public var dropDown:Group;
 		
@@ -79,16 +70,11 @@ package com.simplediagrams.view.components
 			init();
 		}
 		
-		/**
-		 * Sets up the Component. Called from the constructor 
-		 * 
-		 */
 		protected function init():void
 		{
 			this.useHandCursor = true;
 			this.buttonMode = true;
 		}
-		
 		
 		private var _isOpen:Boolean = false;
 		private var _isOver:Boolean = false;
@@ -105,19 +91,11 @@ package com.simplediagrams.view.components
 				openButton.enabled = value;
 		}
 		
-		/**
-		 *  Leverage the SkinStates
-		 */ 
 		override protected function getCurrentSkinState():String
 		{
 			return !enabled ? "disabled" : _isOpen ? "open" : _isOver ? "over" : "normal";
 		}   
 		
-		/**
-		 * Overriden.
-		 * Add behaviours to the SkinParts and setup the containers with the icons
-		 *  @private
-		 */ 
 		override protected function partAdded(partName:String, instance:Object):void
 		{
 			super.partAdded(partName, instance);
@@ -135,14 +113,8 @@ package com.simplediagrams.view.components
 						
 			if (instance == showGridCheckBox)
 				showGridCheckBox.addEventListener(FlexEvent.VALUE_COMMIT, showGridCheckBox_onValueCommit);
-		
 		}
 		
-		/**
-		 * Overriden.
-		 * Cleans up the skins-parts when they are removed by the framework.
-		 * Remove EventListeners that have been added when part was added
-		 */
 		override protected function partRemoved(partName:String, instance:Object):void
 		{
 			if (instance == openButton) 			{
@@ -163,25 +135,24 @@ package com.simplediagrams.view.components
 			super.partRemoved(partName, instance);
 		}
 		
-		/**
-		 * Overriden.
-		 * Manage the properties that are used and centralize updates here.
-		 *  @private
-		 */ 
 		override protected function commitProperties():void
 		{
 			super.commitProperties();
-		}  
-		
+		} 
+				
 		public function onCellWidthSliderChange(evt:Event):void {
 			var event:GridEvent = new GridEvent(GridEvent.CELL_WIDTH);
+			event.show_grid = showGridCheckBox.selected;
+			event.alpha = alphaSlider.value;
 			event.cell_width = cellWidthSlider.value;
 			dispatcher.dispatchEvent(event);				
 		}
 		
 		public function onAlphaSliderChange(evt:Event):void {
 			var event:GridEvent = new GridEvent(GridEvent.ALPHA);
+			event.show_grid = showGridCheckBox.selected;
 			event.alpha = alphaSlider.value;
+			event.cell_width = cellWidthSlider.value;
 			dispatcher.dispatchEvent(event);				
 		}
 				
@@ -189,6 +160,8 @@ package com.simplediagrams.view.components
 		{			
 			var event:GridEvent = new GridEvent(GridEvent.SHOW_GRID);
 			event.show_grid = showGridCheckBox.selected;
+			event.alpha = alphaSlider.value;
+			event.cell_width = cellWidthSlider.value;
 			dispatcher.dispatchEvent(event);	
 		}	
 
@@ -196,6 +169,7 @@ package com.simplediagrams.view.components
 		public function openDropDown():void
 		{
 			_isOpen = true;
+			
 			addMoveHandlers();
 			buttonGroup.addEventListener(MouseEvent.MOUSE_OVER, buttonHolder_mouseOverHandler);
 			buttonGroup.addEventListener(MouseEvent.MOUSE_OUT, buttonHolder_mouseOutHandler);
@@ -261,14 +235,12 @@ package com.simplediagrams.view.components
 			invalidateSkinState();
 		}
 		
-		protected function buttonHolder_mouseOverHandler (event:Event):void {
-			trace("buttonHolder_mouseOverHandler");			
+		protected function buttonHolder_mouseOverHandler (event:Event):void {		
 			_isOverPopup = true;
 			invalidateSkinState();
 		}
 		
-		protected function buttonHolder_mouseOutHandler (event:Event):void {
-			trace("buttonHolder_mouseOutHandler");			
+		protected function buttonHolder_mouseOutHandler (event:Event):void {		
 			_isOverPopup = false;
 			invalidateSkinState();
 		}		

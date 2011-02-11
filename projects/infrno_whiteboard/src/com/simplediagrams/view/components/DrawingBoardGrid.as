@@ -10,6 +10,7 @@ package com.simplediagrams.view.components
 	import spark.components.supportClasses.SkinnableComponent;
 	import spark.primitives.Graphic;
 	
+	[Bindable]
 	public class DrawingBoardGrid extends SkinnableComponent implements IFocusManagerComponent 
 	{
 		

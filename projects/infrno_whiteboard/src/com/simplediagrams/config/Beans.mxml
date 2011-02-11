@@ -5,6 +5,7 @@
 	xmlns:swiz="http://swiz.swizframework.org"
 	xmlns:business="com.simplediagrams.business.*"
   	xmlns:controllers="com.simplediagrams.controllers.*"
+		xmlns:components="com.simplediagrams.view.components.*"		
 	xmlns:model="com.simplediagrams.model.*" xmlns:objecthandles="com.roguedevelopment.objecthandles.*">
 		
  
@@ -45,6 +46,8 @@
 		<model:UserModel id="userModel" /> 
 		<model:SDObjectHandles id="sdObjectHandles" /> 
 		<model:YammerModel id="yammerModel" /> 
+		
+		<components:DrawingBoardGrid id="drawingBoardGrid" /> 
         
         <business:FileManager id="fileManager" />                                    
         <business:SettingsDelegate id="settingsManager" />                         

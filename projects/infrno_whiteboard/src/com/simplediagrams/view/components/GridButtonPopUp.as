@@ -4,6 +4,7 @@ package com.simplediagrams.view.components
 	import com.simplediagrams.events.AlignEvent;
 	import com.simplediagrams.events.GridEvent;
 	import com.simplediagrams.events.RemoteSharedObjectEvent;
+	import com.simplediagrams.view.DrawingBoard;
 	
 	import flash.display.DisplayObject;
 	import flash.events.Event;
@@ -42,6 +43,9 @@ package com.simplediagrams.view.components
 		
 //		[Inject]
 //		public var drawingBoardGrid:DrawingBoardGrid;
+		
+		[Inject]
+		public var drawingBoard:DrawingBoard;
 		
 		[SkinPart(required="true")]
 		public var dropDown:Group;
@@ -169,6 +173,10 @@ package com.simplediagrams.view.components
 		public function openDropDown():void
 		{
 			_isOpen = true;
+			
+			showGridCheckBox.selected = drawingBoard.drawingBoardGrid.visible;
+			cellWidthSlider.value = drawingBoard.drawingBoardGrid.gridInterval;
+			alphaSlider.value = drawingBoard.drawingBoardGrid.gridAlpha;
 			
 			addMoveHandlers();
 			buttonGroup.addEventListener(MouseEvent.MOUSE_OVER, buttonHolder_mouseOverHandler);

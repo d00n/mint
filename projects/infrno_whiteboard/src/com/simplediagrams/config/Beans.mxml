@@ -6,6 +6,7 @@
 	xmlns:business="com.simplediagrams.business.*"
   	xmlns:controllers="com.simplediagrams.controllers.*"
 		xmlns:components="com.simplediagrams.view.components.*"		
+		xmlns:view="com.simplediagrams.view.*"		
 	xmlns:model="com.simplediagrams.model.*" xmlns:objecthandles="com.roguedevelopment.objecthandles.*">
 		
  
@@ -48,6 +49,7 @@
 		<model:YammerModel id="yammerModel" /> 
 		
 		<components:DrawingBoardGrid id="drawingBoardGrid" /> 
+		<view:DrawingBoard id="drawingBoard" /> 
         
         <business:FileManager id="fileManager" />                                    
         <business:SettingsDelegate id="settingsManager" />                         

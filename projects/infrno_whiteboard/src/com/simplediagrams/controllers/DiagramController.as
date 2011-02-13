@@ -61,12 +61,12 @@ package com.simplediagrams.controllers
 	import org.swizframework.controller.AbstractController;
 	
 	import spark.components.Group;
-
+	
 	public class DiagramController extends AbstractController 
 	{
 		public function DiagramController()
 		{			
-  			
+			
 		}
 		
 		[Inject]
@@ -92,7 +92,7 @@ package com.simplediagrams.controllers
 		
 		[Inject]
 		public var registrationManager:RegistrationManager
-
+		
 		[Autowire(bean="remoteSharedObjectController")]
 		public var remoteSharedObjectController:RemoteSharedObjectController
 		
@@ -104,25 +104,25 @@ package com.simplediagrams.controllers
 		public function diagramBuilt(event:Event):void
 		{
 			dialogsController.removeDialog()
-				
+			
 			//show warning and list fonts if some fonts aren't available			
-//			var unavailableFontsArr:Array = fileManager.unavailableFontsArr
-//			if (fileManager.unavailableFontsArr && fileManager.unavailableFontsArr.length>0)
-//			{
-//				var dialog:UnavailableFontsDialog = dialogsController.showUnavailableFontsDialog() 
-//				dialog.setUnavailableFonts(fileManager.unavailableFontsArr)
-//				dialog.addEventListener("OK", onUnavailableFontsDialogOK)
-//			}
+			//			var unavailableFontsArr:Array = fileManager.unavailableFontsArr
+			//			if (fileManager.unavailableFontsArr && fileManager.unavailableFontsArr.length>0)
+			//			{
+			//				var dialog:UnavailableFontsDialog = dialogsController.showUnavailableFontsDialog() 
+			//				dialog.setUnavailableFonts(fileManager.unavailableFontsArr)
+			//				dialog.addEventListener("OK", onUnavailableFontsDialogOK)
+			//			}
 			
 		}
-				
+		
 		protected function onUnavailableFontsDialogOK(event:Event):void
 		{			
 			event.target.removeEventListener("OK", onUnavailableFontsDialogOK)
 			dialogsController.removeDialog(UIComponent(event.target) )			
 		}
 		
-			
+		
 		
 		
 		[Mediate(event='DrawingBoardItemDroppedEvent.LIBRARY_ITEM_ADDED')]
@@ -165,31 +165,31 @@ package com.simplediagrams.controllers
 		[Mediate(event='PictureCreatedEvent.CREATED')]
 		public function onPictureCreated(event:PictureCreatedEvent):void
 		{
-			Logger.debug("onPictureCreated()" , this)
-			
-			var objModel:SDImageModel = new SDImageModel()
-			objModel.x = event.dropX
-			objModel.y = event.dropY
-			diagramModel.addSDObjectModel(objModel)		
+		Logger.debug("onPictureCreated()" , this)
+		
+		var objModel:SDImageModel = new SDImageModel()
+		objModel.x = event.dropX
+		objModel.y = event.dropY
+		diagramModel.addSDObjectModel(objModel)		
 		}
 		
 		
 		[Mediate(event='DrawingBoardItemDroppedEvent.LINE_ITEM_ADDED')]
 		public function onLineItemAdded(event:DrawingBoardItemDroppedEvent):void
 		{			
-			returnToPointerTool()
-			var cmd:AddImageItem = new AddImageItem(diagramModel)
-			var newObjModel:SDLineModel = new SDLineModel()
-			newObjModel.x = event.dropX
-			newObjModel.y = event.dropY
-			newObjModel.endX = 100
-			newObjModel.endY = 100
-			newObjModel.bendX = 50
-			newObjModel.bendY = 50
-			
-			newObjModel.init()
-			diagramModel.addSDObjectModel(newObjModel)
-						
+		returnToPointerTool()
+		var cmd:AddImageItem = new AddImageItem(diagramModel)
+		var newObjModel:SDLineModel = new SDLineModel()
+		newObjModel.x = event.dropX
+		newObjModel.y = event.dropY
+		newObjModel.endX = 100
+		newObjModel.endY = 100
+		newObjModel.bendX = 50
+		newObjModel.bendY = 50
+		
+		newObjModel.init()
+		diagramModel.addSDObjectModel(newObjModel)
+		
 		}
 		
 		[Mediate(event='DrawingBoardItemDroppedEvent.NAPKIN_ADDED')]
@@ -247,7 +247,7 @@ package com.simplediagrams.controllers
 					cmd.styleName = SDTextAreaModel.STICKY_NOTE
 					cmd.maintainProportion = true
 					break
-			
+				
 				case DrawingBoardItemDroppedEvent.INDEX_CARD_ADDED:					
 					cmd.styleName = SDTextAreaModel.INDEX_CARD
 					cmd.maintainProportion = true
@@ -259,13 +259,13 @@ package com.simplediagrams.controllers
 			}
 			cmd.execute()			
 			undoRedoManager.push(cmd)		
-				
+			
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_WIDGET_ADDED);	
 			rsoEvent.changedSDObjectModelArray = new Array;
 			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
 			dispatcher.dispatchEvent(rsoEvent);				
 		}
-				
+		
 		
 		[Mediate(event='TextAreaCreatedEvent.CREATED')]
 		public function onTextAreaCreated(event:TextAreaCreatedEvent):void
@@ -285,7 +285,7 @@ package com.simplediagrams.controllers
 			cmd.execute()		
 			undoRedoManager.push(cmd)
 			
-//			remoteSharedObjectController.dispatchUpdate_TextAreaCreated(cmd);
+			//			remoteSharedObjectController.dispatchUpdate_TextAreaCreated(cmd);
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_WIDGET_CREATED);	
 			rsoEvent.changedSDObjectModelArray = new Array;
 			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
@@ -306,14 +306,14 @@ package com.simplediagrams.controllers
 			cmd.color = event.color
 			cmd.execute()		
 			undoRedoManager.push(cmd)	
-				
-//			remoteSharedObjectController.dispatchUpdate_PencilDrawingCreated(cmd);
+			
+			//			remoteSharedObjectController.dispatchUpdate_PencilDrawingCreated(cmd);
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.PENCIL_DRAWING_CREATED);	
 			rsoEvent.changedSDObjectModelArray = new Array;
 			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
 			dispatcher.dispatchEvent(rsoEvent);				
 		}
-			
+		
 		
 		[Mediate(event='CreateLineComponentEvent.CREATE')]
 		public function onCreateLineComponent(event:CreateLineComponentEvent):void
@@ -331,13 +331,13 @@ package com.simplediagrams.controllers
 			cmd.execute()	
 			undoRedoManager.push(cmd)
 			Logger.debug("onCreateLineComponent() finished" , this)	
-				
-//			remoteSharedObjectController.dispatchUpdate_CreateLineComponent(cmd);	
-				
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.CREATE_LINE_COMPONENT);	
-//			rsoEvent.changedSDObjectModelArray = new Array;
-//			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
-//			dispatcher.dispatchEvent(rsoEvent);				
+			
+			//			remoteSharedObjectController.dispatchUpdate_CreateLineComponent(cmd);	
+			
+			//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.CREATE_LINE_COMPONENT);	
+			//			rsoEvent.changedSDObjectModelArray = new Array;
+			//			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
+			//			dispatcher.dispatchEvent(rsoEvent);				
 		}
 		
 		
@@ -345,25 +345,25 @@ package com.simplediagrams.controllers
 		public function loadImageFromFile(event:LoadImageEvent):void 
 		{
 			Logger.debug("loadImageFromFile()", this)			
-							
-//			var file:File = event.file
-//			
-//			var stream:FileStream = new FileStream()
-//			stream.open(file, FileMode.READ)
-//			
-//			var ba:ByteArray = new ByteArray()
-//			stream.readBytes(ba,0, stream.bytesAvailable)
-//			stream.close();
-//						
-//			var objModel:SDImageModel = new SDImageModel()
-//			objModel.x = event.dropX
-//			objModel.y = event.dropY
-//			objModel.imageData = ba
-//						
-//			diagramModel.addSDObjectModel(objModel)
-												
- 		}
-				
+			
+			//			var file:File = event.file
+			//			
+			//			var stream:FileStream = new FileStream()
+			//			stream.open(file, FileMode.READ)
+			//			
+			//			var ba:ByteArray = new ByteArray()
+			//			stream.readBytes(ba,0, stream.bytesAvailable)
+			//			stream.close();
+			//						
+			//			var objModel:SDImageModel = new SDImageModel()
+			//			objModel.x = event.dropX
+			//			objModel.y = event.dropY
+			//			objModel.imageData = ba
+			//						
+			//			diagramModel.addSDObjectModel(objModel)
+			
+		}
+		
 		
 		[Mediate(event='DeleteSDObjectModelEvent.DELETE_SELECTED_FROM_MODEL')]
 		public function onDeleteSelectedSDObjectModel(event:DeleteSDObjectModelEvent):void
@@ -388,41 +388,41 @@ package com.simplediagrams.controllers
 			dispatcher.dispatchEvent(rsoEvent);
 		}
 		
-// Doon - commented out on 4/21/10		
-//		[Mediate(event='DeleteSDObjectModelEvent.DELETE_FROM_MODEL')]
-//		public function onDeleteSDObjectModel(event:DeleteSDObjectModelEvent):void
-//		{
-//			Logger.info("onDeleteSDObjectModel()" , this)
-//			var sdObjectModel:SDObjectModel = event.sdObjectModel
-//			var cmd:DeleteSDObjectModelCommand = new DeleteSDObjectModelCommand(diagramModel, sdObjectModel)
-//			cmd.execute()
-//			undoRedoManager.push(cmd)		
-//		}
-				
-		 
+		// Doon - commented out on 4/21/10		
+		//		[Mediate(event='DeleteSDObjectModelEvent.DELETE_FROM_MODEL')]
+		//		public function onDeleteSDObjectModel(event:DeleteSDObjectModelEvent):void
+		//		{
+		//			Logger.info("onDeleteSDObjectModel()" , this)
+		//			var sdObjectModel:SDObjectModel = event.sdObjectModel
+		//			var cmd:DeleteSDObjectModelCommand = new DeleteSDObjectModelCommand(diagramModel, sdObjectModel)
+		//			cmd.execute()
+		//			undoRedoManager.push(cmd)		
+		//		}
+		
+		
 		/* Users connect SD objects by shift clicking them. When ObjectHandles gets a shift-clicked SD Object, it
 		*  dispatches a SWIZ event and has nothing more to do with the event. Instead, the event should get picked up here
 		*  and the whole connection process managed from this point forward
-     	
+		
 		[Mediate(event='ConnectionEvent.START_CONNECTION_DRAG')]
 		public function onStartConnectionDrag(event:ConnectionEvent):void
 		{
-			Logger.debug("onStartConnectionDrag()" , this)
-			
-			//FOR NOW, WE'RE NOT DOING CONNECTORS
-			//var oc:ObjectConnectors = diagramModel.objectConnectors
-			//oc.startConnectionDrag(event.startingComponent)					
+		Logger.debug("onStartConnectionDrag()" , this)
+		
+		//FOR NOW, WE'RE NOT DOING CONNECTORS
+		//var oc:ObjectConnectors = diagramModel.objectConnectors
+		//oc.startConnectionDrag(event.startingComponent)					
 		}
 		
 		[Mediate(event='ConnectionEvent.FINISH_CONNECTION_DRAG')]
 		public function onFinishConnectionDrag(event:ConnectionEvent):void
 		{			
-			Logger.debug("onStartConnectionDrag()" , this)
-			
-			var oc:ObjectConnectors = diagramModel.objectConnectors
-			oc.finishConnectionDrag(event.endingComponent)
+		Logger.debug("onStartConnectionDrag()" , this)
+		
+		var oc:ObjectConnectors = diagramModel.objectConnectors
+		oc.finishConnectionDrag(event.endingComponent)
 		}
-		 */ 
+		*/ 
 		
 		
 		[Mediate(event='ExportDiagramEvent.EXPORT_TO_FILE')]
@@ -430,38 +430,38 @@ package com.simplediagrams.controllers
 		{
 			// This needs to used FileReference, or some other strategy
 			Logger.debug("exportDiagram() DISABLED", this)
-//						
-//			//flip to 100 percent zoom before exporting, otherwise the exported image will reflect the zoom width and height
-//			
-//			var currScaleX:Number = diagramModel.scaleX
-//			var currScaleY:Number = diagramModel.scaleY
-//				
-//			diagramModel.scaleX = 1
-//			diagramModel.scaleY = 1
-//				
-//			var view:UIComponent = event.view 
-//			var bd:BitmapData = new BitmapData(diagramModel.width, diagramModel.height)
-//			bd.draw(view)
-//			imageByteArray = new PNGEncoder().encode(bd)		
-//												
-//			var f:File = File.desktopDirectory.resolvePath("my_diagram.png")     
-//			f.addEventListener(Event.SELECT,  onSaveAsSelected);
-//			f.browseForSave("Save as .PNG")
-//				
-//			//now set back the zoom to what the user had selected
-//			diagramModel.scaleX = currScaleX
-//			diagramModel.scaleY = currScaleY
+			//						
+			//			//flip to 100 percent zoom before exporting, otherwise the exported image will reflect the zoom width and height
+			//			
+			//			var currScaleX:Number = diagramModel.scaleX
+			//			var currScaleY:Number = diagramModel.scaleY
+			//				
+			//			diagramModel.scaleX = 1
+			//			diagramModel.scaleY = 1
+			//				
+			//			var view:UIComponent = event.view 
+			//			var bd:BitmapData = new BitmapData(diagramModel.width, diagramModel.height)
+			//			bd.draw(view)
+			//			imageByteArray = new PNGEncoder().encode(bd)		
+			//												
+			//			var f:File = File.desktopDirectory.resolvePath("my_diagram.png")     
+			//			f.addEventListener(Event.SELECT,  onSaveAsSelected);
+			//			f.browseForSave("Save as .PNG")
+			//				
+			//			//now set back the zoom to what the user had selected
+			//			diagramModel.scaleX = currScaleX
+			//			diagramModel.scaleY = currScaleY
 		}	
-								
+		
 		private function onSaveAsSelected(e:Event):void
 		{
-//			Logger.debug("onSaveAsSelected()", this)
-//			var saveFileRef:File =  e.target as File    			
-//		    var stream:FileStream  = new FileStream()
-//		    stream.open(saveFileRef,  FileMode.WRITE)
-//		    stream.writeBytes(imageByteArray, 0, imageByteArray.length)
-//		    stream.close()			
-		    
+			//			Logger.debug("onSaveAsSelected()", this)
+			//			var saveFileRef:File =  e.target as File    			
+			//		    var stream:FileStream  = new FileStream()
+			//		    stream.open(saveFileRef,  FileMode.WRITE)
+			//		    stream.writeBytes(imageByteArray, 0, imageByteArray.length)
+			//		    stream.close()			
+			
 		}
 		
 		
@@ -475,7 +475,7 @@ package com.simplediagrams.controllers
 			_diagramPropertiesDialog.addEventListener("OK", onSaveDiagramProperties)
 			_diagramPropertiesDialog.addEventListener(Event.CANCEL, onCancelDiagramProperties)	
 		}	
-	
+		
 		protected function onSaveDiagramProperties(event:Event):void
 		{
 			var evt:PropertiesEvent = new PropertiesEvent(PropertiesEvent.PROPERTIES_EDITED, true)
@@ -493,35 +493,35 @@ package com.simplediagrams.controllers
 			_diagramPropertiesDialog.removeEventListener(Event.CANCEL, onCancelDiagramProperties)	 
 		}
 		
-			
+		
 		[Mediate(event='ZoomEvent.ZOOM_IN')]
-  		public function onZoomIn():void
-  		{
-  			diagramModel.scaleX += .25
-  			diagramModel.scaleY += .25
-  			
-  			if (diagramModel.scaleX > 2) diagramModel.scaleX = 2
-  			if (diagramModel.scaleY > 2) diagramModel.scaleY = 2
-  			
-//			remoteSharedObjectController.dispatchUpdate_RefreshZoom();
+		public function onZoomIn():void
+		{
+			diagramModel.scaleX += .25
+			diagramModel.scaleY += .25
+			
+			if (diagramModel.scaleX > 2) diagramModel.scaleX = 2
+			if (diagramModel.scaleY > 2) diagramModel.scaleY = 2
+			
+			//			remoteSharedObjectController.dispatchUpdate_RefreshZoom();
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.REFRESH_ZOOM);	
 			dispatcher.dispatchEvent(rsoEvent);
-  		}
-
+		}
+		
 		[Mediate(event='ZoomEvent.ZOOM_OUT')]
 		public function onZoomOut():void
-  		{
-  			diagramModel.scaleX -= .25
-  			diagramModel.scaleY -= .25
-  			
-  			if (diagramModel.scaleX < .25) diagramModel.scaleX = .25
-  			if (diagramModel.scaleY < .25) diagramModel.scaleY = .25
-				
-//			remoteSharedObjectController.dispatchUpdate_RefreshZoom();
+		{
+			diagramModel.scaleX -= .25
+			diagramModel.scaleY -= .25
+			
+			if (diagramModel.scaleX < .25) diagramModel.scaleX = .25
+			if (diagramModel.scaleY < .25) diagramModel.scaleY = .25
+			
+			//			remoteSharedObjectController.dispatchUpdate_RefreshZoom();
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.REFRESH_ZOOM);	
 			dispatcher.dispatchEvent(rsoEvent);
-  		}
-  		
+		}
+		
 		[Mediate(event='ColorEvent.CHANGE_COLOR')]
 		public function onChangeColor(event:ColorEvent):void
 		{
@@ -536,44 +536,47 @@ package com.simplediagrams.controllers
 				cmd.execute();
 				undoRedoManager.push(cmd);
 			}			
-			throw_ObjectChanged_RSOEvent(selectedArr);
-  		}
-  		
-  		protected var _currModelForImageLoad:SDImageModel
+
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);
+			rsoEvent.changedSDObjectModelArray = selectedArr;
+			dispatcher.dispatchEvent(rsoEvent);
+		}
+		
+		protected var _currModelForImageLoad:SDImageModel
 		protected var _fileReference:FileReference;	
-//  		protected var _imageFile:File
-  		
+		//  		protected var _imageFile:File
+		
 		[Mediate(event='LoadImageEvent.ADD_IMAGE_FROM_MENU')]
 		public function onAddImageFromMenu(event:LoadImageEvent):void
 		{			
-//			_currModelForImageLoad = new SDImageModel();
-//			_currModelForImageLoad.x = 10;
-//			_currModelForImageLoad.y = 10;
-//			
-//			diagramModel.addSDObjectModel(_currModelForImageLoad);
+			//			_currModelForImageLoad = new SDImageModel();
+			//			_currModelForImageLoad.x = 10;
+			//			_currModelForImageLoad.y = 10;
+			//			
+			//			diagramModel.addSDObjectModel(_currModelForImageLoad);
 			
 			_fileReference = new FileReference();
 			_fileReference.addEventListener(Event.SELECT, onFileSelect);
 			_fileReference.addEventListener(Event.CANCEL, onCancelFileSelect);
 			var imagesFilter:FileFilter = new FileFilter("Images", "*.jpg;*.gif;*.png;");
-//			setTimeout( function():void{_fileReference.load();}, 1);
+			//			setTimeout( function():void{_fileReference.load();}, 1);
 			_fileReference.browse([imagesFilter]);
 			
 		}
-
 		
-//		[Mediate(event='LoadImageEvent.BROWSE_FOR_IMAGE')]
-//  		public function onBrowseForImage(event:LoadImageEvent):void
-//  		{
-//  			_currModelForImageLoad = event.model  		
-//  			
-//			_imageFile = new File()			
-//			_imageFile.addEventListener(Event.SELECT, onLoadImage)
-//			_imageFile.addEventListener(Event.CANCEL, onCancelLoadImage)
-//			var imagesFilter:FileFilter = new FileFilter("Images", "*.jpg;*.gif;*.png;*.swf;");
-//			_imageFile.browseForOpen("Select an image to import.", [imagesFilter])
-//				
-//		}
+		
+		//		[Mediate(event='LoadImageEvent.BROWSE_FOR_IMAGE')]
+		//  		public function onBrowseForImage(event:LoadImageEvent):void
+		//  		{
+		//  			_currModelForImageLoad = event.model  		
+		//  			
+		//			_imageFile = new File()			
+		//			_imageFile.addEventListener(Event.SELECT, onLoadImage)
+		//			_imageFile.addEventListener(Event.CANCEL, onCancelLoadImage)
+		//			var imagesFilter:FileFilter = new FileFilter("Images", "*.jpg;*.gif;*.png;*.swf;");
+		//			_imageFile.browseForOpen("Select an image to import.", [imagesFilter])
+		//				
+		//		}
 		
 		private function onFileSelect(event:Event):void
 		{
@@ -591,9 +594,9 @@ package com.simplediagrams.controllers
 			_currModelForImageLoad.styleName = SDImageModel.STYLE_NONE;
 			
 			diagramModel.addSDObjectModel(_currModelForImageLoad);			
-				
+			
 			Logger.debug("onLoadComplete() about to dispatch RemoteSharedObjectEvent.LOAD_IMAGE, _currModelForImageLoad.sdID=" + _currModelForImageLoad.sdID,this)
-				
+			
 			// Load the image locally for the uploading user
 			// ..and fire the rsoEvent from DiagramModel.addSDObjectModel when imageURL is valid
 			// TODO: Throw a SimpleDiagramsImageLoadCompleteEvent instead 	
@@ -609,8 +612,8 @@ package com.simplediagrams.controllers
 			_fileReference.removeEventListener(Event.SELECT, onFileSelect)
 			_fileReference.removeEventListener(Event.CANCEL, onCancelFileSelect)
 		}
-  		
-  		protected function returnToPointerTool():void
+		
+		protected function returnToPointerTool():void
 		{
 			if (diagramModel.currToolType!=DiagramModel.POINTER_TOOL)
 			{
@@ -645,7 +648,7 @@ package com.simplediagrams.controllers
 		public function onSelectAll(event:SelectionEvent):void
 		{
 			Logger.debug("onSelectAll()",this)
-						
+			
 			for each (var sdObjectModel:SDObjectModel in diagramModel.sdObjectModelsAC)
 			{
 				diagramModel.addToSelected(sdObjectModel)
@@ -669,83 +672,83 @@ package com.simplediagrams.controllers
 			var sdObjectsArr:Array = diagramModel.selectedArray	
 			
 			if (sdObjectsArr.length==0) return
-								
+			
 			switch(event.type)
 			{
 				
 				case AlignEvent.ALIGN_TOP:
 					for each (sdObjectModel in sdObjectsArr)
+				{
+					if (yPos == -1) 
 					{
-						if (yPos == -1) 
-						{
-							yPos = sdObjectModel.y
-						}
-						else
-						{
-							if (sdObjectModel.y<yPos) yPos = sdObjectModel.y
-						}
+						yPos = sdObjectModel.y
 					}
+					else
+					{
+						if (sdObjectModel.y<yPos) yPos = sdObjectModel.y
+					}
+				}
 					if (yPos<0) yPos = 0
 					break
 				
 				case AlignEvent.ALIGN_LEFT:			
 					for each (sdObjectModel in sdObjectsArr)
+				{
+					if (xPos == -1) 
 					{
-						if (xPos == -1) 
-						{
-							xPos = sdObjectModel.x
-						}
-						else
-						{
-							if (sdObjectModel.x<xPos) xPos = sdObjectModel.x
-						}
+						xPos = sdObjectModel.x
 					}
+					else
+					{
+						if (sdObjectModel.x<xPos) xPos = sdObjectModel.x
+					}
+				}
 					if (xPos<0) xPos = 0					
 					break
 				
 				case AlignEvent.ALIGN_CENTER:
 					var avg:Number = 0
 					for each (sdObjectModel in sdObjectsArr)
-					{
-						avg += uint(sdObjectModel.x + (sdObjectModel.width/2))						
-					}
+				{
+					avg += uint(sdObjectModel.x + (sdObjectModel.width/2))						
+				}
 					xPos = uint(avg/sdObjectsArr.length)
 					break
 				
 				case AlignEvent.ALIGN_RIGHT:
 					for each (sdObjectModel in sdObjectsArr)
+				{
+					if (xPos == -1) 
 					{
-						if (xPos == -1) 
-						{
-							xPos = (sdObjectModel.x + sdObjectModel.width)
-						}
-						else
-						{
-							if ((sdObjectModel.x + sdObjectModel.width)>xPos) xPos = sdObjectModel.x + sdObjectModel.width
-						}
-					}						
+						xPos = (sdObjectModel.x + sdObjectModel.width)
+					}
+					else
+					{
+						if ((sdObjectModel.x + sdObjectModel.width)>xPos) xPos = sdObjectModel.x + sdObjectModel.width
+					}
+				}						
 					break
 				
 				case AlignEvent.ALIGN_BOTTOM:
 					for each (sdObjectModel in sdObjectsArr)
+				{
+					if (yPos == -1) 
 					{
-						if (yPos == -1) 
-						{
-							yPos = sdObjectModel.y + sdObjectModel.height
-						}
-						else
-						{
-							if (sdObjectModel.y + sdObjectModel.height>yPos) yPos = sdObjectModel.y + sdObjectModel.height
-						}
-					}							
+						yPos = sdObjectModel.y + sdObjectModel.height
+					}
+					else
+					{
+						if (sdObjectModel.y + sdObjectModel.height>yPos) yPos = sdObjectModel.y + sdObjectModel.height
+					}
+				}							
 					break
 				
 				case AlignEvent.ALIGN_MIDDLE:
 					avg = 0
 					for each (sdObjectModel in sdObjectsArr)
-					{
-						avg += uint(sdObjectModel.y + (sdObjectModel.height/2))					
-					}
+				{
+					avg += uint(sdObjectModel.y + (sdObjectModel.height/2))					
+				}
 					yPos = uint(avg/sdObjectsArr.length)
 					break
 				
@@ -802,9 +805,9 @@ package com.simplediagrams.controllers
 			var cmd:TransformCommand = new TransformCommand(diagramModel, transformedObjectsInfoArr)			
 			cmd.execute()
 			undoRedoManager.push(cmd)
-				
+			
 			//remoteSharedObjectController.dispatchUpdate_ObjectChanged(cmd);	
-				
+			
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
 			rsoEvent.changedSDObjectModelArray = sdObjectsArr;
 			dispatcher.dispatchEvent(rsoEvent);
@@ -814,7 +817,7 @@ package com.simplediagrams.controllers
 		
 		
 		
-  		// *****************************
+		// *****************************
 		// Track events for undo/redo
 		// *****************************
 		
@@ -840,10 +843,13 @@ package com.simplediagrams.controllers
 			cmd.toState = event.sdLineModel.getMemento() as SDLineMemento
 			//don't execute command since transformation has already happened
 			undoRedoManager.push(cmd)
-				
+			
 			var changedSDObjectArray:Array = new Array();
 			changedSDObjectArray.push(diagramModel.getModelByID(cmd.sdID));
-			throw_ObjectChanged_RSOEvent(changedSDObjectArray);
+			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);
+			rsoEvent.changedSDObjectModelArray = changedSDObjectArray;
+			dispatcher.dispatchEvent(rsoEvent);
 		}
 		
 		[Mediate(event='ChangeDepthEvent.MOVE_TO_BACK')]		
@@ -866,8 +872,10 @@ package com.simplediagrams.controllers
 				}
 			}	
 			dumpDepths()
-
-			throw_ObjectChanged_RSOEvent(diagramModel.sdObjectModelsAC.toArray());
+			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
+			rsoEvent.changedSDObjectModelArray = diagramModel.sdObjectModelsAC.toArray();
+			dispatcher.dispatchEvent(rsoEvent);
 		}
 		
 		[Mediate(event='ChangeDepthEvent.MOVE_TO_FRONT')]		
@@ -890,11 +898,13 @@ package com.simplediagrams.controllers
 				}				
 			}				
 			dumpDepths()
-
-			throw_ObjectChanged_RSOEvent(diagramModel.sdObjectModelsAC.toArray());
+			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
+			rsoEvent.changedSDObjectModelArray = diagramModel.sdObjectModelsAC.toArray();
+			dispatcher.dispatchEvent(rsoEvent);
 		}
 		
-
+		
 		[Mediate(event='ChangeDepthEvent.MOVE_BACKWARD')]		
 		public function moveBackward(event:ChangeDepthEvent):void
 		{			
@@ -917,7 +927,9 @@ package com.simplediagrams.controllers
 			}
 			dumpDepths()
 			
-			throw_ObjectChanged_RSOEvent(diagramModel.sdObjectModelsAC.toArray());			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
+			rsoEvent.changedSDObjectModelArray = diagramModel.sdObjectModelsAC.toArray();
+			dispatcher.dispatchEvent(rsoEvent);	
 		}
 		
 		[Mediate(event='ChangeDepthEvent.MOVE_FORWARD')]		
@@ -942,8 +954,10 @@ package com.simplediagrams.controllers
 				}
 			}
 			dumpDepths()
-
-			throw_ObjectChanged_RSOEvent(diagramModel.sdObjectModelsAC.toArray());	
+			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
+			rsoEvent.changedSDObjectModelArray = diagramModel.sdObjectModelsAC.toArray();
+			dispatcher.dispatchEvent(rsoEvent);
 		}
 		
 		private function dumpDepths():void{
@@ -956,14 +970,6 @@ package com.simplediagrams.controllers
 				Logger.debug("dumpDepths() sdObjectModel.sdID=" + sdObjectModel.sdID.toString() + " sdObjectModel.depth=" + sdObjectModel.depth.toString(), this)		
 			}	
 		}
-			
-		private function throw_ObjectChanged_RSOEvent(sdObjectModelArray:Array):void{
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
-			rsoEvent.changedSDObjectModelArray = sdObjectModelArray;
-			dispatcher.dispatchEvent(rsoEvent);
-		}	
-
-		
 		
 		[Mediate(event="LoadDiagramEvent.DIAGRAM_LOADED")]
 		public function onDiagramLoaded(event:Event):void
@@ -981,7 +987,7 @@ package com.simplediagrams.controllers
 			catch(error:Error)
 			{
 				Alert.show("Couldn't load diagram. Error: " + error, "Load Diagram Error")
-					
+				
 			}
 		}
 		
@@ -1026,7 +1032,7 @@ package com.simplediagrams.controllers
 			diagramModel.buildDiagram()
 		}
 		
-  		
+		
 		
 	}
 }

@@ -56,6 +56,8 @@ package com.simplediagrams.controllers
 	import flash.utils.ByteArray;
 	import flash.utils.describeType;
 	
+	import flashx.textLayout.formats.Category;
+	
 	import mx.collections.ArrayCollection;
 	import mx.core.UIComponent;
 	import mx.graphics.codec.PNGEncoder;
@@ -480,6 +482,8 @@ package com.simplediagrams.controllers
 					var sdLineModel:SDLineModel = sdObjectModel as SDLineModel;
 					
 					sd_obj.sdObjectModelType 	= "SDLineModel";
+					sd_obj.startX							= sdLineModel.startX;
+					sd_obj.startY							= sdLineModel.startY;	
 					sd_obj.endX 							= sdLineModel.endX;
 					sd_obj.endY 							= sdLineModel.endY;	
 					sd_obj.bendX 							= sdLineModel.bendX;
@@ -578,6 +582,8 @@ package com.simplediagrams.controllers
 						sdLineModel = new SDLineModel();
 					}
 					
+					sdLineModel.startX 					= changeObject.startX;
+					sdLineModel.startY 					= changeObject.startY;	
 					sdLineModel.endX 						= changeObject.endX;
 					sdLineModel.endY 						= changeObject.endY;	
 					sdLineModel.bendX 					= changeObject.bendX;
@@ -585,7 +591,7 @@ package com.simplediagrams.controllers
 					sdLineModel.startLineStyle 	= changeObject.startLineStyle;
 					sdLineModel.endLineStyle 		= changeObject.endLineStyle;
 					sdLineModel.lineWeight 			= changeObject.lineWeight;
-					
+
 					sdObjectModel = sdLineModel;
 					break;
 				}

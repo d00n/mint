@@ -145,25 +145,29 @@ package com.simplediagrams.view.SDComponents
 					
 					case "startX":
 						startX = event.newValue as Number
-						startDragCircle.x = startX
+						if (startDragCircle)
+							startDragCircle.x = startX
 						this.repositionText()
 						break
 						
 					case "startY":					
 						startY = event.newValue as Number
-						startDragCircle.y = startY
+						if (startDragCircle)
+							startDragCircle.y = startY
 						this.repositionText()
 						break
 						
 					case "endX":
 						endX = event.newValue as Number
-						endDragCircle.x = endX
+						if (endDragCircle)
+							endDragCircle.x = endX
 						this.repositionText()
 						break
 						
 					case "endY":
 						endY = event.newValue as Number
-						endDragCircle.y = endY
+						if (endDragCircle)
+							endDragCircle.y = endY
 						this.repositionText()
 						break
 					
@@ -295,8 +299,10 @@ package com.simplediagrams.view.SDComponents
 	
 		protected function positionArcCircle():void
 		{
-			arcDragCircle.x = _model.bendX
-			arcDragCircle.y = _model.bendY	
+			if (arcDragCircle) {
+				arcDragCircle.x = _model.bendX
+				arcDragCircle.y = _model.bendY	
+			}
 		}	
 		
 		protected function setAngles():void

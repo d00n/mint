@@ -139,8 +139,16 @@
 			[Mediate(event="DiagramModelEvent.SD_OBJECT_ADDED_TO_MODEL")]
 			public function onSDObjectAddedToDiagramModel(event:DiagramModelEvent):void
 			{
+				Logger.info("onSDObjectAddedToDiagramModel() newSDComponent: "+ event.newSDComponent.sdID, this)
+					
 				//create appropriate object and add to drawingBoard
 				var newSDComponent:UIComponent = UIComponent(event.newSDComponent)            	
+				Logger.info("onSDObjectAddedToDiagramModel() newSDComponent: "+ newSDComponent, this)
+					
+				if (sdObjectsHandlesHolder.contains(newSDComponent))
+					Logger.info("onSDObjectAddedToDiagramModel() sdObjectsHandlesHolder.containsnewSDComponent)", this)
+					
+	
 				
 				sdObjectsHolder.addElement(newSDComponent)
 				
@@ -280,10 +288,10 @@
 			public function onDeleteSDComponentFromDiagram(event:DeleteSDComponentEvent):void 
 			{
 				
-				Logger.debug("event.sdComponent: " + event.sdComponent, this)
+				Logger.debug("onDeleteSDComponentFromDiagram() event.sdComponent: " + event.sdComponent, this)
 				var removedElement:UIComponent =  sdObjectsHolder.removeElement(UIComponent(event.sdComponent))	as UIComponent			
 				event.sdComponent.objectModel.destroy()
-				Logger.debug("removedElement: " + removedElement, this)
+				Logger.debug("onDeleteSDComponentFromDiagram() removedElement: " + removedElement, this)
 			}
 			
 			

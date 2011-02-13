@@ -7,18 +7,18 @@ package com.infrno.chat.model
 	
 	public class DataProxy extends Actor
 	{
-		public static const VERSION			:String		= "Chat v0.2.19";
+		public static const VERSION:String		= "Chat v0.2.20";
 		
-		public var peer_enabled				:Boolean;
+		public var peer_enabled:Boolean;
 		
-		public var peer_capable				:Boolean;
-		public var use_peer_connection		:Boolean;
-		public var pubishing_audio			:Boolean;
-		public var pubishing_video			:Boolean;
+		public var peer_capable:Boolean;
+		public var use_peer_connection:Boolean;
+		public var pubishing_audio:Boolean;
+		public var pubishing_video:Boolean;
 		
-		public var ns						:NetStream;
+		public var ns:NetStream;
 		
-		public var users_collection			:Object;
+		public var users_collection:Object;
 		
 		// Wowza will accept these values for specified hosts.
 		public var auth_key:String		= "sample_auth_key";
@@ -26,11 +26,11 @@ package com.infrno.chat.model
 		public var room_id:String 		= "0";
 		public var room_name:String 	= "";
 		public var user_name:String 	= "";
-		public var user_id:String 	= "";
-
+		public var user_id:String 		= "";
+		
 		//using personal stratus key for now
-		public var peer_server_key			:String		= "4b9d915ef5ee88cfd38eb359-abf46599bf1f";
-		public var peer_server				:String		= "rtmfp://stratus.adobe.com";
+		public var peer_server_key:String		= "4b9d915ef5ee88cfd38eb359-abf46599bf1f";
+		public var peer_server:String				= "rtmfp://stratus.adobe.com";
 		
 		////
 		// possible values:
@@ -38,12 +38,12 @@ package com.infrno.chat.model
 		//  rtmp://gearsandcogs.com
 		//  rtmp://admin.infrno.net
 		////
-		private var m_mediaServer			:String		= "rtmp://localhost";
-		private var m_mediaApp				:String		= "chat";
-		private var m_mediaPort				:String		= "1935";
+		private var m_mediaServer:String	= "rtmp://localhost";
+		private var m_mediaApp:String			= "chat";
+		private var m_mediaPort:String		= "1935";
 		
-//		public var my_info					:UserInfoVO = new UserInfoVO({user_name:"user"+Math.round(Math.random()*1000),user_id:"sample_user_id"});
-		public var my_info					:UserInfoVO ;
+		//		public var my_info					:UserInfoVO = new UserInfoVO({user_name:"user"+Math.round(Math.random()*1000),user_id:"sample_user_id"});
+		public var my_info:UserInfoVO;
 		
 		public function DataProxy( )
 		{
@@ -53,7 +53,7 @@ package com.infrno.chat.model
 			user_id = user_name
 			my_info	= new UserInfoVO({user_name:user_name, user_id:user_id});
 		}
-	
+		
 		public function get media_server( ):String 
 		{
 			if( m_mediaServer != null ) 

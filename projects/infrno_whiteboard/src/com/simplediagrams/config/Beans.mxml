@@ -49,7 +49,6 @@
 		<model:YammerModel id="yammerModel" /> 
 		
 		<components:DrawingBoardGrid id="drawingBoardGrid" /> 
-		<view:DrawingBoard id="drawingBoard" /> 
         
         <business:FileManager id="fileManager" />                                    
         <business:SettingsDelegate id="settingsManager" />                         

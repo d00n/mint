@@ -8,17 +8,6 @@
 		[HostComponent("com.simplediagrams.view.components.GridButtonPopUp")]		
 	</fx:Metadata>
 	
-	<fx:Script>
-		<![CDATA[
-			import com.simplediagrams.view.components.DrawingBoardGrid;
-			
-			[Inject]
-			[Bindable]
-			public var drawingBoardGrid:DrawingBoardGrid
-
-		]]>
-	</fx:Script>
-	
 	<s:states>
 		<s:State name="normal" />
 		<s:State name="open" stateGroups="overStates" />

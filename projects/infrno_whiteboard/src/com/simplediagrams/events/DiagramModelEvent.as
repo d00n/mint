@@ -16,5 +16,6 @@ package com.simplediagrams.events
 		{
 			super(type, bubbles, cancelable);
 		}
+		
 	}
 }

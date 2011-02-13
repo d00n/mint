@@ -45,7 +45,7 @@ package com.simplediagrams.view.components
 //		public var drawingBoardGrid:DrawingBoardGrid;
 		
 		[Inject]
-		public var drawingBoard:DrawingBoard;
+		public var drawingBoardGrid:DrawingBoardGrid;
 		
 		[SkinPart(required="true")]
 		public var dropDown:Group;
@@ -174,9 +174,9 @@ package com.simplediagrams.view.components
 		{
 			_isOpen = true;
 			
-			showGridCheckBox.selected = drawingBoard.drawingBoardGrid.visible;
-			cellWidthSlider.value = drawingBoard.drawingBoardGrid.gridInterval;
-			alphaSlider.value = drawingBoard.drawingBoardGrid.gridAlpha;
+			showGridCheckBox.selected = drawingBoardGrid.visible;
+			cellWidthSlider.value = drawingBoardGrid.gridInterval;
+			alphaSlider.value = drawingBoardGrid.gridAlpha;
 			
 			addMoveHandlers();
 			buttonGroup.addEventListener(MouseEvent.MOUSE_OVER, buttonHolder_mouseOverHandler);

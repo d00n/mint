@@ -340,13 +340,17 @@ package com.simplediagrams.model
 		
 		public function addComponentForModel(sdModel:SDObjectModel, setSelected:Boolean = true):Object
 		{
+			Logger.info("addComponentForModel() sdModel: " + sdModel, this)
+
 			//create visual object and add to ObjectHandles				
 			var newSDComponent:ISDComponent = sdModel.createSDComponent()
 			newSDComponent.objectModel = sdModel
 			newSDComponent.sdID = sdModel.sdID;
+			
+			Logger.info("addComponentForModel() newSDComponent: " + newSDComponent, this)
 				
 			//Tell visual layer that new SDObjectModel has been added 
-			var evt:DiagramModelEvent = new DiagramModelEvent(DiagramModelEvent.SD_OBJECT_ADDED_TO_MODEL, true)
+			var evt:DiagramModelEvent = new DiagramModelEvent(DiagramModelEvent.SD_OBJECT_ADDED_TO_MODEL, false)
 			evt.newSDComponent = newSDComponent
 			dispatcher.dispatchEvent(evt)
 			

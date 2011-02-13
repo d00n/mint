@@ -30,7 +30,6 @@ package com.infrno.chat.view.mediators
 		
 		private function receiveChat(e:ChatEvent):void
 		{
-			trace("here is the chat: "+e.message);
 			chat.chat_display.appendText(e.message+"\n");
 		}
 		

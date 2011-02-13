@@ -47,7 +47,12 @@ package com.infrno.chat.controller
 			trace("InitLocalVarsCommand.execute() flashvars loaded:" + dataProxy.room_name +":"+ dataProxy.my_info.user_name +":"+ dataProxy.room_id +":"+ dataProxy.auth_key);
 			
 			try{
-				dataProxy.peer_enabled = flash_vars.peer_enabled=="false"?false:true;
+//				dataProxy.peer_enabled = flash_vars.peer_enabled=="false"?false:true;
+				if (flash_vars.peer_enabled=="true")
+					dataProxy.peer_enabled = true;
+				else
+					dataProxy.peer_enabled = false;
+				
 			}catch(e:Object){
 				dataProxy.peer_enabled = true;
 			}

@@ -49,7 +49,7 @@ package com.simplediagrams.model
 			var component:SDImage = new SDImage()
 			component.objectModel = this
 			this.sdComponent = component
-			Logger.debug("createSDComponent() component: " + component, this)
+			Logger.info("createSDComponent() component: " + component, this)
 			return component
 		}
 		

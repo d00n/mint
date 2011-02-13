@@ -529,11 +529,7 @@ package com.simplediagrams.controllers
 			}
 			
 			var sdID:String = changeObject.sdID;
-			
-			// probably should see if sdObjectModelsAC already contains something with this sdID 
-			// before creating a new sdObjectModel.
-			var sdObjectModel:SDObjectModel;
-			
+			var sdObjectModel:SDObjectModel;			
 			switch ( changeObject.sdObjectModelType) {
 				case "SDSymbolModel": {
 					var sdSymbolModel:SDSymbolModel = diagramModel.getModelByID(sdID) as SDSymbolModel;
@@ -641,7 +637,7 @@ package com.simplediagrams.controllers
 			// To prevent throwing an RSOEvent from within diagramModel.addSDObjectModel()
 			// we perform it's responsibilities here:	
 			if (diagramModel.sdObjectModelsAC.contains(sdObjectModel) == false) {
-				Logger.info("processUpdate_ObjectChanged() about to call diagramModel.addSDObjectModel(sdObjectModel) with sdObjectModel.sdID=" + sdObjectModel.sdID, this);
+				Logger.info("processUpdate_ObjectChanged() about to add sdObjectModel=" +sdObjectModel+" "+ sdObjectModel.sdID, this);
 				diagramModel.sdObjectModelsAC.addItem(sdObjectModel);
 				diagramModel.addComponentForModel(sdObjectModel, false);
 			}

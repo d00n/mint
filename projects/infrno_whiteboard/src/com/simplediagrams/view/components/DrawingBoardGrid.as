@@ -1,6 +1,7 @@
 package com.simplediagrams.view.components
 {	
 	
+	import com.simplediagrams.model.DrawingBoardGridModel;
 	import com.simplediagrams.view.skins.DrawingBoardSkinClass;
 	
 	import mx.events.ResizeEvent;
@@ -13,14 +14,17 @@ package com.simplediagrams.view.components
 	[Bindable]
 	public class DrawingBoardGrid extends SkinnableComponent implements IFocusManagerComponent 
 	{
+		[Inject]
+		public var drawingBoardGridModel:DrawingBoardGridModel;
 		
 		[SkinPart(required="true")]
 		public var gridHolder:Graphic;
 			
-		public var gridInterval:Number = 50		
-		public var gridColor:uint = 0
-		public var gridThickness:Number = 0
-		public var gridAlpha:Number = 1
+			//Moved to DrawingBoardGridModel
+//		public var gridInterval:Number = 50		
+//		public var gridColor:uint = 0
+//		public var gridThickness:Number = 0
+//		public var gridAlpha:Number = 1
 			
 		public function DrawingBoardGrid()
 		{
@@ -52,16 +56,18 @@ package com.simplediagrams.view.components
 			var i:int=0;
 			var j:int=0;
 			gridHolder.graphics.clear();
-			gridHolder.graphics.lineStyle(gridThickness, gridColor, gridAlpha)
-			while (i < width-gridInterval-2)
+			gridHolder.graphics.lineStyle(drawingBoardGridModel.gridThickness, 
+																		drawingBoardGridModel.gridColor, 
+																		drawingBoardGridModel.gridAlpha);
+			while (i < width-drawingBoardGridModel.gridInterval-2)
 			{
-				i +=gridInterval;
+				i +=drawingBoardGridModel.gridInterval;
 				gridHolder.graphics.moveTo(i,0);
 				gridHolder.graphics.lineTo(i,height);
 			}
-			while (j < height-gridInterval-2)
+			while (j < height-drawingBoardGridModel.gridInterval-2)
 			{
-				j += gridInterval;
+				j += drawingBoardGridModel.gridInterval;
 				gridHolder.graphics.moveTo(0,j);
 				gridHolder.graphics.lineTo(width,j);
 			}     				   

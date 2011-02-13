@@ -18,6 +18,7 @@
 			import com.simplediagrams.model.DefaultToolsManager;
 			import com.simplediagrams.model.DiagramModel;
 			import com.simplediagrams.model.DiagramStyleManager;
+			import com.simplediagrams.model.DrawingBoardGridModel;
 			import com.simplediagrams.model.SDBackgroundModel;
 			import com.simplediagrams.model.SDCustomSymbolModel;
 			import com.simplediagrams.model.SDSymbolModel;
@@ -39,6 +40,10 @@
 			[Inject]
 			[Bindable]
 			public var diagramModel:DiagramModel
+			
+			[Inject]
+			[Bindable]
+			public var drawingBoardGridModel:DrawingBoardGridModel;
 			
 			[Inject]
 			public var diagramStyleManager:DiagramStyleManager
@@ -698,18 +703,18 @@
 			
 			[Mediate(event="GridEvent.SHOW_GRID")]    
 			public function onGridToggleGrid(event:GridEvent):void{
-				drawingBoardGrid.visible = event.show_grid;
+				drawingBoardGridModel.showGrid = event.show_grid;
 			}			
 			
 			[Mediate(event="GridEvent.CELL_WIDTH")]    
 			public function onGridCellWidth(event:GridEvent):void{
-				drawingBoardGrid.gridInterval = event.cell_width;
+				drawingBoardGridModel.gridInterval = event.cell_width;
 				drawingBoardGrid.invalidateProperties();
 			}			
 			
 			[Mediate(event="GridEvent.ALPHA")]    
 			public function onGridAlpha(event:GridEvent):void{
-				drawingBoardGrid.gridAlpha = event.alpha;
+				drawingBoardGridModel.gridAlpha = event.alpha;
 				drawingBoardGrid.invalidateProperties();
 			}			
 			
@@ -784,8 +789,8 @@
 			<components1:DrawingBoardGrid id="drawingBoardGrid" 
 																	 width="{diagramModel.width}"
 																	 height="{diagramModel.height}"
+																	 visible="{drawingBoardGridModel.showGrid}"
 																	 mouseEnabled="false"
-																	 visible="false"
 																	 />		
 			
 		</s:Group>	

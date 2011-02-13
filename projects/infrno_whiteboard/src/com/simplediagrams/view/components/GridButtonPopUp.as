@@ -4,7 +4,8 @@ package com.simplediagrams.view.components
 	import com.simplediagrams.events.AlignEvent;
 	import com.simplediagrams.events.GridEvent;
 	import com.simplediagrams.events.RemoteSharedObjectEvent;
-	import com.simplediagrams.view.DrawingBoard;
+	import com.simplediagrams.model.DrawingBoardGridModel;
+//	import com.simplediagrams.view.DrawingBoard;
 	
 	import flash.display.DisplayObject;
 	import flash.events.Event;
@@ -41,11 +42,11 @@ package com.simplediagrams.view.components
 		[Dispatcher]
 		public var dispatcher:IEventDispatcher
 		
+		[Inject]
+		public var drawingBoardGridModel:DrawingBoardGridModel;
+		
 //		[Inject]
 //		public var drawingBoardGrid:DrawingBoardGrid;
-		
-		[Inject]
-		public var drawingBoardGrid:DrawingBoardGrid;
 		
 		[SkinPart(required="true")]
 		public var dropDown:Group;
@@ -174,9 +175,9 @@ package com.simplediagrams.view.components
 		{
 			_isOpen = true;
 			
-			showGridCheckBox.selected = drawingBoardGrid.visible;
-			cellWidthSlider.value = drawingBoardGrid.gridInterval;
-			alphaSlider.value = drawingBoardGrid.gridAlpha;
+			showGridCheckBox.selected = drawingBoardGridModel.showGrid;
+			cellWidthSlider.value 		= drawingBoardGridModel.gridInterval;
+			alphaSlider.value 				= drawingBoardGridModel.gridAlpha;
 			
 			addMoveHandlers();
 			buttonGroup.addEventListener(MouseEvent.MOUSE_OVER, buttonHolder_mouseOverHandler);

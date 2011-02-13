@@ -37,6 +37,7 @@
 		<model:DownloadManager id="downloadManager" />    
         <model:ApplicationModel id="applicationModel" />    
         <model:DiagramModel id="diagramModel" />                 
+				<model:DrawingBoardGridModel id="drawingBoardGridModel" />                 
         <model:LibraryManager id="libraryManager" />          
         <model:DefaultToolsManager id="defaultToolsManager" /> 
         <model:DiagramStyleManager id="diagramStyleManager" /> 

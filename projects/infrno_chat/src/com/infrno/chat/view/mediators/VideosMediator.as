@@ -27,19 +27,19 @@ package com.infrno.chat.view.mediators
 	public class VideosMediator extends Mediator
 	{
 		[Inject]
-		public var dataProxy		:DataProxy;
+		public var dataProxy:DataProxy;
 		
 		[Inject]
-		public var deviceProxy		:DeviceProxy;
+		public var deviceProxy:DeviceProxy;
 		
 		[Inject]
-		public var msService		:MSService;
+		public var msService:MSService;
 		
 		[Inject]
-		public var peerService		:PeerService;
+		public var peerService:PeerService;
 		
 		[Inject]
-		public var videos			:Videos;
+		public var videos:Videos;
 		
 		override public function onRegister():void
 		{

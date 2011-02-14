@@ -9,7 +9,7 @@ package com.infrno.chat.controller
 	public class InitLocalVarsCommand extends Command
 	{
 		[Inject]
-		public var dataProxy		:DataProxy;
+		public var dataProxy:DataProxy;
 		
 		override public function execute():void
 		{

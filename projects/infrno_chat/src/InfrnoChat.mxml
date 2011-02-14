@@ -40,6 +40,9 @@
 	</fx:Declarations>
 	
 
+	<!-- resize issues exist with this VDividedBox. 
+   When resizing smaller, the drag bar can be pushed out of view, and difficult to retrieve -->
+	
 	<s:VGroup id="ChatVGroup" height="100%">
 		<mx:VDividedBox width="100%" height="100%">			
 			<components:Videos id="videosComponent" width="100%" height="100%" minHeight="50"/>

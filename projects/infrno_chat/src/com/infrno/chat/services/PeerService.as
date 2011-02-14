@@ -19,11 +19,9 @@ package com.infrno.chat.services
 		[Inject]
 		public var deviceProxy:DeviceProxy;
 		
-		private var _publishing:Boolean;
-		
+		private var _publishing:Boolean;		
 		private var _nc:NetConnection;
-		private var _ns_outgoing:NetStreamPeer;
-		
+		private var _ns_outgoing:NetStreamPeer;		
 		private var _nc_client:Object;
 		
 		public function PeerService()

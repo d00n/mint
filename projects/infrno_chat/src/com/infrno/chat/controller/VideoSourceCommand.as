@@ -12,16 +12,16 @@ package com.infrno.chat.controller
 	public class VideoSourceCommand extends Command
 	{
 		[Inject]
-		public var event			:PeerEvent;
+		public var event:PeerEvent;
 		
 		[Inject]
-		public var dataProxy		:DataProxy;
+		public var dataProxy:DataProxy;
 		
 		[Inject]
-		public var msService		:MSService;
+		public var msService:MSService;
 
 		[Inject]
-		public var peerService		:PeerService;
+		public var peerService:PeerService;
 		
 		override public function execute():void
 		{

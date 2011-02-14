@@ -9,17 +9,17 @@ package com.infrno.chat.controller
 	public class AudioVideoControlCommand extends Command
 	{
 		[Inject]
-		public var event			:VideoPresenceEvent;
+		public var event:VideoPresenceEvent;
 		
 		[Inject]
-		public var dataProxy		:DataProxy;
+		public var dataProxy:DataProxy;
 		
 		[Inject]
-		public var deviceProxy		:DeviceProxy;
+		public var deviceProxy:DeviceProxy;
 		
 		override public function execute():void
 		{
-			trace("AudioVideoControlCommand.execute() " +event.type);
+			trace("AudioVideoControlCommand.execute() event.type:" +event.type);
 			switch(event.type){
 				case VideoPresenceEvent.AUDIO_LEVEL:
 					if(deviceProxy.mic)
@@ -43,6 +43,7 @@ package com.infrno.chat.controller
 							trace( "AudioVideoControlCommand.execute() deviceProxy.mic is null" )
 						}
 						
+						// Attach a null mic?
 						dataProxy.ns.attachAudio(deviceProxy.mic);
 					}
 					break;

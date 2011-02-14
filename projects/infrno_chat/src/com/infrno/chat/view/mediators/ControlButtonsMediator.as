@@ -13,13 +13,13 @@ package com.infrno.chat.view.mediators
 	public class ControlButtonsMediator extends Mediator
 	{
 		[Inject]
-		public var dataProxy		:DataProxy;
+		public var dataProxy:DataProxy;
 		
 		[Inject]
-		public var msService		:MSService;
+		public var msService:MSService;
 		
 		[Inject]
-		public var controlButtons	:ControlButtons;
+		public var controlButtons:ControlButtons;
 		
 		override public function onRegister():void
 		{

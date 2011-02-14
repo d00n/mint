@@ -10,13 +10,13 @@ package com.infrno.chat.controller
 	public class PeerConnectionStatusCommand extends Command
 	{
 		[Inject]
-		public var event			:PeerEvent;
+		public var event:PeerEvent;
 		
 		[Inject]
-		public var dataProxy		:DataProxy;
+		public var dataProxy:DataProxy;
 		
 		[Inject]
-		public var msService		:MSService;
+		public var msService:MSService;
 		
 		override public function execute():void
 		{

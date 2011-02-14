@@ -11,13 +11,13 @@ package com.infrno.chat.controller
 		override public function execute():void
 		{
 			[Inject]
-			public var event			:PeerEvent;
+			public var event:PeerEvent;
 			
 			[Inject]
-			public var dataProxy		:DataProxy;
+			public var dataProxy:DataProxy;
 			
 			[Inject]
-			public var msService		:MSService;
+			public var msService:MSService;
 			
 			override public function execute():void
 			{

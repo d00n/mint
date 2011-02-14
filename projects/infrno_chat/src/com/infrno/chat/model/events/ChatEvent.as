@@ -4,10 +4,10 @@ package com.infrno.chat.model.events
 
 	public class ChatEvent extends Event
 	{
-		public static const		RECEIVE_CHAT	:String = "receive_chat";
-		public static const		SEND_CHAT		:String = "send_chat";
+		public static const		RECEIVE_CHAT:String 	= "receive_chat";
+		public static const		SEND_CHAT:String 			= "send_chat";
 		
-		private var _message					:String;
+		private var _message:String;
 		
 		public function ChatEvent(type:String, message:String = null)
 		{

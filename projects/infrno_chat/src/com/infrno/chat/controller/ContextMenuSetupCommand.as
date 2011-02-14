@@ -15,14 +15,14 @@ package com.infrno.chat.controller
 	public class ContextMenuSetupCommand extends Command
 	{
 		[Inject]
-		public var dataProxy		:DataProxy;
+		public var dataProxy:DataProxy;
 		
 		[Inject]
-		public var msService		:MSService;
+		public var msService:MSService;
 		
 		override public function execute() :void    
 		{
-			//        	trace(DataProxy.VERSION);
+			trace("ContextMenuSetupCommand.execute() DataProxy.VERSION:"+DataProxy.VERSION);
 			
 			var custom_menu:ContextMenu = new ContextMenu();
 			custom_menu.hideBuiltInItems();
@@ -51,7 +51,7 @@ package com.infrno.chat.controller
 		
 		private function copyToClipboard(event:ContextMenuEvent):void
 		{
-			trace("setting content to the clipboard: "+ DataProxy.VERSION+" "+Capabilities.version+ (Capabilities.isDebugger?" -D":""));
+			trace("ContextMenuSetupCommand.copyToClipboard() "+ DataProxy.VERSION+" "+Capabilities.version+ (Capabilities.isDebugger?" -D":""));
 			System.setClipboard(DataProxy.VERSION+" "+Capabilities.version+ (Capabilities.isDebugger?" -D":"") );
 		}
 		

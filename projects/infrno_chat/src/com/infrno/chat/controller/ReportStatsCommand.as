@@ -14,13 +14,13 @@ package com.infrno.chat.controller
 	public class ReportStatsCommand extends Command
 	{
 		[Inject]
-		public var dataProxy		:DataProxy;
+		public var dataProxy:DataProxy;
 		
 		[Inject]
-		public var msService		:MSService;
+		public var msService:MSService;
 		
 		[Inject]
-		public var peerService		:PeerService;
+		public var peerService:PeerService;
 		
 		override public function execute():void
 		{
@@ -43,6 +43,9 @@ package com.infrno.chat.controller
 
 			user_stats.wowza_protocol		= msService.nc.protocol;
 			user_stats.capabilities			= Capabilities.serverString;
+			
+			// This is not yet useful. 
+			// SRTT is only relevant for RTMFP connections, and we're only reporting home for RTMP connections
 			user_stats.SRTT 					  = ns_info.SRTT;
 			
 //			try{

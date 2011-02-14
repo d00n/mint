@@ -7,9 +7,9 @@ package com.infrno.chat.model.events
 		public static const CAMERA_CHANGED:String			= "camera_changed";
 		public static const MIC_CHANGED:String				= "mic_changed";
 		
-		public static const CAMERA_ACTIVITY:String			= "camera_activity";
+		public static const CAMERA_ACTIVITY:String		= "camera_activity";
 		public static const MIC_ACTIVITY:String				= "mic_activity";
-		public static const MIC_LEVEL:String				= "mic_level";
+		public static const MIC_LEVEL:String					= "mic_level";
 		
 		private var _value		:Object;
 		

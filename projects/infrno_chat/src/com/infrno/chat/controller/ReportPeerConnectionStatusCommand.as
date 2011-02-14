@@ -10,16 +10,17 @@ package com.infrno.chat.controller
 	public class ReportPeerConnectionStatusCommand extends Command
 	{
 		[Inject]
-		public var event			:PeerEvent;
+		public var event:PeerEvent;
 		
 		[Inject]
-		public var dataProxy		:DataProxy;
+		public var dataProxy:DataProxy;
 		
 		[Inject]
-		public var msService		:MSService;
+		public var msService:MSService;
 		
 		override public function execute():void
 		{
+			// TODO unwind this
 			dataProxy.my_info.report_connection_status = !(dataProxy.peer_capable == (event.type == PeerEvent.PEER_NETCONNECTION_CONNECTED));
 			
 			if(dataProxy.peer_enabled){
@@ -27,7 +28,8 @@ package com.infrno.chat.controller
 				dataProxy.my_info.peer_connection_status = event.type;
 				dataProxy.peer_capable = event.type == PeerEvent.PEER_NETCONNECTION_CONNECTED;
 			} else {
-				dataProxy.my_info.peer_connection_status = PeerEvent.PEER_NETCONNECTION_DISCONNECTED; //force server connection
+				//force server connection
+				dataProxy.my_info.peer_connection_status = PeerEvent.PEER_NETCONNECTION_DISCONNECTED; 
 			}
 			msService.updateUserInfo();
 		}

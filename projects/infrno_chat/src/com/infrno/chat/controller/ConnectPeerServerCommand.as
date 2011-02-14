@@ -8,10 +8,10 @@ package com.infrno.chat.controller
 	public class ConnectPeerServerCommand extends Command
 	{
 		[Inject]
-		public var dataProxy		:DataProxy;
+		public var dataProxy:DataProxy;
 		
 		[Inject]
-		public var peerService		:PeerService;
+		public var peerService:PeerService;
 		
 		override public function execute():void
 		{

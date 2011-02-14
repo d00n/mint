@@ -11,16 +11,16 @@
 			import com.infrno.chat.model.events.SettingsEvent;
 			import com.infrno.chat.model.vo.UserInfoVO;
 			
-			private var m_audioLevel    :int;
-			private var m_initialized 	:Boolean = false;
-			private var _is_local		:Boolean;
-			private var _camera			:Camera;
+//			private var m_audioLevel:int;
+			private var _initialized:Boolean = false;
+			private var _is_local:Boolean;
+			private var _camera:Camera;
 			
-			private var _audio_level	:int;
+//			private var _audio_level	:int;
 			
 			//TODO? rename data as userInfoVO
-			private var _data			:UserInfoVO;
-			private var _video			:Video;
+			private var _data:UserInfoVO;
+			private var _video:Video;
 			
 			public function get video():Video
 			{
@@ -86,7 +86,7 @@
 					
 			public function isInitialized( ) : Boolean 
 			{
-				return m_initialized;
+				return _initialized;
 			}
 			
 			public function toggleAudio():void
@@ -177,7 +177,7 @@
 			private function handleCreationComplete(event:Event):void
 			{
 				currentState="hideControls";
-				m_initialized = true;
+				_initialized = true;
 				wrenchToggleButton.visible = _is_local;
 			}
 			

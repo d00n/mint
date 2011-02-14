@@ -16,22 +16,18 @@ package com.infrno.chat.services
 	public class GroupService extends Actor
 	{
 		[Inject]
-		public var dataProxy				:DataProxy;
+		public var dataProxy:DataProxy;
 		
 		[Inject]
-		public var deviceProxy				:DeviceProxy;
+		public var deviceProxy:DeviceProxy;
 		
-		private var _publishing				:Boolean;
-		
-		private var _group_spec				:GroupSpecifier;
-		
-		private var _nc						:NetConnection;
-		private var _ng						:NetGroup;
-		private var _ns						:NetStreamPeer;
-		
-		private var _outgoingPeerStream		:NetStream;
-		
-		private var _nc_client				:Object;
+		private var _publishing:Boolean;
+		private var _group_spec:GroupSpecifier;
+		private var _nc:NetConnection;
+		private var _ng:NetGroup;
+		private var _ns:NetStreamPeer;
+		private var _outgoingPeerStream:NetStream;
+		private var _nc_client:Object;
 		
 		public function GroupService()
 		{

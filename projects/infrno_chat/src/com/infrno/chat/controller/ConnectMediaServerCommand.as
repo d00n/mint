@@ -8,7 +8,7 @@ package com.infrno.chat.controller
 	public class ConnectMediaServerCommand extends Command
 	{
 		[Inject]
-		public var msService	:MSService;
+		public var msService:MSService;
 		
 		override public function execute():void
 		{

@@ -22,8 +22,7 @@ package com.infrno.chat.services
 		[Inject]
 		public var deviceProxy:DeviceProxy;
 		
-		private var _publishing:Boolean;
-		
+		private var _publishing:Boolean;	
 		private var _nc:NetConnection;
 		private var _ns:NetStream;
 		private var _nc_client:Object;
@@ -101,6 +100,7 @@ package com.infrno.chat.services
 		
 		public function updatePublishStream():void
 		{
+			// TODO write test around this, then flip the if blocks to eliminate the negation 
 			if(!dataProxy.use_peer_connection){
 				if(!_publishing){
 					trace("MSService.updatePublishStream() ### publishing my server stream with name: "+dataProxy.my_info.suid.toString());

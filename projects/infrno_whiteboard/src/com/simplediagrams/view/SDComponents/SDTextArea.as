@@ -213,9 +213,10 @@ package com.simplediagrams.view.SDComponents
 			Logger.info("onTextAreaChange",this);
 			_model.text = mainTextArea.text;		
 			
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_AREA_CHANGE);
-			rsoEvent.sdID = _model.sdID;
-			dispatcher.dispatchEvent(rsoEvent);			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.changedSDObjectModelArray = new Array;				
+			rsoEvent.changedSDObjectModelArray.push(_model);
+			dispatcher.dispatchEvent(rsoEvent);				
 		}
 		
 		protected function onTextAreaMouseOut(event:Event):void

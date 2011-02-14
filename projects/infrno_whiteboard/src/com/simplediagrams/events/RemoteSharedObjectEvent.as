@@ -18,13 +18,11 @@ package com.simplediagrams.events
 		public static const STOP:String = "rso_stop";
 		public static const START:String = "rso_start";
 		public static const LOAD_IMAGE:String = "rso_loadImage";
-		public static const TEXT_AREA_CHANGE:String = "rso_TextAreaChange";
 		public static const ADD_SD_OBJECT_MODEL:String = "rso_addSDObjectModel";
 		public static const DELETE_SELECTED_SD_OBJECT_MODEL:String = "rso_DeleteSelectedSDObjectModel";
 		public static const OBJECT_CHANGED:String = "rso_ObjectChanged";	
 		public static const UPDATE_DEPTHS:String = "rso_ObjectUpdateDepths";
 		
-		public static const REFRESH_Z_ORDER:String = "rso_refreshZOrder";
 		public static const TEXT_WIDGET_ADDED:String = "rso_TextWidgetAdded";
 		public static const TEXT_WIDGET_CREATED:String = "rso_TextWidgetCreated";
 		public static const PENCIL_DRAWING_CREATED:String = "rso_PencilDrawingCreated";
@@ -53,7 +51,7 @@ package com.simplediagrams.events
 		// Wowza will accept these values for specified hosts.
 		public var auth_key:String = "sample_auth_key";
 //		public var room_id:String = "bad_sd_line";
-		public var room_id:String = "6";
+		public var room_id:String = "7";
 		public var room_name:String = "";
 		public var user_name:String = "";
 		public var user_id:String = "";

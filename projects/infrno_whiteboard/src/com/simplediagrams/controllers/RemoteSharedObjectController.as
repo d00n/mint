@@ -419,19 +419,6 @@ package com.simplediagrams.controllers
 		
 
 		
-		[Mediate(event="RemoteSharedObjectEvent.TEXT_AREA_CHANGE")]
-		public function dispatchUpdate_TextAreaChange(event:RemoteSharedObjectEvent):void
-		{
-			Logger.info("dispatchUpdate_TextAreaChange()",this);
-			
-			var sdTextAreaModel:SDTextAreaModel = diagramModel.getModelByID(event.sdID) as SDTextAreaModel;			
-			
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-			rsoEvent.changedSDObjectModelArray = new Array;				
-			rsoEvent.changedSDObjectModelArray.push(sdTextAreaModel);
-			dispatcher.dispatchEvent(rsoEvent);	
-		}
-			
 		[Mediate(event="RemoteSharedObjectEvent.OBJECT_CHANGED")]
 		[Mediate(event="RemoteSharedObjectEvent.TEXT_WIDGET_ADDED")]
 		[Mediate(event="RemoteSharedObjectEvent.TEXT_WIDGET_CREATED")]

@@ -30,6 +30,7 @@ package com.simplediagrams.controllers
 	import flash.display.DisplayObject;
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
+	import flash.events.UncaughtErrorEvent;
 	
 	import mx.controls.Alert;
 	import mx.core.FlexGlobals;
@@ -125,28 +126,29 @@ package com.simplediagrams.controllers
 			appModel.currFileName = "SimpleDiagrams"
 		}
 		
-//		[Mediate("mx.events.FlexEvent.APPLICATION_COMPLETE" )] 
-//		public function onApplicationComplete():void
-//		{ 
-//			FlexGlobals.topLevelApplication.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onUncaughtError);
-//		}
-//		
-//		private function onUncaughtError(e:UncaughtErrorEvent):void
-//		{
-//			if (e.error is Error)
-//			{
-//				var error:Error = e.error as Error
-//				var msg:String = error.errorID + " " + error.name +" " +error.message
-//				Logger.error(msg, this);
-//			}
-//			else
-//			{
-//				var errorEvent:ErrorEvent = e.error as ErrorEvent;  
-//				msg = "error ID " + errorEvent.errorID.toString()
-//				Logger.error(errorEvent.errorID, this);
-//			}
-//			Alert.show(msg, "System Error")
-//		}		
+		[Mediate("mx.events.FlexEvent.APPLICATION_COMPLETE" )] 
+		public function onApplicationComplete():void
+		{ 
+			FlexGlobals.topLevelApplication.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onUncaughtError);
+		}
+		
+		private function onUncaughtError(e:UncaughtErrorEvent):void
+		{
+			var msg:String;
+			if (e.error is Error)
+			{
+				var error:Error = e.error as Error
+				msg = "Error: "+error.errorID + " " + error.name +" " +error.message
+				Logger.error(msg, this);
+			}
+			else
+			{
+				var errorEvent:ErrorEvent = e.error as ErrorEvent;  
+				msg = "ErrorEvent: " + errorEvent.errorID.toString()
+				Logger.error(msg, this);
+			}
+			Alert.show(msg, "Oops! Something is amiss. The authorities have been alerted. Please restart your table.")
+		}		
 		
 		[Mediate("mx.events.FlexEvent.APPLICATION_COMPLETE" )] 
 		public function initApp(event:FlexEvent):void

@@ -41,8 +41,10 @@
 	
 
 	<s:VGroup id="ChatVGroup" height="100%">
-		<components:Videos id="videosComponent" width="100%" height="100%" />
-		<components:Chat id="chatComponent" width="100%" />
+		<mx:VDividedBox width="100%" height="100%">			
+			<components:Videos id="videosComponent" width="100%" height="100%" minHeight="50"/>
+			<components:Chat id="chatComponent" width="100%" />
+		</mx:VDividedBox>
 	</s:VGroup>
 
 		

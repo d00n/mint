@@ -14,17 +14,17 @@ package com.infrno.chat.services
 	public class PeerService extends Actor
 	{
 		[Inject]
-		public var dataProxy				:DataProxy;
+		public var dataProxy:DataProxy;
 		
 		[Inject]
-		public var deviceProxy				:DeviceProxy;
+		public var deviceProxy:DeviceProxy;
 		
-		private var _publishing				:Boolean;
+		private var _publishing:Boolean;
 		
-		private var _nc						:NetConnection;
-		private var _ns_outgoing			:NetStreamPeer;
+		private var _nc:NetConnection;
+		private var _ns_outgoing:NetStreamPeer;
 		
-		private var _nc_client				:Object;
+		private var _nc_client:Object;
 		
 		public function PeerService()
 		{
@@ -59,11 +59,15 @@ package com.infrno.chat.services
 			if(dataProxy.use_peer_connection){
 				if(!_publishing){
 					trace("PeerService.updatePublishStream() >>> publishing my peer stream with name: "+dataProxy.my_info.suid.toString());
+					
 					setupOutgoingNetStream();
+					
 					if(dataProxy.pubishing_audio)
 						_ns_outgoing.attachAudio(deviceProxy.mic);
+					
 					if(dataProxy.pubishing_video)
 						_ns_outgoing.attachCamera(deviceProxy.camera);
+					
 					_ns_outgoing.publish(dataProxy.my_info.suid.toString());
 					
 					dataProxy.ns = _ns_outgoing;
@@ -151,8 +155,8 @@ package com.infrno.chat.services
 			c.onPeerConnect = function(caller:NetStream):Boolean
 			{
 				trace("PeerService.setupOutgoingNetStream() #### Caller connecting to listener stream: " + caller.farID);
-//				trace("opposite_user._nearID: "+opposite_user._nearID);
-//				return opposite_user._nearID==caller.farID;
+				//				trace("opposite_user._nearID: "+opposite_user._nearID);
+				//				return opposite_user._nearID==caller.farID;
 				return true;
 			}
 			_ns_outgoing.client = c;

@@ -18,6 +18,7 @@
 			
 			private var _audio_level	:int;
 			
+			//TODO? rename data as userInfoVO
 			private var _data			:UserInfoVO;
 			private var _video			:Video;
 			
@@ -257,6 +258,7 @@
 					return;  
 				}
 				
+				// Peer audio is set here. Where does _data get assigned?
 				var curr_transform:SoundTransform = _data.ns.soundTransform;
 				curr_transform.volume = levelIn/100;
 				_data.ns.soundTransform = curr_transform;

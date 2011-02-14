@@ -43,6 +43,7 @@ package com.infrno.chat.model
 		private var m_mediaPort:String		= "1935";
 		
 		//		public var my_info					:UserInfoVO = new UserInfoVO({user_name:"user"+Math.round(Math.random()*1000),user_id:"sample_user_id"});
+		// TODO: rename my_info as local_userInfoVO
 		public var my_info:UserInfoVO;
 		
 		public function DataProxy( )

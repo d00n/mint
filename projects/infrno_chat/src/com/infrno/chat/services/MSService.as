@@ -17,16 +17,16 @@ package com.infrno.chat.services
 	public class MSService extends Actor
 	{
 		[Inject]
-		public var dataProxy		:DataProxy;
+		public var dataProxy:DataProxy;
 		
 		[Inject]
-		public var deviceProxy		:DeviceProxy;
+		public var deviceProxy:DeviceProxy;
 		
-		private var _publishing		:Boolean;
+		private var _publishing:Boolean;
 		
-		private var _nc				:NetConnection;
-		private var _ns				:NetStream;
-		private var _nc_client		:Object;
+		private var _nc:NetConnection;
+		private var _ns:NetStream;
+		private var _nc_client:Object;
 		
 		public function MSService()
 		{
@@ -52,7 +52,7 @@ package com.infrno.chat.services
 				+":"+ dataProxy.my_info.user_name 
 				+":"+ dataProxy.room_id 
 				+":"+ dataProxy.auth_key);
-		
+			
 			dispatch(new MSEvent(MSEvent.NETCONNECTION_CONNECTING));
 			_nc.connect(connection_uri, 
 				dataProxy.my_info, 
@@ -76,6 +76,7 @@ package com.infrno.chat.services
 		
 		public function getNewNetStream():NetStreamMS
 		{
+			
 			var ns_client:Object = new Object();
 			ns_client.onPlayStatus = function(e:Object):void{};
 			ns_client.onMetaData = function(e:Object):void{};
@@ -94,7 +95,7 @@ package com.infrno.chat.services
 		
 		public function reportUserStats(statsIn:Object):void
 		{
-//			trace("MSService.reportUserStats()");
+			//			trace("MSService.reportUserStats()");
 			_nc.call("reportUserStats",null,statsIn);
 		}
 		
@@ -103,10 +104,13 @@ package com.infrno.chat.services
 			if(!dataProxy.use_peer_connection){
 				if(!_publishing){
 					trace("MSService.updatePublishStream() ### publishing my server stream with name: "+dataProxy.my_info.suid.toString());
+					
 					if(dataProxy.pubishing_audio)
 						_ns.attachAudio(deviceProxy.mic);
+					
 					if(dataProxy.pubishing_video)
 						_ns.attachCamera(deviceProxy.camera);
+					
 					_ns.publish(dataProxy.my_info.suid.toString());
 					
 					dataProxy.ns = _ns;
@@ -164,7 +168,7 @@ package com.infrno.chat.services
 			_nc_client = new Object();
 			_nc_client.initUser = function(user_info:Object):void
 			{
-//				dataProxy.my_info = new UserInfoVO(user_info);
+				//				dataProxy.my_info = new UserInfoVO(user_info);
 				trace("MSService._nc_client.initUser()" + user_info.toString());
 				dataProxy.my_info.updateInfo(user_info);
 			}

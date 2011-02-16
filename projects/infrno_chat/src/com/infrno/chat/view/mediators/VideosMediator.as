@@ -83,7 +83,7 @@ package com.infrno.chat.view.mediators
 					trace("VideosMediator.removeVideos() videoPresence.name="+videoPresence.name);
 					
 					//if the video isn't in the users collection remove it
-					if(dataProxy.users_collection[videoPresence.name] == null){
+					if(dataProxy.userInfoVO_array[videoPresence.name] == null){
 //						videos.videos_holder.removeElement(videoPresence as IVisualElement);
 						var vp_index:int = videos.videos_holder.dataProvider.getItemIndex(videoPresence);
 						trace("VideosMediator.removeVideos() vp_index="+vp_index);
@@ -139,9 +139,9 @@ package com.infrno.chat.view.mediators
 		{
 			trace("VideosMediator.updateVideos()");
 			
-			for(var name:String in dataProxy.users_collection){
+			for(var name:String in dataProxy.userInfoVO_array){
 				trace("VideosMediator.updateVideos() name="+name);
-				var userInfo:UserInfoVO = dataProxy.users_collection[name];
+				var userInfo:UserInfoVO = dataProxy.userInfoVO_array[name];
 				
 				//if the video presence doesn't exist add one
 //				if(videos.videos_holder.getChildByName(name) == null){

@@ -46,6 +46,7 @@ package com.infrno.chat
 			commandMap.mapEvent(SettingsEvent.SHOW_SETTINGS,SettingsCommand);			
 			
 			//Model
+			// mapSingleton provides 1 instance of the requested class for N injections.
 			injector.mapSingleton(DataProxy);
 			injector.mapSingleton(DeviceProxy);
 			

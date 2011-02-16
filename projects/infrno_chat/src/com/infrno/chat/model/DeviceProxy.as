@@ -1,93 +1,93 @@
 package com.infrno.chat.model
 {
-    import com.infrno.chat.model.events.DeviceEvent;
-    
-    import flash.events.ActivityEvent;
-    import flash.events.StatusEvent;
-    import flash.events.TimerEvent;
-    import flash.media.Camera;
-    import flash.media.Microphone;
-    import flash.media.SoundCodec;
-    import flash.system.Security;
-    import flash.system.SecurityPanel;
-    import flash.utils.Timer;
-    
-    import org.robotlegs.mvcs.Actor;
-    
-    public class DeviceProxy extends Actor
-    {
-		public var camera_array:Array;
+	import com.infrno.chat.model.events.DeviceEvent;
+	
+	import flash.events.ActivityEvent;
+	import flash.events.StatusEvent;
+	import flash.events.TimerEvent;
+	import flash.media.Camera;
+	import flash.media.Microphone;
+	import flash.media.SoundCodec;
+	import flash.system.Security;
+	import flash.system.SecurityPanel;
+	import flash.utils.Timer;
+	
+	import org.robotlegs.mvcs.Actor;
+	
+	public class DeviceProxy extends Actor
+	{
+		public var cam_array:Array;
 		public var mic_array:Array;
 		
-        public var camera_active:Boolean;
-        public var mic_active:Boolean;
-
-        public var cam_index:int;
-        public var mic_index:int;
-        public var mic_level:int;
-        
-        private var _camera:Camera;
-        private var _mic:Microphone;
-        private var _mic_level_timer:Timer;
-
-        private var _camera_fps:uint=12;
-        private var _camera_height:uint=120; //240
-        private var _camera_quality:uint=85;
-        private var _camera_width:uint=160;//320
-        
-        public function DeviceProxy() 
-        {
-			camera_array = Camera.names;
-			mic_array = Microphone.names;
-        }
-        
-        private function initTimers():void
-        {
-        	if(_mic_level_timer != null)
-        		return;
-        		
-        	_mic_level_timer = new Timer(50);
-        	_mic_level_timer.addEventListener(TimerEvent.TIMER,function(e:TimerEvent):void{
-        		mic_level = _mic.activityLevel;
-				dispatch(new DeviceEvent(DeviceEvent.MIC_LEVEL,_mic.activityLevel));
-        	});
-        }
-        
-        private function initCam(nameIn:String=null):void 
+		public var cam_active:Boolean;
+		public var mic_active:Boolean;
+		
+		public var cam_index:int;
+		public var mic_index:int;
+		public var mic_level:int;
+		
+		private var _cam:Camera;
+		private var _mic:Microphone;
+		private var _mic_level_timer:Timer;
+		
+		private var _cam_fps:uint			=12;
+		private var _cam_height:uint		=120; //240
+		private var _cam_quality:uint	=85;
+		private var _cam_width:uint		=160;//320
+		
+		public function DeviceProxy() 
 		{
-			camera_active = false;
+			cam_array = Camera.names;
+			mic_array = Microphone.names;
+		}
+		
+		private function initTimers():void
+		{
+			if(_mic_level_timer != null)
+				return;
+			
+			_mic_level_timer = new Timer(50);
+			_mic_level_timer.addEventListener(TimerEvent.TIMER,function(e:TimerEvent):void{
+				mic_level = _mic.activityLevel;
+				dispatch(new DeviceEvent(DeviceEvent.MIC_LEVEL,_mic.activityLevel));
+			});
+		}
+		
+		private function initCam(nameIn:String=null):void 
+		{
+			cam_active = false;
 			
 			if(Camera.names.length == 0){
 				//no cameras installed at all
 				trace("DeviceProxy.initCam() no cameras installed at all");
 			}
 			
-        	_camera = Camera.getCamera(nameIn);
-        	
-			if(_camera!=null){
+			_cam = Camera.getCamera(nameIn);
+			
+			if(_cam!=null){
 				
-				for(var i:String in camera_array){
-					if(_camera.name == camera_array[i]){
+				for(var i:String in cam_array){
+					if(_cam.name == cam_array[i]){
 						cam_index = int(i);
 						break;
 					}
 				}
 				
-				updateCamQuality(_camera_quality); //default to low quality
-				_camera.setMode(_camera_width,_camera_height,_camera_fps);
+				updateCamQuality(_cam_quality); //default to low quality
+				_cam.setMode(_cam_width,_cam_height,_cam_fps);
 				
-				_camera.setKeyFrameInterval(12); //original 48.. default is 15
-				_camera.setMotionLevel(0);
-				_camera.addEventListener(StatusEvent.STATUS, function(evt:StatusEvent):void{
+				_cam.setKeyFrameInterval(12); //original 48.. default is 15
+				_cam.setMotionLevel(0);
+				_cam.addEventListener(StatusEvent.STATUS, function(evt:StatusEvent):void{
 					trace("DeviceProxy.initCam() " + evt.code);
 					if(evt.code=="Camera.Muted"){
 						trace("DeviceProxy.initCam() no access to the camera");
 					}
 				})
 				
-				_camera.addEventListener(ActivityEvent.ACTIVITY, function(evt:ActivityEvent):void{
+				_cam.addEventListener(ActivityEvent.ACTIVITY, function(evt:ActivityEvent):void{
 					trace("DeviceProxy.initCam() camera active "+evt.activating)
-					camera_active=evt.activating;
+					cam_active=evt.activating;
 					dispatch(new DeviceEvent(DeviceEvent.CAMERA_ACTIVITY,evt.activating));
 				})
 			}
@@ -150,49 +150,49 @@ package com.infrno.chat.model
 		
 		//public methods
 		public function get camera():Camera
-        {
-        	initCam();
-        	return _camera;
-        }
-        
+		{
+			initCam();
+			return _cam;
+		}
+		
 		public function setCamera(cam_index_in:String):void
-        {
-        	initCam(cam_index_in);
+		{
+			initCam(cam_index_in);
 			dispatch(new DeviceEvent(DeviceEvent.CAMERA_CHANGED));
-        }
-        
+		}
+		
 		public function setMic(mic_index_in:int=-1,skip_notify:Boolean=false):Microphone
-        {
-        	if(!skip_notify)
+		{
+			if(!skip_notify)
 				dispatch(new DeviceEvent(DeviceEvent.MIC_CHANGED));
-        		
-        	return initMic(mic_index_in);
-        }
-        
-        public function get mic():Microphone
-        {
-        	initTimers();
-        	initMic();
-        	
-        	return _mic;
-        }
-        
-        public function updateCamMode(widthIn:int=320,heightIn:int=240,fps:int=12):void
-        {
-        	if(_camera_width != widthIn || _camera_height != heightIn || _camera_fps != fps){
-	        	_camera_width = widthIn;
-	        	_camera_height = heightIn;
-	        	_camera_fps = fps;
-	        	
-	        	_camera.setMode(_camera_width,_camera_height,_camera_fps);
-	        }
-        }
-        
+			
+			return initMic(mic_index_in);
+		}
+		
+		public function get mic():Microphone
+		{
+			initTimers();
+			initMic();
+			
+			return _mic;
+		}
+		
+		public function updateCamMode(widthIn:int=320,heightIn:int=240,fps:int=12):void
+		{
+			if(_cam_width != widthIn || _cam_height != heightIn || _cam_fps != fps){
+				_cam_width = widthIn;
+				_cam_height = heightIn;
+				_cam_fps = fps;
+				
+				_cam.setMode(_cam_width,_cam_height,_cam_fps);
+			}
+		}
+		
 		public function updateCamQuality(n_valIn:int):void
 		{
 			trace("DeviceProxy.initCam() cam quality updated to: "+n_valIn);
-			_camera_quality = n_valIn;
-			_camera.setQuality(0,n_valIn);
+			_cam_quality = n_valIn;
+			_cam.setQuality(0,n_valIn);
 		}
 		
 		public function showCamSettings():void
@@ -204,5 +204,5 @@ package com.infrno.chat.model
 		{
 			Security.showSettings(SecurityPanel.MICROPHONE);
 		}
-    }
+	}
 }

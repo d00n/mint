@@ -1,8 +1,10 @@
 package com.infrno.chat.model
 {
 	import com.infrno.chat.model.vo.UserInfoVO;
+	
 	import flash.events.NetStatusEvent;
 	import flash.net.NetStream;
+	
 	import org.robotlegs.mvcs.Actor;
 	
 	public class DataProxy extends Actor
@@ -18,7 +20,9 @@ package com.infrno.chat.model
 		
 		public var ns:NetStream;
 		
-		public var users_collection:Object;
+		// TODO rename this userInfoVO_array
+		// .. and why not make it an array? 
+		public var userInfoVO_array:Array;
 		
 		// Wowza will accept these values for specified hosts.
 		public var auth_key:String		= "sample_auth_key";
@@ -48,7 +52,7 @@ package com.infrno.chat.model
 		
 		public function DataProxy( )
 		{
-			users_collection = new Object();
+			userInfoVO_array = new Array();
 			
 			user_name= "user" + Math.round(Math.random()*1000);
 			user_id = user_name

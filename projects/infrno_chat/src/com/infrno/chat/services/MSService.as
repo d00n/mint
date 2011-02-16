@@ -194,27 +194,27 @@ package com.infrno.chat.services
 			_nc_client.updateUsers = updateUsers;
 		}
 		
-		private function updateUsers(users_obj:Object):void
+		private function updateUsers(userInfoVO_array:Object):void
 		{
 			trace("MSService.updateUsers()");
 			
 			//removing data
-			for(var n:String in dataProxy.users_collection)
+			for(var n:String in dataProxy.userInfoVO_array)
 			{
 				trace("MSService.updateUsers() looking to delete n="+n);
-				if(users_obj[n] == null)
-					delete dataProxy.users_collection[n];
+				if(userInfoVO_array[n] == null)
+					delete dataProxy.userInfoVO_array[n];
 			}
 			
 			//adding/updating info
-			for(var m:String in users_obj){
+			for(var m:String in userInfoVO_array){
 				trace("MSService.updateUsers() looking to add m="+m);				
-				if(dataProxy.users_collection[m] == null){
+				if(dataProxy.userInfoVO_array[m] == null){
 					trace("MSService.updateUsers() creating new UserInfoVO for m="+m);				
-					dataProxy.users_collection[m] = new UserInfoVO(users_obj[m]);
+					dataProxy.userInfoVO_array[m] = new UserInfoVO(userInfoVO_array[m]);
 				} else {
 					trace("MSService.updateUsers() updating UserInfoVO for m="+m);				
-					dataProxy.users_collection[m].updateInfo(users_obj[m]);
+					dataProxy.userInfoVO_array[m].updateInfo(userInfoVO_array[m]);
 				}
 			}
 			

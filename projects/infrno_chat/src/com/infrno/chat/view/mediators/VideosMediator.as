@@ -21,7 +21,6 @@ package com.infrno.chat.view.mediators
 	
 	import org.robotlegs.mvcs.Mediator;
 	
-	import spark.components.Group;
 	import spark.components.List;
 	
 	public class VideosMediator extends Mediator
@@ -141,7 +140,7 @@ package com.infrno.chat.view.mediators
 			
 			for(var name:String in dataProxy.userInfoVO_array){
 				trace("VideosMediator.updateVideos() name="+name);
-				var userInfo:UserInfoVO = dataProxy.userInfoVO_array[name];
+				var userInfoVO:UserInfoVO = dataProxy.userInfoVO_array[name];
 				
 				//if the video presence doesn't exist add one
 //				if(videos.videos_holder.getChildByName(name) == null){
@@ -153,10 +152,10 @@ package com.infrno.chat.view.mediators
 					videoPresence = new VideoPresence();
 					videos.videos_holder.dataProvider.addItem(videoPresence);
 					
-					videoPresence.data = userInfo;
-					videoPresence.name = userInfo.suid.toString();
+					videoPresence.data = userInfoVO;
+					videoPresence.name = userInfoVO.suid.toString();
 					
-					videoPresence.is_local = userInfo.suid == dataProxy.my_info.suid;
+					videoPresence.is_local = userInfoVO.suid == dataProxy.my_info.suid;
 					
 					videoPresence.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
 						{
@@ -175,57 +174,21 @@ package com.infrno.chat.view.mediators
 					
 					// videoPresence is assigned, and not null.
 					// why are we fetching this again? 
-//					videoPresence = getElementbyName(videos.videos_holder, userInfo.suid.toString());
+//					videoPresence = getElementbyName(videos.videos_holder, userInfoVO.suid.toString());
 					
 					if(!videoPresence.isInitialized()) {
 						// what about the rest of the collection?
 						return;
 					}
 							
-					videoPresence.is_local = userInfo.suid == dataProxy.my_info.suid;
+					videoPresence.is_local = userInfoVO.suid == dataProxy.my_info.suid;
 					
-					if(userInfo.suid == dataProxy.my_info.suid){
+					if(userInfoVO.suid == dataProxy.my_info.suid){
 						setupMyPresenceComponent(videoPresence);
 					} else {
 						setupOtherPresenceComponent(videoPresence);
-					}
-					
-				}
-				
-//				if(userInfo.suid == dataProxy.my_info.suid){
-//					trace("VideosMediator.updateVideos() this is my video.. so showing my camera");
-//					videoPresence.is_local = true;
-//					videoPresence.camera = deviceProxy.camera;
-////					videoPresence.audio_level.value = deviceProxy.mic.gain;
-//					videoPresence.audioLevel = deviceProxy.mic.gain;
-//					videoPresence.toggleAudio();
-//					videoPresence.toggleVideo();
-//				} else {
-//					//update/create netstream to play from
-//					//start playing the suid
-//					videoPresence.is_local = false;
-//					
-//					if(dataProxy.use_peer_connection && userInfo.nearID && dataProxy.peer_capable && !(userInfo.ns is NetStreamPeer) ){
-//						trace("VideosMediator.updateVideos() setting up and playing from the peer connection: "+userInfo.suid.toString());
-//						userInfo.ns = peerService.getNewNetStream(userInfo.nearID);
-//						userInfo.ns.play(userInfo.suid.toString());
-//						videoPresence.netstream = userInfo.ns;
-//						videoPresence.toggleAudio();
-//						videoPresence.toggleVideo();
-//					} else if(!dataProxy.use_peer_connection && !(userInfo.ns is NetStreamMS) ){
-//						trace("VideosMediator.updateVideos() setting up and playing from the stream server");
-//						userInfo.ns = msService.getNewNetStream();
-//						userInfo.ns.play(userInfo.suid.toString(),-1);
-//						videoPresence.netstream = userInfo.ns;
-//						videoPresence.toggleAudio();
-//						videoPresence.toggleVideo();
-//					}
-//					try{
-//						videoPresence.audio_level.value = userInfo.ns.soundTransform.volume*100
-//					} catch(e:Object){
-//						//something didn't initialze
-//					}
-//				}
+					}					
+				}				
 			}
 		}
 		
@@ -243,26 +206,26 @@ package com.infrno.chat.view.mediators
 		private function setupOtherPresenceComponent(videoPresence:VideoPresence):void
 		{
 			trace("VideosMediator.setupOtherPresenceComponent()");
-			var userInfo:UserInfoVO = videoPresence.data;
+			var userInfoVO:UserInfoVO = videoPresence.data;
 			
-			if(dataProxy.use_peer_connection && userInfo.nearID && dataProxy.peer_capable && !(userInfo.ns is NetStreamPeer) ){
-				trace("VideosMediator.setupOtherPresenceComponent() setting up and playing from the peer connection: "+userInfo.suid.toString());
-				userInfo.ns = peerService.getNewNetStream(userInfo.nearID);
-				userInfo.ns.play(userInfo.suid.toString());
-				videoPresence.netstream = userInfo.ns;
+			if(dataProxy.use_peer_connection && userInfoVO.nearID && dataProxy.peer_capable && !(userInfoVO.netStream is NetStreamPeer) ){
+				trace("VideosMediator.setupOtherPresenceComponent() setting up and playing from the peer connection: "+userInfoVO.suid.toString());
+				userInfoVO.netStream = peerService.getNewNetStream(userInfoVO.nearID);
+				userInfoVO.netStream.play(userInfoVO.suid.toString());
+				videoPresence.netstream = userInfoVO.netStream;
 				videoPresence.toggleAudio();
 				videoPresence.toggleVideo();
-			} else if(!dataProxy.use_peer_connection && !(userInfo.ns is NetStreamMS) ){
+			} else if(!dataProxy.use_peer_connection && !(userInfoVO.netStream is NetStreamMS) ){
 				trace("VideosMediator.setupOtherPresenceComponent() setting up and playing from the stream server");
-				userInfo.ns = msService.getNewNetStream();
-				userInfo.ns.play(userInfo.suid.toString(),-1);
-				videoPresence.netstream = userInfo.ns;
+				userInfoVO.netStream = msService.getNewNetStream();
+				userInfoVO.netStream.play(userInfoVO.suid.toString(),-1);
+				videoPresence.netstream = userInfoVO.netStream;
 				videoPresence.toggleAudio();
 				videoPresence.toggleVideo();
 			}
 			
 			try{
-				videoPresence.audio_level.value = userInfo.ns.soundTransform.volume*100
+				videoPresence.audio_level.value = userInfoVO.netStream.soundTransform.volume*100
 			} catch(e:Object){
 				trace("VideosMediator.setupOtherPresenceComponent() setting videoPresence.audio_level.value threw an error: " + e.toString());
 			}

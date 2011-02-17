@@ -1,34 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 resize="videos_group_resizeHandler(event)">
+				 xmlns:s="library://ns.adobe.com/flex/spark" 
+				 xmlns:mx="library://ns.adobe.com/flex/mx"
+				 resize="videos_group_resizeHandler(event)">
 	<fx:Script>
 		<![CDATA[
 			import mx.events.ResizeEvent;
-
+			
 			protected function videos_group_resizeHandler(event:ResizeEvent):void
 			{
 				videos_holder.width = this.width;
 				videos_holder.height = this.height;
 			}
-
+			
 		]]>
 	</fx:Script>
-
-
+	
+	
 	
 	
 	<s:List id="videos_holder" width="162"
-			itemRenderer="spark.skins.spark.DefaultComplexItemRenderer"
-			horizontalCenter="0"
-			verticalCenter="0"
-			>
+					itemRenderer="spark.skins.spark.DefaultComplexItemRenderer"
+					horizontalCenter="0"
+					verticalCenter="0"
+					>
+		
 		<s:layout>
 			<s:TileLayout 
 				horizontalGap="0"
 				verticalGap="0" />
 		</s:layout>
+		
 		<s:dataProvider >
 			<s:ArrayList>
 			</s:ArrayList>

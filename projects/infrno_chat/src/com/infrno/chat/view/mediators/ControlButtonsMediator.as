@@ -10,6 +10,7 @@ package com.infrno.chat.view.mediators
 	
 	import org.robotlegs.mvcs.Mediator;
 	
+	// not used
 	public class ControlButtonsMediator extends Mediator
 	{
 		[Inject]

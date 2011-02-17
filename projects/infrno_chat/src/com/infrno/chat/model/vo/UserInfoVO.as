@@ -9,11 +9,13 @@ package com.infrno.chat.model.vo
 	{
 //		public var peer_capable				:Boolean;
 		public var report_connection_status:Boolean;
+		
 		public var suid:int;		
 		public var peer_connection_status:String;
 		public var user_name:String;
 		public var user_id:String;
 		public var nearID:String;
+		
 		private var _netStream:NetStream;
 		
 		public function UserInfoVO(infoObj:Object=null)
@@ -25,12 +27,12 @@ package com.infrno.chat.model.vo
 			user_name = infoObj.user_name;
 		}
 		
-		public function get ns():NetStream
+		public function get netStream():NetStream
 		{
 			return _netStream;
 		}
 		
-		public function set ns(netStream:NetStream):void
+		public function set netStream(netStream:NetStream):void
 		{
 			if(_netStream && _netStream.hasEventListener(NetStatusEvent.NET_STATUS)){
 				_netStream.close();

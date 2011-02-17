@@ -11,7 +11,10 @@ package com.infrno.chat.services
 	
 	import org.robotlegs.mvcs.Actor;
 	
-	public class PeerService extends Actor
+	//	Services Should Implement an Interface
+	//	By creating service classes that implement interfaces, it makes it trivial to switch them out at 
+	//	runtime for testing or providing access to additional services to the end users of the application.
+	public class PeerService extends Actor // implements INetService
 	{
 		[Inject]
 		public var dataProxy:DataProxy;
@@ -19,7 +22,7 @@ package com.infrno.chat.services
 		[Inject]
 		public var deviceProxy:DeviceProxy;
 		
-		private var _publishing:Boolean;		
+		private var _published:Boolean;		
 		private var _nc:NetConnection;
 		private var _ns_outgoing:NetStreamPeer;		
 		private var _nc_client:Object;
@@ -54,8 +57,9 @@ package com.infrno.chat.services
 			if(!_nc.connected)
 				return;
 			
+			// TODO write test around this, then flip the if blocks to eliminate the negation 
 			if(dataProxy.use_peer_connection){
-				if(!_publishing){
+				if(!_published){
 					trace("PeerService.updatePublishStream() >>> publishing my peer stream with name: "+dataProxy.my_info.suid.toString());
 					
 					setupOutgoingNetStream();
@@ -86,6 +90,7 @@ package com.infrno.chat.services
 		private function handleNetStatus(e:NetStatusEvent):void
 		{
 			trace("PeerService.handleNetStatus() Peer: "+e.info.code);
+			// TODO Report these
 			switch(e.info.code){
 				case "NetConnection.Connect.Success":
 					dispatch(new PeerEvent(PeerEvent.PEER_NETCONNECTION_CONNECTED,_nc.nearID));
@@ -113,14 +118,14 @@ package com.infrno.chat.services
 					trace("PeerService.handleOutgoingNetStatus() someone connected to me and is playing my stream");
 					break;
 				case "NetStream.Publish.BadName":
-					_publishing = false;
+					_published = false;
 					updatePublishStream();
 					break;
 				case "NetStream.Publish.Start":
-					_publishing = true;
+					_published = true;
 					break;
 				case "NetStream.Unpublish.Success":
-					_publishing = false;
+					_published = false;
 					break;
 			}
 		}

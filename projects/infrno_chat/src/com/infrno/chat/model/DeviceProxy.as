@@ -49,7 +49,7 @@ package com.infrno.chat.model
 			_mic_level_timer = new Timer(50);
 			_mic_level_timer.addEventListener(TimerEvent.TIMER,function(e:TimerEvent):void{
 				mic_level = _mic.activityLevel;
-				dispatch(new DeviceEvent(DeviceEvent.MIC_LEVEL,_mic.activityLevel));
+				dispatch(new DeviceEvent(DeviceEvent.MIC_LEVEL, _mic.activityLevel));
 			});
 		}
 		

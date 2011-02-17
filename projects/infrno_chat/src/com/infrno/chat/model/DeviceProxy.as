@@ -31,7 +31,7 @@ package com.infrno.chat.model
 		private var _mic_level_timer:Timer;
 		
 		private var _cam_fps:uint			=12;
-		private var _cam_height:uint		=120; //240
+		private var _cam_height:uint	=120; //240
 		private var _cam_quality:uint	=85;
 		private var _cam_width:uint		=160;//320
 		
@@ -142,9 +142,9 @@ package com.infrno.chat.model
 		
 		private function micStatus(evt:StatusEvent):void
 		{
-			trace("DeviceProxy.initCam() " + evt.code);
+			trace("DeviceProxy.micStatus() " + evt.code);
 			if(evt.code=="Microphone.Muted"){
-				trace("DeviceProxy.initCam() no access to the mic");
+				trace("DeviceProxy.micStatus() no access to the mic");
 			}
 		}
 		

@@ -6,6 +6,7 @@ package sampleSuite.tests
 	import com.infrno.chat.services.MSService;
 	
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.events.NetStatusEvent;
 	
 	import mockolate.mock;
@@ -19,7 +20,9 @@ package sampleSuite.tests
 
 	public class TestClass1
 	{
-		private var _MSService:MSService;		
+		private var _MSService:MSService;	
+		private var serviceEventDispatcher:EventDispatcher = new EventDispatcher();
+		
 		
 		[Before(async, timeout=5000)]
 		public function runBeforeEveryTest():void { 
@@ -35,16 +38,27 @@ package sampleSuite.tests
 			infoObj.user_id = 'user_id';
 			infoObj.user_name = 'user_name';
 			
+			serviceEventDispatcher = new EventDispatcher();
+			
 			var userInfoVO:UserInfoVO = new UserInfoVO(infoObj);			
 			var deviceProxy:DeviceProxy = strict(DeviceProxy);
 			var dataProxy:DataProxy = new DataProxy();			
 			dataProxy.my_info = userInfoVO;
 			
-			_MSService = new MSService();		 
+			_MSService = new MSService();		
+//			_MSService.eventDispatcher = serviceEventDispatcher;
 			_MSService.dataProxy = dataProxy;
 			_MSService.deviceProxy = deviceProxy;
 
 		}
+		
+		[After]
+		public function tearDown():void
+		{
+			this.serviceEventDispatcher = null;
+		}		
+		
+		
   	
 		[Test]  
 		public function initializeMSService():void { 

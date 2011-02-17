@@ -129,7 +129,7 @@ package com.infrno.chat.services
 		
 		public function updateUserInfo():void
 		{
-			trace("MSService.updateUserInfo() typeof(dataProxy)="+typeof(dataProxy));
+			trace("MSService.updateUserInfo() typeof(dataProxy.my_info)="+typeof(dataProxy.my_info));
 			_nc.call("updateUserInfo",null,dataProxy.my_info);
 		}
 		

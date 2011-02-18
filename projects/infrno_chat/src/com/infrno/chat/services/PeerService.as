@@ -23,7 +23,7 @@ package com.infrno.chat.services
 		public var deviceProxy:DeviceProxy;
 		
 		private var _published:Boolean;		
-		private var _nc:NetConnection;
+		private var _netConnection:NetConnection;
 		private var _ns_outgoing:NetStreamPeer;		
 		private var _nc_client:Object;
 		
@@ -38,23 +38,23 @@ package com.infrno.chat.services
 		{
 			trace("PeerService.connect() connecting to peer server: "+dataProxy.peer_server);
 			dispatch(new PeerEvent(PeerEvent.PEER_NETCONNECTION_CONNECTING));
-			_nc.connect(dataProxy.peer_server+"/"+dataProxy.peer_server_key);
+			_netConnection.connect(dataProxy.peer_server+"/"+dataProxy.peer_server_key);
 		}
 		
-		public function get ns():NetStream
+		public function get netStream():NetStream
 		{
 			return _ns_outgoing;
 		}
 		
 		public function getNewNetStream(streamType:String = NetStream.DIRECT_CONNECTIONS):NetStreamPeer
 		{
-			var ns:NetStreamPeer = new NetStreamPeer(_nc,streamType);
+			var ns:NetStreamPeer = new NetStreamPeer(_netConnection,streamType);
 			return ns;
 		}
 		
 		public function updatePublishStream():void
 		{
-			if(!_nc.connected)
+			if(!_netConnection.connected)
 				return;
 			
 			// TODO write test around this, then flip the if blocks to eliminate the negation 
@@ -93,7 +93,7 @@ package com.infrno.chat.services
 			// TODO Report these
 			switch(e.info.code){
 				case "NetConnection.Connect.Success":
-					dispatch(new PeerEvent(PeerEvent.PEER_NETCONNECTION_CONNECTED,_nc.nearID));
+					dispatch(new PeerEvent(PeerEvent.PEER_NETCONNECTION_CONNECTED,_netConnection.nearID));
 					break;
 				case "NetConnection.Connect.Closed":
 					dispatch(new PeerEvent(PeerEvent.PEER_NETCONNECTION_DISCONNECTED));
@@ -137,9 +137,9 @@ package com.infrno.chat.services
 		
 		private function setupNetConnection():void
 		{
-			_nc = new NetConnection();
-			_nc.client = _nc_client;
-			_nc.addEventListener(NetStatusEvent.NET_STATUS,handleNetStatus);
+			_netConnection = new NetConnection();
+			_netConnection.client = _nc_client;
+			_netConnection.addEventListener(NetStatusEvent.NET_STATUS,handleNetStatus);
 		}
 		
 		private function setupOutgoingNetStream():void

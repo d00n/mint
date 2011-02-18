@@ -32,6 +32,7 @@ package com.infrno.chat.services
 		
 		public function MSService()
 		{
+			trace("MSService constructor");
 			super();
 			setupClient();
 			setupNetConnection();
@@ -67,20 +68,23 @@ package com.infrno.chat.services
 				Capabilities.serverString);
 		}
 		
-		public function get nc():NetConnection
+		public function get netConnection():NetConnection
 		{
 			return _nc;
 		}
 		
-		public function get ns():NetStream
+		public function get netStream():NetStream
 		{
 			return _ns;
 		}
 		
 		public function getNewNetStream():NetStreamMS
 		{
-			
+			trace("MSService.getNewNetStream()");
+
 			var ns_client:Object = new Object();
+			
+			// TODO useful QoS data?
 			ns_client.onPlayStatus = function(e:Object):void{};
 			ns_client.onMetaData = function(e:Object):void{};
 			
@@ -98,12 +102,13 @@ package com.infrno.chat.services
 		
 		public function reportUserStats(statsIn:Object):void
 		{
-			//			trace("MSService.reportUserStats()");
 			_nc.call("reportUserStats",null,statsIn);
 		}
 		
 		public function updatePublishStream():void
 		{
+			trace("MSService.updatePublishStream()");
+
 			// TODO write test around this, then flip the if blocks to eliminate the negation 
 			if(!dataProxy.use_peer_connection){
 				if(!_published){
@@ -169,12 +174,14 @@ package com.infrno.chat.services
 		
 		private function setupClient():void
 		{
+			trace("MSService.setupClient()");
+			
 			_nc_client = new Object();
 			
 			_nc_client.initUser = function(user_info:Object):void
 				{
 					//dataProxy.my_info = new UserInfoVO(user_info);
-					trace("MSService:: _nc_client.initUser() user_info:" + user_info.toString());
+					trace("MSService: _nc_client.initUser() user_info:" + user_info.toString());
 					dataProxy.my_info.updateInfo(user_info);
 				}
 				
@@ -227,6 +234,8 @@ package com.infrno.chat.services
 		
 		private function setupNetConnection():void
 		{
+			trace("MSService.setupNetConnection()");
+			
 			_nc = new NetConnection();
 			_nc.client = _nc_client;
 			_nc.addEventListener(NetStatusEvent.NET_STATUS,netStatusHandler);

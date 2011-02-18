@@ -29,9 +29,9 @@ package com.infrno.chat.controller
 			var curr_ns:NetStream;
 			
 			if dataProxy.use_peer_connection 
-				curr_ns = peerService.ns; 
+				curr_ns = peerService.netStream; 
 			else
-				curr_ns = msService.ns;
+				curr_ns = msService.netStream;
 				
 			var ns_info:NetStreamInfo = curr_ns.info;
 			
@@ -41,7 +41,7 @@ package com.infrno.chat.controller
 			user_stats.user_name				= dataProxy.user_name;
 			user_stats.user_id					= dataProxy.user_id;
 
-			user_stats.wowza_protocol		= msService.nc.protocol;
+			user_stats.wowza_protocol		= msService.netConnection.protocol;
 			user_stats.capabilities			= Capabilities.serverString;
 			
 			// This is not yet useful. 

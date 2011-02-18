@@ -26,7 +26,7 @@ package com.infrno.chat.controller
 		{
 			var user_stats:Object = new Object();
 //			var curr_ns:NetStream = dataProxy.my_info.peer_connection_status == PeerEvent.PEER_NETCONNECTION_CONNECTED?peerService.ns:msService.ns;
-			var curr_ns:NetStream = dataProxy.use_peer_connection ? peerService.ns : msService.ns;
+			var curr_ns:NetStream = dataProxy.use_peer_connection ? peerService.netStream : msService.netStream;
 			var ns_info:NetStreamInfo = curr_ns.info;
 			
 			user_stats.application_name			= dataProxy.media_app;
@@ -35,7 +35,7 @@ package com.infrno.chat.controller
 			user_stats.user_name				= dataProxy.my_info.user_name;
 			user_stats.user_id					= dataProxy.my_info.user_id;
 
-			user_stats.wowza_protocol			= msService.nc.protocol;
+			user_stats.wowza_protocol			= msService.netConnection.protocol;
 			user_stats.capabilities				= Capabilities.serverString;
 			
 			// This is not yet useful. 

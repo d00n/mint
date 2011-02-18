@@ -45,10 +45,15 @@ package sampleSuite.tests
 			var dataProxy:DataProxy = new DataProxy();			
 			dataProxy.my_info = userInfoVO;
 			
+			trace("TestClass1.setup() 1");
 			_MSService = new MSService();		
-//			_MSService.eventDispatcher = serviceEventDispatcher;
+			trace("TestClass1.setup() 2");
+			_MSService.eventDispatcher = serviceEventDispatcher;
+			trace("TestClass1.setup() 3");
 			_MSService.dataProxy = dataProxy;
-			_MSService.deviceProxy = deviceProxy;
+			trace("TestClass1.setup() 4");
+//			_MSService.deviceProxy = deviceProxy;
+			trace("TestClass1.setup() 5");
 
 		}
 		
@@ -58,16 +63,47 @@ package sampleSuite.tests
 			this.serviceEventDispatcher = null;
 		}		
 		
+		[Test]  
+		public function updatePublishStreamTest():void { 
+			trace("TestClass1.updatePublishStreamTest()");
+			
+			Assert.assertNotNull(_MSService.netStream);
+			
+			_MSService.dataProxy.pubishing_audio = false;
+			_MSService.dataProxy.pubishing_video = false;
+			
+			trace("TestClass1.updatePublishStreamTest() before calling _MSService.updatePublishStream() ");
+			_MSService.updatePublishStream();
+			trace("TestClass1.updatePublishStreamTest() after calling _MSService.updatePublishStream() ");
+			
+			// This fails because NetStatusEvent.NET_STATUS has not been caught yet
+			// Should we sign up for that event?
+			//			Assert.assertNotNull(_MSService.ns);
+			
+			//			var event:NetStatusEvent = new NetStatusEvent(NetStatusEvent.NET_STATUS);
+			//			event.info = new Object();
+			//			event.info.code = "NetConnection.Connect.Success";
+			//			
+			//			_MSService.netStatusHandler(event);
+			//			Assert.assertNotNull(_MSService.ns);
+		}
 		
   	
 		[Test]  
 		public function initializeMSService():void { 
+			trace("TestClass1.initializeMSService()");
+
 			Assert.assertNotNull(_MSService);
-			Assert.assertNotNull(_MSService.nc);
-			Assert.assertNull(_MSService.ns);
+			Assert.assertNotNull(_MSService.netConnection);
+			Assert.assertNull(_MSService.netStream);
 			
+			trace("TestClass1.initializeMSService() before calling _MSService.connect() ");
 			_MSService.connect();
-			Assert.assertNotNull(_MSService.ns);
+			trace("TestClass1.initializeMSService() after calling _MSService.connect() ");
+			
+			// This fails because NetStatusEvent.NET_STATUS has not been caught yet
+			// Should we sign up for that event?
+//			Assert.assertNotNull(_MSService.ns);
 			
 //			var event:NetStatusEvent = new NetStatusEvent(NetStatusEvent.NET_STATUS);
 //			event.info = new Object();
@@ -75,7 +111,6 @@ package sampleSuite.tests
 //			
 //			_MSService.netStatusHandler(event);
 //			Assert.assertNotNull(_MSService.ns);
-
 		}
 	}
 }

@@ -43,7 +43,7 @@ package sampleSuite.tests
 			var userInfoVO:UserInfoVO = new UserInfoVO(infoObj);			
 			var deviceProxy:DeviceProxy = strict(DeviceProxy);
 			var dataProxy:DataProxy = new DataProxy();			
-			dataProxy.my_info = userInfoVO;
+			dataProxy.local_userInfoVO = userInfoVO;
 			
 			trace("TestClass1.setup() 1");
 			_MSService = new MSService();		

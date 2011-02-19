@@ -32,8 +32,8 @@ package com.infrno.chat.controller
 			user_stats.application_name			= dataProxy.media_app;
 			user_stats.room_name				= dataProxy.room_name;
 			user_stats.room_id					= dataProxy.room_id;
-			user_stats.user_name				= dataProxy.my_info.user_name;
-			user_stats.user_id					= dataProxy.my_info.user_id;
+			user_stats.user_name				= dataProxy.local_userInfoVO.user_name;
+			user_stats.user_id					= dataProxy.local_userInfoVO.user_id;
 
 			user_stats.wowza_protocol			= msService.netConnection.protocol;
 			user_stats.capabilities				= Capabilities.serverString;

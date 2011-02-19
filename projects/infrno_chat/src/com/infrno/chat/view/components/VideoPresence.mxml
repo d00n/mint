@@ -19,7 +19,7 @@
 //			private var _audio_level	:int;
 			
 			//TODO!! rename data as userInfoVO
-			private var _data:UserInfoVO;
+			private var _userInfoVO:UserInfoVO;
 			private var _video:Video;
 			
 			public function get video():Video
@@ -31,14 +31,14 @@
 				return _video;
 			}
 			
-			public function get data():UserInfoVO
+			public function get userInfoVO():UserInfoVO
 			{
-				return _data;
+				return _userInfoVO;
 			}
 			
-			public function set data(info:UserInfoVO):void
+			public function set userInfoVO(info:UserInfoVO):void
 			{
-				_data = info;
+				_userInfoVO = info;
 			}
 			
 			public function get is_local():Boolean
@@ -80,7 +80,7 @@
 				if( hasNetStream( ) ) 
 				{
 					setAudioLevel( 90 );
-					_data.netStream.receiveAudio( false );
+					_userInfoVO.netStream.receiveAudio( false );
 				}
 			}	
 					
@@ -96,18 +96,18 @@
 					if(_is_local){
 						dispatchEvent(new VideoPresenceEvent(VideoPresenceEvent.AUDIO_MUTED,true))
 					} else {
-						if(_data.netStream!=null){
+						if(_userInfoVO.netStream!=null){
 							setAudioLevel(0,true);
-							_data.netStream.receiveAudio(false);
+							_userInfoVO.netStream.receiveAudio(false);
 						}
 					}
 				} else {
 					if(_is_local){
 						dispatchEvent(new VideoPresenceEvent(VideoPresenceEvent.AUDIO_UNMUTED,true))
 					} else {
-						if(_data.netStream!=null){
+						if(_userInfoVO.netStream!=null){
 							setAudioLevel(audio_level.value);
-							_data.netStream.receiveAudio(true);
+							_userInfoVO.netStream.receiveAudio(true);
 						}
 					}
 						
@@ -126,7 +126,7 @@
 				
 				if( hasNetStream( ) )
 				{
-					_data.netStream.receiveVideo(true);
+					_userInfoVO.netStream.receiveVideo(true);
 					video.visible = true;
 				}
 			}
@@ -147,8 +147,8 @@
 						dispatchEvent(new VideoPresenceEvent(VideoPresenceEvent.VIDEO_MUTED,true));
 						video.attachCamera(null)
 					} else {
-						if(_data.netStream!=null)
-							_data.netStream.receiveVideo(false);
+						if(_userInfoVO.netStream!=null)
+							_userInfoVO.netStream.receiveVideo(false);
 					}
 					video.visible = false;
 				} else {
@@ -156,8 +156,8 @@
 						dispatchEvent(new VideoPresenceEvent(VideoPresenceEvent.VIDEO_UNMUTED,true));
 						video.attachCamera(_camera);
 					} else {
-						if(_data.netStream!=null)
-							_data.netStream.receiveVideo(true);
+						if(_userInfoVO.netStream!=null)
+							_userInfoVO.netStream.receiveVideo(true);
 					}
 					
 					video.visible = true;
@@ -170,7 +170,7 @@
 			
 			private function adjustVolume():void
 			{
-				if(_data.netStream != null)
+				if(_userInfoVO.netStream != null)
 					setAudioLevel(audio_level.value);
 			}
 			
@@ -259,21 +259,21 @@
 				}
 				
 				// Peer audio is set here. Where does _data get assigned?
-				var curr_transform:SoundTransform = _data.netStream.soundTransform;
+				var curr_transform:SoundTransform = _userInfoVO.netStream.soundTransform;
 				curr_transform.volume = levelIn/100;
-				_data.netStream.soundTransform = curr_transform;
+				_userInfoVO.netStream.soundTransform = curr_transform;
 				
 			}
 			
 			private function hasNetStream( ):Boolean
 			{
-				if( null == _data ) 
+				if( null == _userInfoVO ) 
 				{
 					//not initialized
 					return false;  
 				}
 				
-				if( null == _data.netStream ) 
+				if( null == _userInfoVO.netStream ) 
 				{
 					//no camera attached to this video feed
 					return false;

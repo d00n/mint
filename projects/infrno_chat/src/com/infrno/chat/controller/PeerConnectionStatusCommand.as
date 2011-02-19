@@ -21,11 +21,11 @@ package com.infrno.chat.controller
 		override public function execute():void
 		{
 			if(dataProxy.peer_enabled){
-				dataProxy.my_info.nearID = event.value;
-				dataProxy.my_info.peer_connection_status = event.type;
+				dataProxy.local_userInfoVO.nearID = event.value;
+				dataProxy.local_userInfoVO.peer_connection_status = event.type;
 				dataProxy.peer_capable = event.type == PeerEvent.PEER_NETCONNECTION_CONNECTED;
 			} else {
-				dataProxy.my_info.peer_connection_status = PeerEvent.PEER_NETCONNECTION_DISCONNECTED; //force server connection
+				dataProxy.local_userInfoVO.peer_connection_status = PeerEvent.PEER_NETCONNECTION_DISCONNECTED; //force server connection
 			}
 			msService.updateUserInfo();
 		}

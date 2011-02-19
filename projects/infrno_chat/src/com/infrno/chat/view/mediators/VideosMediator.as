@@ -25,12 +25,16 @@ package com.infrno.chat.view.mediators
 	
 	public class VideosMediator extends Mediator
 	{
+		// TODO: I don't think Mediators should depend on Models. 
+		// Pass a VO in the event instead
 		[Inject]
 		public var dataProxy:DataProxy;
 		
 		[Inject]
 		public var deviceProxy:DeviceProxy;
 		
+		// TODO: I don't think Mediators should depend on Services. 
+		// Can we use commands instead?
 		[Inject]
 		public var msService:MSService;
 		
@@ -62,13 +66,13 @@ package com.infrno.chat.view.mediators
 			dispatch( new SettingsEvent( settingsEvent.type ) );
 		}
 		
-		private function usersUpdated(e:MSEvent):void
+		private function usersUpdated(msEvent:MSEvent):void
 		{
-			removeVideos();
-			updateVideos();
+			removeVideos(msEvent.userInfoVO_array, msEvent.local_userInfoVO);
+			updateVideos(msEvent.userInfoVO_array, msEvent.local_userInfoVO);
 		}
 		
-		private function removeVideos():void
+		private function removeVideos(userInfoVO_array:Array, local_userInfoVO:UserInfoVO):void
 		{
 			trace("VideosMediator.removeVideos()");
 //			var element_num:int = videos.videos_holder.numChildren;
@@ -82,7 +86,7 @@ package com.infrno.chat.view.mediators
 					trace("VideosMediator.removeVideos() videoPresence.name="+videoPresence.name);
 					
 					//if the video isn't in the users collection remove it
-					if(dataProxy.userInfoVO_array[videoPresence.name] == null){
+					if(userInfoVO_array[videoPresence.name] == null){
 //						videos.videos_holder.removeElement(videoPresence as IVisualElement);
 						var vp_index:int = videos.videos_holder.dataProvider.getItemIndex(videoPresence);
 						trace("VideosMediator.removeVideos() vp_index="+vp_index);
@@ -90,7 +94,7 @@ package com.infrno.chat.view.mediators
 					}
 				}catch(e:Object){
 					//out of range error I'm sure
-					trace("VideosMediator.removeVideos() " +e.toString());
+					trace("VideosMediator.removeVideos() error:" +e.toString());
 				}
 			}
 		}
@@ -126,21 +130,21 @@ package com.infrno.chat.view.mediators
 		{
 			trace("VideosMediator.onVideoPresenceCreationComplete")
 			
-			var curr_presence:VideoPresence = e.target as VideoPresence;
-			if(curr_presence.is_local){
-				setupMyPresenceComponent(curr_presence);
+			var videoPresence:VideoPresence = e.target as VideoPresence;
+			if(videoPresence.is_local){
+				setupLocalVideoPresenceComponent(videoPresence);
 			} else {
-				setupOtherPresenceComponent(curr_presence);
+				setupPeerVideoPresenceComponent(videoPresence);
 			}
 		}
 		
-		private function updateVideos():void
+		private function updateVideos(userInfoVO_array:Array, local_userInfoVO:UserInfoVO):void
 		{
 			trace("VideosMediator.updateVideos()");
 			
-			for(var name:String in dataProxy.userInfoVO_array){
+			for(var name:String in userInfoVO_array){
 				trace("VideosMediator.updateVideos() name="+name);
-				var userInfoVO:UserInfoVO = dataProxy.userInfoVO_array[name];
+				var userInfoVO:UserInfoVO = userInfoVO_array[name];
 				
 				//if the video presence doesn't exist add one
 //				if(videos.videos_holder.getChildByName(name) == null){
@@ -152,20 +156,24 @@ package com.infrno.chat.view.mediators
 					videoPresence = new VideoPresence();
 					videos.videos_holder.dataProvider.addItem(videoPresence);
 					
-					videoPresence.data = userInfoVO;
+					videoPresence.userInfoVO = userInfoVO;
 					videoPresence.name = userInfoVO.suid.toString();
 					
-					videoPresence.is_local = userInfoVO.suid == dataProxy.my_info.suid;
+					// TODO push this comparison into the is_local attribute
+					if (userInfoVO.suid == local_userInfoVO.suid)
+						videoPresence.is_local = true;
+					else
+						videoPresence.is_local = false;
 					
 					videoPresence.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
 						{
 							trace("VideosMediator.updateVideos() VideoPresence FlexEvent.CREATION_COMPLETE event listener")
 							
-							var curr_presence:VideoPresence = e.target as VideoPresence;
-							if(curr_presence.is_local){
-								setupMyPresenceComponent(curr_presence);
+							var videoPresence:VideoPresence = e.target as VideoPresence;
+							if(videoPresence.is_local){
+								setupLocalVideoPresenceComponent(videoPresence);
 							} else {
-								setupOtherPresenceComponent(curr_presence);
+								setupPeerVideoPresenceComponent(videoPresence);
 							}
 						});
 					
@@ -181,20 +189,20 @@ package com.infrno.chat.view.mediators
 						return;
 					}
 							
-					videoPresence.is_local = userInfoVO.suid == dataProxy.my_info.suid;
+					videoPresence.is_local = userInfoVO.suid == local_userInfoVO.suid;
 					
-					if(userInfoVO.suid == dataProxy.my_info.suid){
-						setupMyPresenceComponent(videoPresence);
+					if(userInfoVO.suid == local_userInfoVO.suid){
+						setupLocalVideoPresenceComponent(videoPresence);
 					} else {
-						setupOtherPresenceComponent(videoPresence);
+						setupPeerVideoPresenceComponent(videoPresence);
 					}					
 				}				
 			}
 		}
 		
-		private function setupMyPresenceComponent(videoPresence:VideoPresence):void
+		private function setupLocalVideoPresenceComponent(videoPresence:VideoPresence):void
 		{
-			trace("VideosMediator.setupMyPresenceComponent()");
+			trace("VideosMediator.setupLocalVideoPresenceComponent()");
 			videoPresence.is_local = true;
 			videoPresence.camera = deviceProxy.camera;
 			videoPresence.audio_level.value = deviceProxy.mic.gain;
@@ -203,20 +211,20 @@ package com.infrno.chat.view.mediators
 			videoPresence.toggleVideo();
 		}
 		
-		private function setupOtherPresenceComponent(videoPresence:VideoPresence):void
+		private function setupPeerVideoPresenceComponent(videoPresence:VideoPresence):void
 		{
-			trace("VideosMediator.setupOtherPresenceComponent()");
-			var userInfoVO:UserInfoVO = videoPresence.data;
+			trace("VideosMediator.setupPeerVideoPresenceComponent()");
+			var userInfoVO:UserInfoVO = videoPresence.userInfoVO;
 			
 			if(dataProxy.use_peer_connection && userInfoVO.nearID && dataProxy.peer_capable && !(userInfoVO.netStream is NetStreamPeer) ){
-				trace("VideosMediator.setupOtherPresenceComponent() setting up and playing from the peer connection: "+userInfoVO.suid.toString());
+				trace("VideosMediator.setupPeerVideoPresenceComponent() setting up and playing from the peer connection: "+userInfoVO.suid.toString());
 				userInfoVO.netStream = peerService.getNewNetStream(userInfoVO.nearID);
 				userInfoVO.netStream.play(userInfoVO.suid.toString());
 				videoPresence.netstream = userInfoVO.netStream;
 				videoPresence.toggleAudio();
 				videoPresence.toggleVideo();
 			} else if(!dataProxy.use_peer_connection && !(userInfoVO.netStream is NetStreamMS) ){
-				trace("VideosMediator.setupOtherPresenceComponent() setting up and playing from the stream server");
+				trace("VideosMediator.setupPeerVideoPresenceComponent() setting up and playing from the stream server");
 				userInfoVO.netStream = msService.getNewNetStream();
 				userInfoVO.netStream.play(userInfoVO.suid.toString(),-1);
 				videoPresence.netstream = userInfoVO.netStream;
@@ -227,7 +235,7 @@ package com.infrno.chat.view.mediators
 			try{
 				videoPresence.audio_level.value = userInfoVO.netStream.soundTransform.volume*100
 			} catch(e:Object){
-				trace("VideosMediator.setupOtherPresenceComponent() setting videoPresence.audio_level.value threw an error: " + e.toString());
+				trace("VideosMediator.setupPeerVideoPresenceComponent() setting videoPresence.audio_level.value threw an error: " + e.toString());
 			}
 		}
 		

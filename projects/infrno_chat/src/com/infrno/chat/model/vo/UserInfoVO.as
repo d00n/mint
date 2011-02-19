@@ -43,7 +43,7 @@ package com.infrno.chat.model.vo
 			_netStream.addEventListener(NetStatusEvent.NET_STATUS,handleNetStatus);
 		}
 		
-		public function updateInfo(info:Object):void
+		public function update(info:Object):void
 		{
 			for(var i:String in info){
 				if(info[i]!=null) {

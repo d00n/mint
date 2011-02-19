@@ -1,5 +1,7 @@
 package com.infrno.chat.model.events
 {
+	import com.infrno.chat.model.vo.UserInfoVO;
+	
 	import flash.events.Event;
 	
 	public class MSEvent extends Event
@@ -11,6 +13,9 @@ package com.infrno.chat.model.events
 		public static const USERS_OBJ_UPDATE:String							= "users_obj_update";
 		
 		private var _message:String;
+		
+		public var userInfoVO_array:Array;
+		public var local_userInfoVO:UserInfoVO;
 		
 		public function MSEvent(type:String, message:String = null)
 		{

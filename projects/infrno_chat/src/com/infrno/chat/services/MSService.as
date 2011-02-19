@@ -52,14 +52,14 @@ package com.infrno.chat.services
 			
 			trace("MSService.connect() dataProxy params:" 
 				+ dataProxy.room_name 
-				+":"+ dataProxy.my_info.user_name 
+				+":"+ dataProxy.local_userInfoVO.user_name 
 				+":"+ dataProxy.room_id 
 				+":"+ dataProxy.auth_key);
 			
 //			dispatch(new MSEvent(MSEvent.NETCONNECTION_CONNECTING));
 			
 			_nc.connect(connection_uri, 
-				dataProxy.my_info, 
+				dataProxy.local_userInfoVO, 
 				dataProxy.auth_key,
 				dataProxy.room_id,
 				dataProxy.room_name, 
@@ -112,7 +112,7 @@ package com.infrno.chat.services
 			// TODO write test around this, then flip the if blocks to eliminate the negation 
 			if(!dataProxy.use_peer_connection){
 				if(!_published){
-					trace("MSService.updatePublishStream() ### publishing my server stream with dataProxy.my_info.suid: "+dataProxy.my_info.suid.toString());
+					trace("MSService.updatePublishStream() ### publishing my server stream with dataProxy.my_info.suid: "+dataProxy.local_userInfoVO.suid.toString());
 					
 					if(dataProxy.pubishing_audio)
 						_ns.attachAudio(deviceProxy.mic);
@@ -120,7 +120,7 @@ package com.infrno.chat.services
 					if(dataProxy.pubishing_video)
 						_ns.attachCamera(deviceProxy.camera);
 					
-					_ns.publish(dataProxy.my_info.suid.toString());
+					_ns.publish(dataProxy.local_userInfoVO.suid.toString());
 					
 					dataProxy.ns = _ns;
 				} else {
@@ -134,8 +134,8 @@ package com.infrno.chat.services
 		
 		public function updateUserInfo():void
 		{
-			trace("MSService.updateUserInfo() typeof(dataProxy.my_info)="+typeof(dataProxy.my_info));
-			_nc.call("updateUserInfo",null,dataProxy.my_info);
+			trace("MSService.updateUserInfo() typeof(dataProxy.my_info)="+typeof(dataProxy.local_userInfoVO));
+			_nc.call("updateUserInfo",null,dataProxy.local_userInfoVO);
 		}
 		
 		/**
@@ -178,11 +178,11 @@ package com.infrno.chat.services
 			
 			_nc_client = new Object();
 			
-			_nc_client.initUser = function(user_info:Object):void
+			_nc_client.initUser = function(userInfoVO:Object):void
 				{
 					//dataProxy.my_info = new UserInfoVO(user_info);
-					trace("MSService: _nc_client.initUser() user_info:" + user_info.toString());
-					dataProxy.my_info.updateInfo(user_info);
+					trace("MSService: _nc_client.initUser() userInfoVO:" + userInfoVO.toString());
+					dataProxy.local_userInfoVO.update(userInfoVO);
 				}
 				
 			_nc_client.chatToUser = function(msgIn:String):void {
@@ -204,27 +204,31 @@ package com.infrno.chat.services
 			_nc_client.updateUsers = updateUsers;
 		}
 		
-		private function updateUsers(userInfoVO_array:Object):void
+		private function updateUsers(userInfoVOs:Object):void
 		{
 			trace("MSService.updateUsers()");
+			
+			// TODO: don't delete what hasn't changed.
 			
 			//removing data
 			for(var n:String in dataProxy.userInfoVO_array)
 			{
 				trace("MSService.updateUsers() looking to delete n="+n);
-				if(userInfoVO_array[n] == null)
+				if(userInfoVOs[n] == null)
 					delete dataProxy.userInfoVO_array[n];
 			}
 			
 			//adding/updating info
-			for(var m:String in userInfoVO_array){
+			for(var m:String in userInfoVOs){
 				trace("MSService.updateUsers() looking to add m="+m);				
-				if(dataProxy.userInfoVO_array[m] == null){
+				var userInfoVO:UserInfoVO = dataProxy.userInfoVO_array[m];				
+				
+				if(userInfoVO == null){
 					trace("MSService.updateUsers() creating new UserInfoVO for m="+m);				
-					dataProxy.userInfoVO_array[m] = new UserInfoVO(userInfoVO_array[m]);
+					dataProxy.userInfoVO_array[m] = new UserInfoVO(userInfoVOs[m]);
 				} else {
-					trace("MSService.updateUsers() updating UserInfoVO for m="+m);				
-					dataProxy.userInfoVO_array[m].updateInfo(userInfoVO_array[m]);
+					trace("MSService.updateUsers() updating UserInfoVO for m="+m);						
+					userInfoVO.update(userInfoVOs[m]);
 				}
 			}
 			

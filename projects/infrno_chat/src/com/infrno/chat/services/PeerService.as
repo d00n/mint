@@ -60,7 +60,7 @@ package com.infrno.chat.services
 			// TODO write test around this, then flip the if blocks to eliminate the negation 
 			if(dataProxy.use_peer_connection){
 				if(!_published){
-					trace("PeerService.updatePublishStream() >>> publishing my peer stream with name: "+dataProxy.my_info.suid.toString());
+					trace("PeerService.updatePublishStream() >>> publishing my peer stream with name: "+dataProxy.local_userInfoVO.suid.toString());
 					
 					setupOutgoingNetStream();
 					
@@ -70,7 +70,7 @@ package com.infrno.chat.services
 					if(dataProxy.pubishing_video)
 						_ns_outgoing.attachCamera(deviceProxy.camera);
 					
-					_ns_outgoing.publish(dataProxy.my_info.suid.toString());
+					_ns_outgoing.publish(dataProxy.local_userInfoVO.suid.toString());
 					
 					dataProxy.ns = _ns_outgoing;
 				} else {

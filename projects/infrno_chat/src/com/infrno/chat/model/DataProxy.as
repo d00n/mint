@@ -11,8 +11,8 @@ package com.infrno.chat.model
 	{
 		public static const VERSION:String		= "Chat v0.2.20";
 		
-		public var peer_enabled:Boolean;
-		
+		// TODO move status vars to a VO, maybe UserInfoVO?
+		public var peer_enabled:Boolean;		
 		public var peer_capable:Boolean;
 		public var use_peer_connection:Boolean;
 		public var pubishing_audio:Boolean;
@@ -24,6 +24,7 @@ package com.infrno.chat.model
 		// .. and why not make it an array? 
 		public var userInfoVO_array:Array;
 		
+		// TODO move all the non-const connection params to a VO
 		// Wowza will accept these values for specified hosts.
 		public var auth_key:String		= "sample_auth_key";
 		
@@ -33,8 +34,8 @@ package com.infrno.chat.model
 		public var user_id:String 		= "";
 		
 		//using personal stratus key for now
-		public var peer_server_key:String		= "4b9d915ef5ee88cfd38eb359-abf46599bf1f";
-		public var peer_server:String				= "rtmfp://stratus.adobe.com";
+		public const  peer_server_key:String		= "4b9d915ef5ee88cfd38eb359-abf46599bf1f";
+		public const peer_server:String				= "rtmfp://stratus.adobe.com";
 		
 		////
 		// possible values:
@@ -48,7 +49,7 @@ package com.infrno.chat.model
 		
 		//public var my_info:UserInfoVO = new UserInfoVO({user_name:"user"+Math.round(Math.random()*1000),user_id:"sample_user_id"});
 		// TODO: rename my_info as local_userInfoVO
-		public var my_info:UserInfoVO;
+		public var local_userInfoVO:UserInfoVO;
 		
 		public function DataProxy( )
 		{
@@ -56,7 +57,7 @@ package com.infrno.chat.model
 			
 			user_name= "user" + Math.round(Math.random()*1000);
 			user_id = user_name
-			my_info	= new UserInfoVO({user_name:user_name, user_id:user_id});
+			local_userInfoVO	= new UserInfoVO({user_name:user_name, user_id:user_id});
 		}
 		
 		public function get media_server( ):String 

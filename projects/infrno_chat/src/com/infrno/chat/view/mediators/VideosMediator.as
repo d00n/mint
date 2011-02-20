@@ -1,15 +1,12 @@
 package com.infrno.chat.view.mediators
 {
-	import com.infrno.chat.model.DataProxy;
 	import com.infrno.chat.model.DeviceProxy;
 	import com.infrno.chat.model.events.MSEvent;
 	import com.infrno.chat.model.events.SettingsEvent;
 	import com.infrno.chat.model.events.VideoPresenceEvent;
 	import com.infrno.chat.model.vo.UserInfoVO;
-	import com.infrno.chat.services.MSService;
 	import com.infrno.chat.services.NetStreamMS;
 	import com.infrno.chat.services.NetStreamPeer;
-	import com.infrno.chat.services.PeerService;
 	import com.infrno.chat.view.components.VideoPresence;
 	import com.infrno.chat.view.components.Videos;
 	
@@ -26,20 +23,9 @@ package com.infrno.chat.view.mediators
 	public class VideosMediator extends Mediator
 	{
 		// TODO: I don't think Mediators should depend on Models. 
-		// Pass a VO in the event instead
-//		[Inject]
-//		public var dataProxy:DataProxy;
-		
+		// Pass a VO in the event instead	
 		[Inject]
 		public var deviceProxy:DeviceProxy;
-		
-		// TODO: I don't think Mediators should depend on Services. 
-		// Can we use commands instead?
-//		[Inject]
-//		public var msService:MSService;
-//		
-//		[Inject]
-//		public var peerService:PeerService;
 		
 		[Inject]
 		public var videos:Videos;
@@ -95,6 +81,8 @@ package com.infrno.chat.view.mediators
 					}
 				}catch(e:Object){
 					//out of range error I'm sure
+					// TODO Make sure we don't get out of range errors
+					// things work just fine, but how does this state occur?
 					trace("VideosMediator.removeVideos() error:" +e.toString());
 				}
 			}
@@ -144,17 +132,15 @@ package com.infrno.chat.view.mediators
 			trace("VideosMediator.updateVideos()");
 			
 			// What field in userInfoVO defines 'name' here?
+			// Answer: suid
 			for(var name:String in userInfoVO_array){
 				trace("VideosMediator.updateVideos() name="+name);
 				var userInfoVO:UserInfoVO = userInfoVO_array[name];
 				
-				//if the video presence doesn't exist add one
-//				if(videos.videos_holder.getChildByName(name) == null){
 				var videoPresence:VideoPresence = getVideoPresenceByName(name);
 				if(videoPresence == null){
 					trace("VideosMediator.updateVideos() adding new VideoPresence for name="+name);
 					
-//					videoPresence = videos.videos_holder.addElement(new VideoPresence()) as VideoPresence;
 					videoPresence = new VideoPresence();
 					videos.videos_holder.dataProvider.addItem(videoPresence);
 					
@@ -216,20 +202,16 @@ package com.infrno.chat.view.mediators
 		private function setupPeerVideoPresenceNetStream(videoPresence:VideoPresence):void
 		{
 			trace("VideosMediator.setupPeerVideoPresenceNetStream()");			
-			var videoPresenceEvent:VideoPresenceEvent= new VideoPresenceEvent(VideoPresenceEvent.SETUP_PEER_NETSTREAM);
-			videoPresenceEvent.userInfoVO = videoPresence.userInfoVO;
-			dispatch(videoPresenceEvent);			
+			var vpEvent:VideoPresenceEvent= new VideoPresenceEvent(VideoPresenceEvent.SETUP_PEER_NETSTREAM);
+			vpEvent.userInfoVO = videoPresence.userInfoVO;
+			dispatch(vpEvent);			
 		}
 		
-		private function setupPeerVideoPresenceComponent(videoPresenceEvent:VideoPresenceEvent):void
+		private function setupPeerVideoPresenceComponent(vpEvent:VideoPresenceEvent):void
 		{
 			trace("VideosMediator.setupPeerVideoPresenceComponent()");
-			
-			var userInfoVO:UserInfoVO = videoPresenceEvent.userInfoVO;
-			
-			// not sure if userInfoVO.user_name is right, maybe suid?
-			var videoPresence:VideoPresence = getVideoPresenceByName(userInfoVO.suid.toString());
-			
+			var userInfoVO:UserInfoVO = vpEvent.userInfoVO;
+			var videoPresence:VideoPresence = getVideoPresenceByName(userInfoVO.suid.toString());			
 			videoPresence.netstream = userInfoVO.netStream;
 			videoPresence.toggleAudio();
 			videoPresence.toggleVideo();

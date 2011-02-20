@@ -233,7 +233,10 @@ package com.infrno.chat.services
 			}
 			
 			trace("MSService.updateUsers() dispatching MSEvent.USERS_OBJ_UPDATE)");	
-			dispatch(new MSEvent(MSEvent.USERS_OBJ_UPDATE));
+			var msEvent:MSEvent = new MSEvent(MSEvent.USERS_OBJ_UPDATE);
+			msEvent.userInfoVO_array = dataProxy.userInfoVO_array;
+			msEvent.local_userInfoVO = dataProxy.local_userInfoVO;
+			dispatch(msEvent);
 		}
 		
 		private function setupNetConnection():void

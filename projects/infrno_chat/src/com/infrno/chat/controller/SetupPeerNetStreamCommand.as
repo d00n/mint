@@ -44,9 +44,9 @@ package com.infrno.chat.controller
 //				videoPresence.toggleVideo();
 			}
 			
-			var videoPresenceEvent:VideoPresenceEvent= new VideoPresenceEvent(VideoPresenceEvent.SETUP_PEER_VIDEOPRESENCE_COMPONENT);
-			videoPresenceEvent.userInfoVO = userInfoVO;
-			dispatch(videoPresenceEvent);	
+			var vpEvent:VideoPresenceEvent= new VideoPresenceEvent(VideoPresenceEvent.SETUP_PEER_VIDEOPRESENCE_COMPONENT);
+			vpEvent.userInfoVO = userInfoVO;
+			dispatch(vpEvent);	
 
 		}
 	}

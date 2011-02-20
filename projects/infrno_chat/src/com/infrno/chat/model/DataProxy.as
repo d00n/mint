@@ -20,9 +20,7 @@ package com.infrno.chat.model
 		
 		public var ns:NetStream;
 		
-		// TODO rename this userInfoVO_array
-		// .. and why not make it an array? 
-		public var userInfoVO_array:Array;
+
 		
 		// TODO move all the non-const connection params to a VO
 		// Wowza will accept these values for specified hosts.
@@ -46,6 +44,9 @@ package com.infrno.chat.model
 		private var m_mediaServer:String	= "rtmp://localhost";
 		private var m_mediaApp:String			= "chat";
 		private var m_mediaPort:String		= "1935";
+		
+		// Is this a collection of peers? Does it include local?
+		public var userInfoVO_array:Array;
 		
 		//public var my_info:UserInfoVO = new UserInfoVO({user_name:"user"+Math.round(Math.random()*1000),user_id:"sample_user_id"});
 		// TODO: rename my_info as local_userInfoVO

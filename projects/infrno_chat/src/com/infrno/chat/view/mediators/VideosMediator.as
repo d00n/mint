@@ -27,19 +27,19 @@ package com.infrno.chat.view.mediators
 	{
 		// TODO: I don't think Mediators should depend on Models. 
 		// Pass a VO in the event instead
-		[Inject]
-		public var dataProxy:DataProxy;
+//		[Inject]
+//		public var dataProxy:DataProxy;
 		
 		[Inject]
 		public var deviceProxy:DeviceProxy;
 		
 		// TODO: I don't think Mediators should depend on Services. 
 		// Can we use commands instead?
-		[Inject]
-		public var msService:MSService;
-		
-		[Inject]
-		public var peerService:PeerService;
+//		[Inject]
+//		public var msService:MSService;
+//		
+//		[Inject]
+//		public var peerService:PeerService;
 		
 		[Inject]
 		public var videos:Videos;
@@ -47,6 +47,7 @@ package com.infrno.chat.view.mediators
 		override public function onRegister():void
 		{
 			eventMap.mapListener(eventDispatcher,MSEvent.USERS_OBJ_UPDATE,usersUpdated);
+			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.SETUP_PEER_VIDEOPRESENCE_COMPONENT,setupPeerVideoPresenceComponent);
 			
 			videos.addEventListener(SettingsEvent.SHOW_SETTINGS,handleShowSettings);
 			videos.addEventListener(VideoPresenceEvent.AUDIO_LEVEL,dispatchEventInSystem);
@@ -134,7 +135,7 @@ package com.infrno.chat.view.mediators
 			if(videoPresence.is_local){
 				setupLocalVideoPresenceComponent(videoPresence);
 			} else {
-				setupPeerVideoPresenceComponent(videoPresence);
+				setupPeerVideoPresenceNetStream(videoPresence);
 			}
 		}
 		
@@ -142,6 +143,7 @@ package com.infrno.chat.view.mediators
 		{
 			trace("VideosMediator.updateVideos()");
 			
+			// What field in userInfoVO defines 'name' here?
 			for(var name:String in userInfoVO_array){
 				trace("VideosMediator.updateVideos() name="+name);
 				var userInfoVO:UserInfoVO = userInfoVO_array[name];
@@ -173,7 +175,7 @@ package com.infrno.chat.view.mediators
 							if(videoPresence.is_local){
 								setupLocalVideoPresenceComponent(videoPresence);
 							} else {
-								setupPeerVideoPresenceComponent(videoPresence);
+								setupPeerVideoPresenceNetStream(videoPresence);
 							}
 						});
 					
@@ -194,7 +196,7 @@ package com.infrno.chat.view.mediators
 					if(userInfoVO.suid == local_userInfoVO.suid){
 						setupLocalVideoPresenceComponent(videoPresence);
 					} else {
-						setupPeerVideoPresenceComponent(videoPresence);
+						setupPeerVideoPresenceNetStream(videoPresence);
 					}					
 				}				
 			}
@@ -211,26 +213,26 @@ package com.infrno.chat.view.mediators
 			videoPresence.toggleVideo();
 		}
 		
-		private function setupPeerVideoPresenceComponent(videoPresence:VideoPresence):void
+		private function setupPeerVideoPresenceNetStream(videoPresence:VideoPresence):void
+		{
+			trace("VideosMediator.setupPeerVideoPresenceNetStream()");			
+			var videoPresenceEvent:VideoPresenceEvent= new VideoPresenceEvent(VideoPresenceEvent.SETUP_PEER_NETSTREAM);
+			videoPresenceEvent.userInfoVO = videoPresence.userInfoVO;
+			dispatch(videoPresenceEvent);			
+		}
+		
+		private function setupPeerVideoPresenceComponent(videoPresenceEvent:VideoPresenceEvent):void
 		{
 			trace("VideosMediator.setupPeerVideoPresenceComponent()");
-			var userInfoVO:UserInfoVO = videoPresence.userInfoVO;
 			
-			if(dataProxy.use_peer_connection && userInfoVO.nearID && dataProxy.peer_capable && !(userInfoVO.netStream is NetStreamPeer) ){
-				trace("VideosMediator.setupPeerVideoPresenceComponent() setting up and playing from the peer connection: "+userInfoVO.suid.toString());
-				userInfoVO.netStream = peerService.getNewNetStream(userInfoVO.nearID);
-				userInfoVO.netStream.play(userInfoVO.suid.toString());
-				videoPresence.netstream = userInfoVO.netStream;
-				videoPresence.toggleAudio();
-				videoPresence.toggleVideo();
-			} else if(!dataProxy.use_peer_connection && !(userInfoVO.netStream is NetStreamMS) ){
-				trace("VideosMediator.setupPeerVideoPresenceComponent() setting up and playing from the stream server");
-				userInfoVO.netStream = msService.getNewNetStream();
-				userInfoVO.netStream.play(userInfoVO.suid.toString(),-1);
-				videoPresence.netstream = userInfoVO.netStream;
-				videoPresence.toggleAudio();
-				videoPresence.toggleVideo();
-			}
+			var userInfoVO:UserInfoVO = videoPresenceEvent.userInfoVO;
+			
+			// not sure if userInfoVO.user_name is right, maybe suid?
+			var videoPresence:VideoPresence = getVideoPresenceByName(userInfoVO.suid.toString());
+			
+			videoPresence.netstream = userInfoVO.netStream;
+			videoPresence.toggleAudio();
+			videoPresence.toggleVideo();
 			
 			try{
 				videoPresence.audio_level.value = userInfoVO.netStream.soundTransform.volume*100

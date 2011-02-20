@@ -42,6 +42,7 @@ package com.infrno.chat
 			commandMap.mapEvent(VideoPresenceEvent.AUDIO_UNMUTED,AudioVideoControlCommand);
 			commandMap.mapEvent(VideoPresenceEvent.VIDEO_MUTED,AudioVideoControlCommand);
 			commandMap.mapEvent(VideoPresenceEvent.VIDEO_UNMUTED,AudioVideoControlCommand);
+			commandMap.mapEvent(VideoPresenceEvent.SETUP_PEER_NETSTREAM,SetupPeerNetStreamCommand);
 
 			commandMap.mapEvent(SettingsEvent.SHOW_SETTINGS,SettingsCommand);			
 			

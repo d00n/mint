@@ -56,6 +56,7 @@ package com.infrno.chat.model
 		{
 			userInfoVO_array = new Array();
 			
+			// TODO eliminate user_id, add display_name, figure out user_name's job
 			user_name= "user" + Math.round(Math.random()*1000);
 			user_id = user_name
 			local_userInfoVO	= new UserInfoVO({user_name:user_name, user_id:user_id});

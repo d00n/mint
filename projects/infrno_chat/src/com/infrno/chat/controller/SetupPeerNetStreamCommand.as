@@ -24,6 +24,7 @@ package com.infrno.chat.controller
 		[Inject]
 		public var peerService:PeerService;		
 		
+		// TODO test me!
 		override public function execute():void
 		{
 			var userInfoVO:UserInfoVO = event.userInfoVO;
@@ -32,22 +33,15 @@ package com.infrno.chat.controller
 				trace("SetupPeerNetStreamCommand.execute() setting up and playing from the peer connection: "+userInfoVO.suid.toString());
 				userInfoVO.netStream = peerService.getNewNetStream(userInfoVO.nearID);
 				userInfoVO.netStream.play(userInfoVO.suid.toString());
-//				videoPresence.netstream = userInfoVO.netStream;
-//				videoPresence.toggleAudio();
-//				videoPresence.toggleVideo();
 			} else if(!dataProxy.use_peer_connection && !(userInfoVO.netStream is NetStreamMS) ){
 				trace("SetupPeerNetStreamCommand.execute() setting up and playing from the stream server");
 				userInfoVO.netStream = msService.getNewNetStream();
 				userInfoVO.netStream.play(userInfoVO.suid.toString(),-1);
-//				videoPresence.netstream = userInfoVO.netStream;
-//				videoPresence.toggleAudio();
-//				videoPresence.toggleVideo();
 			}
 			
 			var vpEvent:VideoPresenceEvent= new VideoPresenceEvent(VideoPresenceEvent.SETUP_PEER_VIDEOPRESENCE_COMPONENT);
 			vpEvent.userInfoVO = userInfoVO;
 			dispatch(vpEvent);	
-
 		}
 	}
 }

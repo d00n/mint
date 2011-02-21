@@ -251,10 +251,10 @@ package com.simplediagrams.controllers
 					processUpdate_ObjectChanged(changeObject);
 					break;
 				}			
-				case "UpdateDepths": {
-					processUpdate_UpdateDepths(changeObject);
-					break;
-				}			
+//				case "UpdateDepths": {
+//					processUpdate_UpdateDepths(changeObject);
+//					break;
+//				}			
 				case "ConfigureGrid": {
 					processUpdate_ConfigureGrid(changeObject);
 					break;
@@ -363,30 +363,31 @@ package com.simplediagrams.controllers
 			}
 		}
 		
-		[Mediate(event="RemoteSharedObjectEvent.UPDATE_DEPTHS")]
-		public function dispatchUpdate_UpdateDepths(event:RemoteSharedObjectEvent):void
-		{
-			Logger.info("dispatchUpdate_UpdateDepthsChange()",this);
-			
-			for each (var sdObjectModel:SDObjectModel in event.changedSDObjectModelArray)
-			{			
-				var sd_obj:Object = {};
-				sd_obj.commandName 	= "UpdateDepths";
-				sd_obj.sdID 				= sdObjectModel.sdID;								
-				sd_obj.depth 				= sdObjectModel.depth;	
-				_remoteSharedObject.setProperty(sd_obj.sdID.toString(), sd_obj);
-			}
-		}
-		
-		public function processUpdate_UpdateDepths(changeObject:Object) : void 
-		{
-			Logger.info("processUpdate_UpdateDepths()",this);
-			var sdID:String = changeObject.sdID;
-			var sdObjectModel:SDObjectModel = diagramModel.getModelByID(sdID);
-			if (sdObjectModel) {
-				sdObjectModel.depth = changeObject.depth;
-			}
-		}
+		// Looks like this is clobbering all other params. Oops! 
+		// Move it to dispatchUpdate_ObjectChanged()
+//		public function dispatchUpdate_UpdateDepths(event:RemoteSharedObjectEvent):void
+//		{
+//			Logger.info("dispatchUpdate_UpdateDepthsChange()",this);
+//			
+//			for each (var sdObjectModel:SDObjectModel in event.changedSDObjectModelArray)
+//			{			
+//				var sd_obj:Object = {};
+//				sd_obj.commandName 	= "UpdateDepths";
+//				sd_obj.sdID 				= sdObjectModel.sdID;								
+//				sd_obj.depth 				= sdObjectModel.depth;	
+//				_remoteSharedObject.setProperty(sd_obj.sdID.toString(), sd_obj);
+//			}
+//		}
+//		
+//		public function processUpdate_UpdateDepths(changeObject:Object) : void 
+//		{
+//			Logger.info("processUpdate_UpdateDepths()",this);
+//			var sdID:String = changeObject.sdID;
+//			var sdObjectModel:SDObjectModel = diagramModel.getModelByID(sdID);
+//			if (sdObjectModel) {
+//				sdObjectModel.depth = changeObject.depth;
+//			}
+//		}
 		
 //		[Mediate(event="GridEvent.SHOW_GRID")]    
 //		[Mediate(event="GridEvent.CELL_WIDTH")]    
@@ -424,6 +425,7 @@ package com.simplediagrams.controllers
 		[Mediate(event="RemoteSharedObjectEvent.TEXT_WIDGET_CREATED")]
 		[Mediate(event="RemoteSharedObjectEvent.PENCIL_DRAWING_CREATED")]
 		[Mediate(event="RemoteSharedObjectEvent.ADD_SD_OBJECT_MODEL")]
+		[Mediate(event="RemoteSharedObjectEvent.UPDATE_DEPTHS")]
 		public function dispatchUpdate_ObjectChanged(event:RemoteSharedObjectEvent) : void
 		{
 			Logger.info("dispatchUpdate_ObjectChanged() event:"+event.type,this);
@@ -617,6 +619,7 @@ package com.simplediagrams.controllers
 				}
 			}
 			
+			
 			sdObjectModel.sdID			= changeObject.sdID;
 			sdObjectModel.color	 		= changeObject.color;
 			sdObjectModel.x 				= changeObject.x;
@@ -625,6 +628,23 @@ package com.simplediagrams.controllers
 			sdObjectModel.height		= changeObject.height;
 			sdObjectModel.rotation	= changeObject.rotation;
 			sdObjectModel.depth 		= changeObject.depth;
+			
+			if (changeObject.x == null)
+				Logger.error("processUpdate_ObjectChanged() null param: sdObjectModel.x", this);
+			if (changeObject.color == null)
+				Logger.error("processUpdate_ObjectChanged() null param: sdObjectModel.color", this);
+			if (changeObject.y == null)
+				Logger.error("processUpdate_ObjectChanged() null param: sdObjectModel.y", this);
+			if (changeObject.width == null)
+				Logger.error("processUpdate_ObjectChanged() null param: sdObjectModel.width", this);
+			if (changeObject.height == null)
+				Logger.error("processUpdate_ObjectChanged() null param: sdObjectModel.height", this);
+			if (changeObject.rotation == null)
+				Logger.error("processUpdate_ObjectChanged() null param: sdObjectModel.rotation", this);
+			if (changeObject.depth == null)
+				Logger.error("processUpdate_ObjectChanged() null param: sdObjectModel.depth", this);
+			if (changeObject.sdID == null)
+				Logger.error("processUpdate_ObjectChanged() null param: sdObjectModel.sdID", this);
 			
 			// TODO Clean this up. The coupling is too tight.
 			// To prevent throwing an RSOEvent from within diagramModel.addSDObjectModel()

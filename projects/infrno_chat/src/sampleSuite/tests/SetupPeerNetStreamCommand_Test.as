@@ -14,9 +14,9 @@ package sampleSuite.tests
 	import flash.net.NetStream;
 	
 	import mockolate.mock;
+	import mockolate.nice;
 	import mockolate.prepare;
 	import mockolate.strict;
-	import mockolate.nice;
 	import mockolate.stub;
 	
 	import mx.rpc.AsyncToken;
@@ -55,8 +55,8 @@ package sampleSuite.tests
 			var msService:MSService = nice(MSService);
 			var netStream:NetStream = nice(NetStream);
 			
-			stub(peerService).method("getNewNetStream").args('nearID').returns(netStream);
-			stub(msService).method("getNewNetStream").returns(netStream);
+//			mock(peerService).method("getNewNetStream").args('nearID').returns(netStream);
+//			mock(msService).method("getNewNetStream").returns(netStream);
 			
 			setupPeerNetStreamCommand = new SetupPeerNetStreamCommand();
 			setupPeerNetStreamCommand.event = vpEvent;
@@ -76,6 +76,8 @@ package sampleSuite.tests
 			trace("SetupPeerNetStreamCommand_Test.testCommand()");
 			
 			Assert.assertNotNull(setupPeerNetStreamCommand);
+//			setupPeerNetStreamCommand.execute();
+//			Assert.assertNotNull(setupPeerNetStreamCommand);
 
 		}
 	}

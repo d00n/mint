@@ -558,7 +558,7 @@ package com.simplediagrams.controllers
 			_fileReference = new FileReference();
 			_fileReference.addEventListener(Event.SELECT, onFileSelect);
 			_fileReference.addEventListener(Event.CANCEL, onCancelFileSelect);
-			var imagesFilter:FileFilter = new FileFilter("Images", "*.jpg;*.gif;*.png;");
+			var imagesFilter:FileFilter = new FileFilter("Images", "*.jpeg;*.jpg;*.gif;*.png;");
 			//			setTimeout( function():void{_fileReference.load();}, 1);
 			_fileReference.browse([imagesFilter]);
 			

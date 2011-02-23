@@ -29,19 +29,25 @@ package com.infrno.chat.controller
 		{
 			var userInfoVO:UserInfoVO = event.userInfoVO;
 			
+			var dispatchVpEvent:Boolean = false;
+			
 			if(dataProxy.use_peer_connection && userInfoVO.nearID && dataProxy.peer_capable && !(userInfoVO.netStream is NetStreamPeer) ){
 				trace("SetupPeerNetStreamCommand.execute() setting up and playing from the peer connection: "+userInfoVO.suid.toString());
 				userInfoVO.netStream = peerService.getNewNetStream(userInfoVO.nearID);
 				userInfoVO.netStream.play(userInfoVO.suid.toString());
+				dispatchVpEvent = true;
 			} else if(!dataProxy.use_peer_connection && !(userInfoVO.netStream is NetStreamMS) ){
 				trace("SetupPeerNetStreamCommand.execute() setting up and playing from the stream server");
 				userInfoVO.netStream = msService.getNewNetStream();
 				userInfoVO.netStream.play(userInfoVO.suid.toString(),-1);
+				dispatchVpEvent = true;
 			}
 			
-			var vpEvent:VideoPresenceEvent= new VideoPresenceEvent(VideoPresenceEvent.SETUP_PEER_VIDEOPRESENCE_COMPONENT);
-			vpEvent.userInfoVO = userInfoVO;
-			dispatch(vpEvent);	
+			if (dispatchVpEvent) {
+				var vpEvent:VideoPresenceEvent= new VideoPresenceEvent(VideoPresenceEvent.SETUP_PEER_VIDEOPRESENCE_COMPONENT);
+				vpEvent.userInfoVO = userInfoVO;
+				dispatch(vpEvent);	
+			}
 		}
 	}
 }

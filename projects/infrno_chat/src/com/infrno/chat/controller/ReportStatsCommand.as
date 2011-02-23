@@ -11,6 +11,7 @@ package com.infrno.chat.controller
 	
 	import org.robotlegs.mvcs.Command;
 	
+	// TODO This is not used, remove it
 	public class ReportStatsCommand extends Command
 	{
 		[Inject]

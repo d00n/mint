@@ -6,11 +6,13 @@ package sampleSuite.tests
 	import com.infrno.chat.model.events.VideoPresenceEvent;
 	import com.infrno.chat.model.vo.UserInfoVO;
 	import com.infrno.chat.services.MSService;
+	import com.infrno.chat.services.NetStreamPeer;
 	import com.infrno.chat.services.PeerService;
 	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.NetStatusEvent;
+	import flash.net.NetConnection;
 	import flash.net.NetStream;
 	
 	import mockolate.mock;
@@ -32,37 +34,41 @@ package sampleSuite.tests
 		[Before(async, timeout=5000)]
 		public function runBeforeEveryTest():void { 
 			Async.proceedOnEvent(this,
-				prepare(MSService,PeerService,NetStream),
+				prepare(MSService,PeerService,NetStream,NetConnection),
 				Event.COMPLETE);		
 		}   
 		
 		[Before(order=2)]
 		public function setup():void {
-			var infoObj:Object = new Object();
-			infoObj.suid 				= 'suid';
-			infoObj.user_id 		= 'user_id';
-			infoObj.user_name 	= 'user_name';
-			infoObj.nearID 			= 'nearID';
-			var userInfoVO:UserInfoVO = new UserInfoVO(infoObj);			
+//			var infoObj:Object = new Object();
+//			infoObj.suid 				= 'suid';
+//			infoObj.user_id 		= 'user_id';
+//			infoObj.user_name 	= 'user_name';
+//			infoObj.nearID 			= 'nearID';
+//			var userInfoVO:UserInfoVO = new UserInfoVO(infoObj);			
+//			
+//			var vpEvent:VideoPresenceEvent = new VideoPresenceEvent(VideoPresenceEvent.SETUP_PEER_NETSTREAM);
+//			vpEvent.userInfoVO = userInfoVO;
+//			
+//			serviceEventDispatcher = new EventDispatcher();
 			
-			var vpEvent:VideoPresenceEvent = new VideoPresenceEvent(VideoPresenceEvent.SETUP_PEER_NETSTREAM);
-			vpEvent.userInfoVO = userInfoVO;
-			
-			serviceEventDispatcher = new EventDispatcher();
-			
-			var dataProxy:DataProxy = new DataProxy();	
-			var peerService:PeerService = strict(PeerService);
-			var msService:MSService = nice(MSService);
-			var netStream:NetStream = nice(NetStream);
+//			var dataProxy:DataProxy = new DataProxy();	
+//			var peerService:PeerService = strict(PeerService);
+//			var msService:MSService = nice(MSService);
+				var netConnection:NetConnection = nice(NetConnection, "netConnection"); 
+				var clientObj:Object = new Object();
+				netConnection.client = clientObj;
+				stub(netConnection).method("connected").returns(true);
+				var netStream:NetStream = nice(NetStream, "netStream", [ netConnection ]); 
 			
 //			mock(peerService).method("getNewNetStream").args('nearID').returns(netStream);
 //			mock(msService).method("getNewNetStream").returns(netStream);
 			
 			setupPeerNetStreamCommand = new SetupPeerNetStreamCommand();
-			setupPeerNetStreamCommand.event = vpEvent;
-			setupPeerNetStreamCommand.dataProxy = dataProxy;
-			setupPeerNetStreamCommand.msService = msService;
-			setupPeerNetStreamCommand.peerService = peerService;			
+//			setupPeerNetStreamCommand.event = vpEvent;
+//			setupPeerNetStreamCommand.dataProxy = dataProxy;
+//			setupPeerNetStreamCommand.msService = msService;
+//			setupPeerNetStreamCommand.peerService = peerService;			
 		}
 		
 		[After]

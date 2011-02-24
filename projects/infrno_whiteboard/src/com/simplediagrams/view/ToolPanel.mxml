@@ -16,6 +16,7 @@
 	<fx:Script>
 		<![CDATA[
 			import com.simplediagrams.events.ColorEvent;
+			import com.simplediagrams.events.DeleteSDObjectModelEvent;
 			import com.simplediagrams.events.GridEvent;
 			import com.simplediagrams.events.LoadImageEvent;
 			import com.simplediagrams.events.PositionEvent;
@@ -80,6 +81,10 @@
 			[Bindable]
 			[Embed(source='assets/img/icons/move_backward.png')]
 			private var moveBackward:Class
+			
+			[Bindable]
+			[Embed(source='assets/img/icons/delete_icon.png')]
+			private var deleteSelected:Class			
 			
 			[Bindable]
 			[Embed(source='assets/img/icons/move_forward.png')]
@@ -188,6 +193,12 @@
 				dispatcher.dispatchEvent(evt)
 			}
 			
+			protected function onDeleteSelected():void
+			{
+				var deleteEvent:DeleteSDObjectModelEvent = new DeleteSDObjectModelEvent(DeleteSDObjectModelEvent.DELETE_SELECTED_FROM_MODEL, true);
+				dispatchEvent(deleteEvent);
+			}
+			
 			protected function onMoveForward():void
 			{
 				dispatchEvent(new PositionEvent(PositionEvent.MOVE_FORWARD, true))
@@ -238,6 +249,8 @@
 		
 		<mx:Button icon="{magnifier}" click="onZoomTool()" width="20" height="20" toolTip="Zoom In/Out"/>			
 		-->
+		
+		<mx:Button icon="{deleteSelected}" click="onDeleteSelected()" width="20" height="20" toolTip="Delete"/>	
 		
 		<mx:Button icon="{moveForward}" click="onMoveForward()" width="20" height="20" toolTip="Move selected object forward"/>	
 		

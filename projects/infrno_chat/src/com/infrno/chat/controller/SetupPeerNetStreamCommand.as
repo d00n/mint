@@ -8,6 +8,8 @@ package com.infrno.chat.controller
 	import com.infrno.chat.services.NetStreamPeer;
 	import com.infrno.chat.services.PeerService;
 	
+	import flash.net.NetStream;
+	
 	import org.robotlegs.mvcs.Command;
 	
 	public class SetupPeerNetStreamCommand extends Command
@@ -31,12 +33,26 @@ package com.infrno.chat.controller
 			
 			var dispatchVpEvent:Boolean = false;
 			
-			if(dataProxy.use_peer_connection && userInfoVO.nearID && dataProxy.peer_capable && !(userInfoVO.netStream is NetStreamPeer) ){
+			if(dataProxy.use_peer_connection && 
+					userInfoVO.nearID && 
+					dataProxy.peer_capable && 
+					!(userInfoVO.netStream is NetStreamPeer) )
+			{
 				trace("SetupPeerNetStreamCommand.execute() setting up and playing from the peer connection: "+userInfoVO.suid.toString());
-				userInfoVO.netStream = peerService.getNewNetStream(userInfoVO.nearID);
-				userInfoVO.netStream.play(userInfoVO.suid.toString());
+				
+				// rewriting for testability
+//				userInfoVO.netStream = peerService.getNewNetStream(userInfoVO.nearID);
+//				userInfoVO.netStream.play(userInfoVO.suid.toString());
+				
+				// becomes:
+				var netStream:NetStream = peerService.getNewNetStream(userInfoVO.nearID);
+				netStream.play(userInfoVO.suid.toString());
+				userInfoVO.netStream = netStream;
+				
 				dispatchVpEvent = true;
-			} else if(!dataProxy.use_peer_connection && !(userInfoVO.netStream is NetStreamMS) ){
+			} else if(!dataProxy.use_peer_connection && 
+					!(userInfoVO.netStream is NetStreamMS) )
+			{
 				trace("SetupPeerNetStreamCommand.execute() setting up and playing from the stream server");
 				userInfoVO.netStream = msService.getNewNetStream();
 				userInfoVO.netStream.play(userInfoVO.suid.toString(),-1);

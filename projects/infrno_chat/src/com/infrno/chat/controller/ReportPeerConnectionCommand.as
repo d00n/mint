@@ -7,7 +7,7 @@ package com.infrno.chat.controller
 	
 	import org.robotlegs.mvcs.Command;
 	
-	public class ReportPeerConnectionStatusCommand extends Command
+	public class ReportPeerConnectionCommand extends Command
 	{
 		[Inject]
 		public var event:PeerEvent;

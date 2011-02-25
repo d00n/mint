@@ -74,21 +74,62 @@ package sampleSuite.tests
 			
 			var vpEvent:VideoPresenceEvent = new VideoPresenceEvent(VideoPresenceEvent.SETUP_PEER_NETSTREAM);
 			vpEvent.userInfoVO = userInfoVO;
-
+			
 			
 			var setupPeerNetStreamCommand:SetupPeerNetStreamCommand = new SetupPeerNetStreamCommand();
 			setupPeerNetStreamCommand.event = vpEvent;
 			setupPeerNetStreamCommand.dataProxy = dataProxy;
 			setupPeerNetStreamCommand.peerService = peerService;			
 			setupPeerNetStreamCommand.eventDispatcher = serviceEventDispatcher;
-						
-		
+			
+			
 			Assert.assertNotNull(setupPeerNetStreamCommand);
 			setupPeerNetStreamCommand.execute();
 			Assert.assertNotNull(setupPeerNetStreamCommand);
 			verify(peerService);
 			Assert.assertEquals(setupPeerNetStreamCommand.event.userInfoVO.netStream, netStream);
-
+		}
+		
+		[Test]  
+		public function connectPeer_useMSConnection():void { 
+			trace("SetupPeerNetStreamCommand_Test.testCommand()");
+			
+			var infoObj:Object = new Object();
+			infoObj.suid 				= 123456;
+			infoObj.user_id 		= 'user_id';
+			infoObj.user_name 	= 'user_name';
+			var userInfoVO:UserInfoVO		= strict(UserInfoVO,"userInfoVO",[infoObj]);		
+			
+			var netConnection:NetConnection = new NetConnection(); 
+			netConnection.connect(null); 				
+			var netStreamMS:NetStreamMS = nice(NetStreamMS, "netStreamPeer", [ netConnection ]); 
+			var netStream:NetStream = nice(NetStream, "netStream", [ netConnection ]); 
+			
+			var dataProxy:DataProxy = new DataProxy();	
+			dataProxy.use_peer_connection = false;
+			dataProxy.peer_capable = true;
+			userInfoVO.nearID 			= 'nearID';
+			mock(userInfoVO).getter("netStream").returns(netStream);
+			mock(userInfoVO).setter("netStream");
+			
+			var msService:MSService = strict(MSService);
+			mock(msService).method("getNewNetStream").returns(netStreamMS);
+			
+			var vpEvent:VideoPresenceEvent = new VideoPresenceEvent(VideoPresenceEvent.SETUP_PEER_NETSTREAM);
+			vpEvent.userInfoVO = userInfoVO;
+			
+			
+			var setupPeerNetStreamCommand:SetupPeerNetStreamCommand = new SetupPeerNetStreamCommand();
+			setupPeerNetStreamCommand.event = vpEvent;
+			setupPeerNetStreamCommand.dataProxy = dataProxy;
+			setupPeerNetStreamCommand.msService = msService;			
+			setupPeerNetStreamCommand.eventDispatcher = serviceEventDispatcher;
+			
+			
+			Assert.assertNotNull(setupPeerNetStreamCommand);
+			setupPeerNetStreamCommand.execute();
+			Assert.assertNotNull(setupPeerNetStreamCommand);			
+			Assert.assertEquals(setupPeerNetStreamCommand.event.userInfoVO.netStream, netStream);
 		}
 	}
 }

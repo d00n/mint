@@ -18,6 +18,9 @@ package com.infrno.chat.controller
 		[Inject]
 		public var msService:MSService;
 		
+		// Mediates: 
+		// PeerEvent.PEER_NETCONNECTION_CONNECTED  
+		// PeerEvent.PEER_NETCONNECTION_DISCONNECTED
 		override public function execute():void
 		{
 			// TODO unwind this

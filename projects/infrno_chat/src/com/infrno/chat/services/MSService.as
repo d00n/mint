@@ -105,6 +105,11 @@ package com.infrno.chat.services
 			_nc.call("reportUserStats",null,statsIn);
 		}
 		
+		public function sendPeerStats(peerStats:Object):void
+		{
+			_nc.call("recievePeerStats",null,peerStats);
+		}		
+		
 		public function updatePublishStream():void
 		{
 			trace("MSService.updatePublishStream()");
@@ -190,8 +195,12 @@ package com.infrno.chat.services
 				}
 				
 			_nc_client.getUserStats = function():void {
-					dispatch(new MSEvent(MSEvent.GET_USER_STATS));
-				}
+				dispatch(new MSEvent(MSEvent.GET_USER_STATS));
+			}
+				
+			_nc_client.generatePeerStats = function():void {
+				dispatch(new MSEvent(MSEvent.GENERATE_PEER_STATS));
+			}
 				
 			_nc_client.usePeerConnection = function(usePeer:Boolean):void {
 				if(usePeer){

@@ -9,12 +9,20 @@ package com.infrno.chat.model
 	
 	public class DataProxy extends Actor
 	{
-		public static const VERSION:String		= "Chat v0.2.20";
+		public static const VERSION:String		= "Chat v0.2.21";
 		
 		// TODO move status vars to a VO, maybe UserInfoVO?
+		
+		// TODO what's the difference between these two?
 		public var peer_enabled:Boolean;		
 		public var peer_capable:Boolean;
+		
+		// TODO Is this named well? Does it mean:
+		// attempt_peer_connection
+		// using_peer_connection
+		// or other?
 		public var use_peer_connection:Boolean;
+		
 		public var pubishing_audio:Boolean;
 		public var pubishing_video:Boolean;
 		
@@ -22,7 +30,7 @@ package com.infrno.chat.model
 		
 
 		
-		// TODO move all the non-const connection params to a VO
+
 		// Wowza will accept these values for specified hosts.
 		public var auth_key:String		= "sample_auth_key";
 		
@@ -35,12 +43,9 @@ package com.infrno.chat.model
 		public const  peer_server_key:String		= "4b9d915ef5ee88cfd38eb359-abf46599bf1f";
 		public const peer_server:String				= "rtmfp://stratus.adobe.com";
 		
-		////
 		// possible values:
-		//
 		//  rtmp://gearsandcogs.com
 		//  rtmp://admin.infrno.net
-		////
 		private var m_mediaServer:String	= "rtmp://localhost";
 		private var m_mediaApp:String			= "chat";
 		private var m_mediaPort:String		= "1935";

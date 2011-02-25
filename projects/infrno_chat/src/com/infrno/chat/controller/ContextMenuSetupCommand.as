@@ -42,9 +42,9 @@ package com.infrno.chat.controller
 			peer_status.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, switchToPeer);
 			custom_menu.customItems.push(peer_status);
 			
-			var report_stats:ContextMenuItem = new ContextMenuItem("report user stats");
-			report_stats.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, reportStats);
-			custom_menu.customItems.push(report_stats);
+//			var report_stats:ContextMenuItem = new ContextMenuItem("report user stats");
+//			report_stats.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, reportStats);
+//			custom_menu.customItems.push(report_stats);
 			
 			contextView.contextMenu = custom_menu;
 		}

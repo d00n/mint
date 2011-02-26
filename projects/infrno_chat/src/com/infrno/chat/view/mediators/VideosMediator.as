@@ -33,6 +33,7 @@ package com.infrno.chat.view.mediators
 		public const GREEN:String 		= "0x5DFC0A";  
 		public const RED:String 			= "0xFF0000";  
 		public const YELLOW:String		= "0xFFFF00";
+		public const MAX_SRTT:int			= 100;
 			
 		
 		override public function onRegister():void
@@ -238,7 +239,7 @@ package com.infrno.chat.view.mediators
 			videoPresence.peerStatsVO = peerStatsVO;
 			var last_ping_value:int = peerStatsVO.data_array[peerStatsVO.data_array.length-1].srtt;
 			
-			if (last_ping_value < 75) {
+			if (last_ping_value < MAX_SRTT) {
 				videoPresence.line_stroke_color = GREEN; 
 			} else {
 				videoPresence.line_stroke_color = RED;

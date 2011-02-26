@@ -194,6 +194,11 @@
 				currentState="hideControls";
 				_initialized = true;
 				wrenchToggleButton.visible = _is_local;
+				
+				if (_is_local)
+					audio_level.toolTip = "Your mic level";
+				else
+					audio_level.toolTip = "Peer audio level";
 			}
 			
 			private function handleMouseOver(event:Event):void 
@@ -220,31 +225,34 @@
 			private function stateShowControls( ) : void {
 				currentState = "showControls";
 				
-				audioToggleButton.alpha = 1
-				videoToggleButton.alpha = 1
-				wrenchToggleButton.alpha = 1
+//				audioToggleButton.alpha = 1
+//				videoToggleButton.alpha = 1
+//				wrenchToggleButton.alpha = 1
 				peerStatsChart.alpha = 1;
 				last_ping_value_label.alpha = 1;
+				controlsContainer.alpha = 1;
 			}
 			
 			private function stateUsingControls( ) : void {
 				currentState = "usingControls";
 				
-				audioToggleButton.alpha = 1
-				videoToggleButton.alpha = 1
-				wrenchToggleButton.alpha = 1
+//				audioToggleButton.alpha = 1
+//				videoToggleButton.alpha = 1
+//				wrenchToggleButton.alpha = 1
 				peerStatsChart.alpha = 1;
 				last_ping_value_label.alpha = 1;
+				controlsContainer.alpha = 1;
 			}
 			
 			private function stateHideControls( ) : void {
 				currentState = "hideControls";
 				
-				audioToggleButton.alpha = .2
-				videoToggleButton.alpha = .2
-				wrenchToggleButton.alpha = .2
+//				audioToggleButton.alpha = .2
+//				videoToggleButton.alpha = .2
+//				wrenchToggleButton.alpha = .2
 //				peerStatsChart.alpha = .2;
 //				last_ping_value_label.alpha = .2;
+				controlsContainer.alpha = .2;
 			}
 			
 			private function handleMouseOverControls(event:Event):void 
@@ -316,7 +324,7 @@
 		backgroundColor="#ffffff" 
 		borderColor="#cecece"
 		width="162" 
-		height="135"
+		height="120"
 		mouseOver="handleMouseOver(event);"
 		mouseOut="handleMouseOut(event);">
 		<s:Rect 
@@ -332,35 +340,11 @@
 			id="video_holder" 
 			width="160" 
 			height="120" />		
-		
-		<s:HGroup 
-			id="customDataLabel"
-			top="15"
-			height="20"
-			width="100%"
-			paddingLeft="2" 
-			paddingTop="0"
-			paddingBottom="0"
-			gap="0"
-			verticalAlign="middle"
-			includeIn="showControls, usingControls, hideControls"
-			mouseOver="handleMouseOverControls(event);"
-			mouseOut="handleMouseOutControls(event);">
-			
-				<s:Label id="last_ping_value_label" 
-									text="{last_ping_value}"
-									paddingTop="3"
-									paddingLeft="3"
-									paddingRight="3"
-									alpha="1"
-									backgroundColor="0xFFFFFF" />
-			
-			</s:HGroup> 
 
 		<s:HGroup 
 			id="statsContainer"
-			top="15"
-			height="20"
+			top="0"
+			height="50"
 			width="100%"
 			paddingLeft="2" 
 			paddingTop="0"
@@ -378,7 +362,7 @@
 				toolTip="Ping"
 				width="100%"
 				height="50"
-				alpha=".2">
+				alpha="1">
 				
 				<mx:horizontalAxis>
 					<mx:CategoryAxis id="categoryAxis" />
@@ -415,9 +399,10 @@
 			</mx:LineChart> 
 		</s:HGroup>		
 		
+		
 		<s:HGroup 
-			id="controlsContainer"
-			bottom="15"
+			id="customDataLabel"
+			top="15"
 			height="20"
 			width="100%"
 			paddingLeft="2" 
@@ -428,14 +413,39 @@
 			includeIn="showControls, usingControls, hideControls"
 			mouseOver="handleMouseOverControls(event);"
 			mouseOut="handleMouseOutControls(event);">
+			
+			<s:Label id="last_ping_value_label" 
+							 text="{last_ping_value}"
+							 paddingTop="3"
+							 paddingLeft="3"
+							 paddingRight="3"
+							 alpha="1"
+							 backgroundColor="0xFFFFFF" />
+			
+		</s:HGroup> 
+		
+		
+		<s:HGroup 
+			id="controlsContainer"
+			bottom="2"
+			height="20"
+			width="100%"
+			paddingLeft="2" 
+			paddingTop="0"
+			paddingBottom="0"
+			gap="0"
+			alpha=".2"
+			verticalAlign="middle"
+			includeIn="showControls, usingControls, hideControls"
+			mouseOver="handleMouseOverControls(event);"
+			mouseOut="handleMouseOutControls(event);">
 			<com.infrno.chat.view.components:ImageToggleButton
 				styleName="videoToggleButton"
 				id="videoToggleButton"
 				click="toggleVideo( )"
 				toolTip="Toggle video"
 				width="20"
-				height="20"
-				alpha=".2"/>
+				height="20"/>
 			<mx:Spacer width="2" />
 			<com.infrno.chat.view.components:ImageToggleButton
 				styleName="audioToggleButton"
@@ -443,8 +453,7 @@
 				click="toggleAudio()" 
 				toolTip="Toggle mute"
 				width="20"
-				height="20"
-				alpha=".2" />			
+				height="20" />			
 			<mx:Spacer width="2" />
 			<com.infrno.chat.view.components:ImageToggleButton
 				styleName="wrenchToggleButton"
@@ -452,21 +461,21 @@
 				click="handleShowSettings()" 
 				toolTip="Show settings"
 				width="20"
-				height="20"
-				alpha=".2" />
-			<mx:Spacer width="2" />
+				height="20"/>
+
+			<s:HSlider
+				id="audio_level" 
+				showDataTip="false" 
+				value="75" 
+				maximum="100" 
+				width="100%"
+				height="10"
+				bottom="0"
+				left="0"
+				change="adjustVolume( )"/>			
 		</s:HGroup>
 		
-		<s:HSlider
-			id="audio_level" 
-			showDataTip="false" 
-			value="75" 
-			maximum="100" 
-			width="100%"
-			height="10"
-			bottom="0"
-			left="0"
-			change="adjustVolume( )"/>
+
 		
 	</s:BorderContainer>
 	<mx:Spacer height="2" />

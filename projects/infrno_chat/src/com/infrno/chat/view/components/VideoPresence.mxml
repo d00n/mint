@@ -5,6 +5,7 @@
 		 xmlns:com.infrno.chat.view.components="com.infrno.chat.view.components.*"
 		 creationComplete="handleCreationComplete(event);"
 		 >
+
 	<fx:Script>
 		<![CDATA[
 			import com.infrno.chat.model.events.SettingsEvent;
@@ -23,6 +24,12 @@
 			
 			[Bindable]
 			public var peerStatsVO:PeerStatsVO;
+			
+			[Bindable]
+			public var last_ping_value:String;
+			
+			[Bindable]
+			public var line_stroke_color:String;
 			
 			[Bindable]
 			private var emptyArrayToRemoveChartLines:Array = new Array();
@@ -217,6 +224,7 @@
 				videoToggleButton.alpha = 1
 				wrenchToggleButton.alpha = 1
 				peerStatsChart.alpha = 1;
+				last_ping_value_label.alpha = 1;
 			}
 			
 			private function stateUsingControls( ) : void {
@@ -226,6 +234,7 @@
 				videoToggleButton.alpha = 1
 				wrenchToggleButton.alpha = 1
 				peerStatsChart.alpha = 1;
+				last_ping_value_label.alpha = 1;
 			}
 			
 			private function stateHideControls( ) : void {
@@ -234,7 +243,8 @@
 				audioToggleButton.alpha = .2
 				videoToggleButton.alpha = .2
 				wrenchToggleButton.alpha = .2
-				peerStatsChart.alpha = .2;
+//				peerStatsChart.alpha = .2;
+//				last_ping_value_label.alpha = .2;
 			}
 			
 			private function handleMouseOverControls(event:Event):void 
@@ -300,6 +310,7 @@
 		<s:State name="usingControls" />
 		<s:State name="hideControls" />
 	</s:states>
+
 	<s:BorderContainer
 		id="borderContainer"
 		backgroundColor="#ffffff" 
@@ -323,7 +334,7 @@
 			height="120" />		
 		
 		<s:HGroup 
-			id="statsContainer"
+			id="customDataLabel"
 			top="15"
 			height="20"
 			width="100%"
@@ -336,43 +347,71 @@
 			mouseOver="handleMouseOverControls(event);"
 			mouseOut="handleMouseOutControls(event);">
 			
+				<s:Label id="last_ping_value_label" 
+									text="{last_ping_value}"
+									paddingTop="3"
+									paddingLeft="3"
+									paddingRight="3"
+									alpha="1"
+									backgroundColor="0xFFFFFF" />
+			
+			</s:HGroup> 
+
+		<s:HGroup 
+			id="statsContainer"
+			top="15"
+			height="20"
+			width="100%"
+			paddingLeft="2" 
+			paddingTop="0"
+			paddingBottom="0"
+			gap="0"
+			verticalAlign="middle"
+			includeIn="showControls, usingControls, hideControls"
+			mouseOver="handleMouseOverControls(event);"
+			mouseOut="handleMouseOutControls(event);">
+
 			<mx:LineChart 
 				id="peerStatsChart"		
 				dataProvider="{peerStatsVO.data_array}"
 				backgroundElements="{emptyArrayToRemoveChartLines}"
 				toolTip="Ping"
-				width="100"
+				width="100%"
 				height="50"
 				alpha=".2">
 				
 				<mx:horizontalAxis>
-					<mx:CategoryAxis 
-						id="categoryAxis"
-						dataProvider="{peerStatsVO.data_array}" 
-						categoryField="srtt"
-						/>
+					<mx:CategoryAxis id="categoryAxis" />
 				</mx:horizontalAxis>
+				
 				<mx:horizontalAxisRenderers>
 					<mx:AxisRenderer 
 						axis="{categoryAxis}"
 						showLine="false"
 						showLabels="false"
-						tickPlacement="none"
-						/>
+						tickPlacement="none" >
+					</mx:AxisRenderer>
 				</mx:horizontalAxisRenderers>
+				
 				<mx:verticalAxisRenderers>
 					<mx:AxisRenderer 
 						axis="{categoryAxis}"
 						showLine="false"
 						showLabels="false"
-						tickPlacement="none"
-						/>
+						tickPlacement="none" >
+					</mx:AxisRenderer>
 				</mx:verticalAxisRenderers>
 				
-				
 				<mx:series>
-					<mx:LineSeries yField="srtt"/>					
+					<mx:LineSeries 
+						id="srtt_lineSeries"
+						yField="srtt">	
+						<mx:lineStroke>
+							<mx:SolidColorStroke color="{line_stroke_color}"  weight="1"/>
+						</mx:lineStroke>
+					</mx:LineSeries>
 				</mx:series>
+				
 			</mx:LineChart> 
 		</s:HGroup>		
 		

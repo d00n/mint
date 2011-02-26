@@ -15,6 +15,8 @@ package com.infrno.chat.model
 		public var serverStatsVO_array:Array;
 		private var _timer:Timer;
 		
+		private var foo:int = 0;
+		
 		public function StatsProxy() {
 		}
 		
@@ -32,7 +34,7 @@ package com.infrno.chat.model
 			trace('StatsProxy.collectStats()');
 			dispatch(new StatsEvent(StatsEvent.COLLECT_PEER_STATS));
 			
-			// TODO: mediate this
+			// TODO
       //dispatch(new StatsEvent(StatsEvent.COLLECT_SERVER_STATS));
 		}
 		
@@ -56,10 +58,20 @@ package com.infrno.chat.model
 			peerStatsVO.suid = peer_stats.suid;
 			
 			var newDataRecord:Object = new Object();
+			
+			foo++;
 			var dummySrtt:Number = 50+ Math.round(Math.random()*50);
+			if (foo > 10) {
+				foo = 0;
+				dummySrtt= 3000;
+			}
 			newDataRecord.srtt = dummySrtt; // peer_stats.srtt
 			
 			peerStatsVO.data_array.addItem(newDataRecord);		
+			
+			if (peerStatsVO.data_array.length > 20) {
+				peerStatsVO.data_array.removeItemAt(0);
+			}
 			
 			var videoPresenceEvent:VideoPresenceEvent = new VideoPresenceEvent(VideoPresenceEvent.DISPLAY_PEER_STATS);
 			videoPresenceEvent.peerStatsVO = peerStatsVO;

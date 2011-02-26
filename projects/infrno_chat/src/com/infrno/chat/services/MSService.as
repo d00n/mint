@@ -5,6 +5,7 @@ package com.infrno.chat.services
 	import com.infrno.chat.model.events.ChatEvent;
 	import com.infrno.chat.model.events.MSEvent;
 	import com.infrno.chat.model.events.PeerEvent;
+	import com.infrno.chat.model.events.StatsEvent;
 	import com.infrno.chat.model.vo.UserInfoVO;
 	
 	import flash.events.NetStatusEvent;
@@ -195,11 +196,11 @@ package com.infrno.chat.services
 				}
 				
 			_nc_client.getUserStats = function():void {
-				dispatch(new MSEvent(MSEvent.GET_USER_STATS));
+				dispatch(new StatsEvent(StatsEvent.COLLECT_SERVER_STATS));
 			}
 				
 			_nc_client.generatePeerStats = function():void {
-				dispatch(new MSEvent(MSEvent.GENERATE_PEER_STATS));
+				dispatch(new StatsEvent(StatsEvent.COLLECT_PEER_STATS));
 			}
 				
 			_nc_client.usePeerConnection = function(usePeer:Boolean):void {

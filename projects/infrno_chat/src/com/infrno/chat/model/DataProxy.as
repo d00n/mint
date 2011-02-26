@@ -39,18 +39,18 @@ package com.infrno.chat.model
 		public var user_name:String 	= "";
 		public var user_id:String 		= "";
 		
-		//using personal stratus key for now
-		public const  peer_server_key:String		= "4b9d915ef5ee88cfd38eb359-abf46599bf1f";
+
+		//public const  peer_server_key:String		= "4b9d915ef5ee88cfd38eb359-abf46599bf1f";
+		public const  peer_server_key:String		= "6a10a4b24cdfadaebc9765b4-ec2f9e5cf6a2";
+		
 		public const peer_server:String				= "rtmfp://stratus.adobe.com";
 		
-		// possible values:
-		//  rtmp://gearsandcogs.com
-		//  rtmp://admin.infrno.net
 		private var m_mediaServer:String	= "rtmp://localhost";
 		private var m_mediaApp:String			= "chat";
 		private var m_mediaPort:String		= "1935";
 		
-		// Is this a collection of peers? Does it include local?
+		// This includes local
+		// Should it?
 		public var userInfoVO_array:Array;
 		
 		//public var my_info:UserInfoVO = new UserInfoVO({user_name:"user"+Math.round(Math.random()*1000),user_id:"sample_user_id"});

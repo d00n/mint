@@ -55,6 +55,7 @@ package com.infrno.chat.controller
 			System.setClipboard(DataProxy.VERSION+" "+Capabilities.version+ (Capabilities.isDebugger?" -D":"") );
 		}
 		
+		// TODO: That event, if correct, needs a better name, like PEER_NETCONNECTION_CONNECT
 		private function switchToPeer(e:ContextMenuEvent):void
 		{
 			dispatch(new PeerEvent(PeerEvent.PEER_NETCONNECTION_CONNECTED));

@@ -1,6 +1,6 @@
 package sampleSuite.tests
 {
-	import com.infrno.chat.controller.SetupPeerNetStreamCommand;
+	import com.infrno.chat.controller.InitPeerNetStreamCommand;
 	import com.infrno.chat.model.DataProxy;
 	import com.infrno.chat.model.DeviceProxy;
 	import com.infrno.chat.model.events.VideoPresenceEvent;
@@ -76,7 +76,7 @@ package sampleSuite.tests
 			vpEvent.userInfoVO = userInfoVO;
 			
 			
-			var setupPeerNetStreamCommand:SetupPeerNetStreamCommand = new SetupPeerNetStreamCommand();
+			var setupPeerNetStreamCommand:InitPeerNetStreamCommand = new InitPeerNetStreamCommand();
 			setupPeerNetStreamCommand.event = vpEvent;
 			setupPeerNetStreamCommand.dataProxy = dataProxy;
 			setupPeerNetStreamCommand.peerService = peerService;			
@@ -119,7 +119,7 @@ package sampleSuite.tests
 			vpEvent.userInfoVO = userInfoVO;
 			
 			
-			var setupPeerNetStreamCommand:SetupPeerNetStreamCommand = new SetupPeerNetStreamCommand();
+			var setupPeerNetStreamCommand:InitPeerNetStreamCommand = new InitPeerNetStreamCommand();
 			setupPeerNetStreamCommand.event = vpEvent;
 			setupPeerNetStreamCommand.dataProxy = dataProxy;
 			setupPeerNetStreamCommand.msService = msService;			

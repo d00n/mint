@@ -112,7 +112,7 @@ package com.infrno.chat.services
 		
 		private function handleOutgoingNetStatus(e:NetStatusEvent):void
 		{
-			trace("Outgoing Event: "+e.info.code);
+			trace("PeerService.handleOutgoingNetStatus() event: "+e.info.code);
 			switch(e.info.code){
 				case "NetStream.Play.Start":
 					trace("PeerService.handleOutgoingNetStatus() someone connected to me and is playing my stream");

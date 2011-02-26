@@ -38,7 +38,6 @@ package com.infrno.chat.controller
 			user_stats.wowza_protocol			= msService.netConnection.protocol;
 			user_stats.capabilities				= Capabilities.serverString;
 			
-			// This is not yet useful. 
 			// SRTT is only relevant for RTMFP connections, and we're only reporting home for RTMP connections			
 			user_stats.SRTT 							= ns_info.SRTT;
 			

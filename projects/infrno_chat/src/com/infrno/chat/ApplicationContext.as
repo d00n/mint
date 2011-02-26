@@ -27,16 +27,19 @@ package com.infrno.chat
 			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, InitLocalVarsCommand);
 			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, ContextMenuSetupCommand);
 			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, ConnectMediaServerCommand);
-			
+						
 			commandMap.mapEvent(MSEvent.NETCONNECTION_CONNECTED,ConnectPeerServerCommand);
+			commandMap.mapEvent(MSEvent.NETCONNECTION_CONNECTED,InitStatsProxyCommand);
 			commandMap.mapEvent(MSEvent.USERS_OBJ_UPDATE,ContextMenuSetupCommand);
-			
+					
 			commandMap.mapEvent(PeerEvent.PEER_DISABLE_VIDEO,VideoSourceCommand);
 			commandMap.mapEvent(PeerEvent.PEER_ENABLE_VIDEO,VideoSourceCommand);
 			
-			commandMap.mapEvent(MSEvent.GET_USER_STATS, ReportUserStatsCommand);
-			commandMap.mapEvent(MSEvent.GENERATE_PEER_STATS, ReportPeerStatsCommand);
+			commandMap.mapEvent(StatsEvent.COLLECT_SERVER_STATS, ReportUserStatsCommand);
+			commandMap.mapEvent(StatsEvent.COLLECT_PEER_STATS, CollectPeerStatsCommand);
+			
 			commandMap.mapEvent(PeerEvent.PEER_NETCONNECTION_CONNECTED,ReportPeerConnectionCommand);
+//			commandMap.mapEvent(PeerEvent.PEER_NETCONNECTION_CONNECTED,InitPeerStatsVOCommand);
 			commandMap.mapEvent(PeerEvent.PEER_NETCONNECTION_DISCONNECTED,ReportPeerConnectionCommand);
 			
 			commandMap.mapEvent(VideoPresenceEvent.AUDIO_LEVEL,AudioVideoControlCommand);
@@ -44,7 +47,7 @@ package com.infrno.chat
 			commandMap.mapEvent(VideoPresenceEvent.AUDIO_UNMUTED,AudioVideoControlCommand);
 			commandMap.mapEvent(VideoPresenceEvent.VIDEO_MUTED,AudioVideoControlCommand);
 			commandMap.mapEvent(VideoPresenceEvent.VIDEO_UNMUTED,AudioVideoControlCommand);
-			commandMap.mapEvent(VideoPresenceEvent.SETUP_PEER_NETSTREAM,SetupPeerNetStreamCommand);
+			commandMap.mapEvent(VideoPresenceEvent.SETUP_PEER_NETSTREAM,InitPeerNetStreamCommand);
 
 			commandMap.mapEvent(SettingsEvent.SHOW_SETTINGS,SettingsCommand);			
 			
@@ -52,6 +55,7 @@ package com.infrno.chat
 			// mapSingleton provides 1 instance of the requested class for N injections.
 			injector.mapSingleton(DataProxy);
 			injector.mapSingleton(DeviceProxy);
+			injector.mapSingleton(StatsProxy);
 			
 			//Services
 			injector.mapSingleton(MSService);

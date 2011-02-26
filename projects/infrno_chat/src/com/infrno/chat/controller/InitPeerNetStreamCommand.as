@@ -12,7 +12,7 @@ package com.infrno.chat.controller
 	
 	import org.robotlegs.mvcs.Command;
 	
-	public class SetupPeerNetStreamCommand extends Command
+	public class InitPeerNetStreamCommand extends Command
 	{
 		[Inject]
 		public var event:VideoPresenceEvent;

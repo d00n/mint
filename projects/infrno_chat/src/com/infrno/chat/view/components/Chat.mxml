@@ -4,11 +4,11 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 >
 
-			
+	
 	<s:layout>
 		<s:VerticalLayout/>
 	</s:layout>
 	<s:TextArea id="chat_display" editable="false" width="100%" height="100%"/>
-	<s:TextInput id="chat_in" width="100%" />
+	<s:TextInput id="chat_in" width="100%" text="Chat here..." borderColor="0xFF0000"/>
 	
 </s:Group>

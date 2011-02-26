@@ -30,19 +30,17 @@ package com.infrno.chat.controller
 		override public function execute():void
 		{
 			for(var suid:String in dataProxy.userInfoVO_array){
-				trace("ReportPeerStatsCommand.execute() suid:"+suid);		
+				trace("CollectPeerStatsCommand.execute() suid:"+suid);		
 				var peer_userInfoVO:UserInfoVO = dataProxy.userInfoVO_array[suid];
 				
 				if (dataProxy.local_userInfoVO.suid.toString() == suid) {
-					trace("ReportPeerStatsCommand.execute() skipping local user");	
+					trace("CollectPeerStatsCommand.execute() skipping local user");	
 				} else if (peer_userInfoVO == null) {
-					trace("ReportPeerStatsCommand.execute() peer_userInfoVO is null");	
+					trace("CollectPeerStatsCommand.execute() peer_userInfoVO is null");	
 				} else if (peer_userInfoVO.netStream == null) {
-					trace("ReportPeerStatsCommand.execute() peer_userInfoVO.netStream is null");	
+					trace("CollectPeerStatsCommand.execute() peer_userInfoVO.netStream is null");	
 				} else {
-			
 					var peer_stats:Object = new Object();
-	
 					var netStream:NetStream = peer_userInfoVO.netStream; 
 					var netStreamInfo:NetStreamInfo = netStream.info;
 					

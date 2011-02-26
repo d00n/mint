@@ -4,14 +4,14 @@ package com.infrno.chat.model.vo
 	
 	import mx.collections.ArrayCollection;
 	
-	public class PeerStatsVO
+	public class StatsVO
 	{
 		public var suid:int;		
 		
 		[Bindable]
 		public var data_array:ArrayCollection = new ArrayCollection();
     
-		public function PeerStatsVO()
+		public function StatsVO()
 		{
 		}
 	}

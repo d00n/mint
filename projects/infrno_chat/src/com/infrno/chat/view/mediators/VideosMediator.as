@@ -4,7 +4,7 @@ package com.infrno.chat.view.mediators
 	import com.infrno.chat.model.events.MSEvent;
 	import com.infrno.chat.model.events.SettingsEvent;
 	import com.infrno.chat.model.events.VideoPresenceEvent;
-	import com.infrno.chat.model.vo.PeerStatsVO;
+	import com.infrno.chat.model.vo.StatsVO;
 	import com.infrno.chat.model.vo.UserInfoVO;
 	import com.infrno.chat.services.NetStreamMS;
 	import com.infrno.chat.services.NetStreamPeer;
@@ -41,6 +41,7 @@ package com.infrno.chat.view.mediators
 			eventMap.mapListener(eventDispatcher,MSEvent.USERS_OBJ_UPDATE,usersUpdated);
 			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.SETUP_PEER_VIDEOPRESENCE_COMPONENT,setupPeerVideoPresenceComponent);
 			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.DISPLAY_PEER_STATS,displayPeerStats);
+			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.DISPLAY_SERVER_STATS,displayServerStats);
 			
 			videos.addEventListener(SettingsEvent.SHOW_SETTINGS,handleShowSettings);
 			videos.addEventListener(VideoPresenceEvent.AUDIO_LEVEL,dispatchEventInSystem);
@@ -233,7 +234,7 @@ package com.infrno.chat.view.mediators
 		private function displayPeerStats(vpEvent:VideoPresenceEvent):void
 		{
 			trace("VideosMediator.displayPeerStats()");
-			var peerStatsVO:PeerStatsVO = vpEvent.peerStatsVO;
+			var peerStatsVO:StatsVO = vpEvent.statsVO;
 			var videoPresence:VideoPresence = getVideoPresenceByName(peerStatsVO.suid.toString());		
 			
 			videoPresence.peerStatsVO = peerStatsVO;
@@ -245,8 +246,26 @@ package com.infrno.chat.view.mediators
 				videoPresence.line_stroke_color = RED;
 			}
 			
-			videoPresence.last_ping_value = "Ping: " + last_ping_value.toString();
+			videoPresence.client_lastPing = "Ping: " + last_ping_value.toString();
 		}
+		
+		private function displayServerStats(vpEvent:VideoPresenceEvent):void
+		{
+			trace("VideosMediator.displayPeerStats()");
+			var serverStatsVO:StatsVO = vpEvent.statsVO;
+			var videoPresence:VideoPresence = getVideoPresenceByName(serverStatsVO.suid.toString());		
+			
+			videoPresence.serverStatsVO = serverStatsVO;
+			var currentBytesPerSecond:int = serverStatsVO.data_array[serverStatsVO.data_array.length-1].currentBytesPerSecond;
+			
+			if (currentBytesPerSecond < MAX_SRTT) {
+				videoPresence.line_stroke_color = GREEN; 
+			} else {
+				videoPresence.line_stroke_color = RED;
+			}
+			
+			videoPresence.server_currentBytesPerSecond = "Bytes/second: " + currentBytesPerSecond.toString();
+		}		
 		
 	}
 }

@@ -35,7 +35,7 @@ package com.infrno.chat
 			commandMap.mapEvent(PeerEvent.PEER_DISABLE_VIDEO,VideoSourceCommand);
 			commandMap.mapEvent(PeerEvent.PEER_ENABLE_VIDEO,VideoSourceCommand);
 			
-			commandMap.mapEvent(StatsEvent.COLLECT_SERVER_STATS, ReportUserStatsCommand);
+			commandMap.mapEvent(StatsEvent.COLLECT_SERVER_STATS, CollectServerStatsCommand);
 			commandMap.mapEvent(StatsEvent.COLLECT_PEER_STATS, CollectPeerStatsCommand);
 			
 			commandMap.mapEvent(PeerEvent.PEER_NETCONNECTION_CONNECTED,ReportPeerConnectionCommand);

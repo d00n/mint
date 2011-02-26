@@ -3,6 +3,8 @@ package com.infrno.chat.view.mediators
 	import com.infrno.chat.model.events.ChatEvent;
 	import com.infrno.chat.view.components.Chat;
 	
+	import flash.events.FocusEvent;
+	
 	import mx.events.FlexEvent;
 	
 	import org.robotlegs.core.IMediator;
@@ -13,6 +15,8 @@ package com.infrno.chat.view.mediators
 		[Inject]
 		public var chat:Chat;
 		
+		private var _firstFocusEvent:Boolean = true;
+		
 		public function ChatMediator()
 		{
 		}
@@ -20,12 +24,21 @@ package com.infrno.chat.view.mediators
 		override public function onRegister():void
 		{
 			chat.chat_in.addEventListener(FlexEvent.ENTER,sendChat);
+			chat.chat_in.addEventListener(FocusEvent.FOCUS_IN,clearDefaultMessage);
 			eventMap.mapListener(eventDispatcher,ChatEvent.RECEIVE_CHAT,receiveChat);
+		}
+		
+		private function clearDefaultMessage(focusEvent:FocusEvent):void
+		{
+			if (_firstFocusEvent){
+				_firstFocusEvent = false;
+				clearChat();
+			}
 		}
 		
 		private function clearChat():void
 		{
-			chat.chat_in.text = "";
+				chat.chat_in.text = "";
 		}
 		
 		private function receiveChat(e:ChatEvent):void

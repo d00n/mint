@@ -10,7 +10,7 @@
 		<![CDATA[
 			import com.infrno.chat.model.events.SettingsEvent;
 			import com.infrno.chat.model.events.VideoPresenceEvent;
-			import com.infrno.chat.model.vo.PeerStatsVO;
+			import com.infrno.chat.model.vo.StatsVO;
 			import com.infrno.chat.model.vo.UserInfoVO;
 			
 			import mx.collections.ArrayCollection;
@@ -23,10 +23,16 @@
 //			private var _audio_level	:int;
 			
 			[Bindable]
-			public var peerStatsVO:PeerStatsVO;
+			public var peerStatsVO:StatsVO;
 			
 			[Bindable]
-			public var last_ping_value:String;
+			public var serverStatsVO:StatsVO;
+			
+			[Bindable]
+			public var client_lastPing:String;
+			
+			[Bindable]
+			public var server_currentBytesPerSecond:String;
 			
 			[Bindable]
 			public var line_stroke_color:String;
@@ -225,9 +231,6 @@
 			private function stateShowControls( ) : void {
 				currentState = "showControls";
 				
-//				audioToggleButton.alpha = 1
-//				videoToggleButton.alpha = 1
-//				wrenchToggleButton.alpha = 1
 				peerStatsChart.alpha = 1;
 				last_ping_value_label.alpha = 1;
 				controlsContainer.alpha = 1;
@@ -236,9 +239,6 @@
 			private function stateUsingControls( ) : void {
 				currentState = "usingControls";
 				
-//				audioToggleButton.alpha = 1
-//				videoToggleButton.alpha = 1
-//				wrenchToggleButton.alpha = 1
 				peerStatsChart.alpha = 1;
 				last_ping_value_label.alpha = 1;
 				controlsContainer.alpha = 1;
@@ -246,10 +246,8 @@
 			
 			private function stateHideControls( ) : void {
 				currentState = "hideControls";
-				
-//				audioToggleButton.alpha = .2
-//				videoToggleButton.alpha = .2
-//				wrenchToggleButton.alpha = .2
+					
+				// Leaving this off while tuning
 //				peerStatsChart.alpha = .2;
 //				last_ping_value_label.alpha = .2;
 				controlsContainer.alpha = .2;
@@ -415,7 +413,7 @@
 			mouseOut="handleMouseOutControls(event);">
 			
 			<s:Label id="last_ping_value_label" 
-							 text="{last_ping_value}"
+							 text="{client_lastPing}"
 							 paddingTop="3"
 							 paddingLeft="3"
 							 paddingRight="3"

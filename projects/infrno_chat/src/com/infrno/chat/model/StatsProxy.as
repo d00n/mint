@@ -1,6 +1,7 @@
 package com.infrno.chat.model
 {
 	import com.infrno.chat.model.events.StatsEvent;
+	import com.infrno.chat.model.events.VideoPresenceEvent;
 	import com.infrno.chat.model.vo.PeerStatsVO;
 	
 	import flash.events.TimerEvent;
@@ -30,6 +31,9 @@ package com.infrno.chat.model
 		public function collectStats(event:TimerEvent):void {
 			trace('StatsProxy.collectStats()');
 			dispatch(new StatsEvent(StatsEvent.COLLECT_PEER_STATS));
+			
+			// TODO: mediate this
+      //dispatch(new StatsEvent(StatsEvent.COLLECT_SERVER_STATS));
 		}
 		
 //		public function initPeerStatsVO(suid:String):void {
@@ -47,7 +51,19 @@ package com.infrno.chat.model
 			}
 			
 			var peerStatsVO:PeerStatsVO = peerStatsVO_array[peer_stats.suid];
-			peerStatsVO.srtt_array.concat(peer_stats.srtt);							
+			
+			// Using suid as the key and a field smells. hrmmm..
+			peerStatsVO.suid = peer_stats.suid;
+			
+			var newDataRecord:Object = new Object();
+			var dummySrtt:Number = 50+ Math.round(Math.random()*50);
+			newDataRecord.srtt = dummySrtt; // peer_stats.srtt
+			
+			peerStatsVO.data_array.addItem(newDataRecord);		
+			
+			var videoPresenceEvent:VideoPresenceEvent = new VideoPresenceEvent(VideoPresenceEvent.DISPLAY_PEER_STATS);
+			videoPresenceEvent.peerStatsVO = peerStatsVO;
+			dispatch(videoPresenceEvent);
 		}
 		
 	}

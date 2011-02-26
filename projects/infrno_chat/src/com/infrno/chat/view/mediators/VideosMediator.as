@@ -4,6 +4,7 @@ package com.infrno.chat.view.mediators
 	import com.infrno.chat.model.events.MSEvent;
 	import com.infrno.chat.model.events.SettingsEvent;
 	import com.infrno.chat.model.events.VideoPresenceEvent;
+	import com.infrno.chat.model.vo.PeerStatsVO;
 	import com.infrno.chat.model.vo.UserInfoVO;
 	import com.infrno.chat.services.NetStreamMS;
 	import com.infrno.chat.services.NetStreamPeer;
@@ -23,7 +24,6 @@ package com.infrno.chat.view.mediators
 	public class VideosMediator extends Mediator
 	{
 		// TODO: I don't think Mediators should depend on Models. 
-		// Pass a VO in the event instead	
 		[Inject]
 		public var deviceProxy:DeviceProxy;
 		
@@ -34,6 +34,7 @@ package com.infrno.chat.view.mediators
 		{
 			eventMap.mapListener(eventDispatcher,MSEvent.USERS_OBJ_UPDATE,usersUpdated);
 			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.SETUP_PEER_VIDEOPRESENCE_COMPONENT,setupPeerVideoPresenceComponent);
+			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.DISPLAY_PEER_STATS,displayPeerStats);
 			
 			videos.addEventListener(SettingsEvent.SHOW_SETTINGS,handleShowSettings);
 			videos.addEventListener(VideoPresenceEvent.AUDIO_LEVEL,dispatchEventInSystem);
@@ -223,7 +224,14 @@ package com.infrno.chat.view.mediators
 			}
 		}
 		
-
+		private function displayPeerStats(vpEvent:VideoPresenceEvent):void
+		{
+			trace("VideosMediator.displayPeerStats()");
+			var peerStatsVO:PeerStatsVO = vpEvent.peerStatsVO;
+			var videoPresence:VideoPresence = getVideoPresenceByName(peerStatsVO.suid.toString());		
+			
+			videoPresence.peerStatsVO = peerStatsVO;
+		}
 		
 	}
 }

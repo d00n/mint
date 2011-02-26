@@ -23,6 +23,10 @@
 			
 			[Bindable]
 			public var peerStatsVO:PeerStatsVO;
+			
+			[Bindable]
+			private var emptyArrayToRemoveChartLines:Array = new Array();
+			
 			private var _userInfoVO:UserInfoVO;
 			private var _video:Video;
 			
@@ -331,13 +335,41 @@
 			includeIn="showControls, usingControls, hideControls"
 			mouseOver="handleMouseOverControls(event);"
 			mouseOut="handleMouseOutControls(event);">
+			
 			<mx:LineChart 
 				id="peerStatsChart"		
 				dataProvider="{peerStatsVO.data_array}"
+				backgroundElements="{emptyArrayToRemoveChartLines}"
 				toolTip="Ping"
 				width="100"
 				height="50"
 				alpha=".2">
+				
+				<mx:horizontalAxis>
+					<mx:CategoryAxis 
+						id="categoryAxis"
+						dataProvider="{peerStatsVO.data_array}" 
+						categoryField="srtt"
+						/>
+				</mx:horizontalAxis>
+				<mx:horizontalAxisRenderers>
+					<mx:AxisRenderer 
+						axis="{categoryAxis}"
+						showLine="false"
+						showLabels="false"
+						tickPlacement="none"
+						/>
+				</mx:horizontalAxisRenderers>
+				<mx:verticalAxisRenderers>
+					<mx:AxisRenderer 
+						axis="{categoryAxis}"
+						showLine="false"
+						showLabels="false"
+						tickPlacement="none"
+						/>
+				</mx:verticalAxisRenderers>
+				
+				
 				<mx:series>
 					<mx:LineSeries yField="srtt"/>					
 				</mx:series>
@@ -361,7 +393,7 @@
 				styleName="videoToggleButton"
 				id="videoToggleButton"
 				click="toggleVideo( )"
-				toolTip="toggle video"
+				toolTip="Toggle video"
 				width="20"
 				height="20"
 				alpha=".2"/>
@@ -370,7 +402,7 @@
 				styleName="audioToggleButton"
 				id="audioToggleButton"
 				click="toggleAudio()" 
-				toolTip="toggle mute"
+				toolTip="Toggle mute"
 				width="20"
 				height="20"
 				alpha=".2" />			
@@ -379,7 +411,7 @@
 				styleName="wrenchToggleButton"
 				id="wrenchToggleButton"
 				click="handleShowSettings()" 
-				toolTip="show settings"
+				toolTip="Show settings"
 				width="20"
 				height="20"
 				alpha=".2" />

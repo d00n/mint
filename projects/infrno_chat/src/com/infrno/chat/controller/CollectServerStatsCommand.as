@@ -31,8 +31,8 @@ package com.infrno.chat.controller
 				trace("CollectServerStatsCommand.execute() msService.netStream is null");	
 			} else {
 				var server_stats:Object = new Object();
-				var curr_ns:NetStream = msService.netStream;				
-				var ns_info:NetStreamInfo = curr_ns.info;
+				var netStream:NetStream = msService.netStream;				
+				var netStreamInfo:NetStreamInfo = netStream.info;
 
 				server_stats.suid										= dataProxy.local_userInfoVO.suid;
 				server_stats.application_name				= dataProxy.media_app;
@@ -51,18 +51,18 @@ package com.infrno.chat.controller
 				//				user_stats.videoLossRate		= 0;
 				//			}
 				
-				server_stats.audioBytesPerSecond 		= int(ns_info.audioBytesPerSecond);
-				server_stats.videoBytesPerSecond 		= int(ns_info.videoBytesPerSecond);
-				server_stats.dataBytesPerSecond 		= int(ns_info.dataBytesPerSecond);
+				server_stats.audioBytesPerSecond 		= int(netStreamInfo.audioBytesPerSecond);
+				server_stats.videoBytesPerSecond 		= int(netStreamInfo.videoBytesPerSecond);
+				server_stats.dataBytesPerSecond 		= int(netStreamInfo.dataBytesPerSecond);
 				
-				server_stats.currentBytesPerSecond 	= int(ns_info.currentBytesPerSecond);
-				server_stats.maxBytesPerSecond 			= int(ns_info.maxBytesPerSecond);
-				server_stats.byteCount 							= ns_info.byteCount;
-				server_stats.dataByteCount 					= ns_info.dataByteCount;
-				server_stats.videoByteCount					= ns_info.videoByteCount;
+				server_stats.currentBytesPerSecond 	= int(netStreamInfo.currentBytesPerSecond);
+				server_stats.maxBytesPerSecond 			= int(netStreamInfo.maxBytesPerSecond);
+				server_stats.byteCount 							= netStreamInfo.byteCount;
+				server_stats.dataByteCount 					= netStreamInfo.dataByteCount;
+				server_stats.videoByteCount					= netStreamInfo.videoByteCount;
 				
-				server_stats.audioLossRate 					= ns_info.audioLossRate;
-				server_stats.droppedFrames 					= ns_info.droppedFrames;
+				server_stats.audioLossRate 					= netStreamInfo.audioLossRate;
+				server_stats.droppedFrames 					= netStreamInfo.droppedFrames;
 				
 				statsProxy.submitServerStats(server_stats);
 				msService.reportUserStats(server_stats);

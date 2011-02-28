@@ -86,13 +86,21 @@ package com.infrno.chat.services
 			var ns_client:Object = new Object();
 			
 			// TODO useful QoS data?
-			ns_client.onPlayStatus = function(e:Object):void{};
-			ns_client.onMetaData = function(e:Object):void{};
+			ns_client.onPlayStatus = onPlayStatus;
+			ns_client.onMetaData = onMetaData;
 			
 			var ns:NetStreamMS = new NetStreamMS(_nc);
 			ns.client = ns_client;
 			ns.addEventListener(NetStatusEvent.NET_STATUS,function(e:NetStatusEvent):void{}); //provided to avoid runtime error
 			return ns;
+		}
+		
+		public function onPlayStatus(e:Object):void {
+			trace("MSService.onPlayStatus() e:" + e.toString());			
+		}
+		
+		public function onMetaData(e:Object):void {
+			trace("MSService.onMetaData() e:" + e.toString());			
 		}
 		
 		public function getUserStats():void

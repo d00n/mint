@@ -38,7 +38,7 @@ package com.infrno.chat.controller
 					dataProxy.peer_capable && 
 					!(userInfoVO.netStream is NetStreamPeer) )
 			{
-				trace("SetupPeerNetStreamCommand.execute() setting up and playing from the peer connection: "+userInfoVO.suid.toString());
+				trace("InitPeerNetStreamCommand.execute() setting up and playing from the peer connection: "+userInfoVO.suid.toString());
 				
 				// rewriting for testability
 //				userInfoVO.netStream = peerService.getNewNetStream(userInfoVO.nearID);
@@ -53,7 +53,7 @@ package com.infrno.chat.controller
 			} else if(!dataProxy.use_peer_connection && 
 					!(userInfoVO.netStream is NetStreamMS) )
 			{
-				trace("SetupPeerNetStreamCommand.execute() setting up and playing from the stream server");
+				trace("InitPeerNetStreamCommand.execute() setting up and playing from the stream server");
 				userInfoVO.netStream = msService.getNewNetStream();
 				userInfoVO.netStream.play(userInfoVO.suid.toString(),-1);
 				dispatchVpEvent = true;

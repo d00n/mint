@@ -9,12 +9,12 @@ package com.infrno.chat.model
 	
 	public class DataProxy extends Actor
 	{
-		public static const VERSION:String		= "Chat v0.2.21";
+		public static const VERSION:String		= "Chat v0.2.22";
 		
 		// TODO move status vars to a VO, maybe UserInfoVO?
 		
 		// TODO what's the difference between these two?
-		public var peer_enabled:Boolean;		
+		public var peer_enabled:Boolean = true;		
 		public var peer_capable:Boolean;
 		
 		// TODO Is this named well? Does it mean:
@@ -54,7 +54,6 @@ package com.infrno.chat.model
 		public var userInfoVO_array:Array;
 		
 		//public var my_info:UserInfoVO = new UserInfoVO({user_name:"user"+Math.round(Math.random()*1000),user_id:"sample_user_id"});
-		// TODO: rename my_info as local_userInfoVO
 		public var local_userInfoVO:UserInfoVO;
 		
 		public function DataProxy( )

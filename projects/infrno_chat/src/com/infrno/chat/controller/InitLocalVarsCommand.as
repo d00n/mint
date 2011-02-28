@@ -48,9 +48,8 @@ package com.infrno.chat.controller
 			
 			try{
 //				dataProxy.peer_enabled = flash_vars.peer_enabled=="false"?false:true;
-				if (flash_vars.peer_enabled=="true")
-					dataProxy.peer_enabled = true;
-				else
+				
+				if (flash_vars.peer_enabled=="false")
 					dataProxy.peer_enabled = false;
 				
 			}catch(e:Object){

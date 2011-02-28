@@ -9,6 +9,7 @@ package com.infrno.chat.controller
 	
 	import org.robotlegs.mvcs.Command;
 	
+	// TODO: rename this. It's controlling peer connection usage, not just video
 	public class VideoSourceCommand extends Command
 	{
 		[Inject]
@@ -25,7 +26,11 @@ package com.infrno.chat.controller
 		
 		override public function execute():void
 		{
+			trace("VideoSourceCommand.execute() event.type:"+event.type);
+			trace("VideoSourceCommand.execute() dataProxy.peer_enabled:"+dataProxy.peer_enabled);
+
 			dataProxy.use_peer_connection = event.type == PeerEvent.PEER_ENABLE_VIDEO && dataProxy.peer_enabled;
+			trace("VideoSourceCommand.execute() dataProxy.use_peer_connection:"+dataProxy.use_peer_connection);
 			
 			msService.updatePublishStream();
 			peerService.updatePublishStream();

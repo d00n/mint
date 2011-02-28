@@ -24,26 +24,41 @@ package com.infrno.chat.services
 		
 		private var _published:Boolean;		
 		private var _netConnection:NetConnection;
-		private var _ns_outgoing:NetStreamPeer;		
-		private var _nc_client:Object;
+		private var _netStream:NetStreamPeer;		
+		private var _netConnection_client:Object;
 		
 		public function PeerService()
 		{
 			super();
-			setupNetConnectionClient();
+			_netConnection_client = new Object();
 			setupNetConnection();
 		}
 		
+		private function setupNetConnectionClient():void
+		{
+			_netConnection_client = new Object();
+		}
+		
+		private function setupNetConnection():void
+		{
+			_netConnection = new NetConnection();
+			_netConnection.client = _netConnection_client;
+			_netConnection.addEventListener(NetStatusEvent.NET_STATUS,handleNetStatus);
+		}
+				
 		public function connect():void
 		{
-			trace("PeerService.connect() connecting to peer server: "+dataProxy.peer_server);
+			trace("PeerService.connect() connecting to peer server: "+dataProxy.peer_server+"/"+dataProxy.peer_server_key);
+			
+			// Nobody mediates this
 			dispatch(new PeerEvent(PeerEvent.PEER_NETCONNECTION_CONNECTING));
+			
 			_netConnection.connect(dataProxy.peer_server+"/"+dataProxy.peer_server_key);
 		}
 		
 		public function get netStream():NetStream
 		{
-			return _ns_outgoing;
+			return _netStream;
 		}
 		
 		public function getNewNetStream(streamType:String = NetStream.DIRECT_CONNECTIONS):NetStreamPeer
@@ -54,45 +69,45 @@ package com.infrno.chat.services
 		
 		public function updatePublishStream():void
 		{
-			if(!_netConnection.connected)
+			trace("PeerService.updatePublishStream() _netConnection.connected:"+_netConnection.connected);
+			
+			if(!_netConnection.connected) {
 				return;
+			}
 			
 			// TODO write test around this, then flip the if blocks to eliminate the negation 
 			if(dataProxy.use_peer_connection){
 				if(!_published){
-					trace("PeerService.updatePublishStream() >>> publishing my peer stream with name: "+dataProxy.local_userInfoVO.suid.toString());
+					trace("PeerService.updatePublishStream() publishing local peer stream with suid/name: "+dataProxy.local_userInfoVO.suid.toString());
 					
 					setupOutgoingNetStream();
 					
 					if(dataProxy.pubishing_audio)
-						_ns_outgoing.attachAudio(deviceProxy.mic);
+						_netStream.attachAudio(deviceProxy.mic);
 					
 					if(dataProxy.pubishing_video)
-						_ns_outgoing.attachCamera(deviceProxy.camera);
+						_netStream.attachCamera(deviceProxy.camera);
 					
-					_ns_outgoing.publish(dataProxy.local_userInfoVO.suid.toString());
+					_netStream.publish(dataProxy.local_userInfoVO.suid.toString());
 					
-					dataProxy.ns = _ns_outgoing;
+					dataProxy.ns = _netStream;
 				} else {
-					trace("PeerService.updatePublishStream() >>> already publishing my peer stream");
+					trace("PeerService.updatePublishStream() local stream is already published");
 				}
 			} else {
-				trace("PeerService.updatePublishStream() >>> closing peer publish stream");
-				if(_ns_outgoing)
-					_ns_outgoing.close();
+				trace("PeerService.updatePublishStream() closing local peer stream. _published:"+_published);
+				if(_netStream)
+					_netStream.close();
 			}
 		}
 		
-		/**
-		 * Private methods
-		 */
-		
 		private function handleNetStatus(e:NetStatusEvent):void
 		{
-			trace("PeerService.handleNetStatus() Peer: "+e.info.code);
-			// TODO Report these
+			trace("PeerService.handleNetStatus() "+e.info.code+" _netConnection.nearID:"+_netConnection.nearID);
+			// TODO Report these to the server
 			switch(e.info.code){
 				case "NetConnection.Connect.Success":
+					trace("PeerService.handleNetStatus() NetConnection.Connect.Success _netConnection.nearID:"+_netConnection.nearID);
 					dispatch(new PeerEvent(PeerEvent.PEER_NETCONNECTION_CONNECTED,_netConnection.nearID));
 					break;
 				case "NetConnection.Connect.Closed":
@@ -102,11 +117,11 @@ package com.infrno.chat.services
 					dispatch(new PeerEvent(PeerEvent.PEER_NETCONNECTION_DISCONNECTED));
 					break;
 				case "NetStream.Connect.Closed":
-					trace("PeerService.handleNetStatus() someone disconnected from me");
-					//their farID = e.info.stream.farID;
+					trace("PeerService.handleNetStatus() >>>>>>>>> not sure if this ever gets hit >>>>>>>>> NetStream.Connect.Closed");
+					
+					// TODO validate this:
 					//dataProxy.users_collection has a reference for this
-					break;
-				
+					break;				
 			}
 		}
 		
@@ -115,7 +130,6 @@ package com.infrno.chat.services
 			trace("PeerService.handleOutgoingNetStatus() event: "+e.info.code);
 			switch(e.info.code){
 				case "NetStream.Play.Start":
-					trace("PeerService.handleOutgoingNetStatus() someone connected to me and is playing my stream");
 					break;
 				case "NetStream.Publish.BadName":
 					_published = false;
@@ -130,39 +144,27 @@ package com.infrno.chat.services
 			}
 		}
 		
-		private function setupNetConnectionClient():void
-		{
-			_nc_client = new Object();
-		}
-		
-		private function setupNetConnection():void
-		{
-			_netConnection = new NetConnection();
-			_netConnection.client = _nc_client;
-			_netConnection.addEventListener(NetStatusEvent.NET_STATUS,handleNetStatus);
-		}
-		
 		private function setupOutgoingNetStream():void
 		{
-			if(_ns_outgoing){
-				if(_ns_outgoing.hasEventListener(NetStatusEvent.NET_STATUS))
-					_ns_outgoing.removeEventListener(NetStatusEvent.NET_STATUS,handleOutgoingNetStatus);
-				_ns_outgoing.close();
-				_ns_outgoing = null;
+			trace("PeerService.setupOutgoingNetStream()");
+
+			if(_netStream){
+				if(_netStream.hasEventListener(NetStatusEvent.NET_STATUS))
+					_netStream.removeEventListener(NetStatusEvent.NET_STATUS,handleOutgoingNetStatus);
+				_netStream.close();
+				_netStream = null;
 			}
 			
-			_ns_outgoing = getNewNetStream();
-			_ns_outgoing.addEventListener(NetStatusEvent.NET_STATUS,handleOutgoingNetStatus);
+			_netStream = getNewNetStream();
+			_netStream.addEventListener(NetStatusEvent.NET_STATUS,handleOutgoingNetStatus);
 			
-			var c:Object = new Object();
-			c.onPeerConnect = function(caller:NetStream):Boolean
+			var client:Object = new Object();
+			client.onPeerConnect = function(netStream:NetStream):Boolean
 			{
-				trace("PeerService.setupOutgoingNetStream() #### Caller connecting to listener stream: " + caller.farID);
-				//				trace("opposite_user._nearID: "+opposite_user._nearID);
-				//				return opposite_user._nearID==caller.farID;
+				trace("PeerService.setupOutgoingNetStream() client.onPeerConnect() netStream.farID: " + netStream.farID);
 				return true;
 			}
-			_ns_outgoing.client = c;
+			_netStream.client = client;
 		}
 	}
 }

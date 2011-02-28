@@ -31,14 +31,19 @@ package com.infrno.chat.controller
 			app_version.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyToClipboard);
 			custom_menu.customItems.push(app_version);
 			
-			var conn_status:ContextMenuItem = new ContextMenuItem("peer connected: "+dataProxy.use_peer_connection,true);
+			var conn_status:ContextMenuItem;
+			if (dataProxy.use_peer_connection)
+				conn_status = new ContextMenuItem("Connection: p2p",true);
+			else
+				conn_status = new ContextMenuItem("Connection: server",true);
+			
 			custom_menu.customItems.push(conn_status);
 			
-			var wowza_switch:ContextMenuItem = new ContextMenuItem("turn on wowza stream");
+			var wowza_switch:ContextMenuItem = new ContextMenuItem("Turn on server connection");
 			wowza_switch.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, switchToWowza);
 			custom_menu.customItems.push(wowza_switch);
 			
-			var peer_status:ContextMenuItem = new ContextMenuItem("turn on peer stream");
+			var peer_status:ContextMenuItem = new ContextMenuItem("Turn on p2p connection");
 			peer_status.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, switchToPeer);
 			custom_menu.customItems.push(peer_status);
 			
@@ -56,6 +61,8 @@ package com.infrno.chat.controller
 		}
 		
 		// TODO: That event, if correct, needs a better name, like PEER_NETCONNECTION_CONNECT
+		// This is looking suspect. PeerService also throws this when handling NetConnection.Connect.Success,
+		// which implies the connection just succeeded. We are not in a position to say that here.
 		private function switchToPeer(e:ContextMenuEvent):void
 		{
 			dispatch(new PeerEvent(PeerEvent.PEER_NETCONNECTION_CONNECTED));

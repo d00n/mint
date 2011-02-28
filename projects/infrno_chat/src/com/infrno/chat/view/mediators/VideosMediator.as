@@ -198,8 +198,8 @@ package com.infrno.chat.view.mediators
 		
 		private function setupPeerVideoPresenceNetStream(videoPresence:VideoPresence):void
 		{
-			trace("VideosMediator.setupPeerVideoPresenceNetStream()");			
-			var vpEvent:VideoPresenceEvent= new VideoPresenceEvent(VideoPresenceEvent.SETUP_PEER_NETSTREAM);
+			trace("VideosMediator.setupPeerVideoPresenceNetStream() videoPresence.userInfoVO.suid:"+videoPresence.userInfoVO.suid);			
+			var vpEvent:VideoPresenceEvent = new VideoPresenceEvent(VideoPresenceEvent.SETUP_PEER_NETSTREAM);
 			vpEvent.userInfoVO = videoPresence.userInfoVO;
 			dispatch(vpEvent);			
 		}
@@ -227,10 +227,10 @@ package com.infrno.chat.view.mediators
 			var videoPresence:VideoPresence = getVideoPresenceByName(peerStatsVO.suid.toString());		
 			
 			videoPresence.sparkline.statsVO = peerStatsVO;
-			videoPresence.sparkline.yFieldName = 'srtt';
+			videoPresence.sparkline.yFieldName = 'currentBytesPerSecond';
 			var last_ping_value:int = peerStatsVO.data_array[peerStatsVO.data_array.length-1].srtt;
 			videoPresence.sparkline.lastValue_label = last_ping_value.toString();
-			videoPresence.sparkline.toolTip = "Ping";
+			videoPresence.sparkline.toolTip = "bps";
 			
 			if (last_ping_value < MAX_SRTT) {
 				videoPresence.sparkline.line_stroke_color = GREEN; 

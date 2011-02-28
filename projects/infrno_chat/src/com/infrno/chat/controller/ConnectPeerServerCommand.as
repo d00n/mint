@@ -15,6 +15,8 @@ package com.infrno.chat.controller
 		
 		override public function execute():void
 		{
+			trace("ConnectPeerServerCommand.execute() dataProxy.peer_enabled:"+dataProxy.peer_enabled);
+
 			if(dataProxy.peer_enabled)
 				peerService.connect();
 		}

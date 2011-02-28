@@ -4,11 +4,17 @@ package com.infrno.chat.model.events
 	
 	public class PeerEvent extends Event
 	{
-		public static const PEER_NETCONNECTION_CONNECTED:String			= "pe_peer_netconnection_connected";
-		public static const PEER_NETCONNECTION_CONNECTING:String		= "pe_peer_netconnection_connecting";
-		public static const PEER_NETCONNECTION_DISCONNECTED:String	= "pe_peer_netconnection_disconnected";
-		public static const PEER_ENABLE_VIDEO:String								= "pe_peer_enable_video";
-		public static const PEER_DISABLE_VIDEO:String								= "pe_peer_disable_video";
+		// WARNING: Some of these connection strings are used on the Wowza side
+		// Don't change them without referencing com.infrno.multiplayer.StreamManager.checkStreamSupport()
+		public static const PEER_NETCONNECTION_CONNECTED:String			= "peer_netconnection_connected";
+		public static const PEER_NETCONNECTION_CONNECTING:String		= "peer_netconnection_connecting";
+		public static const PEER_NETCONNECTION_DISCONNECTED:String	= "peer_netconnection_disconnected";
+		
+		// TODO: These are poorly named, because they affect the peer stream usage via
+		// dataProxy.use_peer_connection, set in VideoSourceCommand
+		// ..not just video
+		public static const PEER_ENABLE_VIDEO:String								= "peer_enable_video";
+		public static const PEER_DISABLE_VIDEO:String								= "peer_disable_video";
 
 		
 		public var value:String;

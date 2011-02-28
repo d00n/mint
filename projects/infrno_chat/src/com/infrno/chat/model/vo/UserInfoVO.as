@@ -20,8 +20,17 @@ package com.infrno.chat.model.vo
 		
 		public function UserInfoVO(infoObj:Object=null)
 		{
+			for(var i:String in infoObj){
+				if(infoObj[i]!=null) 
+					trace("UserInfoVO constructor infoObj["+i+"]=" +infoObj[i]);
+			}
+
 //			peer_capable = infoObj.peer_capable;
+			
+			// TODO use updateObject() for initialization
+			// Smells: Setting a value from an event const?
 			peer_connection_status = PeerEvent.PEER_NETCONNECTION_CONNECTING;
+			
 			suid = infoObj.suid;
 			user_id = infoObj.user_id;
 			user_name = infoObj.user_name;
@@ -34,6 +43,13 @@ package com.infrno.chat.model.vo
 		
 		public function set netStream(netStream:NetStream):void
 		{
+			if (_netStream == null) {
+				trace("UserInfoVO.netStream: _netStream is null");
+			} else {
+				trace("UserInfoVO.netStream: _netStream is not null");
+				trace("UserInfoVO.netStream: _netStream.hasEventListener(NetStatusEvent.NET_STATUS):"+_netStream.hasEventListener(NetStatusEvent.NET_STATUS));
+			}		
+				
 			if(_netStream && _netStream.hasEventListener(NetStatusEvent.NET_STATUS)){
 				_netStream.close();
 				_netStream.removeEventListener(NetStatusEvent.NET_STATUS,handleNetStatus);
@@ -43,12 +59,12 @@ package com.infrno.chat.model.vo
 			_netStream.addEventListener(NetStatusEvent.NET_STATUS,handleNetStatus);
 		}
 		
-		public function update(info:Object):void
+		public function update(infoObj:Object):void
 		{
-			for(var i:String in info){
-				if(info[i]!=null) {
-					trace("UserInfoVO.updateInfo info["+i+"]=" +info[i]);
-					this[i] = info[i];
+			for(var i:String in infoObj){
+				if(infoObj[i]!=null) {
+					trace("UserInfoVO.updateInfo infoObj["+i+"]=" +infoObj[i]);
+					this[i] = infoObj[i];
 				}
 			}
 		}

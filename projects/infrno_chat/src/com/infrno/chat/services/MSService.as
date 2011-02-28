@@ -27,9 +27,9 @@ package com.infrno.chat.services
 		public var deviceProxy:DeviceProxy;
 		
 		private var _published:Boolean;	
-		private var _nc:NetConnection;
-		private var _ns:NetStream;
-		private var _nc_client:Object;
+		private var _netConnection:NetConnection;
+		private var _netStream:NetStream;
+		private var _netConnection_client:Object;
 		
 		public function MSService()
 		{
@@ -37,12 +37,60 @@ package com.infrno.chat.services
 			super();
 			setupClient();
 			setupNetConnection();
+		}		
+		
+		private function setupClient():void
+		{
+			trace("MSService.setupClient()");
+			
+			_netConnection_client = new Object();
+			
+			_netConnection_client.initUser = function(userInfoVO:Object):void
+			{
+				//dataProxy.my_info = new UserInfoVO(user_info);
+				trace("MSService: _nc_client.initUser() userInfoVO.suid:" + userInfoVO.suid);
+				dataProxy.local_userInfoVO.update(userInfoVO);
+			}
+			
+			_netConnection_client.chatToUser = function(msgIn:String):void {
+				dispatch(new ChatEvent(ChatEvent.RECEIVE_CHAT,msgIn));
+			}
+			
+			// deprecated
+			_netConnection_client.getUserStats = function():void {
+				dispatch(new StatsEvent(StatsEvent.COLLECT_SERVER_STATS));
+			}
+			
+			// deprecated
+			_netConnection_client.generatePeerStats = function():void {
+				dispatch(new StatsEvent(StatsEvent.COLLECT_PEER_STATS));
+			}
+			
+			_netConnection_client.usePeerConnection = function(use_peer_connection:Boolean):void {
+				trace("MSService.setupClient() _nc_client.usePeerConnection() use_peer_connection:"+use_peer_connection);
+				if(use_peer_connection){
+					dispatch(new PeerEvent(PeerEvent.PEER_ENABLE_VIDEO));
+				} else {
+					dispatch(new PeerEvent(PeerEvent.PEER_DISABLE_VIDEO));
+				}
+			}
+				
+			_netConnection_client.updateUsers = updateUsers;
+		}
+		
+		private function setupNetConnection():void
+		{
+			trace("MSService.setupNetConnection()");
+			
+			_netConnection = new NetConnection();
+			_netConnection.client = _netConnection_client;
+			_netConnection.addEventListener(NetStatusEvent.NET_STATUS,netStatusHandler);
 		}
 		
 		public function chatToServer(msgIn:String, targetUsers:Array=null):void
 		{
 			trace("MSService.chatToServer() sending this chat to the server: "+msgIn);
-			_nc.call("chatToServer",null,msgIn,targetUsers);
+			_netConnection.call("chatToServer",null,msgIn,targetUsers);
 		}
 		
 		public function connect():void
@@ -59,7 +107,7 @@ package com.infrno.chat.services
 			
 //			dispatch(new MSEvent(MSEvent.NETCONNECTION_CONNECTING));
 			
-			_nc.connect(connection_uri, 
+			_netConnection.connect(connection_uri, 
 				dataProxy.local_userInfoVO, 
 				dataProxy.auth_key,
 				dataProxy.room_id,
@@ -71,12 +119,12 @@ package com.infrno.chat.services
 		
 		public function get netConnection():NetConnection
 		{
-			return _nc;
+			return _netConnection;
 		}
 		
 		public function get netStream():NetStream
 		{
-			return _ns;
+			return _netStream;
 		}
 		
 		public function getNewNetStream():NetStreamMS
@@ -89,7 +137,7 @@ package com.infrno.chat.services
 			ns_client.onPlayStatus = onPlayStatus;
 			ns_client.onMetaData = onMetaData;
 			
-			var ns:NetStreamMS = new NetStreamMS(_nc);
+			var ns:NetStreamMS = new NetStreamMS(_netConnection);
 			ns.client = ns_client;
 			ns.addEventListener(NetStatusEvent.NET_STATUS,function(e:NetStatusEvent):void{}); //provided to avoid runtime error
 			return ns;
@@ -106,17 +154,17 @@ package com.infrno.chat.services
 		public function getUserStats():void
 		{
 			trace("MSService.getUserStats()");
-			_nc.call("getUserStats",null);
+			_netConnection.call("getUserStats",null);
 		}
 		
 		public function reportUserStats(statsIn:Object):void
 		{
-			_nc.call("reportUserStats",null,statsIn);
+			_netConnection.call("reportUserStats",null,statsIn);
 		}
 		
 		public function sendPeerStats(peerStats:Object):void
 		{
-			_nc.call("recievePeerStats",null,peerStats);
+			_netConnection.call("recievePeerStats",null,peerStats);
 		}		
 		
 		public function updatePublishStream():void
@@ -126,30 +174,30 @@ package com.infrno.chat.services
 			// TODO write test around this, then flip the if blocks to eliminate the negation 
 			if(!dataProxy.use_peer_connection){
 				if(!_published){
-					trace("MSService.updatePublishStream() ### publishing local server stream with dataProxy.my_info.suid: "+dataProxy.local_userInfoVO.suid.toString());
+					trace("MSService.updatePublishStream() ### publishing local server stream with dataProxy.local_userInfoVO.suid: "+dataProxy.local_userInfoVO.suid.toString());
 					
 					if(dataProxy.pubishing_audio)
-						_ns.attachAudio(deviceProxy.mic);
+						_netStream.attachAudio(deviceProxy.mic);
 					
 					if(dataProxy.pubishing_video)
-						_ns.attachCamera(deviceProxy.camera);
+						_netStream.attachCamera(deviceProxy.camera);
 					
-					_ns.publish(dataProxy.local_userInfoVO.suid.toString());
+					_netStream.publish(dataProxy.local_userInfoVO.suid.toString());
 					
-					dataProxy.ns = _ns;
+					dataProxy.ns = _netStream;
 				} else {
 					trace("MSService.updatePublishStream() ### already publishing local server stream");
 				}
 			} else {
 				trace("MSService.updatePublishStream() ### closing server publish stream");
-				_ns.close();
+				_netStream.close();
 			}
 		}
 		
 		public function updateUserInfo():void
 		{
-			trace("MSService.updateUserInfo() typeof(dataProxy.my_info)="+typeof(dataProxy.local_userInfoVO));
-			_nc.call("updateUserInfo",null,dataProxy.local_userInfoVO);
+			trace("MSService.updateUserInfo() dataProxy.local_userInfoVO.suid="+dataProxy.local_userInfoVO.suid);
+			_netConnection.call("updateUserInfo",null,dataProxy.local_userInfoVO);
 		}
 		
 		/**
@@ -158,7 +206,7 @@ package com.infrno.chat.services
 		
 		public function netStatusHandler(e:NetStatusEvent):void
 		{
-			trace("MSService.netStatusHandler() Media: "+e.info.code);
+			trace("MSService.netStatusHandler() e.info.code: "+e.info.code);
 			switch(e.info.code){
 				
 				case "NetConnection.Connect.Closed":
@@ -184,44 +232,6 @@ package com.infrno.chat.services
 					_published = false;
 					break;
 			}
-		}
-		
-		private function setupClient():void
-		{
-			trace("MSService.setupClient()");
-			
-			_nc_client = new Object();
-			
-			_nc_client.initUser = function(userInfoVO:Object):void
-				{
-					//dataProxy.my_info = new UserInfoVO(user_info);
-					trace("MSService: _nc_client.initUser() userInfoVO:" + userInfoVO.toString());
-					dataProxy.local_userInfoVO.update(userInfoVO);
-				}
-				
-			_nc_client.chatToUser = function(msgIn:String):void {
-					dispatch(new ChatEvent(ChatEvent.RECEIVE_CHAT,msgIn));
-				}
-				
-			// deprecated
-			_nc_client.getUserStats = function():void {
-				dispatch(new StatsEvent(StatsEvent.COLLECT_SERVER_STATS));
-			}
-				
-			// deprecated
-			_nc_client.generatePeerStats = function():void {
-				dispatch(new StatsEvent(StatsEvent.COLLECT_PEER_STATS));
-			}
-				
-			_nc_client.usePeerConnection = function(usePeer:Boolean):void {
-				if(usePeer){
-					dispatch(new PeerEvent(PeerEvent.PEER_ENABLE_VIDEO));
-				} else {
-					dispatch(new PeerEvent(PeerEvent.PEER_DISABLE_VIDEO));
-				}
-			}
-				
-			_nc_client.updateUsers = updateUsers;
 		}
 		
 		private function updateUsers(userInfoVOs:Object):void
@@ -259,19 +269,10 @@ package com.infrno.chat.services
 			dispatch(msEvent);
 		}
 		
-		private function setupNetConnection():void
-		{
-			trace("MSService.setupNetConnection()");
-			
-			_nc = new NetConnection();
-			_nc.client = _nc_client;
-			_nc.addEventListener(NetStatusEvent.NET_STATUS,netStatusHandler);
-		}
-		
 		private function setupNetStream():void
 		{
-			_ns = new NetStream(_nc);
-			_ns.addEventListener(NetStatusEvent.NET_STATUS,netStatusHandler);
+			_netStream = new NetStream(_netConnection);
+			_netStream.addEventListener(NetStatusEvent.NET_STATUS,netStatusHandler);
 		}
 	}
 }

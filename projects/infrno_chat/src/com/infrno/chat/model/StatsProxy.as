@@ -70,6 +70,8 @@ package com.infrno.chat.model
 			// TODO: Iterate over everything in server_stats
 //			newDataRecord.srtt = peer_stats.srtt;
 			
+			newDataRecord.currentBytesPerSecond = peer_stats.currentBytesPerSecond;
+			
 			peerStatsVO.data_array.addItem(newDataRecord);		
 			
 			if (peerStatsVO.data_array.length > NUMBER_OF_DATA_RECORDS_TO_KEEP) {

@@ -8,6 +8,7 @@ package com.infrno.chat.view.mediators
 	import com.infrno.chat.model.vo.UserInfoVO;
 	import com.infrno.chat.services.NetStreamMS;
 	import com.infrno.chat.services.NetStreamPeer;
+	import com.infrno.chat.view.components.Sparkline;
 	import com.infrno.chat.view.components.VideoPresence;
 	import com.infrno.chat.view.components.Videos;
 	
@@ -70,19 +71,16 @@ package com.infrno.chat.view.mediators
 		private function removeVideos(userInfoVO_array:Array, local_userInfoVO:UserInfoVO):void
 		{
 			trace("VideosMediator.removeVideos()");
-//			var element_num:int = videos.videos_holder.numChildren;
 			var dataProviderLength:int = videos.videos_holder.dataProvider.length;
 			for(var i:int = 0; i<dataProviderLength; i++){
 				trace("VideosMediator.removeVideos() i="+i);
 				try{
 					
-//					var curr_element:VideoPresence = videos.videos_holder.getElementAt(i) as VideoPresence;
 					var videoPresence:VideoPresence = videos.videos_holder.dataProvider.getItemAt(i) as VideoPresence;
 					trace("VideosMediator.removeVideos() videoPresence.name="+videoPresence.name);
 					
 					//if the video isn't in the users collection remove it
 					if(userInfoVO_array[videoPresence.name] == null){
-//						videos.videos_holder.removeElement(videoPresence as IVisualElement);
 						var vp_index:int = videos.videos_holder.dataProvider.getItemIndex(videoPresence);
 						trace("VideosMediator.removeVideos() vp_index="+vp_index);
 						videos.videos_holder.dataProvider.removeItemAt(vp_index);
@@ -90,7 +88,7 @@ package com.infrno.chat.view.mediators
 				}catch(e:Object){
 					//out of range error I'm sure
 					// TODO Make sure we don't get out of range errors
-					// things work just fine, but how does this state occur?
+					// Things work just fine, but how does this state occur?
 					trace("VideosMediator.removeVideos() error:" +e.toString());
 				}
 			}
@@ -110,18 +108,6 @@ package com.infrno.chat.view.mediators
 			}
 			return null;
 		}
-		
-//		private function getElementbyName(visible_element:spark.components.List, name:String):VideoPresence
-//		{
-//			var num_elements:int = visible_element.numChildren;
-//			for(var i:int=0;i<num_elements;i++){
-//				var curr_element:VideoPresence = visible_element.getChildAt(i) as VideoPresence;
-//				if(curr_element.name == name){
-//					return curr_element;
-//				}
-//			}
-//			return null;
-//		}		
 		
 		private function onVideoPresenceCreationComplete(e:FlexEvent):void
 		{
@@ -153,6 +139,8 @@ package com.infrno.chat.view.mediators
 					videos.videos_holder.dataProvider.addItem(videoPresence);
 					
 					videoPresence.userInfoVO = userInfoVO;
+					
+					// TODO this smells. Pick one and stick with it.
 					videoPresence.name = userInfoVO.suid.toString();
 					
 					// TODO push this comparison into the is_local attribute
@@ -160,6 +148,12 @@ package com.infrno.chat.view.mediators
 						videoPresence.is_local = true;
 					else
 						videoPresence.is_local = false;
+					
+//					var sparkline:Sparkline = new Sparkline();
+////					if (videoPresence.is_local)
+////						sparkline.peerStatsVO						
+//					videoPresence.sparkline = sparkline;
+
 					
 					videoPresence.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
 						{
@@ -237,16 +231,16 @@ package com.infrno.chat.view.mediators
 			var peerStatsVO:StatsVO = vpEvent.statsVO;
 			var videoPresence:VideoPresence = getVideoPresenceByName(peerStatsVO.suid.toString());		
 			
-			videoPresence.peerStatsVO = peerStatsVO;
+			videoPresence.sparkline.peerStatsVO = peerStatsVO;
 			var last_ping_value:int = peerStatsVO.data_array[peerStatsVO.data_array.length-1].srtt;
 			
 			if (last_ping_value < MAX_SRTT) {
-				videoPresence.line_stroke_color = GREEN; 
+				videoPresence.sparkline.line_stroke_color = GREEN; 
 			} else {
-				videoPresence.line_stroke_color = RED;
+				videoPresence.sparkline.line_stroke_color = RED;
 			}
 			
-			videoPresence.client_lastPing = "Ping: " + last_ping_value.toString();
+			videoPresence.sparkline.client_lastPing = "Ping: " + last_ping_value.toString();
 		}
 		
 		private function displayServerStats(vpEvent:VideoPresenceEvent):void
@@ -255,16 +249,16 @@ package com.infrno.chat.view.mediators
 			var serverStatsVO:StatsVO = vpEvent.statsVO;
 			var videoPresence:VideoPresence = getVideoPresenceByName(serverStatsVO.suid.toString());		
 			
-			videoPresence.serverStatsVO = serverStatsVO;
-			var currentBytesPerSecond:int = serverStatsVO.data_array[serverStatsVO.data_array.length-1].currentBytesPerSecond;
-			
-			if (currentBytesPerSecond < MAX_SRTT) {
-				videoPresence.line_stroke_color = GREEN; 
-			} else {
-				videoPresence.line_stroke_color = RED;
-			}
-			
-			videoPresence.server_currentBytesPerSecond = "Bytes/second: " + currentBytesPerSecond.toString();
+//			videoPresence.serverStatsVO = serverStatsVO;
+//			var currentBytesPerSecond:int = serverStatsVO.data_array[serverStatsVO.data_array.length-1].currentBytesPerSecond;
+//			
+//			if (currentBytesPerSecond < MAX_SRTT) {
+//				videoPresence.line_stroke_color = GREEN; 
+//			} else {
+//				videoPresence.line_stroke_color = RED;
+//			}
+//			
+//			videoPresence.server_currentBytesPerSecond = "Bytes/second: " + currentBytesPerSecond.toString();
 		}		
 		
 	}

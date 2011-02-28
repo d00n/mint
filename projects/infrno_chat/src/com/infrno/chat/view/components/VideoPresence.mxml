@@ -15,36 +15,14 @@
 			
 			import mx.collections.ArrayCollection;
 			
-//			private var m_audioLevel:int;
 			private var _initialized:Boolean = false;
 			private var _is_local:Boolean;
 			private var _camera:Camera;
-			
-//			private var _audio_level	:int;
-			
-			[Bindable]
-			public var peerStatsVO:StatsVO;
-			
-			[Bindable]
-			public var serverStatsVO:StatsVO;
-			
-			[Bindable]
-			public var client_lastPing:String;
-			
-			[Bindable]
-			public var server_currentBytesPerSecond:String;
-			
-			[Bindable]
-			public var line_stroke_color:String;
-			
-			[Bindable]
-			private var emptyArrayToRemoveChartLines:Array = new Array();
-			
 			private var _userInfoVO:UserInfoVO;
 			private var _video:Video;
+			private var _sparkline:Sparkline;
 			
-			public function get video():Video
-			{
+			public function get video():Video	{
 				if(_video == null){
 					_video = new Video(160,120);
 					video_holder.addChild(_video);
@@ -52,23 +30,27 @@
 				return _video;
 			}
 			
-			public function get userInfoVO():UserInfoVO
-			{
+			public function get sparkline():Sparkline {
+				return _sparkline;
+			}
+			public function set sparkline(value:Sparkline):void {
+				_sparkline = value;
+				borderContainer.addElement(_sparkline);
+			}
+			
+			public function get userInfoVO():UserInfoVO	{
 				return _userInfoVO;
 			}
 			
-			public function set userInfoVO(info:UserInfoVO):void
-			{
+			public function set userInfoVO(info:UserInfoVO):void{
 				_userInfoVO = info;
 			}
 			
-			public function get is_local():Boolean
-			{
+			public function get is_local():Boolean	{
 				return _is_local;
 			}
 			
-			public function set is_local(b:Boolean):void
-			{
+			public function set is_local(b:Boolean):void {
 				if( null != wrenchToggleButton ) 
 				{
 					wrenchToggleButton.visible = b;
@@ -76,42 +58,35 @@
 				_is_local = b;
 			}
 			
-			public function set camera(cam:Camera):void
-			{
+			public function set camera(cam:Camera):void	{
 				if(_camera == cam)
 					return;
 				
 				_camera = cam;
 			}
 			
-			public function set netstream(ns:NetStream):void
-			{
+			public function set netstream(ns:NetStream):void {
 				video.attachCamera(null);
 				video.attachNetStream(ns);
 			}
 
-			private function initializeAudio( ) : void 
-			{
-				if( _is_local ) 
-				{
+			private function initializeAudio():void	{
+				if( _is_local ) {
 					dispatchEvent( new VideoPresenceEvent( VideoPresenceEvent.AUDIO_UNMUTED, true ) );
 					return;
 				}
 				
-				if( hasNetStream( ) ) 
-				{
+				if( hasNetStream() ) {
 					setAudioLevel( 90 );
 					_userInfoVO.netStream.receiveAudio( false );
 				}
 			}	
 					
-			public function isInitialized( ) : Boolean 
-			{
+			public function isInitialized():Boolean	{
 				return _initialized;
 			}
 			
-			public function toggleAudio():void
-			{
+			public function toggleAudio():void {
 				trace( "VideoPresence.toggleAudio()" );
 				if(audioToggleButton.selected){
 					if(_is_local){
@@ -135,33 +110,23 @@
 				}
 			}
 			
-			private function initializeVideo( ) : void 
-			{
-				if( _is_local )
-				{
+			private function initializeVideo():void	{
+				if( _is_local )	{
 					dispatchEvent(new VideoPresenceEvent(VideoPresenceEvent.VIDEO_UNMUTED,true));
 					video.attachCamera(_camera);
 					video.visible = true;
 					return;
 				} 
 				
-				if( hasNetStream( ) )
-				{
+				if( hasNetStream() ) {
 					_userInfoVO.netStream.receiveVideo(true);
 					video.visible = true;
 				}
 			}
 			
-			public function toggleVideo():void
-			{
+			public function toggleVideo():void {
 				trace("VideoPresence.toggleVideo()");
-				
-				//if( null == videoToggleButton ) 
-				//{
-				//	video.visible = true;
-				//	return;
-				//}
-				
+							
 				//if using peer then we are unable to request a receiveAudio/Video false.. we'd just need to hide it
 				if( videoToggleButton.selected ){
 					if( _is_local ){
@@ -189,17 +154,18 @@
 			 * Private functions
 			 */
 			
-			private function adjustVolume():void
-			{
+			private function adjustVolume():void {
 				if(_userInfoVO.netStream != null)
 					setAudioLevel(audio_level.value);
 			}
 			
-			private function handleCreationComplete(event:Event):void
-			{
+			private function handleCreationComplete(event:Event):void	{
 				currentState="hideControls";
 				_initialized = true;
 				wrenchToggleButton.visible = _is_local;
+				
+				_sparkline = new Sparkline();
+				borderContainer.addElement(_sparkline);
 				
 				if (_is_local)
 					audio_level.toolTip = "Your mic level";
@@ -207,20 +173,16 @@
 					audio_level.toolTip = "Peer audio level";
 			}
 			
-			private function handleMouseOver(event:Event):void 
-			{
-				if( currentState == "usingControls" ) 
-				{
+			private function handleMouseOver(event:Event):void 	{
+				if( currentState == "usingControls" ) {
 					return;
 				}
 
 				stateShowControls( );	
 			}
 			
-			private function handleMouseOut(event:Event):void
-			{
-				if( currentState == "usingControls" ) 
-				{
+			private function handleMouseOut(event:Event):void	{
+				if( currentState == "usingControls" ) {
 					return;
 				}
 				
@@ -228,23 +190,23 @@
 			}
 			
 			
-			private function stateShowControls( ) : void {
+			private function stateShowControls():void {
 				currentState = "showControls";
 				
-				peerStatsChart.alpha = 1;
-				last_ping_value_label.alpha = 1;
+//				peerStatsChart.alpha = 1;
+//				last_ping_value_label.alpha = 1;
 				controlsContainer.alpha = 1;
 			}
 			
-			private function stateUsingControls( ) : void {
+			private function stateUsingControls():void {
 				currentState = "usingControls";
 				
-				peerStatsChart.alpha = 1;
-				last_ping_value_label.alpha = 1;
+//				peerStatsChart.alpha = 1;
+//				last_ping_value_label.alpha = 1;
 				controlsContainer.alpha = 1;
 			}
 			
-			private function stateHideControls( ) : void {
+			private function stateHideControls():void {
 				currentState = "hideControls";
 					
 				// Leaving this off while tuning
@@ -253,23 +215,19 @@
 				controlsContainer.alpha = .2;
 			}
 			
-			private function handleMouseOverControls(event:Event):void 
-			{
+			private function handleMouseOverControls(event:Event):void {
 				stateUsingControls( );
 			}
 			
-			private function handleMouseOutControls(event:Event):void
-			{
+			private function handleMouseOutControls(event:Event):void	{
 				stateShowControls( );
 			}
 			
-			public function handleShowSettings():void
-			{
+			public function handleShowSettings():void	{
 				dispatchEvent( new SettingsEvent( SettingsEvent.SHOW_SETTINGS ) );
 			}
 			
-			private function setAudioLevel(levelIn:Number,force:Boolean=false):void
-			{
+			private function setAudioLevel(levelIn:Number,force:Boolean=false):void	{
 				if( audioToggleButton.selected && !force ) { 
 					return;
 				}
@@ -279,8 +237,7 @@
 					return;
 				}
 				
-				if( !hasNetStream( ) ) 
-				{
+				if( !hasNetStream() ) 	{
 					//not initialized
 					return;  
 				}
@@ -292,16 +249,13 @@
 				
 			}
 			
-			private function hasNetStream( ):Boolean
-			{
-				if( null == _userInfoVO ) 
-				{
+			private function hasNetStream():Boolean	{
+				if( null == _userInfoVO ) {
 					//not initialized
 					return false;  
 				}
 				
-				if( null == _userInfoVO.netStream ) 
-				{
+				if( null == _userInfoVO.netStream ) {
 					//no camera attached to this video feed
 					return false;
 				}
@@ -311,22 +265,22 @@
 			
 		]]>
 	</fx:Script>
+	
 	<s:states>
 		<s:State name="showControls" />
 		<s:State name="usingControls" />
 		<s:State name="hideControls" />
 	</s:states>
 
-	<s:BorderContainer
-		id="borderContainer"
+	<s:BorderContainer id="borderContainer"
 		backgroundColor="#ffffff" 
 		borderColor="#cecece"
 		width="162" 
 		height="120"
 		mouseOver="handleMouseOver(event);"
 		mouseOut="handleMouseOut(event);">
-		<s:Rect 
-			id="background" 
+		
+		<s:Rect id="background" 
 			width="160" 
 			height="120">
 	        <s:fill>
@@ -334,97 +288,11 @@
 	        </s:fill>
 	    </s:Rect>
 		
-		<mx:UIComponent 
-			id="video_holder" 
+		<mx:UIComponent id="video_holder" 
 			width="160" 
 			height="120" />		
 
-		<s:HGroup 
-			id="statsContainer"
-			top="0"
-			height="50"
-			width="100%"
-			paddingLeft="2" 
-			paddingTop="0"
-			paddingBottom="0"
-			gap="0"
-			verticalAlign="middle"
-			includeIn="showControls, usingControls, hideControls"
-			mouseOver="handleMouseOverControls(event);"
-			mouseOut="handleMouseOutControls(event);">
-
-			<mx:LineChart 
-				id="peerStatsChart"		
-				dataProvider="{peerStatsVO.data_array}"
-				backgroundElements="{emptyArrayToRemoveChartLines}"
-				toolTip="Ping"
-				width="100%"
-				height="50"
-				alpha="1">
-				
-				<mx:horizontalAxis>
-					<mx:CategoryAxis id="categoryAxis" />
-				</mx:horizontalAxis>
-				
-				<mx:horizontalAxisRenderers>
-					<mx:AxisRenderer 
-						axis="{categoryAxis}"
-						showLine="false"
-						showLabels="false"
-						tickPlacement="none" >
-					</mx:AxisRenderer>
-				</mx:horizontalAxisRenderers>
-				
-				<mx:verticalAxisRenderers>
-					<mx:AxisRenderer 
-						axis="{categoryAxis}"
-						showLine="false"
-						showLabels="false"
-						tickPlacement="none" >
-					</mx:AxisRenderer>
-				</mx:verticalAxisRenderers>
-				
-				<mx:series>
-					<mx:LineSeries 
-						id="srtt_lineSeries"
-						yField="srtt">	
-						<mx:lineStroke>
-							<mx:SolidColorStroke color="{line_stroke_color}"  weight="1"/>
-						</mx:lineStroke>
-					</mx:LineSeries>
-				</mx:series>
-				
-			</mx:LineChart> 
-		</s:HGroup>		
-		
-		
-		<s:HGroup 
-			id="customDataLabel"
-			top="15"
-			height="20"
-			width="100%"
-			paddingLeft="2" 
-			paddingTop="0"
-			paddingBottom="0"
-			gap="0"
-			verticalAlign="middle"
-			includeIn="showControls, usingControls, hideControls"
-			mouseOver="handleMouseOverControls(event);"
-			mouseOut="handleMouseOutControls(event);">
-			
-			<s:Label id="last_ping_value_label" 
-							 text="{client_lastPing}"
-							 paddingTop="3"
-							 paddingLeft="3"
-							 paddingRight="3"
-							 alpha="1"
-							 backgroundColor="0xFFFFFF" />
-			
-		</s:HGroup> 
-		
-		
-		<s:HGroup 
-			id="controlsContainer"
+		<s:HGroup id="controlsContainer"
 			bottom="2"
 			height="20"
 			width="100%"
@@ -437,32 +305,35 @@
 			includeIn="showControls, usingControls, hideControls"
 			mouseOver="handleMouseOverControls(event);"
 			mouseOut="handleMouseOutControls(event);">
-			<com.infrno.chat.view.components:ImageToggleButton
-				styleName="videoToggleButton"
-				id="videoToggleButton"
-				click="toggleVideo( )"
+			
+			<com.infrno.chat.view.components:ImageToggleButton id="videoToggleButton"
+				styleName="videoToggleButton"				
+				click="toggleVideo()"
 				toolTip="Toggle video"
 				width="20"
 				height="20"/>
+			
 			<mx:Spacer width="2" />
-			<com.infrno.chat.view.components:ImageToggleButton
-				styleName="audioToggleButton"
-				id="audioToggleButton"
+			
+			<com.infrno.chat.view.components:ImageToggleButton id="audioToggleButton"
+				styleName="audioToggleButton"				
 				click="toggleAudio()" 
 				toolTip="Toggle mute"
 				width="20"
 				height="20" />			
+			
 			<mx:Spacer width="2" />
-			<com.infrno.chat.view.components:ImageToggleButton
+			
+			<com.infrno.chat.view.components:ImageToggleButton id="wrenchToggleButton"
 				styleName="wrenchToggleButton"
-				id="wrenchToggleButton"
 				click="handleShowSettings()" 
 				toolTip="Show settings"
 				width="20"
 				height="20"/>
+			
+			<mx:Spacer width="2" />
 
-			<s:HSlider
-				id="audio_level" 
+			<s:HSlider	id="audio_level" 
 				showDataTip="false" 
 				value="75" 
 				maximum="100" 
@@ -470,11 +341,10 @@
 				height="10"
 				bottom="0"
 				left="0"
-				change="adjustVolume( )"/>			
+				change="adjustVolume( )"/>		
+			
+			<mx:Spacer width="2" />		
 		</s:HGroup>
 		
-
-		
 	</s:BorderContainer>
-	<mx:Spacer height="2" />
 </s:Group>

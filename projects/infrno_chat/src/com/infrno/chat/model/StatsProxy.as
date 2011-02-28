@@ -64,9 +64,10 @@ package com.infrno.chat.model
 			var dummySrtt:Number = 50+ Math.round(Math.random()*50);
 			if (foo > 10) {
 				foo = 0;
-				dummySrtt= 3000;
+				dummySrtt= 150;
 			}
-			newDataRecord.srtt = dummySrtt; // peer_stats.srtt
+			newDataRecord.srtt = dummySrtt; 
+//			newDataRecord.srtt = peer_stats.srtt;
 			
 			peerStatsVO.data_array.addItem(newDataRecord);		
 			

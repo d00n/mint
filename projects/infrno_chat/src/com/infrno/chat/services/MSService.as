@@ -118,7 +118,7 @@ package com.infrno.chat.services
 			// TODO write test around this, then flip the if blocks to eliminate the negation 
 			if(!dataProxy.use_peer_connection){
 				if(!_published){
-					trace("MSService.updatePublishStream() ### publishing my server stream with dataProxy.my_info.suid: "+dataProxy.local_userInfoVO.suid.toString());
+					trace("MSService.updatePublishStream() ### publishing local server stream with dataProxy.my_info.suid: "+dataProxy.local_userInfoVO.suid.toString());
 					
 					if(dataProxy.pubishing_audio)
 						_ns.attachAudio(deviceProxy.mic);
@@ -130,7 +130,7 @@ package com.infrno.chat.services
 					
 					dataProxy.ns = _ns;
 				} else {
-					trace("MSService.updatePublishStream() ### already publishing my server stream");
+					trace("MSService.updatePublishStream() ### already publishing local server stream");
 				}
 			} else {
 				trace("MSService.updatePublishStream() ### closing server publish stream");
@@ -195,10 +195,12 @@ package com.infrno.chat.services
 					dispatch(new ChatEvent(ChatEvent.RECEIVE_CHAT,msgIn));
 				}
 				
+			// deprecated
 			_nc_client.getUserStats = function():void {
 				dispatch(new StatsEvent(StatsEvent.COLLECT_SERVER_STATS));
 			}
 				
+			// deprecated
 			_nc_client.generatePeerStats = function():void {
 				dispatch(new StatsEvent(StatsEvent.COLLECT_PEER_STATS));
 			}

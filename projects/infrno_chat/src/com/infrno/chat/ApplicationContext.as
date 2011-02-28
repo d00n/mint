@@ -49,7 +49,7 @@ package com.infrno.chat
 			commandMap.mapEvent(VideoPresenceEvent.VIDEO_UNMUTED,AudioVideoControlCommand);
 			commandMap.mapEvent(VideoPresenceEvent.SETUP_PEER_NETSTREAM,InitPeerNetStreamCommand);
 
-			commandMap.mapEvent(SettingsEvent.SHOW_SETTINGS,SettingsCommand);			
+			commandMap.mapEvent(SettingsEvent.SHOW_SETTINGS,ShowSettingsCommand);			
 			
 			//Model
 			// mapSingleton provides 1 instance of the requested class for N injections.

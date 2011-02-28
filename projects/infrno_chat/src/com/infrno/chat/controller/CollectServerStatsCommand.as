@@ -23,9 +23,6 @@ package com.infrno.chat.controller
 		[Inject]
 		public var msService:MSService;
 		
-		[Inject]
-		public var peerService:PeerService;
-		
 		override public function execute():void
 		{			
 			if (msService == null) {
@@ -37,6 +34,7 @@ package com.infrno.chat.controller
 				var curr_ns:NetStream = msService.netStream;				
 				var ns_info:NetStreamInfo = curr_ns.info;
 
+				server_stats.suid										= dataProxy.local_userInfoVO.suid;
 				server_stats.application_name				= dataProxy.media_app;
 				server_stats.room_name							= dataProxy.room_name;
 				server_stats.room_id								= dataProxy.room_id;

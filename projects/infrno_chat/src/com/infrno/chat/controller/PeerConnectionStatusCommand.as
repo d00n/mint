@@ -7,6 +7,7 @@ package com.infrno.chat.controller
 	
 	import org.robotlegs.mvcs.Command;
 	
+	// TODO rename TogglePeerConnectionCommand ??
 	public class PeerConnectionStatusCommand extends Command
 	{
 		[Inject]

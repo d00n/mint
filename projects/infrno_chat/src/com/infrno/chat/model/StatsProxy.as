@@ -15,8 +15,9 @@ package com.infrno.chat.model
 		public var serverStatsVO:StatsVO;
 		
 		private var _timer:Timer;
+		private const SECONDS_BETWEEN_STAT_COLLECTION:int = 1;
 		private var foo:int = 0;
-		private const NUMBER_OF_DATA_RECORDS_TO_KEEP:int = 20;
+		public static const NUMBER_OF_DATA_RECORDS_TO_KEEP:int = 20;
 		
 		public function StatsProxy() {
 		}
@@ -26,7 +27,7 @@ package com.infrno.chat.model
 			peerStatsVO_array = new Array();	
 			serverStatsVO = new StatsVO();
 			
-			_timer = new Timer(1000);
+			_timer = new Timer(SECONDS_BETWEEN_STAT_COLLECTION * 1000);
 			_timer.addEventListener(TimerEvent.TIMER, collectStats);
 			_timer.start();
 		}
@@ -34,9 +35,7 @@ package com.infrno.chat.model
 		public function collectStats(event:TimerEvent):void {
 			trace('StatsProxy.collectStats()');
 			dispatch(new StatsEvent(StatsEvent.COLLECT_PEER_STATS));
-			
-			// TODO
-      //dispatch(new StatsEvent(StatsEvent.COLLECT_SERVER_STATS));
+      dispatch(new StatsEvent(StatsEvent.COLLECT_SERVER_STATS));
 		}
 		
 //		public function initPeerStatsVO(suid:String):void {
@@ -67,6 +66,8 @@ package com.infrno.chat.model
 				dummySrtt= 150;
 			}
 			newDataRecord.srtt = dummySrtt; 
+			
+			// TODO: Iterate over everything in server_stats
 //			newDataRecord.srtt = peer_stats.srtt;
 			
 			peerStatsVO.data_array.addItem(newDataRecord);		
@@ -88,6 +89,7 @@ package com.infrno.chat.model
 			
 			var newDataRecord:Object = new Object();
 			
+			// TODO: Iterate over everything in server_stats
 			newDataRecord.currentBytesPerSecond = server_stats.currentBytesPerSecond;
 			
 			serverStatsVO.data_array.addItem(newDataRecord);		

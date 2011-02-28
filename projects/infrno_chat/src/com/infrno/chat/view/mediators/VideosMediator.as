@@ -31,10 +31,11 @@ package com.infrno.chat.view.mediators
 		[Inject]
 		public var videos:Videos;
 		
-		public const GREEN:String 		= "0x5DFC0A";  
-		public const RED:String 			= "0xFF0000";  
-		public const YELLOW:String		= "0xFFFF00";
-		public const MAX_SRTT:int			= 100;
+		public const GREEN:String 											= "0x5DFC0A";  
+		public const RED:String 												= "0xFF0000";  
+		public const YELLOW:String											= "0xFFFF00";
+		public const MAX_SRTT:int												= 100;
+		public const MAX_CURRENT_BYTES_PER_SECOND:int		= 170000;
 			
 		
 		override public function onRegister():void
@@ -149,12 +150,6 @@ package com.infrno.chat.view.mediators
 					else
 						videoPresence.is_local = false;
 					
-//					var sparkline:Sparkline = new Sparkline();
-////					if (videoPresence.is_local)
-////						sparkline.peerStatsVO						
-//					videoPresence.sparkline = sparkline;
-
-					
 					videoPresence.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
 						{
 							trace("VideosMediator.updateVideos() VideoPresence FlexEvent.CREATION_COMPLETE event listener")
@@ -231,8 +226,11 @@ package com.infrno.chat.view.mediators
 			var peerStatsVO:StatsVO = vpEvent.statsVO;
 			var videoPresence:VideoPresence = getVideoPresenceByName(peerStatsVO.suid.toString());		
 			
-			videoPresence.sparkline.peerStatsVO = peerStatsVO;
+			videoPresence.sparkline.statsVO = peerStatsVO;
+			videoPresence.sparkline.yFieldName = 'srtt';
 			var last_ping_value:int = peerStatsVO.data_array[peerStatsVO.data_array.length-1].srtt;
+			videoPresence.sparkline.lastValue_label = last_ping_value.toString();
+			videoPresence.sparkline.toolTip = "Ping";
 			
 			if (last_ping_value < MAX_SRTT) {
 				videoPresence.sparkline.line_stroke_color = GREEN; 
@@ -240,7 +238,6 @@ package com.infrno.chat.view.mediators
 				videoPresence.sparkline.line_stroke_color = RED;
 			}
 			
-			videoPresence.sparkline.client_lastPing = "Ping: " + last_ping_value.toString();
 		}
 		
 		private function displayServerStats(vpEvent:VideoPresenceEvent):void
@@ -249,16 +246,18 @@ package com.infrno.chat.view.mediators
 			var serverStatsVO:StatsVO = vpEvent.statsVO;
 			var videoPresence:VideoPresence = getVideoPresenceByName(serverStatsVO.suid.toString());		
 			
-//			videoPresence.serverStatsVO = serverStatsVO;
-//			var currentBytesPerSecond:int = serverStatsVO.data_array[serverStatsVO.data_array.length-1].currentBytesPerSecond;
-//			
-//			if (currentBytesPerSecond < MAX_SRTT) {
-//				videoPresence.line_stroke_color = GREEN; 
-//			} else {
-//				videoPresence.line_stroke_color = RED;
-//			}
-//			
-//			videoPresence.server_currentBytesPerSecond = "Bytes/second: " + currentBytesPerSecond.toString();
+			videoPresence.sparkline.statsVO = serverStatsVO;
+			videoPresence.sparkline.yFieldName = 'currentBytesPerSecond';
+			var currentBytesPerSecond:int = serverStatsVO.data_array[serverStatsVO.data_array.length-1].currentBytesPerSecond;
+			videoPresence.sparkline.lastValue_label = currentBytesPerSecond.toString();
+			videoPresence.sparkline.toolTip = "Bytes per second";
+			
+			if (currentBytesPerSecond < MAX_CURRENT_BYTES_PER_SECOND) {
+				videoPresence.sparkline.line_stroke_color = GREEN; 
+			} else {
+				videoPresence.sparkline.line_stroke_color = RED;
+			}
+			
 		}		
 		
 	}

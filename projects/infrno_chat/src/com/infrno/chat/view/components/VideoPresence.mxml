@@ -33,10 +33,6 @@
 			public function get sparkline():Sparkline {
 				return _sparkline;
 			}
-			public function set sparkline(value:Sparkline):void {
-				_sparkline = value;
-				borderContainer.addElement(_sparkline);
-			}
 			
 			public function get userInfoVO():UserInfoVO	{
 				return _userInfoVO;

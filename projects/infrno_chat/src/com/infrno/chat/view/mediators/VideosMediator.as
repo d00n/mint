@@ -227,10 +227,10 @@ package com.infrno.chat.view.mediators
 			var videoPresence:VideoPresence = getVideoPresenceByName(peerStatsVO.suid.toString());		
 			
 			videoPresence.sparkline.statsVO = peerStatsVO;
-			videoPresence.sparkline.yFieldName = 'currentBytesPerSecond';
+			videoPresence.sparkline.yFieldName = 'srtt';
 			var last_ping_value:int = peerStatsVO.data_array[peerStatsVO.data_array.length-1].srtt;
 			videoPresence.sparkline.lastValue_label = last_ping_value.toString();
-			videoPresence.sparkline.toolTip = "bps";
+			videoPresence.sparkline.toolTip = "Ping (peer)";
 			
 			if (last_ping_value < MAX_SRTT) {
 				videoPresence.sparkline.line_stroke_color = GREEN; 
@@ -250,7 +250,7 @@ package com.infrno.chat.view.mediators
 			videoPresence.sparkline.yFieldName = 'currentBytesPerSecond';
 			var currentBytesPerSecond:int = serverStatsVO.data_array[serverStatsVO.data_array.length-1].currentBytesPerSecond;
 			videoPresence.sparkline.lastValue_label = currentBytesPerSecond.toString();
-			videoPresence.sparkline.toolTip = "Bytes per second";
+			videoPresence.sparkline.toolTip = "Bytes/second (server)";
 			
 			if (currentBytesPerSecond < MAX_CURRENT_BYTES_PER_SECOND) {
 				videoPresence.sparkline.line_stroke_color = GREEN; 

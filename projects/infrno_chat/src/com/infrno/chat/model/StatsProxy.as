@@ -45,34 +45,27 @@ package com.infrno.chat.model
 //			}
 //		}
 		
-		public function submitPeerStats(peer_stats:Object) : void {
-			trace('StatsProxy.submitPeerStats() suid:'+peer_stats.suid+', srtt:'+peer_stats.srtt );
+		public function submitPeerStats(peerStatsRecord:Object) : void {
+			trace('StatsProxy.submitPeerStats() suid:'+peerStatsRecord.suid+', srtt:'+peerStatsRecord.srtt );
 			
-			if (peerStatsVO_array[peer_stats.suid] == null) {
-				peerStatsVO_array[peer_stats.suid] = new StatsVO();
+			if (peerStatsVO_array[peerStatsRecord.suid] == null) {
+				peerStatsVO_array[peerStatsRecord.suid] = new StatsVO();
 			}
 			
-			var peerStatsVO:StatsVO = peerStatsVO_array[peer_stats.suid];
+			var peerStatsVO:StatsVO = peerStatsVO_array[peerStatsRecord.suid];
 			
 			// Using suid as the key and a field smells. hrmmm..
-			peerStatsVO.suid = peer_stats.suid;
+			peerStatsVO.suid = peerStatsRecord.suid;
 			
-			var newDataRecord:Object = new Object();
-			
-			foo++;
-			var dummySrtt:Number = 50+ Math.round(Math.random()*50);
-			if (foo > 10) {
-				foo = 0;
-				dummySrtt= 150;
-			}
-			newDataRecord.srtt = dummySrtt; 
-			
-			// TODO: Iterate over everything in server_stats
-//			newDataRecord.srtt = peer_stats.srtt;
-			
-			newDataRecord.currentBytesPerSecond = peer_stats.currentBytesPerSecond;
-			
-			peerStatsVO.data_array.addItem(newDataRecord);		
+//			foo++;
+//			var dummySrtt:Number = 50+ Math.round(Math.random()*50);
+//			if (foo > 10) {
+//				foo = 0;
+//				dummySrtt= 150;
+//			}
+//			peerStatsRecord.srtt = dummySrtt; 
+	
+			peerStatsVO.data_array.addItem(peerStatsRecord);		
 			
 			if (peerStatsVO.data_array.length > NUMBER_OF_DATA_RECORDS_TO_KEEP) {
 				peerStatsVO.data_array.removeItemAt(0);
@@ -104,6 +97,7 @@ package com.infrno.chat.model
 			videoPresenceEvent.statsVO = serverStatsVO;
 			dispatch(videoPresenceEvent);
 		}		
+
 		
 	}
 }

@@ -29,14 +29,7 @@ package com.infrno.chat.view.mediators
 		public var deviceProxy:DeviceProxy;
 		
 		[Inject]
-		public var videos:Videos;
-		
-		public const GREEN:String 											= "0x5DFC0A";  
-		public const RED:String 												= "0xFF0000";  
-		public const YELLOW:String											= "0xFFFF00";
-		public const MAX_SRTT:int												= 100;
-		public const MAX_CURRENT_BYTES_PER_SECOND:int		= 170000;
-			
+		public var videos:Videos;	
 		
 		override public function onRegister():void
 		{
@@ -232,17 +225,17 @@ package com.infrno.chat.view.mediators
 			videoPresence.sparkline.lastValue_label = last_ping_value.toString();
 			videoPresence.sparkline.toolTip = "Ping (peer)";
 			
-			if (last_ping_value < MAX_SRTT) {
-				videoPresence.sparkline.line_stroke_color = GREEN; 
+			if (last_ping_value < Sparkline.MAX_SRTT) {
+				videoPresence.sparkline.line_stroke_color = Sparkline.GREEN; 
 			} else {
-				videoPresence.sparkline.line_stroke_color = RED;
+				videoPresence.sparkline.line_stroke_color = Sparkline.RED;
 			}
 			
 		}
 		
 		private function displayServerStats(vpEvent:VideoPresenceEvent):void
 		{
-			trace("VideosMediator.displayPeerStats()");
+			trace("VideosMediator.displayServerStats()");
 			var serverStatsVO:StatsVO = vpEvent.statsVO;
 			var videoPresence:VideoPresence = getVideoPresenceByName(serverStatsVO.suid.toString());		
 			
@@ -252,10 +245,10 @@ package com.infrno.chat.view.mediators
 			videoPresence.sparkline.lastValue_label = currentBytesPerSecond.toString();
 			videoPresence.sparkline.toolTip = "Bytes/second (server)";
 			
-			if (currentBytesPerSecond < MAX_CURRENT_BYTES_PER_SECOND) {
-				videoPresence.sparkline.line_stroke_color = GREEN; 
+			if (currentBytesPerSecond < Sparkline.MAX_CURRENT_BYTES_PER_SECOND) {
+				videoPresence.sparkline.line_stroke_color = Sparkline.GREEN; 
 			} else {
-				videoPresence.sparkline.line_stroke_color = RED;
+				videoPresence.sparkline.line_stroke_color = Sparkline.RED;
 			}
 			
 		}		

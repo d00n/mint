@@ -64,6 +64,7 @@ package com.infrno.chat
 			//View
 			mediatorMap.mapView(Chat,ChatMediator);
 			mediatorMap.mapView(Videos,VideosMediator);
+			mediatorMap.mapView(StatsContainer,StatsContainerMediator);
 			
 //			mediatorMap.mapView(ControlButtons,ControlButtonsMediator);
 			

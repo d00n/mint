@@ -27,24 +27,18 @@ package com.infrno.chat.model
 		public var pubishing_video:Boolean;
 		
 		public var ns:NetStream;
-		
-
-		
+				
 
 		// Wowza will accept these values for specified hosts.
-		public var auth_key:String		= "sample_auth_key";
-		
+		public var auth_key:String		= "sample_auth_key";		
 		public var room_id:String 		= "0";
 		public var room_name:String 	= "";
 		public var user_name:String 	= "";
 		public var user_id:String 		= "";
 		
-
 		//public const  peer_server_key:String		= "4b9d915ef5ee88cfd38eb359-abf46599bf1f";
-		public const  peer_server_key:String		= "6a10a4b24cdfadaebc9765b4-ec2f9e5cf6a2";
-		
+		public const peer_server_key:String		= "6a10a4b24cdfadaebc9765b4-ec2f9e5cf6a2";		
 		public const peer_server:String				= "rtmfp://stratus.adobe.com";
-		
 		private var m_mediaServer:String	= "rtmp://localhost";
 		private var m_mediaApp:String			= "chat";
 		private var m_mediaPort:String		= "1935";

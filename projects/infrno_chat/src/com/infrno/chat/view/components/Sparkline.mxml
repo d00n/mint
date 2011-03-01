@@ -23,7 +23,14 @@
 			public var line_stroke_color:String;
 			
 			[Bindable]
-			private var emptyArrayToRemoveChartLines:Array = new Array();		
+			private var emptyArrayToRemoveChartLines:Array = new Array();				
+			
+			public static const GREEN:String 											= "0x5DFC0A";  
+			public static const RED:String 												= "0xFF0000";  
+			public static const YELLOW:String											= "0xFFFF00";
+			public static const MAX_SRTT:int												= 100;
+			public static const MAX_CURRENT_BYTES_PER_SECOND:int		= 170000;
+			
 		]]>		
 	</fx:Script>
 	

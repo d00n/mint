@@ -329,7 +329,7 @@
 			
 			<mx:Spacer width="2" />
 
-			<s:HSlider	id="audio_level" 
+			<s:HSlider id="audio_level" 
 				showDataTip="false" 
 				value="75" 
 				maximum="100" 

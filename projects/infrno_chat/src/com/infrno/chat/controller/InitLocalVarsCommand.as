@@ -1,6 +1,7 @@
 package com.infrno.chat.controller
 {
 	import com.infrno.chat.model.DataProxy;
+	import com.infrno.chat.model.StatsProxy;
 	
 	import flash.display.LoaderInfo;
 	
@@ -10,6 +11,9 @@ package com.infrno.chat.controller
 	{
 		[Inject]
 		public var dataProxy:DataProxy;
+		
+		[Inject]
+		public var statsProxy:StatsProxy;
 		
 		override public function execute():void
 		{
@@ -46,15 +50,12 @@ package com.infrno.chat.controller
 			
 			trace("InitLocalVarsCommand.execute() flashvars loaded:" + dataProxy.room_name +":"+ dataProxy.local_userInfoVO.user_name +":"+ dataProxy.room_id +":"+ dataProxy.auth_key);
 			
-			try{
-//				dataProxy.peer_enabled = flash_vars.peer_enabled=="false"?false:true;
-				
-				if (flash_vars.peer_enabled=="false")
-					dataProxy.peer_enabled = false;
-				
-			}catch(e:Object){
-				dataProxy.peer_enabled = true;
-			}
+			if (flash_vars.seconds_between_stat_collection != null)
+				statsProxy.seconds_between_stat_collection = flash_vars.seconds_between_stat_collection;
+			
+			if (flash_vars.peer_enabled != null && flash_vars.peer_enabled=="false")
+				dataProxy.peer_enabled = false;
+
 			trace("InitLocalVarsCommand.execute() peer enabled: "+dataProxy.peer_enabled);
 		}
 	}

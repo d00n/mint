@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				 xmlns:s="library://ns.adobe.com/flex/spark" 
+				 xmlns:mx="library://ns.adobe.com/flex/mx"
+				 resize="stats_container_resizeHandler(event)"
+				 >
+	<fx:Script>
+		<![CDATA[
+			import com.infrno.chat.model.vo.StatsVO;
+			
+			import mx.events.ResizeEvent;
+			
+			protected function stats_container_resizeHandler(event:ResizeEvent):void	{
+				statsGroups_holder.width = this.width;
+				statsGroups_holder.height = this.height;
+			}
+			
+			public function addStatsGroup(peerStatsVO:StatsVO): StatsGroup {
+				var statsGroup:StatsGroup = new StatsGroup();
+				statsGroup.suid = peerStatsVO.suid;
+				statsGroups_holder.dataProvider.addItem(statsGroup);
+				return statsGroup;
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
+	<s:List id="statsGroups_holder" 
+					width="162"
+					itemRenderer="spark.skins.spark.DefaultComplexItemRenderer"
+					horizontalCenter="0"
+					verticalCenter="0"
+					>
+		
+		<s:layout>
+			<s:TileLayout 
+				horizontalGap="0"
+				verticalGap="0" />
+		</s:layout>
+		
+		<s:dataProvider >
+			<s:ArrayList>
+			</s:ArrayList>
+		</s:dataProvider>
+		
+	</s:List>
+	
+</s:Group>

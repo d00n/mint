@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				 xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mx="library://ns.adobe.com/flex/mx" >
+	<fx:Script>
+		<![CDATA[
+	
+			import com.infrno.chat.model.vo.StatsVO;
+			
+			import mx.collections.ArrayCollection;
+			public var sparklines_AC:ArrayCollection = new ArrayCollection();
+			public var suid:int;
+			
+			public function createSparklines(statsVO:StatsVO):void	{				
+				var _sparkline:Sparkline;
+				
+				for (var name:String in statsVO) {
+					_sparkline = new Sparkline();
+					_sparkline.toolTip = name;
+					_sparkline.yFieldName = name;
+					_sparkline.top = sparklines_AC.length * _sparkline.height;
+					
+					// padding, etc. ???
+					
+					sparklines_AC.addItem(_sparkline);
+					statsGroup_holder.addChild(_sparkline);				
+				}			
+			}			
+			
+		]]>
+	</fx:Script>	
+	<s:BorderContainer id="borderContainer"
+										 backgroundColor="#ffffff" 
+										 borderColor="#cecece"
+										 width="162" 
+										 height="120">
+		
+		<s:Rect id="background" 
+						width="160" 
+						height="120">
+			<s:fill>
+				<s:SolidColor color="#000000"/>
+			</s:fill>
+		</s:Rect>
+		
+		<mx:UIComponent id="statsGroup_holder" 
+										width="160" 
+										height="120" />		
+		
+
+	</s:BorderContainer>
+	
+</s:Group>

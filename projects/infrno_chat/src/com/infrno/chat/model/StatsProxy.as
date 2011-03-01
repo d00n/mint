@@ -15,9 +15,9 @@ package com.infrno.chat.model
 		public var serverStatsVO:StatsVO;
 		
 		private var _timer:Timer;
-		private const SECONDS_BETWEEN_STAT_COLLECTION:int = 1;
 		private var foo:int = 0;
 		public static const NUMBER_OF_DATA_RECORDS_TO_KEEP:int = 20;
+		public var seconds_between_stat_collection:int = 1;
 		
 		public function StatsProxy() {
 		}
@@ -27,7 +27,7 @@ package com.infrno.chat.model
 			peerStatsVO_array = new Array();	
 			serverStatsVO = new StatsVO();
 			
-			_timer = new Timer(SECONDS_BETWEEN_STAT_COLLECTION * 1000);
+			_timer = new Timer(seconds_between_stat_collection * 1000);
 			_timer.addEventListener(TimerEvent.TIMER, collectStats);
 			_timer.start();
 		}
@@ -76,18 +76,12 @@ package com.infrno.chat.model
 			dispatch(videoPresenceEvent);
 		}
 		
-		public function submitServerStats(server_stats:Object) : void {
-			trace('StatsProxy.submitServerStats() suid:'+server_stats.suid);
+		public function submitServerStats(serverStatsRecord:Object) : void {
+			trace('StatsProxy.submitServerStats() suid:'+serverStatsRecord.suid);
 			
 			// Setting this on init would be nice..
-			serverStatsVO.suid = server_stats.suid;
-			
-			var newDataRecord:Object = new Object();
-			
-			// TODO: Iterate over everything in server_stats
-			newDataRecord.currentBytesPerSecond = server_stats.currentBytesPerSecond;
-			
-			serverStatsVO.data_array.addItem(newDataRecord);		
+			serverStatsVO.suid = serverStatsRecord.suid;
+			serverStatsVO.data_array.addItem(serverStatsRecord);		
 			
 			if (serverStatsVO.data_array.length > NUMBER_OF_DATA_RECORDS_TO_KEEP) {
 				serverStatsVO.data_array.removeItemAt(0);

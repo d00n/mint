@@ -27,7 +27,7 @@ package com.infrno.chat.controller
 			var custom_menu:ContextMenu = new ContextMenu();
 			custom_menu.hideBuiltInItems();
 			
-			var app_version:ContextMenuItem = new ContextMenuItem("Infrno Chat " + DataProxy.VERSION);
+			var app_version:ContextMenuItem = new ContextMenuItem("Infrno " + DataProxy.VERSION);
 			app_version.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyToClipboard);
 			custom_menu.customItems.push(app_version);
 			

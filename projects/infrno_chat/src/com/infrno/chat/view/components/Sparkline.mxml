@@ -41,8 +41,10 @@
 								right="0"
 								width="100%"
 								height="50"
-								alpha="1">
-		
+								alpha="1"
+								seriesFilters="[]"
+								>
+
 		<mx:horizontalAxis>
 			<mx:CategoryAxis id="categoryAxis" />
 		</mx:horizontalAxis>
@@ -64,10 +66,10 @@
 		</mx:verticalAxisRenderers>
 		
 		<mx:series>
-			<mx:LineSeries 	id="sparkline_lineSeries"
+			<mx:LineSeries 	id="sparkline_lineSeries"											
 											yField="{yFieldName}">	
 				<mx:lineStroke>
-					<mx:SolidColorStroke 
+					<mx:SolidColorStroke 						
 						color="{line_stroke_color}"  
 						weight="1"/>
 				</mx:lineStroke>
@@ -78,7 +80,7 @@
 	
 	<s:Label id="lastValue_label_id" 
 					 text="{lastValue_label}"
-					 top="10"
+					 top="3"
 					 left="3"
 					 paddingTop="3"
 					 paddingLeft="3"

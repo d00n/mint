@@ -9,42 +9,44 @@
 			import mx.collections.ArrayCollection;
 			public var sparklines_AC:ArrayCollection = new ArrayCollection();
 			public var suid:int;
+			public var peerStatsVO:StatsVO;
 			
-			public function createSparklines(statsVO:StatsVO):void	{				
+			public function createSparklines():void	{				
 				var _sparkline:Sparkline;
 				
-				for (var name:String in statsVO) {
+				var statRecord:Object = peerStatsVO.data_array[19];
+				for (var name:String in statRecord) {
 					_sparkline = new Sparkline();
 					_sparkline.toolTip = name;
 					_sparkline.yFieldName = name;
+					_sparkline.lastValue_label = name;
 					_sparkline.top = sparklines_AC.length * _sparkline.height;
 					
 					// padding, etc. ???
 					
 					sparklines_AC.addItem(_sparkline);
-					statsGroup_holder.addChild(_sparkline);				
+					
+					// this needs to happen when StatsGroup is done putting it's pants on.
+					borderContainer.addElement(_sparkline);				
 				}			
 			}			
 			
 		]]>
 	</fx:Script>	
 	<s:BorderContainer id="borderContainer"
-										 backgroundColor="#ffffff" 
+										 backgroundColor="#cecece" 
 										 borderColor="#cecece"
 										 width="162" 
-										 height="120">
+										 height="1000">
 		
 		<s:Rect id="background" 
 						width="160" 
-						height="120">
+						height="1000">
 			<s:fill>
-				<s:SolidColor color="#000000"/>
+				<s:SolidColor color="#FFFFFF"/>
 			</s:fill>
 		</s:Rect>
-		
-		<mx:UIComponent id="statsGroup_holder" 
-										width="160" 
-										height="120" />		
+	
 		
 
 	</s:BorderContainer>

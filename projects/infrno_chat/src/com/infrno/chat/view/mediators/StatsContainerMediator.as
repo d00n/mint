@@ -12,9 +12,14 @@ package com.infrno.chat.view.mediators
 	{
 		[Inject]
 		public var statsContainer:StatsContainer;
+	
 		
 		public function StatsContainerMediator()
 		{
+		}
+		
+		override public function onRegister():void{
+			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.DISPLAY_PEER_STATS,displayPeerStats);
 		}
 		
 		// Move this event into StatsEvent
@@ -26,7 +31,7 @@ package com.infrno.chat.view.mediators
 			var statsGroup:StatsGroup = getStatsGroupBySuid(peerStatsVO.suid);
 			if (statsGroup == null) {
 				statsGroup = statsContainer.addStatsGroup(peerStatsVO);		
-				statsGroup.createSparklines(peerStatsVO);
+				statsGroup.createSparklines();
 			}
 			
 			var _sparkline:Sparkline;

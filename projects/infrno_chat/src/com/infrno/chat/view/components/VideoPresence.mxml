@@ -33,19 +33,20 @@
 			public function get sparkline():Sparkline {
 				return _sparkline;
 			}
+			public function set sparkline(info:Sparkline):void{
+				_sparkline = info;
+			}
 			
 			public function get userInfoVO():UserInfoVO	{
 				return _userInfoVO;
-			}
-			
+			}			
 			public function set userInfoVO(info:UserInfoVO):void{
 				_userInfoVO = info;
 			}
 			
 			public function get is_local():Boolean	{
 				return _is_local;
-			}
-			
+			}			
 			public function set is_local(b:Boolean):void {
 				if( null != wrenchToggleButton ) 
 				{
@@ -160,6 +161,7 @@
 				_initialized = true;
 				wrenchToggleButton.visible = _is_local;
 				
+				// TODO Try moving this to the constructor
 				_sparkline = new Sparkline();
 				borderContainer.addElement(_sparkline);
 				
@@ -238,7 +240,6 @@
 					return;  
 				}
 				
-				// Peer audio is set here. Where does _data get assigned?
 				var curr_transform:SoundTransform = _userInfoVO.netStream.soundTransform;
 				curr_transform.volume = levelIn/100;
 				_userInfoVO.netStream.soundTransform = curr_transform;

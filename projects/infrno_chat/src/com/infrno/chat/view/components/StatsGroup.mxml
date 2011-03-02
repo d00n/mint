@@ -1,54 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
-				 xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mx="library://ns.adobe.com/flex/mx" >
+				 xmlns:s="library://ns.adobe.com/flex/spark" 
+				 xmlns:mx="library://ns.adobe.com/flex/mx"
+				 resize="statsGroup_resizeHandler(event)"
+				 >
 	<fx:Script>
 		<![CDATA[
-	
 			import com.infrno.chat.model.vo.StatsVO;
 			
-			import mx.collections.ArrayCollection;
-			public var sparklines_AC:ArrayCollection = new ArrayCollection();
-			public var suid:int;
-			public var peerStatsVO:StatsVO;
+			import mx.events.FlexEvent;
+			import mx.events.ResizeEvent;
 			
-			public function createSparklines():void	{				
-				var _sparkline:Sparkline;
+			protected function statsGroup_resizeHandler(event:ResizeEvent):void	{
+				statsGroup_list.width = this.width;
+				statsGroup_list.height = this.height;
+			}
+			
+			public function addStatsGroup(peerStatsVO:StatsVO): StatsBlock {
+				var statsBlock:StatsBlock = new StatsBlock();
+//				statsGroup.addEventListener(FlexEvent.CREATION_COMPLETE, onStatsGroup_creationComplete);
+				statsBlock.suid = peerStatsVO.suid;
+				statsBlock.peerStatsVO = peerStatsVO;
+				statsGroup_list.dataProvider.addItem(statsBlock);
 				
-				var statRecord:Object = peerStatsVO.data_array[19];
-				for (var name:String in statRecord) {
-					_sparkline = new Sparkline();
-					_sparkline.toolTip = name;
-					_sparkline.yFieldName = name;
-					_sparkline.lastValue_label = name;
-					_sparkline.top = sparklines_AC.length * _sparkline.height;
-					
-					// padding, etc. ???
-					
-					sparklines_AC.addItem(_sparkline);
-					
-					// this needs to happen when StatsGroup is done putting it's pants on.
-					borderContainer.addElement(_sparkline);				
-				}			
-			}			
+				statsBlock.sparkline1 = statsBlock.createSparkline("currentBytesPerSecond");
+				statsBlock.sparkline2 = statsBlock.createSparkline("currentBytesPerSecond");
+				statsBlock.sparkline3 = statsBlock.createSparkline("currentBytesPerSecond");
+				
+				return statsBlock;
+			}
+			
+//			private function onStatsGroup_creationComplete(event:FlexEvent):void {
+//				var statsGroup:StatsGroup = event.currentTarget as StatsGroup;
+//				statsGroup.createSparkline("currentBytesPerSecond");
+//			}
 			
 		]]>
-	</fx:Script>	
-	<s:BorderContainer id="borderContainer"
-										 backgroundColor="#cecece" 
-										 borderColor="#cecece"
-										 width="162" 
-										 height="1000">
-		
-		<s:Rect id="background" 
-						width="160" 
-						height="1000">
-			<s:fill>
-				<s:SolidColor color="#FFFFFF"/>
-			</s:fill>
-		</s:Rect>
+	</fx:Script>
 	
+	<s:List id="statsGroup_list" 
+					width="162"
+					itemRenderer="spark.skins.spark.DefaultComplexItemRenderer"
+					horizontalCenter="0"
+					verticalCenter="0"
+					>
 		
-
-	</s:BorderContainer>
+		<s:layout>
+			<s:TileLayout 
+				horizontalGap="0"
+				verticalGap="0" />
+		</s:layout>
+		
+		<s:dataProvider >
+			<s:ArrayList>
+			</s:ArrayList>
+		</s:dataProvider>
+		
+	</s:List>
 	
 </s:Group>

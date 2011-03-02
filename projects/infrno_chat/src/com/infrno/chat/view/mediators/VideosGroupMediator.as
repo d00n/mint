@@ -10,7 +10,7 @@ package com.infrno.chat.view.mediators
 	import com.infrno.chat.services.NetStreamPeer;
 	import com.infrno.chat.view.components.Sparkline;
 	import com.infrno.chat.view.components.VideoPresence;
-	import com.infrno.chat.view.components.Videos;
+	import com.infrno.chat.view.components.VideosGroup;
 	
 	import flash.display.DisplayObject;
 	
@@ -22,14 +22,14 @@ package com.infrno.chat.view.mediators
 	
 	import spark.components.List;
 	
-	public class VideosMediator extends Mediator
+	public class VideosGroupMediator extends Mediator
 	{
 		// TODO: I don't think Mediators should depend on Models. 
 		[Inject]
 		public var deviceProxy:DeviceProxy;
 		
 		[Inject]
-		public var videos:Videos;	
+		public var videosGroup:VideosGroup;	
 		
 		override public function onRegister():void
 		{
@@ -38,12 +38,12 @@ package com.infrno.chat.view.mediators
 			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.DISPLAY_PEER_STATS,displayPeerStats);
 			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.DISPLAY_SERVER_STATS,displayServerStats);
 			
-			videos.addEventListener(SettingsEvent.SHOW_SETTINGS,handleShowSettings);
-			videos.addEventListener(VideoPresenceEvent.AUDIO_LEVEL,dispatchEventInSystem);
-			videos.addEventListener(VideoPresenceEvent.AUDIO_MUTED,dispatchEventInSystem);
-			videos.addEventListener(VideoPresenceEvent.AUDIO_UNMUTED,dispatchEventInSystem);
-			videos.addEventListener(VideoPresenceEvent.VIDEO_MUTED,dispatchEventInSystem);
-			videos.addEventListener(VideoPresenceEvent.VIDEO_UNMUTED,dispatchEventInSystem);
+			videosGroup.addEventListener(SettingsEvent.SHOW_SETTINGS,handleShowSettings);
+			videosGroup.addEventListener(VideoPresenceEvent.AUDIO_LEVEL,dispatchEventInSystem);
+			videosGroup.addEventListener(VideoPresenceEvent.AUDIO_MUTED,dispatchEventInSystem);
+			videosGroup.addEventListener(VideoPresenceEvent.AUDIO_UNMUTED,dispatchEventInSystem);
+			videosGroup.addEventListener(VideoPresenceEvent.VIDEO_MUTED,dispatchEventInSystem);
+			videosGroup.addEventListener(VideoPresenceEvent.VIDEO_UNMUTED,dispatchEventInSystem);
 		}
 		
 		private function dispatchEventInSystem(e:VideoPresenceEvent):void
@@ -65,19 +65,19 @@ package com.infrno.chat.view.mediators
 		private function removeVideos(userInfoVO_array:Array, local_userInfoVO:UserInfoVO):void
 		{
 			trace("VideosMediator.removeVideos()");
-			var dataProviderLength:int = videos.videos_holder.dataProvider.length;
+			var dataProviderLength:int = videosGroup.videosGroup_list.dataProvider.length;
 			for(var i:int = 0; i<dataProviderLength; i++){
 				trace("VideosMediator.removeVideos() i="+i);
 				try{
 					
-					var videoPresence:VideoPresence = videos.videos_holder.dataProvider.getItemAt(i) as VideoPresence;
+					var videoPresence:VideoPresence = videosGroup.videosGroup_list.dataProvider.getItemAt(i) as VideoPresence;
 					trace("VideosMediator.removeVideos() videoPresence.name="+videoPresence.name);
 					
 					//if the video isn't in the users collection remove it
 					if(userInfoVO_array[videoPresence.name] == null){
-						var vp_index:int = videos.videos_holder.dataProvider.getItemIndex(videoPresence);
+						var vp_index:int = videosGroup.videosGroup_list.dataProvider.getItemIndex(videoPresence);
 						trace("VideosMediator.removeVideos() vp_index="+vp_index);
-						videos.videos_holder.dataProvider.removeItemAt(vp_index);
+						videosGroup.videosGroup_list.dataProvider.removeItemAt(vp_index);
 					}
 				}catch(e:Object){
 					//out of range error I'm sure
@@ -91,10 +91,10 @@ package com.infrno.chat.view.mediators
 		private function getVideoPresenceByName(name:String): VideoPresence{
 			trace("VideosMediator.getVideoPresenceByName name="+name)
 			var videoPresence:VideoPresence;
-			var dataProviderLength:int = videos.videos_holder.dataProvider.length;
+			var dataProviderLength:int = videosGroup.videosGroup_list.dataProvider.length;
 			for(var i:int = 0; i < dataProviderLength; i++){
 				trace("VideosMediator.getVideoPresenceByName i="+i+", videos.videos_holder.dataProvider.length="+dataProviderLength)
-				videoPresence = videos.videos_holder.dataProvider.getItemAt(i) as VideoPresence;
+				videoPresence = videosGroup.videosGroup_list.dataProvider.getItemAt(i) as VideoPresence;
 				trace("VideosMediator.getVideoPresenceByName videoPresence.name="+videoPresence.name)
 				if (videoPresence.name == name) {
 					return videoPresence;
@@ -130,7 +130,7 @@ package com.infrno.chat.view.mediators
 					trace("VideosMediator.updateVideos() adding new VideoPresence for name="+name);
 					
 					videoPresence = new VideoPresence();
-					videos.videos_holder.dataProvider.addItem(videoPresence);
+					videosGroup.videosGroup_list.dataProvider.addItem(videoPresence);
 					
 					videoPresence.userInfoVO = userInfoVO;
 					
@@ -142,6 +142,11 @@ package com.infrno.chat.view.mediators
 						videoPresence.is_local = true;
 					else
 						videoPresence.is_local = false;
+					
+					// Instantiating these here causes the backwards/outside container render bug
+//					var sparkline:Sparkline = new Sparkline();
+//					videoPresence.sparkline = sparkline;
+//					videoPresence.borderContainer.addElement(sparkline);
 					
 					videoPresence.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
 						{
@@ -219,6 +224,11 @@ package com.infrno.chat.view.mediators
 			var peerStatsVO:StatsVO = vpEvent.statsVO;
 			var videoPresence:VideoPresence = getVideoPresenceByName(peerStatsVO.suid.toString());		
 			
+			if (videoPresence.sparkline == null) {
+				trace("VideosMediator.displayPeerStats() videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
+				return;
+			}
+			
 			videoPresence.sparkline.statsVO = peerStatsVO;
 			videoPresence.sparkline.yFieldName = 'srtt';
 			var last_ping_value:int = peerStatsVO.data_array[peerStatsVO.data_array.length-1].srtt;
@@ -226,9 +236,9 @@ package com.infrno.chat.view.mediators
 			videoPresence.sparkline.toolTip = "Ping (peer)";
 			
 			if (last_ping_value < Sparkline.MAX_SRTT) {
-				videoPresence.sparkline.line_stroke_color = Sparkline.GREEN; 
+				videoPresence.sparkline.lineStrokeColor = Sparkline.GREEN; 
 			} else {
-				videoPresence.sparkline.line_stroke_color = Sparkline.RED;
+				videoPresence.sparkline.lineStrokeColor = Sparkline.RED;
 			}
 			
 		}
@@ -237,7 +247,12 @@ package com.infrno.chat.view.mediators
 		{
 			trace("VideosMediator.displayServerStats()");
 			var serverStatsVO:StatsVO = vpEvent.statsVO;
-			var videoPresence:VideoPresence = getVideoPresenceByName(serverStatsVO.suid.toString());		
+			var videoPresence:VideoPresence = getVideoPresenceByName(serverStatsVO.suid.toString());
+			
+			if (videoPresence.sparkline == null) {
+				trace("VideosMediator.displayServerStats() videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
+				return;
+			}
 			
 			videoPresence.sparkline.statsVO = serverStatsVO;
 			videoPresence.sparkline.yFieldName = 'currentBytesPerSecond';
@@ -246,9 +261,9 @@ package com.infrno.chat.view.mediators
 			videoPresence.sparkline.toolTip = "Bytes/second (server)";
 			
 			if (currentBytesPerSecond < Sparkline.MAX_CURRENT_BYTES_PER_SECOND) {
-				videoPresence.sparkline.line_stroke_color = Sparkline.GREEN; 
+				videoPresence.sparkline.lineStrokeColor = Sparkline.GREEN; 
 			} else {
-				videoPresence.sparkline.line_stroke_color = Sparkline.RED;
+				videoPresence.sparkline.lineStrokeColor = Sparkline.RED;
 			}
 			
 		}		

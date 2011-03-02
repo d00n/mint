@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				 xmlns:s="library://ns.adobe.com/flex/spark" 
+				 xmlns:mx="library://ns.adobe.com/flex/mx"
+				 creationComplete="handleCreationComplete(event);"
+				 >
+	<fx:Script>
+		<![CDATA[
+	
+			import com.infrno.chat.model.vo.StatsVO;
+			
+			import mx.collections.ArrayCollection;
+			public var sparklines_AC:ArrayCollection = new ArrayCollection();
+			public var suid:int;
+			public var peerStatsVO:StatsVO;
+			
+			private var sparkline_count:int = 0;
+			
+			public var sparkline1:Sparkline;
+			public var sparkline2:Sparkline;
+			public var sparkline3:Sparkline;
+			
+			
+//			public function createSparklines():void	{				
+//				var _sparkline:Sparkline;
+//				
+//				var statRecord:Object = peerStatsVO.data_array[19];
+//				for (var name:String in statRecord) {
+//					_sparkline = new Sparkline();
+//					_sparkline.toolTip = name;
+//					_sparkline.yFieldName = name;
+//					_sparkline.lastValue_label = name;
+//					_sparkline.top = sparklines_AC.length * _sparkline.height;
+//					
+//					// padding, etc. ???
+//					
+//					sparklines_AC.addItem(_sparkline);
+//					borderContainer.addElement(_sparkline);				
+//				}		
+//			}
+			
+			private function handleCreationComplete(event:Event):void	{				
+				sparkline1 = createSparkline("currentBytesPerSecond");
+				sparkline2 = createSparkline("currentBytesPerSecond");
+				sparkline3 = createSparkline("currentBytesPerSecond");
+			}
+			
+			public function createSparkline(name:String):Sparkline {
+				var _sparkline:Sparkline = new Sparkline();
+				_sparkline.toolTip = name;
+				_sparkline.yFieldName = name;
+				_sparkline.lastValue_label = name;
+				_sparkline.top = sparkline_count * _sparkline.height;	
+				sparkline_count++;			
+			
+//				sparklines_AC.addItem(_sparkline);
+				borderContainer.addElement(_sparkline);	
+				
+				return _sparkline;
+			}			
+			
+		]]>
+	</fx:Script>	
+	<s:BorderContainer id="borderContainer"
+										 backgroundColor="#cecece" 
+										 borderColor="#cecece"
+										 width="162" 
+										 height="500">
+		
+		<s:Rect id="background" 
+						width="160" 
+						height="500">
+			<s:fill>
+				<s:SolidColor color="#FFFFFF"/>
+			</s:fill>
+		</s:Rect>
+	
+		
+
+	</s:BorderContainer>
+	
+</s:Group>

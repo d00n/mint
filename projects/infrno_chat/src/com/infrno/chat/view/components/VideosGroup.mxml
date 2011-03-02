@@ -8,13 +8,13 @@
 			import mx.events.ResizeEvent;
 			
 			protected function videos_group_resizeHandler(event:ResizeEvent):void	{
-				videos_holder.width = this.width;
-				videos_holder.height = this.height;
+				videosGroup_list.width = this.width;
+				videosGroup_list.height = this.height;
 			}			
 		]]>
 	</fx:Script>
 	
-	<s:List id="videos_holder" 
+	<s:List id="videosGroup_list" 
 					width="162"
 					itemRenderer="spark.skins.spark.DefaultComplexItemRenderer"
 					horizontalCenter="0"

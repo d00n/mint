@@ -7,7 +7,7 @@ package com.infrno.chat.model.vo
 	
 	public class StatsVO
 	{
-		public var suid:int;		
+		public var suid:String;		
 		
 		[Bindable]
 		public var data_array:ArrayCollection = new ArrayCollection();

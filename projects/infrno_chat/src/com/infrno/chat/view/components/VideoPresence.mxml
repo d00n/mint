@@ -164,8 +164,8 @@
 				
 				// TODO Try moving this to the constructor
 				// WARNING: instantiating Sparkline in the mediator causes the backward/outside container display bug
-				_sparkline = new Sparkline();
-				borderContainer.addElement(_sparkline);
+//				_sparkline = new Sparkline();
+//				borderContainer.addElement(_sparkline);
 				
 				if (_is_local)
 					audio_level.toolTip = "Your mic level";
@@ -174,8 +174,8 @@
 			}
 			
 			private function handleInitialize(event:Event):void{
-//				_sparkline = new Sparkline();
-//				borderContainer.addElement(_sparkline);				
+				_sparkline = new Sparkline();
+				borderContainer.addElement(_sparkline);				
 			}
 			
 			private function handleMouseOver(event:Event):void 	{

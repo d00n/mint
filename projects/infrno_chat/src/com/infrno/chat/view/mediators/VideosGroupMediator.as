@@ -35,6 +35,9 @@ package com.infrno.chat.view.mediators
 		{
 			eventMap.mapListener(eventDispatcher,MSEvent.USERS_OBJ_UPDATE,usersUpdated);
 			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.SETUP_PEER_VIDEOPRESENCE_COMPONENT,setupPeerVideoPresenceComponent);
+			
+			// TODO map these after the sparklines are ready
+			// ..or figure out where to create sparklines better/earlier
 			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.DISPLAY_PEER_STATS,displayPeerStats);
 			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.DISPLAY_SERVER_STATS,displayServerStats);
 			
@@ -64,38 +67,38 @@ package com.infrno.chat.view.mediators
 		
 		private function removeVideos(userInfoVO_array:Array, local_userInfoVO:UserInfoVO):void
 		{
-			trace("VideosMediator.removeVideos()");
+			trace("VideosGroupMediator.removeVideos()");
 			var dataProviderLength:int = videosGroup.videosGroup_list.dataProvider.length;
 			for(var i:int = 0; i<dataProviderLength; i++){
-				trace("VideosMediator.removeVideos() i="+i);
+				trace("VideosGroupMediator.removeVideos() i="+i);
 				try{
 					
 					var videoPresence:VideoPresence = videosGroup.videosGroup_list.dataProvider.getItemAt(i) as VideoPresence;
-					trace("VideosMediator.removeVideos() videoPresence.name="+videoPresence.name);
+					trace("VideosGroupMediator.removeVideos() videoPresence.name="+videoPresence.name);
 					
 					//if the video isn't in the users collection remove it
 					if(userInfoVO_array[videoPresence.name] == null){
 						var vp_index:int = videosGroup.videosGroup_list.dataProvider.getItemIndex(videoPresence);
-						trace("VideosMediator.removeVideos() vp_index="+vp_index);
+						trace("VideosGroupMediator.removeVideos() vp_index="+vp_index);
 						videosGroup.videosGroup_list.dataProvider.removeItemAt(vp_index);
 					}
 				}catch(e:Object){
 					//out of range error I'm sure
 					// TODO Make sure we don't get out of range errors
 					// Things work just fine, but how does this state occur?
-					trace("VideosMediator.removeVideos() error:" +e.toString());
+					trace("VideosGroupMediator.removeVideos() error:" +e.toString());
 				}
 			}
 		}
 		
 		private function getVideoPresenceByName(name:String): VideoPresence{
-			trace("VideosMediator.getVideoPresenceByName name="+name)
+			trace("VideosGroupMediator.getVideoPresenceByName name="+name)
 			var videoPresence:VideoPresence;
 			var dataProviderLength:int = videosGroup.videosGroup_list.dataProvider.length;
 			for(var i:int = 0; i < dataProviderLength; i++){
-				trace("VideosMediator.getVideoPresenceByName i="+i+", videos.videos_holder.dataProvider.length="+dataProviderLength)
+				trace("VideosGroupMediator.getVideoPresenceByName i="+i+", videos.videos_holder.dataProvider.length="+dataProviderLength)
 				videoPresence = videosGroup.videosGroup_list.dataProvider.getItemAt(i) as VideoPresence;
-				trace("VideosMediator.getVideoPresenceByName videoPresence.name="+videoPresence.name)
+				trace("VideosGroupMediator.getVideoPresenceByName videoPresence.name="+videoPresence.name)
 				if (videoPresence.name == name) {
 					return videoPresence;
 				}
@@ -105,7 +108,7 @@ package com.infrno.chat.view.mediators
 		
 		private function onVideoPresenceCreationComplete(e:FlexEvent):void
 		{
-			trace("VideosMediator.onVideoPresenceCreationComplete")
+			trace("VideosGroupMediator.onVideoPresenceCreationComplete")
 			
 			var videoPresence:VideoPresence = e.target as VideoPresence;
 			if(videoPresence.is_local){
@@ -117,17 +120,17 @@ package com.infrno.chat.view.mediators
 		
 		private function updateVideos(userInfoVO_array:Array, local_userInfoVO:UserInfoVO):void
 		{
-			trace("VideosMediator.updateVideos()");
+			trace("VideosGroupMediator.updateVideos()");
 			
 			// What field in userInfoVO defines 'name' here?
 			// Answer: suid
 			for(var name:String in userInfoVO_array){
-				trace("VideosMediator.updateVideos() name="+name);
+				trace("VideosGroupMediator.updateVideos() name="+name);
 				var userInfoVO:UserInfoVO = userInfoVO_array[name];
 				
 				var videoPresence:VideoPresence = getVideoPresenceByName(name);
 				if(videoPresence == null){
-					trace("VideosMediator.updateVideos() adding new VideoPresence for name="+name);
+					trace("VideosGroupMediator.updateVideos() adding new VideoPresence for name="+name);
 					
 					videoPresence = new VideoPresence();
 					videosGroup.videosGroup_list.dataProvider.addItem(videoPresence);
@@ -150,7 +153,7 @@ package com.infrno.chat.view.mediators
 					
 					videoPresence.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
 						{
-							trace("VideosMediator.updateVideos() VideoPresence FlexEvent.CREATION_COMPLETE event listener")
+							trace("VideosGroupMediator.updateVideos() VideoPresence FlexEvent.CREATION_COMPLETE event listener")
 							
 							var videoPresence:VideoPresence = e.target as VideoPresence;
 							if(videoPresence.is_local){
@@ -161,7 +164,7 @@ package com.infrno.chat.view.mediators
 						});
 					
 				} else {
-					trace("VideosMediator.updateVideos() found existing VideoPresence for name="+name);
+					trace("VideosGroupMediator.updateVideos() found existing VideoPresence for name="+name);
 					
 					// videoPresence is assigned, and not null.
 					// why are we fetching this again? 
@@ -185,7 +188,7 @@ package com.infrno.chat.view.mediators
 		
 		private function setupLocalVideoPresenceComponent(videoPresence:VideoPresence):void
 		{
-			trace("VideosMediator.setupLocalVideoPresenceComponent()");
+			trace("VideosGroupMediator.setupLocalVideoPresenceComponent()");
 			videoPresence.is_local = true;
 			videoPresence.camera = deviceProxy.camera;
 			videoPresence.audio_level.value = deviceProxy.mic.gain;
@@ -196,7 +199,7 @@ package com.infrno.chat.view.mediators
 		
 		private function setupPeerVideoPresenceNetStream(videoPresence:VideoPresence):void
 		{
-			trace("VideosMediator.setupPeerVideoPresenceNetStream() videoPresence.userInfoVO.suid:"+videoPresence.userInfoVO.suid);			
+			trace("VideosGroupMediator.setupPeerVideoPresenceNetStream() videoPresence.userInfoVO.suid:"+videoPresence.userInfoVO.suid);			
 			var vpEvent:VideoPresenceEvent = new VideoPresenceEvent(VideoPresenceEvent.SETUP_PEER_NETSTREAM);
 			vpEvent.userInfoVO = videoPresence.userInfoVO;
 			dispatch(vpEvent);			
@@ -204,7 +207,7 @@ package com.infrno.chat.view.mediators
 		
 		private function setupPeerVideoPresenceComponent(vpEvent:VideoPresenceEvent):void
 		{
-			trace("VideosMediator.setupPeerVideoPresenceComponent()");
+			trace("VideosGroupMediator.setupPeerVideoPresenceComponent()");
 			var userInfoVO:UserInfoVO = vpEvent.userInfoVO;
 			var videoPresence:VideoPresence = getVideoPresenceByName(userInfoVO.suid.toString());			
 			videoPresence.netstream = userInfoVO.netStream;
@@ -214,18 +217,18 @@ package com.infrno.chat.view.mediators
 			try{
 				videoPresence.audio_level.value = userInfoVO.netStream.soundTransform.volume*100
 			} catch(e:Object){
-				trace("VideosMediator.setupPeerVideoPresenceComponent() setting videoPresence.audio_level.value threw an error: " + e.toString());
+				trace("VideosGroupMediator.setupPeerVideoPresenceComponent() setting videoPresence.audio_level.value threw an error: " + e.toString());
 			}
 		}
 		
 		private function displayPeerStats(vpEvent:VideoPresenceEvent):void
 		{
-			trace("VideosMediator.displayPeerStats()");
+			trace("VideosGroupMediator.displayPeerStats()");
 			var peerStatsVO:StatsVO = vpEvent.statsVO;
 			var videoPresence:VideoPresence = getVideoPresenceByName(peerStatsVO.suid.toString());		
 			
 			if (videoPresence.sparkline == null) {
-				trace("VideosMediator.displayPeerStats() videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
+				trace("VideosGroupMediator.displayPeerStats() videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
 				return;
 			}
 			
@@ -245,12 +248,12 @@ package com.infrno.chat.view.mediators
 		
 		private function displayServerStats(vpEvent:VideoPresenceEvent):void
 		{
-			trace("VideosMediator.displayServerStats()");
+			trace("VideosGroupMediator.displayServerStats()");
 			var serverStatsVO:StatsVO = vpEvent.statsVO;
 			var videoPresence:VideoPresence = getVideoPresenceByName(serverStatsVO.suid.toString());
 			
 			if (videoPresence.sparkline == null) {
-				trace("VideosMediator.displayServerStats() videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
+				trace("VideosGroupMediator.displayServerStats() videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
 				return;
 			}
 			

@@ -45,6 +45,8 @@
 				sparkline3 = createSparkline("currentBytesPerSecond");
 			}
 			
+			// TODO Try moving this to the constructor
+			// WARNING: instantiating Sparkline in the mediator causes the backward/outside container display bug
 			public function createSparkline(name:String):Sparkline {
 				var _sparkline:Sparkline = new Sparkline();
 				_sparkline.toolTip = name;
@@ -74,9 +76,7 @@
 				<s:SolidColor color="#FFFFFF"/>
 			</s:fill>
 		</s:Rect>
-	
 		
-
 	</s:BorderContainer>
 	
 </s:Group>

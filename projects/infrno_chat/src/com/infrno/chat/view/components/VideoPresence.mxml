@@ -4,6 +4,7 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:com.infrno.chat.view.components="com.infrno.chat.view.components.*"
 		 creationComplete="handleCreationComplete(event);"
+		 initialize="handleInitialize(event);"
 		 >
 
 	<fx:Script>
@@ -162,7 +163,7 @@
 				wrenchToggleButton.visible = _is_local;
 				
 				// TODO Try moving this to the constructor
-				// WARNING: instantiating Sparkline outside of this class causes the backward/outside container display bug
+				// WARNING: instantiating Sparkline in the mediator causes the backward/outside container display bug
 				_sparkline = new Sparkline();
 				borderContainer.addElement(_sparkline);
 				
@@ -170,6 +171,11 @@
 					audio_level.toolTip = "Your mic level";
 				else
 					audio_level.toolTip = "Peer audio level";
+			}
+			
+			private function handleInitialize(event:Event):void{
+//				_sparkline = new Sparkline();
+//				borderContainer.addElement(_sparkline);				
 			}
 			
 			private function handleMouseOver(event:Event):void 	{

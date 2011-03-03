@@ -22,7 +22,7 @@ package com.infrno.chat.view.mediators
 			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.DISPLAY_PEER_STATS,displayPeerStats);
 		}
 		
-		// Move this event into StatsEvent
+		// TODO Move this event into StatsEvent
 		private function displayPeerStats(vpEvent:VideoPresenceEvent):void
 		{
 			trace("StatsContainerMediator.displayPeerStats()");

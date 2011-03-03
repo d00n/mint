@@ -9,12 +9,11 @@
 			
 			import com.infrno.chat.model.vo.StatsVO;
 			
-			import mx.collections.ArrayCollection;
-			public var sparklines_AC:ArrayCollection = new ArrayCollection();
-			public var suid:String;
-			
+			public var suid:String;		
 			public var sparkline_count:int = 0;
-			
+
+			[Bindable]
+			public var user_name_label:String;
 			public var sparkline1:Sparkline;
 			public var sparkline2:Sparkline;
 			public var sparkline3:Sparkline;
@@ -32,93 +31,23 @@
 				_sparkline.toolTip = name;
 				_sparkline.yFieldName = name;
 				_sparkline.lastValue_label = name;
-				_sparkline.top = sparkline_count * _sparkline.height;	
+				_sparkline.top = sparkline_count * _sparkline.height + 20;	
 				sparkline_count++;			
 				
 				//				sparklines_AC.addItem(_sparkline);
-				borderContainer.height = sparkline_count * _sparkline.height;	
+				borderContainer.height = sparkline_count * _sparkline.height + 20;	
 				borderContainer.addElement(_sparkline);	
 				
 				return _sparkline;
 			}					
-			
-//			public function addStatsGroup(peerStatsVO:StatsVO): StatsBlock {
-//				var statsBlock:StatsBlock = new StatsBlock();
-//				//				statsGroup.addEventListener(FlexEvent.CREATION_COMPLETE, onStatsGroup_creationComplete);
-//				statsBlock.suid = peerStatsVO.suid;
-//				statsBlock.peerStatsVO = peerStatsVO;
-//				statsGroup_list.dataProvider.addItem(statsBlock);
-//				
-//				statsBlock.sparkline1 = createSparkline("currentBytesPerSecond", peerStatsVO.suid);
-//				statsBlock.sparkline2 = createSparkline("currentBytesPerSecond");
-//				statsBlock.sparkline3 = createSparkline("currentBytesPerSecond");
-//				
-//				return statsBlock;
-//			}
-			
-//			public function createSparkline(name:String, suid:int):Sparkline {
-//				var _sparkline:Sparkline = new Sparkline();
-//				_sparkline.toolTip = name;
-//				_sparkline.yFieldName = name;
-//				_sparkline.lastValue_label = name;
-//				
-//				var statsBlock:StatsBlock = getStatsBlockBySuid(suid);
-//				_sparkline.top = statsBlock.sparkline_count * _sparkline.height;	
-//				statsBlock.sparkline_count++;			
-//				
-//				//				sparklines_AC.addItem(_sparkline);
-//				statsBlock.borderContainer.addElement(_sparkline);	
-//				
-//				return _sparkline;
-//			}	
-			
-//			private function getStatsBlockBySuid(suid:int): StatsBlock {
-//				trace("StatsGroupMediator.getStatsBySuid suid="+suid)
-//				
-//				var statsBlock:StatsBlock;
-//				var dataProviderLength:int = statsGroup_list.dataProvider.length;
-//				for(var i:int = 0; i < dataProviderLength; i++){
-//					trace("StatsGroupMediator.getStatsBlockBySuid i="+i+", statsGroup.statsGroup_list.dataProvider.length="+dataProviderLength)
-//					statsBlock = statsGroup_list.dataProvider.getItemAt(i) as StatsBlock;
-//					trace("StatsGroupMediator.getStatsBySuid statsBlock.suid="+statsBlock.suid)
-//					if (statsBlock.suid == suid) {
-//						return statsBlock;
-//					}
-//				}
-//				return null;
-//			}
-//			
-			
-	
-			
-			
-//			public function createSparklines():void	{				
-//				var _sparkline:Sparkline;
-//				
-//				var statRecord:Object = peerStatsVO.data_array[19];
-//				for (var name:String in statRecord) {
-//					_sparkline = new Sparkline();
-//					_sparkline.toolTip = name;
-//					_sparkline.yFieldName = name;
-//					_sparkline.lastValue_label = name;
-//					_sparkline.top = sparklines_AC.length * _sparkline.height;
-//					
-//					// padding, etc. ???
-//					
-//					sparklines_AC.addItem(_sparkline);
-//					borderContainer.addElement(_sparkline);				
-//				}		
-//			}
-			
-	
-			
+		
 		]]>
 	</fx:Script>	
 	<s:BorderContainer id="borderContainer"
 										 backgroundColor="#cecece" 
 										 borderColor="#cecece"
 										 width="162" 
-										 height="0">
+										 height="20">
 		
 		<s:Rect id="background" 
 						width="160" 
@@ -127,6 +56,16 @@
 				<s:SolidColor color="#FFFFFF"/>
 			</s:fill>
 		</s:Rect>
+		
+		<s:Label id="user_name_label_id" 
+						 text="{user_name_label}"
+						 top="3"
+						 left="3"
+						 paddingTop="3"
+						 paddingLeft="3"
+						 paddingRight="3"
+						 alpha="1"
+						 backgroundColor="0xFFFFFF" />		
 		
 	</s:BorderContainer>
 	

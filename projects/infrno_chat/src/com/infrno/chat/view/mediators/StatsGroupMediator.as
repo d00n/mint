@@ -8,6 +8,7 @@ package com.infrno.chat.view.mediators
 	import com.infrno.chat.view.components.StatsBlock;
 	import com.infrno.chat.view.components.StatsGroup;
 	
+	import mx.collections.ArrayCollection;
 	import mx.events.FlexEvent;
 	
 	import org.robotlegs.mvcs.Mediator;
@@ -36,34 +37,60 @@ package com.infrno.chat.view.mediators
 		
 		private function updateStatGroup(userInfoVO_array:Array, local_userInfoVO:UserInfoVO):void
 		{
-			trace("StatsGroupMediator.updateStatGroup()");
-			
-			// TODO Iterate over the collection of StatsBlocks, and remove ones for whom there is no UserInfoVO
-			// ie: users who have left
-			
+			removeDisconnectedStatBlocks(userInfoVO_array);			
+			addNewStatBlocks(userInfoVO_array);
+		}
+		
+		private function removeDisconnectedStatBlocks(userInfoVO_array:Array):void
+		{
+			trace("StatsGroupMediator.removeDisconnectedStatBlocks()");
+			var dataProviderLength:int = statsGroup.statsGroup_list.dataProvider.length;
+			for(var i:int = 0; i<dataProviderLength; i++){
+				trace("StatsGroupMediator.removeDisconnectedStatBlocks() i="+i);
+				try{					
+					var statsBlock:StatsBlock = statsGroup.statsGroup_list.dataProvider.getItemAt(i) as StatsBlock;
+					trace("StatsGroupMediator.removeDisconnectedStatBlocks() statsBlock.suid="+statsBlock.suid);
+					
+					//if the video isn't in the users collection remove it
+					if(userInfoVO_array[statsBlock.suid] == null){
+						var statsGroup_index:int = statsGroup.statsGroup_list.dataProvider.getItemIndex(statsBlock);
+						trace("StatsGroupMediator.removeDisconnectedStatBlocks() statsGroup_index="+statsGroup_index);
+						statsGroup.statsGroup_list.dataProvider.removeItemAt(statsGroup_index);
+					}
+				}catch(e:Object){
+					//out of range error I'm sure
+					// TODO Make sure we don't get out of range errors
+					// Things work just fine, but how does this state occur?
+					trace("StatsGroupMediator.removeDisconnectedStatBlocks() error:" +e.toString());
+				}
+			}
+		}
+		
+		private function addNewStatBlocks(userInfoVO_array:Array):void{
 			for(var suid:String in userInfoVO_array){
-				trace("StatsGroupMediator.updateStatGroup() suid:"+suid);
+				trace("StatsGroupMediator.addNewStatBlocks() suid:"+suid);
 				var userInfoVO:UserInfoVO = userInfoVO_array[suid];
 				
 				var statsBlock:StatsBlock = getStatsBlockBySuid(suid);
 				if (statsBlock == null) {
-					trace("StatsGroupMediator.updateStatGroup() adding new StatsBlock for suid:"+suid);
+					trace("StatsGroupMediator.addNewStatBlocks() adding new StatsBlock for suid:"+suid);
 					statsBlock = new StatsBlock();
 					statsBlock.suid = suid;
-					statsGroup.statsGroup_list.dataProvider.addItem(statsBlock);
-
+					statsBlock.user_name_label = userInfoVO.user_name;
+					statsGroup.statsGroup_list.dataProvider.addItem(statsBlock);					
 					
 					statsBlock.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
 					{
-						trace("StatsGroupMediator.updateStatGroup() StatsBlock FlexEvent.CREATION_COMPLETE event listener");						
+						trace("StatsGroupMediator.addNewStatBlocks() StatsBlock FlexEvent.CREATION_COMPLETE event listener");						
 						eventMap.mapListener(eventDispatcher,VideoPresenceEvent.DISPLAY_PEER_STATS,displayPeerStats);
 					});
 					
 				} else {
-					trace("StatsGroupMediator.updateStatGroup() found existing StatsBlock for suid:"+suid);					
+					trace("StatsGroupMediator.addNewStatBlocks() found existing StatsBlock for suid:"+suid);					
 				}				
 			}
 		}
+		
 
 		// TODO Move this event into StatsEvent
 		private function displayPeerStats(vpEvent:VideoPresenceEvent):void

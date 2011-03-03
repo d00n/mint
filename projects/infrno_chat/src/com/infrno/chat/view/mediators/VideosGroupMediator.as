@@ -71,8 +71,7 @@ package com.infrno.chat.view.mediators
 			var dataProviderLength:int = videosGroup.videosGroup_list.dataProvider.length;
 			for(var i:int = 0; i<dataProviderLength; i++){
 				trace("VideosGroupMediator.removeVideos() i="+i);
-				try{
-					
+				try{					
 					var videoPresence:VideoPresence = videosGroup.videosGroup_list.dataProvider.getItemAt(i) as VideoPresence;
 					trace("VideosGroupMediator.removeVideos() videoPresence.name="+videoPresence.name);
 					

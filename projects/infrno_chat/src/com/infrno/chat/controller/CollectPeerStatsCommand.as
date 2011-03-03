@@ -58,20 +58,21 @@ package com.infrno.chat.controller
 					//peer_stats.videoLossRate 				= netStreamInfo.videoLossRate
 					peer_stats.audioLossRate 					= netStreamInfo.audioLossRate;
 					peer_stats.srtt 									= netStreamInfo.SRTT;
-	
-					// Why do some of these need casting? They're all Numbers
-					peer_stats.audioBytesPerSecond 		= int(netStreamInfo.audioBytesPerSecond);
-					peer_stats.videoBytesPerSecond 		= int(netStreamInfo.videoBytesPerSecond);
-					peer_stats.dataBytesPerSecond 		= int(netStreamInfo.dataBytesPerSecond);
-					
-					peer_stats.currentBytesPerSecond 	= int(netStreamInfo.currentBytesPerSecond);
-					peer_stats.maxBytesPerSecond 			= int(netStreamInfo.maxBytesPerSecond);
-					peer_stats.byteCount 							= netStreamInfo.byteCount;
-					peer_stats.dataByteCount 					= netStreamInfo.dataByteCount;
-					peer_stats.videoByteCount					= netStreamInfo.videoByteCount;
-					
-					peer_stats.audioLossRate 					= netStreamInfo.audioLossRate;
 					peer_stats.droppedFrames 					= netStreamInfo.droppedFrames;
+	
+					peer_stats.currentBytesPerSecond 	= netStreamInfo.currentBytesPerSecond;
+					peer_stats.audioBytesPerSecond 		= netStreamInfo.audioBytesPerSecond;
+					peer_stats.videoBytesPerSecond 		= netStreamInfo.videoBytesPerSecond;					
+					peer_stats.dataBytesPerSecond 		= netStreamInfo.dataBytesPerSecond;
+					peer_stats.maxBytesPerSecond 			= netStreamInfo.maxBytesPerSecond;
+
+
+					// Don't care about these
+//					peer_stats.byteCount 							= netStreamInfo.byteCount;
+//					peer_stats.dataByteCount 					= netStreamInfo.dataByteCount;
+//					peer_stats.videoByteCount					= netStreamInfo.videoByteCount;
+//					peer_stats.audioByteCount					= netStreamInfo.audioByteCount;
+					
 					
 					statsProxy.submitPeerStats(peer_stats);
 					msService.sendPeerStats(peer_stats);	

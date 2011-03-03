@@ -162,6 +162,7 @@
 				wrenchToggleButton.visible = _is_local;
 				
 				// TODO Try moving this to the constructor
+				// WARNING: instantiating Sparkline outside of this class causes the backward/outside container display bug
 				_sparkline = new Sparkline();
 				borderContainer.addElement(_sparkline);
 				

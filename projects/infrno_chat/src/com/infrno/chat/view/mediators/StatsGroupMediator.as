@@ -30,7 +30,7 @@ package com.infrno.chat.view.mediators
 			
 			var statsBlock:StatsBlock = getStatsBlockBySuid(peerStatsVO.suid);
 			if (statsBlock == null) {
-				var statsBlock:StatsBlock = new StatsBlock();
+				statsBlock = new StatsBlock();
 				statsBlock.suid = peerStatsVO.suid;
 				statsBlock.peerStatsVO = peerStatsVO;
 				statsGroup.statsGroup_list.dataProvider.addItem(statsBlock);

@@ -14,7 +14,7 @@
 			public var suid:int;
 			public var peerStatsVO:StatsVO;
 			
-			private var sparkline_count:int = 0;
+			public var sparkline_count:int = 0;
 			
 			public var sparkline1:Sparkline;
 			public var sparkline2:Sparkline;

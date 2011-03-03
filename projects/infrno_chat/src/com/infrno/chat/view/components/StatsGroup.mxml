@@ -23,17 +23,44 @@
 				statsBlock.peerStatsVO = peerStatsVO;
 				statsGroup_list.dataProvider.addItem(statsBlock);
 				
-				statsBlock.sparkline1 = statsBlock.createSparkline("currentBytesPerSecond");
+				statsBlock.sparkline1 = createSparkline("currentBytesPerSecond", peerStatsVO.suid);
 				statsBlock.sparkline2 = statsBlock.createSparkline("currentBytesPerSecond");
 				statsBlock.sparkline3 = statsBlock.createSparkline("currentBytesPerSecond");
 				
 				return statsBlock;
 			}
 			
-//			private function onStatsGroup_creationComplete(event:FlexEvent):void {
-//				var statsGroup:StatsGroup = event.currentTarget as StatsGroup;
-//				statsGroup.createSparkline("currentBytesPerSecond");
-//			}
+			public function createSparkline(name:String, suid:int):Sparkline {
+				var _sparkline:Sparkline = new Sparkline();
+				_sparkline.toolTip = name;
+				_sparkline.yFieldName = name;
+				_sparkline.lastValue_label = name;
+				
+				var statsBlock:StatsBlock = getStatsBlockBySuid(suid);
+				_sparkline.top = statsBlock.sparkline_count * _sparkline.height;	
+				statsBlock.sparkline_count++;			
+				
+				//				sparklines_AC.addItem(_sparkline);
+				statsBlock.borderContainer.addElement(_sparkline);	
+				
+				return _sparkline;
+			}	
+			
+			private function getStatsBlockBySuid(suid:int): StatsBlock {
+				trace("StatsGroupMediator.getStatsBySuid suid="+suid)
+				
+				var statsBlock:StatsBlock;
+				var dataProviderLength:int = statsGroup_list.dataProvider.length;
+				for(var i:int = 0; i < dataProviderLength; i++){
+					trace("StatsGroupMediator.getStatsBlockBySuid i="+i+", statsGroup.statsGroup_list.dataProvider.length="+dataProviderLength)
+					statsBlock = statsGroup_list.dataProvider.getItemAt(i) as StatsBlock;
+					trace("StatsGroupMediator.getStatsBySuid statsBlock.suid="+statsBlock.suid)
+					if (statsBlock.suid == suid) {
+						return statsBlock;
+					}
+				}
+				return null;
+			}
 			
 		]]>
 	</fx:Script>

@@ -34,6 +34,7 @@ package com.infrno.chat.view.mediators
 			peerStatBlockConfig_AC.addItem( {yFieldName:"videoBytesPerSecond", labelPrefix:"Video", toolTip:"Specifies the rate at which the NetStream video buffer is filled in bytes per second. The value is calculated as a smooth average for the video data received in the last second."} );
 			peerStatBlockConfig_AC.addItem( {yFieldName:"dataBytesPerSecond", labelPrefix:"Data", toolTip:"Specifies the rate at which the NetStream data buffer is filled in bytes per second. The value is calculated as a smooth average for the data messages received in the last second."} );
 			peerStatBlockConfig_AC.addItem( {yFieldName:"audioLossRate", labelPrefix:"Audio loss rate", toolTip:"Specifies the audio loss for the NetStream session. This value returns a valid value only for RTMFP streams and would return 0 for RTMP streams. Loss rate is defined as the ratio of lost messages to total messages."} );
+			// Hack hack hack - The last item added doesn't get it's label displayed. So just tack an empty one on.
 			peerStatBlockConfig_AC.addItem( {yFieldName:"", labelPrefix:""} );
 			
 			serverStatBlockConfig_AC.addItem( {yFieldName:"currentBytesPerSecond", labelPrefix:"Current", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );

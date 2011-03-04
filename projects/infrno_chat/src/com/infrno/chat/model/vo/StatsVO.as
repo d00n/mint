@@ -11,6 +11,8 @@ package com.infrno.chat.model.vo
 		
 		[Bindable]
 		public var data_array:ArrayCollection = new ArrayCollection();
+		
+		private var _lastDataRecord:Object;
     
 		public function StatsVO()
 		{
@@ -18,6 +20,10 @@ package com.infrno.chat.model.vo
 			// avoid the compression-like behavior while it fills from 0 to max
 			for (var i:int = 0; i < StatsProxy.NUMBER_OF_DATA_RECORDS_TO_KEEP ; i++) 
 				data_array.addItem(new Object);
+		}
+		
+		public function get lastDataRecord():Object {
+			return data_array.getItemAt(data_array.length - 1);
 		}
 	}
 }

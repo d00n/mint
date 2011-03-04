@@ -60,11 +60,11 @@ package com.infrno.chat.controller
 					peer_stats.srtt 									= netStreamInfo.SRTT;
 					peer_stats.droppedFrames 					= netStreamInfo.droppedFrames;
 	
-					peer_stats.currentBytesPerSecond 	= netStreamInfo.currentBytesPerSecond;
-					peer_stats.audioBytesPerSecond 		= netStreamInfo.audioBytesPerSecond;
-					peer_stats.videoBytesPerSecond 		= netStreamInfo.videoBytesPerSecond;					
-					peer_stats.dataBytesPerSecond 		= netStreamInfo.dataBytesPerSecond;
-					peer_stats.maxBytesPerSecond 			= netStreamInfo.maxBytesPerSecond;
+					peer_stats.currentBytesPerSecond 	= netStreamInfo.currentBytesPerSecond.toFixed();
+					peer_stats.audioBytesPerSecond 		= netStreamInfo.audioBytesPerSecond.toFixed();
+					peer_stats.videoBytesPerSecond 		= netStreamInfo.videoBytesPerSecond.toFixed();					
+					peer_stats.dataBytesPerSecond 		= netStreamInfo.dataBytesPerSecond.toFixed();
+					peer_stats.maxBytesPerSecond 			= netStreamInfo.maxBytesPerSecond.toFixed();
 
 
 					// Don't care about these

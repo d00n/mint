@@ -24,9 +24,7 @@
 					>
 		
 		<s:layout>
-			<s:TileLayout 
-				horizontalGap="0"
-				verticalGap="0" />
+			<s:HorizontalLayout/>
 		</s:layout>
 		
 		<s:dataProvider >

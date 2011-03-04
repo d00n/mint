@@ -17,8 +17,9 @@ package com.infrno.chat.view.mediators
 	{
 		[Inject]
 		public var statsGroup:StatsGroup;
-	
 		
+		private var peerStatBlockConfig_AC:ArrayCollection = new ArrayCollection();
+
 		public function StatsGroupMediator()
 		{
 		}
@@ -26,8 +27,13 @@ package com.infrno.chat.view.mediators
 		override public function onRegister():void{
 			eventMap.mapListener(eventDispatcher,MSEvent.USERS_OBJ_UPDATE,usersUpdated);
 
-			// TODO map this after the relevant statBlock is ready
-//			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.DISPLAY_PEER_STATS,displayPeerStats);
+			
+			peerStatBlockConfig_AC.addItem( {yFieldName:"srtt", labelPrefix:"Ping"} );
+			peerStatBlockConfig_AC.addItem( {yFieldName:"currentBytesPerSecond", labelPrefix:"Total", toolTip:"bytes per second"} );
+			peerStatBlockConfig_AC.addItem( {yFieldName:"audioBytesPerSecond", labelPrefix:"Audio", toolTip:"bytes per second"} );
+			peerStatBlockConfig_AC.addItem( {yFieldName:"videoBytesPerSecond", labelPrefix:"Video", toolTip:"bytes per second"} );
+			peerStatBlockConfig_AC.addItem( {yFieldName:"dataBytesPerSecond", labelPrefix:"Data", toolTip:"bytes per second"} );
+			peerStatBlockConfig_AC.addItem( {yFieldName:"audioLossRate", labelPrefix:"Audio loss rate"} );
 		}
 		
 		private function usersUpdated(msEvent:MSEvent):void
@@ -75,8 +81,9 @@ package com.infrno.chat.view.mediators
 				if (statsBlock == null) {
 					trace("StatsGroupMediator.addNewStatBlocks() adding new StatsBlock for suid:"+suid);
 					statsBlock = new StatsBlock();
+					statsBlock.config_AC = peerStatBlockConfig_AC;
 					statsBlock.suid = suid;
-					statsBlock.user_name_label = userInfoVO.user_name;
+					statsBlock.user_name_label = "User: " + userInfoVO.user_name;
 					statsGroup.statsGroup_list.dataProvider.addItem(statsBlock);					
 					
 					statsBlock.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
@@ -102,11 +109,10 @@ package com.infrno.chat.view.mediators
 			if (statsBlock == null) {
 				trace("StatsContainerMediator.displayPeerStats() null statsBlock !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 				return;
-			}
+			}		
 							
-			statsBlock.sparkline1.statsVO = peerStatsVO;		
-			statsBlock.sparkline2.statsVO = peerStatsVO;		
-			statsBlock.sparkline3.statsVO = peerStatsVO;		
+			statsBlock.droppedFrames_label = "Dropped frames: " + peerStatsVO.lastDataRecord.droppedFrames;
+			statsBlock.statsVO = peerStatsVO;		
 		}
 		
 		private function getStatsBlockBySuid(suid:String): StatsBlock {

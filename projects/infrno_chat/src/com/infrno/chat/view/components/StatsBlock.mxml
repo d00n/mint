@@ -3,42 +3,59 @@
 				 xmlns:s="library://ns.adobe.com/flex/spark" 
 				 xmlns:mx="library://ns.adobe.com/flex/mx"
 				 creationComplete="handleCreationComplete(event);"
+				 
 				 >
 	<fx:Script>
-		<![CDATA[
-			
+		<![CDATA[			
 			import com.infrno.chat.model.vo.StatsVO;
 			
+			import mx.collections.ArrayCollection;
+			
 			public var suid:String;		
-			public var sparkline_count:int = 0;
+			public var config_AC:ArrayCollection;
+			private var _statsVO:StatsVO;
 
 			[Bindable]
 			public var user_name_label:String;
-			public var sparkline1:Sparkline;
-			public var sparkline2:Sparkline;
-			public var sparkline3:Sparkline;
 			
-			private function handleCreationComplete(event:Event):void	{				
-				sparkline1 = createSparkline("currentBytesPerSecond");
-				sparkline2 = createSparkline("audioBytesPerSecond");
-				sparkline3 = createSparkline("videoBytesPerSecond");
+			[Bindable]
+			public var droppedFrames_label:String;
+			
+			public function set statsVO(value:StatsVO):void{
+				_statsVO = value;
+				var sparkline:Sparkline;
+				for (var i:int=0; i<sparkline_vgroup.numChildren-1; i++){
+					sparkline = sparkline_vgroup.getChildAt(i) as Sparkline;
+					sparkline.statsVO = _statsVO;
+					sparkline.lastValue_label = sparkline.lastValuePrefix +": "+ _statsVO.lastDataRecord[sparkline.yFieldName];
+				}				
+			}
+			
+			private function handleCreationComplete(event:Event):void	{			
+				
+				var yFieldName:String;
+				var labelPrefix:String;
+				var toolTip:String;
+				var sparklineConfig:Object;
+				for (var i:int = 0; i < config_AC.length; i++) {
+					sparklineConfig = config_AC.getItemAt(i);
+					yFieldName = sparklineConfig.yFieldName;
+					labelPrefix = sparklineConfig.labelPrefix;
+					toolTip = sparklineConfig.toolTip;
+					createSparkline(yFieldName, labelPrefix, toolTip);
+				}
 			}
 			
 			// TODO Try moving this to the constructor
 			// WARNING: instantiating Sparkline in the mediator causes the backward/outside container display bug
-			public function createSparkline(name:String):Sparkline {
-				var _sparkline:Sparkline = new Sparkline();
-				_sparkline.toolTip = name;
-				_sparkline.yFieldName = name;
-				_sparkline.lastValue_label = name;
-				_sparkline.top = sparkline_count * _sparkline.height + 20;	
-				sparkline_count++;			
+			public function createSparkline(yFieldName:String, labelPrefix:String="", toolTip:String=""):void {
+				var _sparkline:Sparkline 		= new Sparkline(); 
+				_sparkline.yFieldName 			= yFieldName;
+				_sparkline.lastValuePrefix 	= labelPrefix;
+				_sparkline.toolTip			 		= toolTip;
+				_sparkline.width 						= borderContainer.width;
 				
-				//				sparklines_AC.addItem(_sparkline);
-				borderContainer.height = sparkline_count * _sparkline.height + 20;	
-				borderContainer.addElement(_sparkline);	
-				
-				return _sparkline;
+				sparkline_vgroup.addElement(_sparkline);	
 			}					
 		
 		]]>
@@ -47,7 +64,7 @@
 										 backgroundColor="#cecece" 
 										 borderColor="#cecece"
 										 width="162" 
-										 height="20">
+										 >
 		
 		<s:Rect id="background" 
 						width="160" 
@@ -57,15 +74,25 @@
 			</s:fill>
 		</s:Rect>
 		
-		<s:Label id="user_name_label_id" 
-						 text="{user_name_label}"
-						 top="3"
-						 left="3"
-						 paddingTop="3"
-						 paddingLeft="3"
-						 paddingRight="3"
-						 alpha="1"
-						 backgroundColor="0xFFFFFF" />		
+		<s:VGroup>			
+			<s:VGroup id="blockHeader_vgroup">			
+				<s:Label text="{user_name_label}"
+								 paddingTop="3"
+								 paddingLeft="3"
+								 paddingRight="3"
+								 backgroundColor="0xFFFFFF" />		
+				
+				<s:Label text="{droppedFrames_label}"
+								 paddingLeft="3"
+								 paddingRight="3"
+								 backgroundColor="0xFFFFFF" />					
+			</s:VGroup>
+			
+			<s:VGroup id="sparkline_vgroup">			
+					
+			</s:VGroup>
+		</s:VGroup>
+
 		
 	</s:BorderContainer>
 	

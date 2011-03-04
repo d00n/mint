@@ -233,7 +233,7 @@ package com.infrno.chat.view.mediators
 			
 			videoPresence.sparkline.statsVO = peerStatsVO;
 			videoPresence.sparkline.yFieldName = 'srtt';
-			var last_ping_value:int = peerStatsVO.data_array[peerStatsVO.data_array.length-1].srtt;
+			var last_ping_value:int = peerStatsVO.data_AC[peerStatsVO.data_AC.length-1].srtt;
 //			videoPresence.sparkline.lastValue_label = last_ping_value.toString();
 			videoPresence.sparkline.toolTip = "Ping (peer)";
 			
@@ -258,7 +258,7 @@ package com.infrno.chat.view.mediators
 			
 			videoPresence.sparkline.statsVO = serverStatsVO;
 			videoPresence.sparkline.yFieldName = 'currentBytesPerSecond';
-			var currentBytesPerSecond:int = serverStatsVO.data_array[serverStatsVO.data_array.length-1].currentBytesPerSecond;
+			var currentBytesPerSecond:int = serverStatsVO.data_AC[serverStatsVO.data_AC.length-1].currentBytesPerSecond;
 //			videoPresence.sparkline.lastValue_label = currentBytesPerSecond.toString();
 			videoPresence.sparkline.toolTip = "Bytes/second (server)";
 			

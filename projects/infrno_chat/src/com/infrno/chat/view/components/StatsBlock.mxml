@@ -68,7 +68,7 @@
 		
 		<s:Rect id="background" 
 						width="160" 
-						height="500">
+						height="100%">
 			<s:fill>
 				<s:SolidColor color="#FFFFFF"/>
 			</s:fill>
@@ -92,7 +92,6 @@
 					
 			</s:VGroup>
 		</s:VGroup>
-
 		
 	</s:BorderContainer>
 	

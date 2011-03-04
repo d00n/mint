@@ -65,10 +65,10 @@ package com.infrno.chat.model
 //			}
 //			peerStatsRecord.srtt = dummySrtt; 
 	
-			peerStatsVO.data_array.addItem(peerStatsRecord);		
+			peerStatsVO.data_AC.addItem(peerStatsRecord);		
 			
-			if (peerStatsVO.data_array.length > NUMBER_OF_DATA_RECORDS_TO_KEEP) {
-				peerStatsVO.data_array.removeItemAt(0);
+			if (peerStatsVO.data_AC.length > NUMBER_OF_DATA_RECORDS_TO_KEEP) {
+				peerStatsVO.data_AC.removeItemAt(0);
 			}
 			
 			var videoPresenceEvent:VideoPresenceEvent = new VideoPresenceEvent(VideoPresenceEvent.DISPLAY_PEER_STATS);
@@ -81,10 +81,10 @@ package com.infrno.chat.model
 			
 			// Setting this on init would be nice..
 			serverStatsVO.suid = serverStatsRecord.suid;
-			serverStatsVO.data_array.addItem(serverStatsRecord);		
+			serverStatsVO.data_AC.addItem(serverStatsRecord);		
 			
-			if (serverStatsVO.data_array.length > NUMBER_OF_DATA_RECORDS_TO_KEEP) {
-				serverStatsVO.data_array.removeItemAt(0);
+			if (serverStatsVO.data_AC.length > NUMBER_OF_DATA_RECORDS_TO_KEEP) {
+				serverStatsVO.data_AC.removeItemAt(0);
 			}
 			
 			var videoPresenceEvent:VideoPresenceEvent = new VideoPresenceEvent(VideoPresenceEvent.DISPLAY_SERVER_STATS);

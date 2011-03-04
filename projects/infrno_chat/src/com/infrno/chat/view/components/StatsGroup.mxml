@@ -24,7 +24,7 @@
 					>
 		
 		<s:layout>
-			<s:HorizontalLayout/>
+			<s:HorizontalLayout gap="0"/>
 		</s:layout>
 		
 		<s:dataProvider >

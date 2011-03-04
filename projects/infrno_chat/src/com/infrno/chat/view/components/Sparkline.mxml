@@ -40,7 +40,7 @@
 	</fx:Script>
 	
 	<mx:LineChart id="peerStatsChart"		
-								dataProvider="{statsVO.data_array}"
+								dataProvider="{statsVO.data_AC}"
 								backgroundElements="{emptyArrayToRemoveChartLines}"
 								top="0" 
 								right="0"

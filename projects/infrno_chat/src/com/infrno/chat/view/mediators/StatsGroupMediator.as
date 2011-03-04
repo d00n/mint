@@ -19,6 +19,7 @@ package com.infrno.chat.view.mediators
 		public var statsGroup:StatsGroup;
 		
 		private var peerStatBlockConfig_AC:ArrayCollection = new ArrayCollection();
+		private var serverStatBlockConfig_AC:ArrayCollection = new ArrayCollection();
 
 		public function StatsGroupMediator()
 		{
@@ -26,14 +27,21 @@ package com.infrno.chat.view.mediators
 		
 		override public function onRegister():void{
 			eventMap.mapListener(eventDispatcher,MSEvent.USERS_OBJ_UPDATE,usersUpdated);
-
 			
-			peerStatBlockConfig_AC.addItem( {yFieldName:"srtt", labelPrefix:"Ping"} );
-			peerStatBlockConfig_AC.addItem( {yFieldName:"currentBytesPerSecond", labelPrefix:"Total", toolTip:"bytes per second"} );
-			peerStatBlockConfig_AC.addItem( {yFieldName:"audioBytesPerSecond", labelPrefix:"Audio", toolTip:"bytes per second"} );
-			peerStatBlockConfig_AC.addItem( {yFieldName:"videoBytesPerSecond", labelPrefix:"Video", toolTip:"bytes per second"} );
-			peerStatBlockConfig_AC.addItem( {yFieldName:"dataBytesPerSecond", labelPrefix:"Data", toolTip:"bytes per second"} );
-			peerStatBlockConfig_AC.addItem( {yFieldName:"audioLossRate", labelPrefix:"Audio loss rate"} );
+			peerStatBlockConfig_AC.addItem( {yFieldName:"srtt", labelPrefix:"SRTT", toolTip:"Specifies the Smooth Round Trip Time for the NetStream session. This value returns a valid value only for RTMFP streams and returns 0 for RTMP streams."} );
+			peerStatBlockConfig_AC.addItem( {yFieldName:"currentBytesPerSecond", labelPrefix:"Total", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
+			peerStatBlockConfig_AC.addItem( {yFieldName:"audioBytesPerSecond", labelPrefix:"Audio", toolTip:"Specifies the rate at which the NetStream audio buffer is filled in bytes per second. The value is calculated as a smooth average for the audio data received in the last second."} );
+			peerStatBlockConfig_AC.addItem( {yFieldName:"videoBytesPerSecond", labelPrefix:"Video", toolTip:"Specifies the rate at which the NetStream video buffer is filled in bytes per second. The value is calculated as a smooth average for the video data received in the last second."} );
+			peerStatBlockConfig_AC.addItem( {yFieldName:"dataBytesPerSecond", labelPrefix:"Data", toolTip:"Specifies the rate at which the NetStream data buffer is filled in bytes per second. The value is calculated as a smooth average for the data messages received in the last second."} );
+			peerStatBlockConfig_AC.addItem( {yFieldName:"audioLossRate", labelPrefix:"Audio loss rate", toolTip:"Specifies the audio loss for the NetStream session. This value returns a valid value only for RTMFP streams and would return 0 for RTMP streams. Loss rate is defined as the ratio of lost messages to total messages."} );
+			peerStatBlockConfig_AC.addItem( {yFieldName:"", labelPrefix:""} );
+			
+			serverStatBlockConfig_AC.addItem( {yFieldName:"currentBytesPerSecond", labelPrefix:"Current", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
+			serverStatBlockConfig_AC.addItem( {yFieldName:"maxBytesPerSecond", labelPrefix:"Max", toolTip:"Specifies the maximum rate at which the NetStream buffer is filled in bytes per second. This value provides information about the capacity of the client network based on the last messages received by the NetStream object. Depending on the size of the buffer specified in NetStream.bufferTime and the bandwidth available on the client, Flash Media Server fills the buffer in bursts. This property provides the maximum rate at which the client buffer is filled."} );
+			serverStatBlockConfig_AC.addItem( {yFieldName:"audioBytesPerSecond", labelPrefix:"Audio", toolTip:"Specifies the rate at which the NetStream audio buffer is filled in bytes per second. The value is calculated as a smooth average for the audio data received in the last second."} );
+			serverStatBlockConfig_AC.addItem( {yFieldName:"videoBytesPerSecond", labelPrefix:"Video", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
+			serverStatBlockConfig_AC.addItem( {yFieldName:"dataBytesPerSecond", labelPrefix:"Data", toolTip:"Specifies the maximum rate at which the NetStream buffer is filled in bytes per second. This value provides information about the capacity of the client network based on the last messages received by the NetStream object. Depending on the size of the buffer specified in NetStream.bufferTime and the bandwidth available on the client, Flash Media Server fills the buffer in bursts. This property provides the maximum rate at which the client buffer is filled."} );
+			serverStatBlockConfig_AC.addItem( {yFieldName:"audioLossRate", labelPrefix:"Audio loss rate", toolTip:"Specifies the audio loss for the NetStream session. This value returns a valid value only for RTMFP streams and would return 0 for RTMP streams. Loss rate is defined as the ratio of lost messages to total messages."} );			
 		}
 		
 		private function usersUpdated(msEvent:MSEvent):void
@@ -62,6 +70,7 @@ package com.infrno.chat.view.mediators
 						var statsGroup_index:int = statsGroup.statsGroup_list.dataProvider.getItemIndex(statsBlock);
 						trace("StatsGroupMediator.removeDisconnectedStatBlocks() statsGroup_index="+statsGroup_index);
 						statsGroup.statsGroup_list.dataProvider.removeItemAt(statsGroup_index);
+						statsBlock.removeEventListener(VideoPresenceEvent.DISPLAY_PEER_STATS,displayPeerStats);
 					}
 				}catch(e:Object){
 					//out of range error I'm sure

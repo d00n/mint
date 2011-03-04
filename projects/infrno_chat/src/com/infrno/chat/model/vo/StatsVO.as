@@ -10,7 +10,7 @@ package com.infrno.chat.model.vo
 		public var suid:String;		
 		
 		[Bindable]
-		public var data_array:ArrayCollection = new ArrayCollection();
+		public var data_AC:ArrayCollection = new ArrayCollection();
 		
 		private var _lastDataRecord:Object;
     
@@ -19,11 +19,11 @@ package com.infrno.chat.model.vo
 			// Filling the data_array with empty objects makes the LineChart 
 			// avoid the compression-like behavior while it fills from 0 to max
 			for (var i:int = 0; i < StatsProxy.NUMBER_OF_DATA_RECORDS_TO_KEEP ; i++) 
-				data_array.addItem(new Object);
+				data_AC.addItem(new Object);
 		}
 		
 		public function get lastDataRecord():Object {
-			return data_array.getItemAt(data_array.length - 1);
+			return data_AC.getItemAt(data_AC.length - 1);
 		}
 	}
 }

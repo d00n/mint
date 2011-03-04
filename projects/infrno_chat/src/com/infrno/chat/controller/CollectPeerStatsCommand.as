@@ -56,15 +56,15 @@ package com.infrno.chat.controller
 					
 					// netStreamInfo.videoLossRate is in the docs, but does not compile
 					//peer_stats.videoLossRate 				= netStreamInfo.videoLossRate
-					peer_stats.audioLossRate 					= netStreamInfo.audioLossRate;
-					peer_stats.srtt 									= netStreamInfo.SRTT;
-					peer_stats.droppedFrames 					= netStreamInfo.droppedFrames;
+					peer_stats.audioLossRate 					= int(netStreamInfo.audioLossRate);
+					peer_stats.srtt 									= int(netStreamInfo.SRTT);
+					peer_stats.droppedFrames 					= int(netStreamInfo.droppedFrames);
 	
-					peer_stats.currentBytesPerSecond 	= netStreamInfo.currentBytesPerSecond.toFixed();
-					peer_stats.audioBytesPerSecond 		= netStreamInfo.audioBytesPerSecond.toFixed();
-					peer_stats.videoBytesPerSecond 		= netStreamInfo.videoBytesPerSecond.toFixed();					
-					peer_stats.dataBytesPerSecond 		= netStreamInfo.dataBytesPerSecond.toFixed();
-					peer_stats.maxBytesPerSecond 			= netStreamInfo.maxBytesPerSecond.toFixed();
+					peer_stats.currentBytesPerSecond 	= int(netStreamInfo.currentBytesPerSecond);
+					peer_stats.audioBytesPerSecond 		= int(netStreamInfo.audioBytesPerSecond);
+					peer_stats.videoBytesPerSecond 		= int(netStreamInfo.videoBytesPerSecond);					
+					peer_stats.dataBytesPerSecond 		= int(netStreamInfo.dataBytesPerSecond);
+					peer_stats.maxBytesPerSecond 			= int(netStreamInfo.maxBytesPerSecond);
 
 
 					// Don't care about these

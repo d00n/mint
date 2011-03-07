@@ -7,12 +7,19 @@ package com.infrno.chat.model
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
+	import mx.collections.ArrayCollection;
+	
 	import org.robotlegs.mvcs.Actor;
 	
 	public class StatsProxy extends Actor
 	{
+		// needs to become an array
+		public var serverStatsVO_array:Array;
+		
+		// needs to become a two-dimensional array
 		public var peerStatsVO_array:Array;		
-		public var serverStatsVO:StatsVO;
+		
+
 		
 		private var _timer:Timer;
 		private var foo:int = 0;
@@ -25,7 +32,7 @@ package com.infrno.chat.model
 		public function init():void {
 			trace('StatsProxy.init()');
 			peerStatsVO_array = new Array();	
-			serverStatsVO = new StatsVO();
+			serverStatsVO_array = new Array();
 			
 			_timer = new Timer(seconds_between_stat_collection * 1000);
 			_timer.addEventListener(TimerEvent.TIMER, collectStats);
@@ -72,28 +79,12 @@ package com.infrno.chat.model
 				peerStatsVO.data_AC.removeItemAt(0);
 			}
 			
-			var videoPresenceEvent:VideoPresenceEvent = new VideoPresenceEvent(VideoPresenceEvent.DISPLAY_PEER_STATS);
-			videoPresenceEvent.statsVO = peerStatsVO;
-			dispatch(videoPresenceEvent);
+			var statsEvent:StatsEvent = new StatsEvent(StatsEvent.DISPLAY_PEER_STATS);
+			statsEvent.statsRecord = peerStatsRecord;
+			dispatch(statsEvent);
 		}
 		
-		// deprecated
-		public function submitServerStats(serverStatsRecord:Object) : void {
-			trace('StatsProxy.submitServerStats() suid:'+serverStatsRecord.suid);
-			
-			// Setting this on init would be nice..
-			serverStatsVO.suid = serverStatsRecord.suid;
-			
-			serverStatsVO.data_AC.addItem(serverStatsRecord);		
-			
-			if (serverStatsVO.data_AC.length > NUMBER_OF_DATA_RECORDS_TO_KEEP) {
-				serverStatsVO.data_AC.removeItemAt(0);
-			}
-			
-			var videoPresenceEvent:VideoPresenceEvent = new VideoPresenceEvent(VideoPresenceEvent.DISPLAY_SERVER_STATS);
-			videoPresenceEvent.statsVO = serverStatsVO;
-			dispatch(videoPresenceEvent);
-		}		
+
 
 		
 	}

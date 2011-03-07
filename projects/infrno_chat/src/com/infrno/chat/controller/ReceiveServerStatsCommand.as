@@ -18,20 +18,26 @@ package com.infrno.chat.controller
 		override public function execute():void{
 			trace('ReceiveServerStatsCommand.execute()');
 			
-			var serverStatsVO:StatsVO = event.statsRecord as StatsVO;
+			var serverStatsRecord:Object = event.statsRecord;
 			
-			// Setting this on init would be nice..
-			statsProxy.serverStatsVO.suid = event.statsRecord.suid;
-			
-			statsProxy.serverStatsVO.data_AC.addItem(event.statsRecord);		
-			
-			if (statsProxy.serverStatsVO.data_AC.length > StatsProxy.NUMBER_OF_DATA_RECORDS_TO_KEEP) {
-				statsProxy.serverStatsVO.data_AC.removeItemAt(0);
+			var serverStatsVO:StatsVO = statsProxy.serverStatsVO_array[serverStatsRecord.suid];
+			if (serverStatsVO == null) {
+				serverStatsVO = new StatsVO();
+				statsProxy.serverStatsVO_array[serverStatsRecord.suid] = serverStatsVO;
 			}
 			
-			var videoPresenceEvent:VideoPresenceEvent = new VideoPresenceEvent(VideoPresenceEvent.DISPLAY_SERVER_STATS);
-			videoPresenceEvent.statsVO = serverStatsVO;
-			dispatch(videoPresenceEvent);
+			// Hrmmmm..
+			serverStatsVO.suid = serverStatsRecord.suid;
+			
+			serverStatsVO.data_AC.addItem(serverStatsRecord);		
+			
+			if (serverStatsVO.data_AC.length > StatsProxy.NUMBER_OF_DATA_RECORDS_TO_KEEP) {
+				serverStatsVO.data_AC.removeItemAt(0);
+			}
+			
+			var statsEvent:StatsEvent = new StatsEvent(StatsEvent.DISPLAY_SERVER_STATS);
+			statsEvent.statsVO = serverStatsVO;
+			dispatch(statsEvent);
 		}	
 	}
 }

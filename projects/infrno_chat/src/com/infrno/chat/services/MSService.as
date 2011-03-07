@@ -166,9 +166,9 @@ package com.infrno.chat.services
 			_netConnection.call("getUserStats",null);
 		}
 		
-		public function reportUserStats(statsIn:Object):void
+		public function sendServerStats(serverStats:Object):void
 		{
-			_netConnection.call("reportUserStats",null,statsIn);
+			_netConnection.call("receiveUserStats",null,serverStats);
 		}
 		
 		public function sendPeerStats(peerStats:Object):void

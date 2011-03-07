@@ -3,6 +3,7 @@ package com.infrno.chat.view.mediators
 	import com.infrno.chat.model.DeviceProxy;
 	import com.infrno.chat.model.events.MSEvent;
 	import com.infrno.chat.model.events.SettingsEvent;
+	import com.infrno.chat.model.events.StatsEvent;
 	import com.infrno.chat.model.events.VideoPresenceEvent;
 	import com.infrno.chat.model.vo.StatsVO;
 	import com.infrno.chat.model.vo.UserInfoVO;
@@ -38,8 +39,8 @@ package com.infrno.chat.view.mediators
 			
 			// TODO map these after the sparklines are ready
 			// ..or figure out where to create sparklines better/earlier
-			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.DISPLAY_PEER_STATS,displayPeerStats);
-			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.DISPLAY_SERVER_STATS,displayServerStats);
+			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_PEER_STATS,displayPeerStats);
+			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_SERVER_STATS,displayServerStats);
 			
 			videosGroup.addEventListener(SettingsEvent.SHOW_SETTINGS,handleShowSettings);
 			videosGroup.addEventListener(VideoPresenceEvent.AUDIO_LEVEL,dispatchEventInSystem);
@@ -220,10 +221,10 @@ package com.infrno.chat.view.mediators
 			}
 		}
 		
-		private function displayPeerStats(vpEvent:VideoPresenceEvent):void
+		private function displayPeerStats(statsEvent:StatsEvent):void
 		{
 			trace("VideosGroupMediator.displayPeerStats()");
-			var peerStatsVO:StatsVO = vpEvent.statsVO;
+			var peerStatsVO:StatsVO = statsEvent.statsVO;
 			var videoPresence:VideoPresence = getVideoPresenceByName(peerStatsVO.suid.toString());		
 			
 			if (videoPresence.sparkline == null) {
@@ -247,10 +248,10 @@ package com.infrno.chat.view.mediators
 			
 		}
 		
-		private function displayServerStats(vpEvent:VideoPresenceEvent):void
+		private function displayServerStats(statsEvent:StatsEvent):void
 		{
 			trace("VideosGroupMediator.displayServerStats()");
-			var serverStatsVO:StatsVO = vpEvent.statsVO;
+			var serverStatsVO:StatsVO = statsEvent.statsVO;
 			var videoPresence:VideoPresence = getVideoPresenceByName(serverStatsVO.suid.toString());
 			
 			if (videoPresence.sparkline == null) {

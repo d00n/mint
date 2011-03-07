@@ -35,9 +35,9 @@ package com.infrno.chat.controller
 				peerStatsVO.data_AC.removeItemAt(0);
 			}
 			
-			var videoPresenceEvent:VideoPresenceEvent = new VideoPresenceEvent(VideoPresenceEvent.DISPLAY_PEER_STATS);
-			videoPresenceEvent.statsVO = peerStatsVO;
-			dispatch(videoPresenceEvent);
+			var statsEvent:StatsEvent = new StatsEvent(StatsEvent.DISPLAY_PEER_STATS);
+			statsEvent.statsVO = peerStatsVO;
+			dispatch(statsEvent);
 		}			
 
 	}

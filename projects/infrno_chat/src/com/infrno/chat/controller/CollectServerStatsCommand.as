@@ -72,8 +72,8 @@ package com.infrno.chat.controller
 //				server_stats.videoByteCount					= netStreamInfo.videoByteCount;
 				
 				
-				statsProxy.submitServerStats(server_stats);
-				msService.reportUserStats(server_stats);
+//				statsProxy.displayServerStats(server_stats);
+				msService.sendServerStats(server_stats);
 			}
 			
 		}

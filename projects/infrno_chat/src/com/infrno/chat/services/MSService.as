@@ -47,7 +47,6 @@ package com.infrno.chat.services
 			
 			_netConnection_client.initUser = function(userInfoVO:Object):void
 			{
-				//dataProxy.my_info = new UserInfoVO(user_info);
 				trace("MSService: _nc_client.initUser() userInfoVO.suid:" + userInfoVO.suid);
 				dataProxy.local_userInfoVO.update(userInfoVO);
 			}
@@ -56,16 +55,26 @@ package com.infrno.chat.services
 				dispatch(new ChatEvent(ChatEvent.RECEIVE_CHAT,msgIn));
 			}
 			
-			// deprecated
 			_netConnection_client.getUserStats = function():void {
 				dispatch(new StatsEvent(StatsEvent.COLLECT_SERVER_STATS));
 			}
 			
-			// deprecated
 			_netConnection_client.generatePeerStats = function():void {
 				dispatch(new StatsEvent(StatsEvent.COLLECT_PEER_STATS));
 			}
-			
+				
+			_netConnection_client.receiveServerStats = function(serverStatsRecord:Object):void {
+				var statsEvent:StatsEvent = new StatsEvent(StatsEvent.RECEIVE_SERVER_STATS);
+				statsEvent.statsRecord = serverStatsRecord;
+				dispatch(statsEvent);
+			}
+				
+			_netConnection_client.receivePeerStats = function(peerStatsRecord:Object):void {
+				var statsEvent:StatsEvent = new StatsEvent(StatsEvent.RECEIVE_PEER_STATS);
+				statsEvent.statsRecord = peerStatsRecord;
+				dispatch(statsEvent);
+			}
+				
 			_netConnection_client.usePeerConnection = function(use_peer_connection:Boolean):void {
 				trace("MSService.setupClient() _nc_client.usePeerConnection() use_peer_connection:"+use_peer_connection);
 				if(use_peer_connection){
@@ -164,7 +173,7 @@ package com.infrno.chat.services
 		
 		public function sendPeerStats(peerStats:Object):void
 		{
-			_netConnection.call("recievePeerStats",null,peerStats);
+			_netConnection.call("receivePeerStats",null,peerStats);
 		}		
 		
 		public function updatePublishStream():void
@@ -200,46 +209,11 @@ package com.infrno.chat.services
 			_netConnection.call("updateUserInfo",null,dataProxy.local_userInfoVO);
 		}
 		
-		/**
-		 * Private methods
-		 */
-		
-		public function netStatusHandler(e:NetStatusEvent):void
-		{
-			trace("MSService.netStatusHandler() e.info.code: "+e.info.code);
-			switch(e.info.code){
-				
-				case "NetConnection.Connect.Closed":
-					dispatch(new MSEvent(MSEvent.NETCONNECTION_DISCONNECTED));
-					break;
-				case "NetConnection.Connect.Rejected":
-					dispatch(new MSEvent(MSEvent.NETCONNECTION_DISCONNECTED));
-					break;
-				case "NetConnection.Connect.Success":
-					setupNetStream();
-					updateUserInfo();
-					dispatch(new MSEvent(MSEvent.NETCONNECTION_CONNECTED));
-					break;
-				
-				case "NetStream.Publish.BadName":
-					_published = false;
-					updatePublishStream();
-					break;
-				case "NetStream.Publish.Start":
-					_published = true;
-					break;
-				case "NetStream.Unpublish.Success":
-					_published = false;
-					break;
-			}
-		}
-		
 		private function updateUsers(userInfoVOs:Object):void
 		{
 			trace("MSService.updateUsers()");
 			
-			// TODO: don't delete what hasn't changed.
-			
+			// TODO: don't delete what hasn't changed.			
 			//removing data
 			for(var n:String in dataProxy.userInfoVO_array)
 			{
@@ -273,6 +247,37 @@ package com.infrno.chat.services
 		{
 			_netStream = new NetStream(_netConnection);
 			_netStream.addEventListener(NetStatusEvent.NET_STATUS,netStatusHandler);
+		}
+		
+		public function netStatusHandler(e:NetStatusEvent):void
+		{
+			trace("MSService.netStatusHandler() e.info.code: "+e.info.code);
+			switch(e.info.code){
+				
+				// TODO MSEvent.NETCONNECTION_DISCONNECTED is not mediated
+				case "NetConnection.Connect.Closed":
+					dispatch(new MSEvent(MSEvent.NETCONNECTION_DISCONNECTED));
+					break;
+				case "NetConnection.Connect.Rejected":
+					dispatch(new MSEvent(MSEvent.NETCONNECTION_DISCONNECTED));
+					break;
+				case "NetConnection.Connect.Success":
+					setupNetStream();
+					updateUserInfo();
+					dispatch(new MSEvent(MSEvent.NETCONNECTION_CONNECTED));
+					break;
+				
+				case "NetStream.Publish.BadName":
+					_published = false;
+					updatePublishStream();
+					break;
+				case "NetStream.Publish.Start":
+					_published = true;
+					break;
+				case "NetStream.Unpublish.Success":
+					_published = false;
+					break;
+			}
 		}
 	}
 }

@@ -45,6 +45,8 @@ package com.infrno.chat.model
 		
 		// This includes local
 		// Should it?
+		// TODO remove local from collection, 
+		// and rename remote_userInfoVO_array or peer_userInfo_array
 		public var userInfoVO_array:Array;
 		
 		//public var my_info:UserInfoVO = new UserInfoVO({user_name:"user"+Math.round(Math.random()*1000),user_id:"sample_user_id"});

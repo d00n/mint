@@ -33,9 +33,9 @@ package com.infrno.chat.controller
 			
 			var conn_status:ContextMenuItem;
 			if (dataProxy.use_peer_connection)
-				conn_status = new ContextMenuItem("Connection: p2p",true);
+				conn_status = new ContextMenuItem("Current connection: p2p",true);
 			else
-				conn_status = new ContextMenuItem("Connection: server",true);
+				conn_status = new ContextMenuItem("Current connection: server",true);
 			
 			custom_menu.customItems.push(conn_status);
 			

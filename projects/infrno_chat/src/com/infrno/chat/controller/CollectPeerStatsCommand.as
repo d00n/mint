@@ -42,16 +42,28 @@ package com.infrno.chat.controller
 				} else {
 					var peer_stats:Object = new Object();
 					var netStream:NetStream = peer_userInfoVO.netStream; 
-					var netStreamInfo:NetStreamInfo = netStream.info;
+					var netStreamInfo:NetStreamInfo;
+					
+					try {
+						netStreamInfo = netStream.info;
+					}catch(e:Object){
+						trace("CollectPeerStatsCommand.execute() netStream.info error:"+e.toString());
+						return;
+					}
 					
 	//				peer_stats.application_name				= dataProxy.media_app;
-					peer_stats.suid										= suid;
+					
+					// TODO Move header data elsewhere
 					peer_stats.room_name							= dataProxy.room_name;
 					peer_stats.room_id								= dataProxy.room_id;
-					peer_stats.local_user_name				= dataProxy.local_userInfoVO.user_name;
+
+					peer_stats.local_suid							= dataProxy.local_userInfoVO.suid;
 					peer_stats.local_user_id					= dataProxy.local_userInfoVO.user_id;
-					peer_stats.peer_user_name					= peer_userInfoVO.user_name;
-					peer_stats.peer_user_id						= peer_userInfoVO.user_id;
+					peer_stats.local_user_name				= dataProxy.local_userInfoVO.user_name;
+					
+					peer_stats.remote_suid						= peer_userInfoVO.suid
+					peer_stats.remote_user_id					= peer_userInfoVO.user_id;
+					peer_stats.remote_user_name				= peer_userInfoVO.user_name;
 					
 					
 					// netStreamInfo.videoLossRate is in the docs, but does not compile
@@ -74,7 +86,8 @@ package com.infrno.chat.controller
 //					peer_stats.audioByteCount					= netStreamInfo.audioByteCount;
 					
 					
-					statsProxy.submitPeerStats(peer_stats);
+//					statsProxy.submitPeerStats(peer_stats);
+					
 					msService.sendPeerStats(peer_stats);	
 				}
 			}

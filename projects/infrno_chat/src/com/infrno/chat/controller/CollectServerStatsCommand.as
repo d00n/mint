@@ -34,37 +34,43 @@ package com.infrno.chat.controller
 			} else {
 				var server_stats:Object = new Object();
 				var netStream:NetStream = msService.netStream;				
-				var netStreamInfo:NetStreamInfo = netStream.info;
-
-				server_stats.suid										= dataProxy.local_userInfoVO.suid;
+				var netStreamInfo:NetStreamInfo;
+				
+				try {
+					netStreamInfo = netStream.info;
+				}catch(e:Object){
+					trace("CollectServerStatsCommand.execute() netStream.info error:"+e.toString());
+					return;
+				}
+				
+				// TODO Move header data elsewhere
 				server_stats.application_name				= dataProxy.media_app;
 				server_stats.room_name							= dataProxy.room_name;
 				server_stats.room_id								= dataProxy.room_id;
-				server_stats.user_name							= dataProxy.local_userInfoVO.user_name;
+
+				server_stats.suid										= dataProxy.local_userInfoVO.suid;
 				server_stats.user_id								= dataProxy.local_userInfoVO.user_id;
+				server_stats.user_name							= dataProxy.local_userInfoVO.user_name;
 				
 				server_stats.wowza_protocol					= msService.netConnection.protocol;
 				server_stats.capabilities						= Capabilities.serverString;
 				
-				//			try{
-				//				user_stats.videoLossRate 		= ns_info.videoLossRate;
-				//			} catch (e:Object){
-				//				//no value for this
-				//				user_stats.videoLossRate		= 0;
-				//			}
-				
-				server_stats.audioBytesPerSecond 		= int(netStreamInfo.audioBytesPerSecond);
-				server_stats.videoBytesPerSecond 		= int(netStreamInfo.videoBytesPerSecond);
-				server_stats.dataBytesPerSecond 		= int(netStreamInfo.dataBytesPerSecond);
-				
-				server_stats.currentBytesPerSecond 	= int(netStreamInfo.currentBytesPerSecond);
-				server_stats.maxBytesPerSecond 			= int(netStreamInfo.maxBytesPerSecond);
-				server_stats.byteCount 							= netStreamInfo.byteCount;
-				server_stats.dataByteCount 					= netStreamInfo.dataByteCount;
-				server_stats.videoByteCount					= netStreamInfo.videoByteCount;
-				
+				// netStreamInfo.videoLossRate is in the docs, but does not compile
+				//server_stats.videoLossRate 				= netStreamInfo.videoLossRate
 				server_stats.audioLossRate 					= netStreamInfo.audioLossRate;
 				server_stats.droppedFrames 					= netStreamInfo.droppedFrames;
+				
+				server_stats.currentBytesPerSecond 	= int(netStreamInfo.currentBytesPerSecond);
+				server_stats.audioBytesPerSecond 		= int(netStreamInfo.audioBytesPerSecond);
+				server_stats.videoBytesPerSecond 		= int(netStreamInfo.videoBytesPerSecond);
+				server_stats.dataBytesPerSecond 		= int(netStreamInfo.dataBytesPerSecond);				
+				server_stats.maxBytesPerSecond 			= int(netStreamInfo.maxBytesPerSecond);
+				
+				// Don't care about these
+//				server_stats.byteCount 							= netStreamInfo.byteCount;
+//				server_stats.dataByteCount 					= netStreamInfo.dataByteCount;
+//				server_stats.videoByteCount					= netStreamInfo.videoByteCount;
+				
 				
 				statsProxy.submitServerStats(server_stats);
 				msService.reportUserStats(server_stats);

@@ -45,17 +45,18 @@ package com.infrno.chat.model
 //			}
 //		}
 		
+		// deprecated
 		public function submitPeerStats(peerStatsRecord:Object) : void {
-			trace('StatsProxy.submitPeerStats() suid:'+peerStatsRecord.suid+', srtt:'+peerStatsRecord.srtt );
+			trace('StatsProxy.submitPeerStats() remote_suid:'+peerStatsRecord.remote_suid+', srtt:'+peerStatsRecord.srtt );
 			
-			if (peerStatsVO_array[peerStatsRecord.suid] == null) {
-				peerStatsVO_array[peerStatsRecord.suid] = new StatsVO();
+			if (peerStatsVO_array[peerStatsRecord.remote_suid] == null) {
+				peerStatsVO_array[peerStatsRecord.remote_suid] = new StatsVO();
 			}
 			
-			var peerStatsVO:StatsVO = peerStatsVO_array[peerStatsRecord.suid];
+			var peerStatsVO:StatsVO = peerStatsVO_array[peerStatsRecord.remote_suid];
 			
 			// Using suid as the key and a field smells. hrmmm..
-			peerStatsVO.suid = peerStatsRecord.suid;
+			peerStatsVO.suid = peerStatsRecord.remote_suid;
 			
 //			foo++;
 //			var dummySrtt:Number = 50+ Math.round(Math.random()*50);
@@ -76,11 +77,13 @@ package com.infrno.chat.model
 			dispatch(videoPresenceEvent);
 		}
 		
+		// deprecated
 		public function submitServerStats(serverStatsRecord:Object) : void {
 			trace('StatsProxy.submitServerStats() suid:'+serverStatsRecord.suid);
 			
 			// Setting this on init would be nice..
 			serverStatsVO.suid = serverStatsRecord.suid;
+			
 			serverStatsVO.data_AC.addItem(serverStatsRecord);		
 			
 			if (serverStatsVO.data_AC.length > NUMBER_OF_DATA_RECORDS_TO_KEEP) {

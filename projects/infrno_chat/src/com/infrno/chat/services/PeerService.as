@@ -117,7 +117,7 @@ package com.infrno.chat.services
 					dispatch(new PeerEvent(PeerEvent.PEER_NETCONNECTION_DISCONNECTED));
 					break;
 				case "NetStream.Connect.Closed":
-					trace("PeerService.handleNetStatus() >>>>>>>>> not sure if this ever gets hit >>>>>>>>> NetStream.Connect.Closed");
+					trace(">>>>>>>>> not sure if this ever gets hit >>>>>>>>> PeerService.handleNetStatus() NetStream.Connect.Closed");
 					
 					// TODO validate this:
 					//dataProxy.users_collection has a reference for this

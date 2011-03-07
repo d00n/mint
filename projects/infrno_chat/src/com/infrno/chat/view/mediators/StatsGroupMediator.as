@@ -110,6 +110,7 @@ package com.infrno.chat.view.mediators
 		
 
 		// TODO Move this event into StatsEvent
+		// or maybe not, let's see how the multi-peer record handling pans out
 		private function displayPeerStats(vpEvent:VideoPresenceEvent):void
 		{
 			trace("StatsContainerMediator.displayPeerStats()");

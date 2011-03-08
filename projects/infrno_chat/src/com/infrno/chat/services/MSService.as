@@ -63,15 +63,15 @@ package com.infrno.chat.services
 				dispatch(new StatsEvent(StatsEvent.COLLECT_PEER_STATS));
 			}
 				
-			_netConnection_client.receiveServerStats = function(serverStatsRecord:Object):void {
+			_netConnection_client.receiveServerStats = function(serverStats:Object):void {
 				var statsEvent:StatsEvent = new StatsEvent(StatsEvent.RECEIVE_SERVER_STATS);
-				statsEvent.statsRecord = serverStatsRecord;
+				statsEvent.statsRecord = serverStats;
 				dispatch(statsEvent);
 			}
 				
-			_netConnection_client.receivePeerStats = function(peerStatsRecord:Object):void {
+			_netConnection_client.receivePeerStats = function(peerStats:Object):void {
 				var statsEvent:StatsEvent = new StatsEvent(StatsEvent.RECEIVE_PEER_STATS);
-				statsEvent.statsRecord = peerStatsRecord;
+				statsEvent.peerStats = peerStats;
 				dispatch(statsEvent);
 			}
 				

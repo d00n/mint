@@ -30,7 +30,7 @@ package com.infrno.chat.view.mediators
 			eventMap.mapListener(eventDispatcher,MSEvent.USERS_OBJ_UPDATE,usersUpdated);
 			
 			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_SERVER_STATS,displayServerStats);
-//			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_PEER_STATS,displayPeerStats);
+			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_PEER_STATS,displayPeerStats);
 
 			
 //			peerStatBlockConfig_AC.addItem( {yFieldName:"srtt", labelPrefix:"SRTT", toolTip:"Specifies the Smooth Round Trip Time for the NetStream session. This value returns a valid value only for RTMFP streams and returns 0 for RTMP streams."} );
@@ -132,16 +132,17 @@ package com.infrno.chat.view.mediators
 		private function displayPeerStats(statsEvent:StatsEvent):void
 		{
 			trace("StatsGroupMediator.displayPeerStats()");
-			var peerStatsVO:StatsVO = statsEvent.statsVO;
 			
-			var statsBlock:StatsBlock = getStatsBlockBySuid(peerStatsVO.suid);
-			if (statsBlock == null) {
-				trace("StatsGroupMediator.displayPeerStats() null statsBlock !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-				return;
-			}		
-							
-			statsBlock.droppedFrames_label = "Dropped frames: " + peerStatsVO.lastDataRecord.droppedFrames;
-			statsBlock.peerStatsVO = peerStatsVO;		
+//			var statsBlock:StatsBlock = getPeerStatsBlockBySuid(statsEvent.suid);
+//			if (statsBlock == null) {
+//				trace("StatsGroupMediator.displayPeerStats() null statsBlock !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//				return;
+//			}		
+//			
+//			statsBlock.displayPeerStats();
+//							
+//			statsBlock.droppedFrames_label = "Dropped frames: " + peerStatsVO.lastDataRecord.droppedFrames;
+//			statsBlock.peerStatsVO = peerStatsVO;		
 		}
 		
 		private function getStatsBlockBySuid(suid:String): StatsBlock {

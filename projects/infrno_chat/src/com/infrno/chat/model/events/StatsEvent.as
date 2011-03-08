@@ -14,7 +14,9 @@ package com.infrno.chat.model.events
 		public static const DISPLAY_PEER_STATS:String						= "se_display_peer_stats";
 		
 		public var statsRecord:Object;
+		public var peerStats:Object;
 		public var statsVO:StatsVO;
+		public var suid:String;
 		
 		public function StatsEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

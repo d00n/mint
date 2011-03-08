@@ -5,8 +5,10 @@ package com.infrno.chat.view.mediators
 	import com.infrno.chat.model.events.VideoPresenceEvent;
 	import com.infrno.chat.model.vo.StatsVO;
 	import com.infrno.chat.model.vo.UserInfoVO;
+	import com.infrno.chat.services.PeerService;
+	import com.infrno.chat.view.components.PeerStatsBlock;
 	import com.infrno.chat.view.components.Sparkline;
-	import com.infrno.chat.view.components.StatsBlock;
+	import com.infrno.chat.view.components.ClientStatsBlock;
 	import com.infrno.chat.view.components.StatsGroup;
 	
 	import mx.collections.ArrayCollection;
@@ -19,35 +21,15 @@ package com.infrno.chat.view.mediators
 		[Inject]
 		public var statsGroup:StatsGroup;
 		
-//		private var peerStatBlockConfig_AC:ArrayCollection = new ArrayCollection();
-//		private var serverStatBlockConfig_AC:ArrayCollection = new ArrayCollection();
-
 		public function StatsGroupMediator()
 		{
 		}
 		
 		override public function onRegister():void{
-			eventMap.mapListener(eventDispatcher,MSEvent.USERS_OBJ_UPDATE,usersUpdated);
-			
+			eventMap.mapListener(eventDispatcher,MSEvent.USERS_OBJ_UPDATE,usersUpdated);	
 			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_SERVER_STATS,displayServerStats);
 			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_PEER_STATS,displayPeerStats);
-
-			
-//			peerStatBlockConfig_AC.addItem( {yFieldName:"srtt", labelPrefix:"SRTT", toolTip:"Specifies the Smooth Round Trip Time for the NetStream session. This value returns a valid value only for RTMFP streams and returns 0 for RTMP streams."} );
-//			peerStatBlockConfig_AC.addItem( {yFieldName:"currentBytesPerSecond", labelPrefix:"Total", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
-//			peerStatBlockConfig_AC.addItem( {yFieldName:"audioBytesPerSecond", labelPrefix:"Audio", toolTip:"Specifies the rate at which the NetStream audio buffer is filled in bytes per second. The value is calculated as a smooth average for the audio data received in the last second."} );
-//			peerStatBlockConfig_AC.addItem( {yFieldName:"videoBytesPerSecond", labelPrefix:"Video", toolTip:"Specifies the rate at which the NetStream video buffer is filled in bytes per second. The value is calculated as a smooth average for the video data received in the last second."} );
-//			peerStatBlockConfig_AC.addItem( {yFieldName:"dataBytesPerSecond", labelPrefix:"Data", toolTip:"Specifies the rate at which the NetStream data buffer is filled in bytes per second. The value is calculated as a smooth average for the data messages received in the last second."} );
-//			peerStatBlockConfig_AC.addItem( {yFieldName:"audioLossRate", labelPrefix:"Audio loss rate", toolTip:"Specifies the audio loss for the NetStream session. This value returns a valid value only for RTMFP streams and would return 0 for RTMP streams. Loss rate is defined as the ratio of lost messages to total messages."} );
-//			// Hack hack hack - The last item added doesn't get it's label displayed. So just tack an empty one on.
-//			peerStatBlockConfig_AC.addItem( {yFieldName:"", labelPrefix:""} );
-//			
-//			serverStatBlockConfig_AC.addItem( {yFieldName:"currentBytesPerSecond", labelPrefix:"Current", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
-//			serverStatBlockConfig_AC.addItem( {yFieldName:"maxBytesPerSecond", labelPrefix:"Max", toolTip:"Specifies the maximum rate at which the NetStream buffer is filled in bytes per second. This value provides information about the capacity of the client network based on the last messages received by the NetStream object. Depending on the size of the buffer specified in NetStream.bufferTime and the bandwidth available on the client, Flash Media Server fills the buffer in bursts. This property provides the maximum rate at which the client buffer is filled."} );
-//			serverStatBlockConfig_AC.addItem( {yFieldName:"audioBytesPerSecond", labelPrefix:"Audio", toolTip:"Specifies the rate at which the NetStream audio buffer is filled in bytes per second. The value is calculated as a smooth average for the audio data received in the last second."} );
-//			serverStatBlockConfig_AC.addItem( {yFieldName:"videoBytesPerSecond", labelPrefix:"Video", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
-//			serverStatBlockConfig_AC.addItem( {yFieldName:"dataBytesPerSecond", labelPrefix:"Data", toolTip:"Specifies the maximum rate at which the NetStream buffer is filled in bytes per second. This value provides information about the capacity of the client network based on the last messages received by the NetStream object. Depending on the size of the buffer specified in NetStream.bufferTime and the bandwidth available on the client, Flash Media Server fills the buffer in bursts. This property provides the maximum rate at which the client buffer is filled."} );
-//			serverStatBlockConfig_AC.addItem( {yFieldName:"audioLossRate", labelPrefix:"Audio loss rate", toolTip:"Specifies the audio loss for the NetStream session. This value returns a valid value only for RTMFP streams and would return 0 for RTMP streams. Loss rate is defined as the ratio of lost messages to total messages."} );			
+			eventMap.mapListener(eventDispatcher,StatsEvent.DELETE_PEER_STATS,removePeerStatsBlock);
 		}
 		
 		private function usersUpdated(msEvent:MSEvent):void
@@ -68,15 +50,13 @@ package com.infrno.chat.view.mediators
 			for(var i:int = 0; i<dataProviderLength; i++){
 				trace("StatsGroupMediator.removeDisconnectedStatBlocks() i="+i);
 				try{					
-					var statsBlock:StatsBlock = statsGroup.statsGroup_list.dataProvider.getItemAt(i) as StatsBlock;
+					var statsBlock:ClientStatsBlock = statsGroup.statsGroup_list.dataProvider.getItemAt(i) as ClientStatsBlock;
 					trace("StatsGroupMediator.removeDisconnectedStatBlocks() statsBlock.suid="+statsBlock.suid);
 					
-					//if the video isn't in the users collection remove it
 					if(userInfoVO_array[statsBlock.suid] == null){
 						var statsGroup_index:int = statsGroup.statsGroup_list.dataProvider.getItemIndex(statsBlock);
 						trace("StatsGroupMediator.removeDisconnectedStatBlocks() statsGroup_index="+statsGroup_index);
 						statsGroup.statsGroup_list.dataProvider.removeItemAt(statsGroup_index);
-//						statsBlock.removeEventListener(VideoPresenceEvent.DISPLAY_PEER_STATS,displayPeerStats);
 					}
 				}catch(e:Object){
 					//out of range error I'm sure
@@ -92,21 +72,13 @@ package com.infrno.chat.view.mediators
 				trace("StatsGroupMediator.addNewStatBlocks() suid:"+suid);
 				var userInfoVO:UserInfoVO = userInfoVO_array[suid];
 				
-				var statsBlock:StatsBlock = getStatsBlockBySuid(suid);
+				var statsBlock:ClientStatsBlock = getStatsBlockBySuid(suid);
 				if (statsBlock == null) {
 					trace("StatsGroupMediator.addNewStatBlocks() adding new StatsBlock for suid:"+suid);
-					statsBlock = new StatsBlock();
-//					statsBlock.config_AC = peerStatBlockConfig_AC;
+					statsBlock = new ClientStatsBlock();
 					statsBlock.suid = suid;
 					statsBlock.user_name_label = "User: " + userInfoVO.user_name;
-					statsGroup.statsGroup_list.dataProvider.addItem(statsBlock);					
-					
-//					statsBlock.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
-//					{
-//						trace("StatsGroupMediator.addNewStatBlocks() StatsBlock FlexEvent.CREATION_COMPLETE event listener");						
-//						eventMap.mapListener(eventDispatcher,VideoPresenceEvent.DISPLAY_PEER_STATS,displayPeerStats);
-//					});
-					
+					statsGroup.statsGroup_list.dataProvider.addItem(statsBlock);										
 				} else {
 					trace("StatsGroupMediator.addNewStatBlocks() found existing StatsBlock for suid:"+suid);					
 				}				
@@ -119,7 +91,7 @@ package com.infrno.chat.view.mediators
 			trace("StatsGroupMediator.displayServerStats()");
 			var serverStatsVO:StatsVO = statsEvent.statsVO;
 			
-			var statsBlock:StatsBlock = getStatsBlockBySuid(serverStatsVO.suid);
+			var statsBlock:ClientStatsBlock = getStatsBlockBySuid(serverStatsVO.suid);
 			if (statsBlock == null) {
 				trace("StatsGroupMediator.displayServerStats() null statsBlock !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 				return;
@@ -133,26 +105,67 @@ package com.infrno.chat.view.mediators
 		{
 			trace("StatsGroupMediator.displayPeerStats()");
 			
-			var statsBlock:StatsBlock = getStatsBlockBySuid(statsEvent.suid);
+			var statsBlock:ClientStatsBlock = getStatsBlockBySuid(statsEvent.suid);
 			if (statsBlock == null) {
 				trace("StatsGroupMediator.displayPeerStats() null statsBlock !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 				return;
 			}		
 			
-			statsBlock.displayPeerStats();
+			var client_peerStatsRecord:Object;
+			var client_peerStatsRecord_array:Array = statsEvent.client_peerStatsRecord_array;
+			
+			for (var remote_suid:String in client_peerStatsRecord_array) {
+				client_peerStatsRecord = client_peerStatsRecord_array[remote_suid];
+			}
 		}
 		
-		private function getStatsBlockBySuid(suid:String): StatsBlock {
+		private function removePeerStatsBlock(statsEvent:StatsEvent):void{
+			trace("StatsGroupMediator.removePeerStatsBlock()");
+			
+			var statsBlock:ClientStatsBlock = getStatsBlockBySuid(statsEvent.client_suid);
+			if (statsBlock == null) {
+				trace("StatsGroupMediator.removePeerStatsBlock() null statsBlock !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				return;
+			}		
+
+			var peerStatsBlock:PeerStatsBlock = getPeerStatsBlock(statsBlock, statsEvent.peer_suid);
+			if (peerStatsBlock == null) {
+				trace("StatsGroupMediator.removePeerStatsBlock() null peerStatsBlock !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				return;
+			}		
+			
+			var peerStatsBlock_index:int = statsBlock.peerBlock_list.dataProvider.getItemIndex(peerStatsBlock);
+			trace("StatsGroupMediator.removePeerStatsBlock() peerStatsBlock_index="+peerStatsBlock_index);
+			statsBlock.peerBlock_list.dataProvider.removeItemAt(peerStatsBlock_index);
+		}	
+		
+		private function getPeerStatsBlock(statsBlock:ClientStatsBlock, peer_suid:String): PeerStatsBlock {
+			trace("StatsGroupMediator.getPeerStatsBlock() peer_suid="+peer_suid)
+			
+			var peerStatsBlock:PeerStatsBlock;
+			var dataProviderLength:int = statsBlock.peerBlock_list.dataProvider.length;
+			for(var i:int = 0; i < dataProviderLength; i++){
+				trace("StatsGroupMediator.getPeerStatsBlock() i="+i+", statsGroup.statsGroup_list.dataProvider.length="+dataProviderLength)
+				peerStatsBlock = statsBlock.peerBlock_list.dataProvider.getItemAt(i) as PeerStatsBlock;
+				trace("StatsGroupMediator.getPeerStatsBlock() peerStatsBlock.peer_suid="+peerStatsBlock.peer_suid)
+				if (peerStatsBlock.peer_suid == peer_suid) {
+					return peerStatsBlock;
+				}
+			}
+			return null;
+		}
+		
+		private function getStatsBlockBySuid(suid:String): ClientStatsBlock {
 			trace("StatsGroupMediator.getStatsBySuid() suid="+suid)
 
-			var statsBlock:StatsBlock;
+			var clientStatsBlock:ClientStatsBlock;
 			var dataProviderLength:int = statsGroup.statsGroup_list.dataProvider.length;
 			for(var i:int = 0; i < dataProviderLength; i++){
 				trace("StatsGroupMediator.getStatsBySuid() i="+i+", statsGroup.statsGroup_list.dataProvider.length="+dataProviderLength)
-				statsBlock = statsGroup.statsGroup_list.dataProvider.getItemAt(i) as StatsBlock;
-				trace("StatsGroupMediator.getStatsBySuid() statsBlock.suid="+statsBlock.suid)
-				if (statsBlock.suid == suid) {
-					return statsBlock;
+				clientStatsBlock = statsGroup.statsGroup_list.dataProvider.getItemAt(i) as ClientStatsBlock;
+				trace("StatsGroupMediator.getStatsBySuid() statsBlock.suid="+clientStatsBlock.suid)
+				if (clientStatsBlock.suid == suid) {
+					return clientStatsBlock;
 				}
 			}
 			return null;

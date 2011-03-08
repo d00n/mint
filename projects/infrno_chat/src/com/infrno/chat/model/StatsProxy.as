@@ -14,9 +14,7 @@ package com.infrno.chat.model
 	public class StatsProxy extends Actor
 	{
 		public var serverStatsVO_array:Array;
-		
-		public var peer_array:Array;
-//		public var peerStatsVO_array:Array;		
+		public var client_array:Array;
 		
 		private var _timer:Timer;
 		private var foo:int = 0;
@@ -28,7 +26,7 @@ package com.infrno.chat.model
 		
 		public function init():void {
 			trace('StatsProxy.init()');
-			peer_array = new Array();	
+			client_array = new Array();	
 			serverStatsVO_array = new Array();
 			
 			_timer = new Timer(seconds_between_stat_collection * 1000);

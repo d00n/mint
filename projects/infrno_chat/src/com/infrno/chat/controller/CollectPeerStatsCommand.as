@@ -94,7 +94,7 @@ package com.infrno.chat.controller
 				}
 				
 				var peerStats:Object 							= new Object();
-				peerStats.source_suid							= dataProxy.local_userInfoVO.suid;
+				peerStats.client_suid							= dataProxy.local_userInfoVO.suid;
 				peerStats.peerStatsRecord_array 	= peerStatsRecord_array;
 				msService.sendPeerStats(peerStats);	
 			}

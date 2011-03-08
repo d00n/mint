@@ -133,16 +133,13 @@ package com.infrno.chat.view.mediators
 		{
 			trace("StatsGroupMediator.displayPeerStats()");
 			
-//			var statsBlock:StatsBlock = getPeerStatsBlockBySuid(statsEvent.suid);
-//			if (statsBlock == null) {
-//				trace("StatsGroupMediator.displayPeerStats() null statsBlock !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-//				return;
-//			}		
-//			
-//			statsBlock.displayPeerStats();
-//							
-//			statsBlock.droppedFrames_label = "Dropped frames: " + peerStatsVO.lastDataRecord.droppedFrames;
-//			statsBlock.peerStatsVO = peerStatsVO;		
+			var statsBlock:StatsBlock = getStatsBlockBySuid(statsEvent.suid);
+			if (statsBlock == null) {
+				trace("StatsGroupMediator.displayPeerStats() null statsBlock !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				return;
+			}		
+			
+			statsBlock.displayPeerStats();
 		}
 		
 		private function getStatsBlockBySuid(suid:String): StatsBlock {

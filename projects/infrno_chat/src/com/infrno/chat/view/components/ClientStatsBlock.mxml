@@ -28,10 +28,10 @@
 
 			private function initConfig():void{
 				serverStatBlockConfig_AC.addItem( {yFieldName:"currentBytesPerSecond", labelPrefix:"Current", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
-				serverStatBlockConfig_AC.addItem( {yFieldName:"maxBytesPerSecond", labelPrefix:"Max", toolTip:"Specifies the maximum rate at which the NetStream buffer is filled in bytes per second. This value provides information about the capacity of the client network based on the last messages received by the NetStream object. Depending on the size of the buffer specified in NetStream.bufferTime and the bandwidth available on the client, Flash Media Server fills the buffer in bursts. This property provides the maximum rate at which the client buffer is filled."} );
-				serverStatBlockConfig_AC.addItem( {yFieldName:"audioBytesPerSecond", labelPrefix:"Audio", toolTip:"Specifies the rate at which the NetStream audio buffer is filled in bytes per second. The value is calculated as a smooth average for the audio data received in the last second."} );
-				serverStatBlockConfig_AC.addItem( {yFieldName:"videoBytesPerSecond", labelPrefix:"Video", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
-				serverStatBlockConfig_AC.addItem( {yFieldName:"dataBytesPerSecond", labelPrefix:"Data", toolTip:"Specifies the maximum rate at which the NetStream buffer is filled in bytes per second. This value provides information about the capacity of the client network based on the last messages received by the NetStream object. Depending on the size of the buffer specified in NetStream.bufferTime and the bandwidth available on the client, Flash Media Server fills the buffer in bursts. This property provides the maximum rate at which the client buffer is filled."} );
+//				serverStatBlockConfig_AC.addItem( {yFieldName:"maxBytesPerSecond", labelPrefix:"Max", toolTip:"Specifies the maximum rate at which the NetStream buffer is filled in bytes per second. This value provides information about the capacity of the client network based on the last messages received by the NetStream object. Depending on the size of the buffer specified in NetStream.bufferTime and the bandwidth available on the client, Flash Media Server fills the buffer in bursts. This property provides the maximum rate at which the client buffer is filled."} );
+//				serverStatBlockConfig_AC.addItem( {yFieldName:"audioBytesPerSecond", labelPrefix:"Audio", toolTip:"Specifies the rate at which the NetStream audio buffer is filled in bytes per second. The value is calculated as a smooth average for the audio data received in the last second."} );
+//				serverStatBlockConfig_AC.addItem( {yFieldName:"videoBytesPerSecond", labelPrefix:"Video", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
+//				serverStatBlockConfig_AC.addItem( {yFieldName:"dataBytesPerSecond", labelPrefix:"Data", toolTip:"Specifies the maximum rate at which the NetStream buffer is filled in bytes per second. This value provides information about the capacity of the client network based on the last messages received by the NetStream object. Depending on the size of the buffer specified in NetStream.bufferTime and the bandwidth available on the client, Flash Media Server fills the buffer in bursts. This property provides the maximum rate at which the client buffer is filled."} );
 				serverStatBlockConfig_AC.addItem( {yFieldName:"audioLossRate", labelPrefix:"Audio loss rate", toolTip:"Specifies the audio loss for the NetStream session. This value returns a valid value only for RTMFP streams and would return 0 for RTMP streams. Loss rate is defined as the ratio of lost messages to total messages."} );			
 				// Hack hack hack - The last item added doesn't get it's label displayed. So just tack an empty one on.
 				serverStatBlockConfig_AC.addItem( {yFieldName:"", labelPrefix:""} );
@@ -39,6 +39,9 @@
 			
 			
 			public function set serverStatsVO(value:StatsVO):void{
+				if (serverSparkline_vgroup == null)
+					return;
+				
 				_serverStatsVO = value;
 				var sparkline:Sparkline;
 				for (var i:int=0; i<serverSparkline_vgroup.numChildren-1; i++){
@@ -124,14 +127,14 @@
 			</s:VGroup>
 					
 			<s:List id="peerBlock_list" 
-							width="162"
+							width="158"
 							itemRenderer="spark.skins.spark.DefaultComplexItemRenderer"
 							horizontalCenter="0"
 							verticalCenter="0"
 							>
 				
 				<s:layout>
-					<s:HorizontalLayout gap="0"/>
+					<s:VerticalLayout gap="0"/>
 				</s:layout>
 				
 				<s:dataProvider >

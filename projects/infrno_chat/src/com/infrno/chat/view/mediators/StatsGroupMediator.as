@@ -103,7 +103,7 @@ package com.infrno.chat.view.mediators
 //			trace("StatsGroupMediator.displayPeerStats()");
 			
 			var clientStatsBlock:ClientStatsBlock = getClientStatsBlock(statsEvent.client_suid);
-			if (clientStatsBlock == null) {
+			if (clientStatsBlock == null || clientStatsBlock.peerBlock_list == null) {
 				trace("StatsGroupMediator.displayPeerStats() null clientStatsBlock !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 				return;
 			}		

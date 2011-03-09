@@ -34,25 +34,25 @@ package com.infrno.chat.controller
 				statsProxy.client_array[client_suid] = client_peerStatsVO_array;
 			}
 
-			
+			// Let's try deleting on MSEvent.USERS_OBJ_UPDATE instead
 			// Delete client peers missing from inbound stats collection
-			for (var peer_suid:String in client_peerStatsVO_array) {
-				if (client_peerStatsRecord_array[peer_suid] == null){
-					client_peerStatsVO_array[peer_suid] == null;
-					
-					var delete_statsEvent:StatsEvent = new StatsEvent(StatsEvent.DELETE_PEER_STATS);
-					delete_statsEvent.client_suid = client_suid;
-					delete_statsEvent.peer_suid = peer_suid;
-					dispatch(delete_statsEvent);
-				}
-			}			
+//			for (var peer_suid:String in client_peerStatsVO_array) {
+//				if (client_peerStatsRecord_array[peer_suid] == null){
+//					client_peerStatsVO_array[peer_suid] == null;
+//					
+//					var delete_statsEvent:StatsEvent = new StatsEvent(StatsEvent.DELETE_PEER_STATS);
+//					delete_statsEvent.client_suid = client_suid;
+//					delete_statsEvent.peer_suid = peer_suid;
+//					dispatch(delete_statsEvent);
+//				}
+//			}			
 			
 			// client peers
 			var client_peerStatsVO:StatsVO;
 			var client_peerStatsRecord:Object;
 			
 			// Add new data records to each peerStatVO
-			for (peer_suid in client_peerStatsRecord_array) {
+			for (var peer_suid:String in client_peerStatsRecord_array) {
 				client_peerStatsRecord = client_peerStatsRecord_array[peer_suid];
 				
 				client_peerStatsVO = client_peerStatsVO_array[client_peerStatsRecord.remote_suid];

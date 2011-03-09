@@ -62,43 +62,35 @@ package com.infrno.chat.view.mediators
 		
 		private function usersUpdated(msEvent:MSEvent):void
 		{
-			removeVideos(msEvent.userInfoVO_array, msEvent.local_userInfoVO);
-			updateVideos(msEvent.userInfoVO_array, msEvent.local_userInfoVO);
+			removeStaleVideos(msEvent.userInfoVO_array, msEvent.local_userInfoVO);
+			addNewVideos(msEvent.userInfoVO_array, msEvent.local_userInfoVO);
 		}
 		
-		private function removeVideos(userInfoVO_array:Array, local_userInfoVO:UserInfoVO):void
+		private function removeStaleVideos(userInfoVO_array:Array, local_userInfoVO:UserInfoVO):void
 		{
-//			trace("VideosGroupMediator.removeVideos()");
 			var dataProviderLength:int = videosGroup.videosGroup_list.dataProvider.length;
 			for(var i:int = 0; i<dataProviderLength; i++){
-//				trace("VideosGroupMediator.removeVideos() i="+i);
 				try{					
 					var videoPresence:VideoPresence = videosGroup.videosGroup_list.dataProvider.getItemAt(i) as VideoPresence;
-					trace("VideosGroupMediator.removeVideos() videoPresence.name="+videoPresence.name);
-					
-					//if the video isn't in the users collection remove it
 					if(userInfoVO_array[videoPresence.name] == null){
 						var vp_index:int = videosGroup.videosGroup_list.dataProvider.getItemIndex(videoPresence);
-						trace("VideosGroupMediator.removeVideos() vp_index="+vp_index);
+						trace("VideosGroupMediator.removeStaleVideos() videoPresence.name="+videoPresence.name);
 						videosGroup.videosGroup_list.dataProvider.removeItemAt(vp_index);
 					}
 				}catch(e:Object){
 					//out of range error I'm sure
 					// TODO Make sure we don't get out of range errors
 					// Things work just fine, but how does this state occur?
-					trace("VideosGroupMediator.removeVideos() error:" +e.toString());
+					trace("VideosGroupMediator.removeStaleVideos() error:" +e.toString());
 				}
 			}
 		}
 		
 		private function getVideoPresenceByName(name:String): VideoPresence{
-//			trace("VideosGroupMediator.getVideoPresenceByName name="+name)
 			var videoPresence:VideoPresence;
 			var dataProviderLength:int = videosGroup.videosGroup_list.dataProvider.length;
 			for(var i:int = 0; i < dataProviderLength; i++){
-//				trace("VideosGroupMediator.getVideoPresenceByName i="+i+", videos.videos_holder.dataProvider.length="+dataProviderLength)
 				videoPresence = videosGroup.videosGroup_list.dataProvider.getItemAt(i) as VideoPresence;
-//				trace("VideosGroupMediator.getVideoPresenceByName videoPresence.name="+videoPresence.name)
 				if (videoPresence.name == name) {
 					return videoPresence;
 				}
@@ -106,10 +98,7 @@ package com.infrno.chat.view.mediators
 			return null;
 		}
 		
-		private function onVideoPresenceCreationComplete(e:FlexEvent):void
-		{
-			trace("VideosGroupMediator.onVideoPresenceCreationComplete")
-			
+		private function onVideoPresenceCreationComplete(e:FlexEvent):void{
 			var videoPresence:VideoPresence = e.target as VideoPresence;
 			if(videoPresence.is_local){
 				setupLocalVideoPresenceComponent(videoPresence);
@@ -118,19 +107,16 @@ package com.infrno.chat.view.mediators
 			}
 		}
 		
-		private function updateVideos(userInfoVO_array:Array, local_userInfoVO:UserInfoVO):void
-		{
-			trace("VideosGroupMediator.updateVideos()");
+		private function addNewVideos(userInfoVO_array:Array, local_userInfoVO:UserInfoVO):void {
 			
 			// What field in userInfoVO defines 'name' here?
 			// Answer: suid
 			for(var name:String in userInfoVO_array){
-				trace("VideosGroupMediator.updateVideos() name="+name);
 				var userInfoVO:UserInfoVO = userInfoVO_array[name];
 				
 				var videoPresence:VideoPresence = getVideoPresenceByName(name);
 				if(videoPresence == null){
-					trace("VideosGroupMediator.updateVideos() adding new VideoPresence for name="+name);
+					trace("VideosGroupMediator.addNewVideos() adding new VideoPresence for name="+name);
 					
 					videoPresence = new VideoPresence();
 					videosGroup.videosGroup_list.dataProvider.addItem(videoPresence);
@@ -250,29 +236,28 @@ package com.infrno.chat.view.mediators
 		
 		private function displayServerStats(statsEvent:StatsEvent):void
 		{
-//			trace("VideosGroupMediator.displayServerStats()");
-			var serverStatsVO:StatsVO = statsEvent.statsVO;
-			var videoPresence:VideoPresence = getVideoPresenceByName(serverStatsVO.suid.toString());
-			
-			if (videoPresence.sparkline == null) {
-				trace("VideosGroupMediator.displayServerStats() videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
-				return;
-			}
-			
-			videoPresence.sparkline.statsVO = serverStatsVO;
-			videoPresence.sparkline.yFieldName = 'currentBytesPerSecond';
-			var currentBytesPerSecond:int = serverStatsVO.data_AC[serverStatsVO.data_AC.length-1].currentBytesPerSecond;
-//			videoPresence.sparkline.lastValue_label = currentBytesPerSecond.toString();
-			videoPresence.sparkline.lastValuePrefix = "b/s";
-			videoPresence.sparkline.lastValue_label = videoPresence.sparkline.lastValuePrefix +": "+ serverStatsVO.lastDataRecord[videoPresence.sparkline.yFieldName];
-
-			videoPresence.sparkline.toolTip = "Bytes per second to the server";
-			
-			if (currentBytesPerSecond < Sparkline.MAX_CURRENT_BYTES_PER_SECOND) {
-				videoPresence.sparkline.lineStrokeColor = Sparkline.GREEN; 
-			} else {
-				videoPresence.sparkline.lineStrokeColor = Sparkline.RED;
-			}
+//			var serverStatsVO:StatsVO = statsEvent.statsVO;
+//			var videoPresence:VideoPresence = getVideoPresenceByName(serverStatsVO.suid.toString());
+//			
+//			if (videoPresence.sparkline == null) {
+//				trace("VideosGroupMediator.displayServerStats() videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
+//				return;
+//			}
+//			
+//			videoPresence.sparkline.statsVO = serverStatsVO;
+//			videoPresence.sparkline.yFieldName = 'currentBytesPerSecond';
+//			var currentBytesPerSecond:int = serverStatsVO.data_AC[serverStatsVO.data_AC.length-1].currentBytesPerSecond;
+////			videoPresence.sparkline.lastValue_label = currentBytesPerSecond.toString();
+//			videoPresence.sparkline.lastValuePrefix = "b/s";
+//			videoPresence.sparkline.lastValue_label = videoPresence.sparkline.lastValuePrefix +": "+ serverStatsVO.lastDataRecord[videoPresence.sparkline.yFieldName];
+//
+//			videoPresence.sparkline.toolTip = "Bytes per second to the server";
+//			
+//			if (currentBytesPerSecond < Sparkline.MAX_CURRENT_BYTES_PER_SECOND) {
+//				videoPresence.sparkline.lineStrokeColor = Sparkline.GREEN; 
+//			} else {
+//				videoPresence.sparkline.lineStrokeColor = Sparkline.RED;
+//			}
 			
 		}		
 		

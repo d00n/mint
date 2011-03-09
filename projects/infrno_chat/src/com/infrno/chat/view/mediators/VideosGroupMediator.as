@@ -68,10 +68,10 @@ package com.infrno.chat.view.mediators
 		
 		private function removeVideos(userInfoVO_array:Array, local_userInfoVO:UserInfoVO):void
 		{
-			trace("VideosGroupMediator.removeVideos()");
+//			trace("VideosGroupMediator.removeVideos()");
 			var dataProviderLength:int = videosGroup.videosGroup_list.dataProvider.length;
 			for(var i:int = 0; i<dataProviderLength; i++){
-				trace("VideosGroupMediator.removeVideos() i="+i);
+//				trace("VideosGroupMediator.removeVideos() i="+i);
 				try{					
 					var videoPresence:VideoPresence = videosGroup.videosGroup_list.dataProvider.getItemAt(i) as VideoPresence;
 					trace("VideosGroupMediator.removeVideos() videoPresence.name="+videoPresence.name);
@@ -92,13 +92,13 @@ package com.infrno.chat.view.mediators
 		}
 		
 		private function getVideoPresenceByName(name:String): VideoPresence{
-			trace("VideosGroupMediator.getVideoPresenceByName name="+name)
+//			trace("VideosGroupMediator.getVideoPresenceByName name="+name)
 			var videoPresence:VideoPresence;
 			var dataProviderLength:int = videosGroup.videosGroup_list.dataProvider.length;
 			for(var i:int = 0; i < dataProviderLength; i++){
-				trace("VideosGroupMediator.getVideoPresenceByName i="+i+", videos.videos_holder.dataProvider.length="+dataProviderLength)
+//				trace("VideosGroupMediator.getVideoPresenceByName i="+i+", videos.videos_holder.dataProvider.length="+dataProviderLength)
 				videoPresence = videosGroup.videosGroup_list.dataProvider.getItemAt(i) as VideoPresence;
-				trace("VideosGroupMediator.getVideoPresenceByName videoPresence.name="+videoPresence.name)
+//				trace("VideosGroupMediator.getVideoPresenceByName videoPresence.name="+videoPresence.name)
 				if (videoPresence.name == name) {
 					return videoPresence;
 				}
@@ -223,34 +223,34 @@ package com.infrno.chat.view.mediators
 		
 		private function displayPeerStats(statsEvent:StatsEvent):void
 		{
-			trace("VideosGroupMediator.displayPeerStats()");
-			var peerStatsVO:StatsVO = statsEvent.statsVO;
-			var videoPresence:VideoPresence = getVideoPresenceByName(peerStatsVO.suid.toString());		
-			
-			if (videoPresence.sparkline == null) {
-				trace("VideosGroupMediator.displayPeerStats() videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
-				return;
-			}
-			
-			videoPresence.sparkline.statsVO = peerStatsVO;
-			videoPresence.sparkline.yFieldName = 'srtt';
-			var last_ping_value:int = peerStatsVO.data_AC[peerStatsVO.data_AC.length-1].srtt;
-//			videoPresence.sparkline.lastValue_label = last_ping_value.toString();
-			videoPresence.sparkline.lastValuePrefix = "Ping";
-			videoPresence.sparkline.lastValue_label = videoPresence.sparkline.lastValuePrefix +": "+ peerStatsVO.lastDataRecord[videoPresence.sparkline.yFieldName];
-			videoPresence.sparkline.toolTip = "Ping (peer)";
-			
-			if (last_ping_value < Sparkline.MAX_SRTT) {
-				videoPresence.sparkline.lineStrokeColor = Sparkline.GREEN; 
-			} else {
-				videoPresence.sparkline.lineStrokeColor = Sparkline.RED;
-			}
+//			trace("VideosGroupMediator.displayPeerStats()");
+//			var peerStatsVO:StatsVO = statsEvent.statsVO;
+//			var videoPresence:VideoPresence = getVideoPresenceByName(peerStatsVO.suid.toString());		
+//			
+//			if (videoPresence.sparkline == null) {
+//				trace("VideosGroupMediator.displayPeerStats() videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
+//				return;
+//			}
+//			
+//			videoPresence.sparkline.statsVO = peerStatsVO;
+//			videoPresence.sparkline.yFieldName = 'srtt';
+//			var last_ping_value:int = peerStatsVO.data_AC[peerStatsVO.data_AC.length-1].srtt;
+////			videoPresence.sparkline.lastValue_label = last_ping_value.toString();
+//			videoPresence.sparkline.lastValuePrefix = "Ping";
+//			videoPresence.sparkline.lastValue_label = videoPresence.sparkline.lastValuePrefix +": "+ peerStatsVO.lastDataRecord[videoPresence.sparkline.yFieldName];
+//			videoPresence.sparkline.toolTip = "Ping (peer)";
+//			
+//			if (last_ping_value < Sparkline.MAX_SRTT) {
+//				videoPresence.sparkline.lineStrokeColor = Sparkline.GREEN; 
+//			} else {
+//				videoPresence.sparkline.lineStrokeColor = Sparkline.RED;
+//			}
 			
 		}
 		
 		private function displayServerStats(statsEvent:StatsEvent):void
 		{
-			trace("VideosGroupMediator.displayServerStats()");
+//			trace("VideosGroupMediator.displayServerStats()");
 			var serverStatsVO:StatsVO = statsEvent.statsVO;
 			var videoPresence:VideoPresence = getVideoPresenceByName(serverStatsVO.suid.toString());
 			

@@ -19,10 +19,12 @@ package com.infrno.chat.model.events
 		public var statsRecord:Object;
 		public var peerStats:Object;
 		public var statsVO:StatsVO;
+		
 		public var suid:String;
 		public var client_suid:String;
 		public var peer_suid:String;
-		public var client_peerStatsRecord_array:Array;
+		
+		public var client_peerStatsVO_array:Array;
 		
 		public function StatsEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

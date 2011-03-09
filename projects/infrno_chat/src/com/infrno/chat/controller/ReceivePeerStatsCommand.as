@@ -18,21 +18,22 @@ package com.infrno.chat.controller
 		public var statsProxy:StatsProxy;
 		
 		override public function execute():void{
-			trace('ReceivePeerStatsCommand.execute()');
-			var client_peerStats:Object = event.peerStats;
+//			trace('ReceivePeerStatsCommand.execute()');
+			var client_peerStatsRecord_array:Array =	 event.peerStats.peerStatsRecord_array as Array;
+			
+			if (client_peerStatsRecord_array.length == 0) {
+				trace('ReceivePeerStatsCommand.execute() aborting because client_peerStatsRecord_array is empty');
+				return;
+			}
 			
 			// header record: the client suid and peerStatsVO_array
-			var client_suid:String = client_peerStats.client_suid;
+			var client_suid:String =  event.peerStats.client_suid;
 			var client_peerStatsVO_array:Array = statsProxy.client_array[client_suid] as Array;
 			if (client_peerStatsVO_array == null) {
 				client_peerStatsVO_array = new Array();
 				statsProxy.client_array[client_suid] = client_peerStatsVO_array;
 			}
-			
-			// client peers
-			var peerStatsVO:StatsVO;
-			var client_peerStatsRecord:Object;
-			var client_peerStatsRecord_array:Array =	client_peerStats.peerStatsRecord_array as Array;
+
 			
 			// Delete client peers missing from inbound stats collection
 			for (var peer_suid:String in client_peerStatsVO_array) {
@@ -42,24 +43,28 @@ package com.infrno.chat.controller
 					var delete_statsEvent:StatsEvent = new StatsEvent(StatsEvent.DELETE_PEER_STATS);
 					delete_statsEvent.client_suid = client_suid;
 					delete_statsEvent.peer_suid = peer_suid;
-					dispatch(statsEvent);
+					dispatch(delete_statsEvent);
 				}
 			}			
+			
+			// client peers
+			var client_peerStatsVO:StatsVO;
+			var client_peerStatsRecord:Object;
 			
 			// Add new data records to each peerStatVO
 			for (peer_suid in client_peerStatsRecord_array) {
 				client_peerStatsRecord = client_peerStatsRecord_array[peer_suid];
 				
-				peerStatsVO = client_peerStatsVO_array[client_peerStatsRecord.suid];
-				if (peerStatsVO == null) {
-					peerStatsVO = new StatsVO();
-					client_peerStatsVO_array[client_peerStatsRecord.suid] = peerStatsVO;
+				client_peerStatsVO = client_peerStatsVO_array[client_peerStatsRecord.remote_suid];
+				if (client_peerStatsVO == null) {
+					client_peerStatsVO = new StatsVO();
+					client_peerStatsVO_array[client_peerStatsRecord.remote_suid] = client_peerStatsVO;
 				}
 				
-				peerStatsVO.data_AC.addItem(client_peerStatsRecord);
+				client_peerStatsVO.data_AC.addItem(client_peerStatsRecord);
 				
-				if (peerStatsVO.data_AC.length > StatsProxy.NUMBER_OF_DATA_RECORDS_TO_KEEP) {
-					peerStatsVO.data_AC.removeItemAt(0);
+				if (client_peerStatsVO.data_AC.length > StatsProxy.NUMBER_OF_DATA_RECORDS_TO_KEEP) {
+					client_peerStatsVO.data_AC.removeItemAt(0);
 				}
 			}
 			
@@ -67,8 +72,8 @@ package com.infrno.chat.controller
 
 
 			var statsEvent:StatsEvent = new StatsEvent(StatsEvent.DISPLAY_PEER_STATS);
-			statsEvent.suid = client_suid;
-			statsEvent.client_peerStatsRecord_array = client_peerStatsRecord_array;
+			statsEvent.client_suid = client_suid;
+			statsEvent.client_peerStatsVO_array = client_peerStatsVO_array;
 			dispatch(statsEvent);
 		}			
 

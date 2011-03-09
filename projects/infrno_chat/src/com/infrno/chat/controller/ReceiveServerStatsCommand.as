@@ -16,7 +16,7 @@ package com.infrno.chat.controller
 		public var statsProxy:StatsProxy;
 		
 		override public function execute():void{
-			trace('ReceiveServerStatsCommand.execute()');
+//			trace('ReceiveServerStatsCommand.execute()');
 			
 			var serverStatsRecord:Object = event.statsRecord;
 			

@@ -25,7 +25,7 @@ package com.infrno.chat.controller
 		
 		override public function execute():void
 		{			
-			trace("CollectServerStatsCommand.execute() dataProxy.local_userInfoVO.suid:"+dataProxy.local_userInfoVO.suid);		
+//			trace("CollectServerStatsCommand.execute() dataProxy.local_userInfoVO.suid:"+dataProxy.local_userInfoVO.suid);		
 
 			if (msService == null) {
 				trace("CollectServerStatsCommand.execute() msService is null");	

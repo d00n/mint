@@ -23,7 +23,7 @@
 			
 			private var peerStatBlockConfig_AC:ArrayCollection = new ArrayCollection();
 
-			private function initConfig():void{
+			public function initConfig():void{
 				peerStatBlockConfig_AC.addItem( {yFieldName:"srtt", labelPrefix:"SRTT", toolTip:"Specifies the Smooth Round Trip Time for the NetStream session. This value returns a valid value only for RTMFP streams and returns 0 for RTMP streams."} );
 				peerStatBlockConfig_AC.addItem( {yFieldName:"currentBytesPerSecond", labelPrefix:"Total", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
 				peerStatBlockConfig_AC.addItem( {yFieldName:"audioBytesPerSecond", labelPrefix:"Audio", toolTip:"Specifies the rate at which the NetStream audio buffer is filled in bytes per second. The value is calculated as a smooth average for the audio data received in the last second."} );
@@ -36,9 +36,13 @@
 			}
 			
 			
-			public function set client_peerStatsVO(value:StatsVO):void{
+			public function set peerStatsVO(value:StatsVO):void{
 				_peerStatsVO = value;
 				var sparkline:Sparkline;
+				
+				if (peerSparkline_vgroup == null)
+					return;
+				
 				for (var i:int=0; i<peerSparkline_vgroup.numChildren-1; i++){
 					sparkline = peerSparkline_vgroup.getChildAt(i) as Sparkline;
 					sparkline.statsVO = _peerStatsVO;

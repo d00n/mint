@@ -32,11 +32,11 @@ package com.infrno.chat.controller
 			var peerStatsRecord_array:Array = new Array();
 			
 			for(var suid:String in dataProxy.userInfoVO_array){
-				trace("CollectPeerStatsCommand.execute() suid:"+suid);		
+//				trace("CollectPeerStatsCommand.execute() suid:"+suid);		
 				var peer_userInfoVO:UserInfoVO = dataProxy.userInfoVO_array[suid];
 				
 				if (dataProxy.local_userInfoVO.suid.toString() == suid) {
-					trace("CollectPeerStatsCommand.execute() skipping local user");	
+//					trace("CollectPeerStatsCommand.execute() skipping local user");	
 				} else if (peer_userInfoVO == null) {
 					trace("CollectPeerStatsCommand.execute() peer_userInfoVO is null");	
 				} else if (peer_userInfoVO.netStream == null) {
@@ -93,10 +93,12 @@ package com.infrno.chat.controller
 					peerStatsRecord_array[peerStatsRecord.remote_suid] = peerStatsRecord;
 				}
 				
-				var peerStats:Object 							= new Object();
-				peerStats.client_suid							= dataProxy.local_userInfoVO.suid;
-				peerStats.peerStatsRecord_array 	= peerStatsRecord_array;
-				msService.sendPeerStats(peerStats);	
+				if (peerStatsRecord_array.length > 0) {
+					var peerStats:Object 							= new Object();
+					peerStats.client_suid							= dataProxy.local_userInfoVO.suid;
+					peerStats.peerStatsRecord_array 	= peerStatsRecord_array;
+					msService.sendPeerStats(peerStats);	
+				}
 			}
 		}
 	}

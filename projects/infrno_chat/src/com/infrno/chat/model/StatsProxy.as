@@ -35,7 +35,7 @@ package com.infrno.chat.model
 		}
 		
 		public function collectStats(event:TimerEvent):void {
-			trace('StatsProxy.collectStats()');
+//			trace('StatsProxy.collectStats()');
 			dispatch(new StatsEvent(StatsEvent.COLLECT_PEER_STATS));
       dispatch(new StatsEvent(StatsEvent.COLLECT_SERVER_STATS));
 		}

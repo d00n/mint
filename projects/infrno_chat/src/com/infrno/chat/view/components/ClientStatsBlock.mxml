@@ -11,7 +11,7 @@
 			
 			import mx.collections.ArrayCollection;
 			
-			public var suid:String;		
+			public var client_suid:String;		
 			
 			private var _serverStatsVO:StatsVO;
 			

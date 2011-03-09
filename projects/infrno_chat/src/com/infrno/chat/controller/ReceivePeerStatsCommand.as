@@ -41,12 +41,8 @@ package com.infrno.chat.controller
 				if (client_peerStatsRecord_array[peer_suid] == null){
 					delete client_peerStatsVO_array[peer_suid];
 					
-//					var statsVO_to_remove:StatsVO = client_peerStatsVO_array[peer_suid] as StatsVO;
-//					var remove_index:int = client_peerStatsVO_array.indexOf(statsVO_to_remove);
-//					client_peerStatsVO_array.splice(remove_index, 1);
-
-					
-					// Let's try deleting on MSEvent.USERS_OBJ_UPDATE instead
+					// We currently delete on MSEvent.USERS_OBJ_UPDATE, but that fires way to often. 
+					// StatsEvent.DELETE_PEER_STATS is better, but we don't yet handle clientBlock adds
 //					var delete_statsEvent:StatsEvent = new StatsEvent(StatsEvent.DELETE_PEER_STATS);
 //					delete_statsEvent.client_suid = client_suid;
 //					delete_statsEvent.peer_suid = peer_suid;

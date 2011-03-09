@@ -26,9 +26,13 @@ package com.infrno.chat.view.mediators
 		}
 		
 		override public function onRegister():void{
-			eventMap.mapListener(eventDispatcher,MSEvent.USERS_OBJ_UPDATE,usersUpdated);	
 			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_SERVER_STATS,displayServerStats);
 			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_PEER_STATS,displayPeerStats);
+
+			// this gets called a *lot*, far too broad for our needs
+			eventMap.mapListener(eventDispatcher,MSEvent.USERS_OBJ_UPDATE,usersUpdated);	
+			
+			// this is more efficent, but does not handle adding clientBlocks yet
 //			eventMap.mapListener(eventDispatcher,StatsEvent.DELETE_PEER_STATS,removePeerStatsBlock);
 		}
 		
@@ -166,25 +170,25 @@ package com.infrno.chat.view.mediators
 			}
 		}
 		
-//		private function removePeerStatsBlock(statsEvent:StatsEvent):void{
-//			trace("StatsGroupMediator.removePeerStatsBlock()");
-//			
-//			var clientStatsBlock:ClientStatsBlock = getClientStatsBlock(statsEvent.client_suid);
-//			if (clientStatsBlock == null) {
-//				trace("StatsGroupMediator.removePeerStatsBlock() null clientStatsBlock !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-//				return;
-//			}		
-//
-//			var peerStatsBlock:PeerStatsBlock = getPeerStatsBlock(clientStatsBlock, statsEvent.peer_suid);
-//			if (peerStatsBlock == null) {
-//				trace("StatsGroupMediator.removePeerStatsBlock() null peerStatsBlock !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-//				return;
-//			}		
-//			
-//			var peerStatsBlock_index:int = clientStatsBlock.peerBlock_list.dataProvider.getItemIndex(peerStatsBlock);
-//			trace("StatsGroupMediator.removePeerStatsBlock() peerStatsBlock_index="+peerStatsBlock_index);
-//			clientStatsBlock.peerBlock_list.dataProvider.removeItemAt(peerStatsBlock_index);
-//		}	
+		private function removePeerStatsBlock(statsEvent:StatsEvent):void{
+			trace("StatsGroupMediator.removePeerStatsBlock()");
+			
+			var clientStatsBlock:ClientStatsBlock = getClientStatsBlock(statsEvent.client_suid);
+			if (clientStatsBlock == null) {
+				trace("StatsGroupMediator.removePeerStatsBlock() null clientStatsBlock !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				return;
+			}		
+
+			var peerStatsBlock:PeerStatsBlock = getPeerStatsBlock(clientStatsBlock, statsEvent.peer_suid);
+			if (peerStatsBlock == null) {
+				trace("StatsGroupMediator.removePeerStatsBlock() null peerStatsBlock !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				return;
+			}		
+			
+			var peerStatsBlock_index:int = clientStatsBlock.peerBlock_list.dataProvider.getItemIndex(peerStatsBlock);
+			trace("StatsGroupMediator.removePeerStatsBlock() peerStatsBlock_index="+peerStatsBlock_index);
+			clientStatsBlock.peerBlock_list.dataProvider.removeItemAt(peerStatsBlock_index);
+		}	
 		
 		private function getPeerStatsBlock(clientStatsBlock:ClientStatsBlock, peer_suid:String): PeerStatsBlock {
 //			trace("StatsGroupMediator.getPeerStatsBlock() peer_suid="+peer_suid)

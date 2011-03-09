@@ -35,8 +35,7 @@
 				serverStatBlockConfig_AC.addItem( {yFieldName:"audioLossRate", labelPrefix:"Audio loss rate", toolTip:"Specifies the audio loss for the NetStream session. This value returns a valid value only for RTMFP streams and would return 0 for RTMP streams. Loss rate is defined as the ratio of lost messages to total messages."} );			
 				// Hack hack hack - The last item added doesn't get it's label displayed. So just tack an empty one on.
 				serverStatBlockConfig_AC.addItem( {yFieldName:"", labelPrefix:""} );
-			}
-			
+			}			
 			
 			public function set serverStatsVO(value:StatsVO):void{
 				if (serverSparkline_vgroup == null)
@@ -51,19 +50,11 @@
 				}				
 			}
 			
-			public function set client_peerStatsVO(value:StatsVO):void{
-			
-			}
-			
 			// TODO What is best place/time to do this?
 			private function handleCreationComplete(event:Event):void	{	
+				trace("ClientStatsBlock.handleCreationComplete()")
 				initConfig();
 				createServerBlock();				
-			}
-			
-			public function displayClientPeerStats(client_suid:String):void {
-				// Add/remove/update peer blocks
-				
 			}
 			
 			public function createServerBlock():void{

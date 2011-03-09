@@ -31,25 +31,21 @@
 //				peerStatBlockConfig_AC.addItem( {yFieldName:"dataBytesPerSecond", labelPrefix:"Data", toolTip:"Specifies the rate at which the NetStream data buffer is filled in bytes per second. The value is calculated as a smooth average for the data messages received in the last second."} );
 //				peerStatBlockConfig_AC.addItem( {yFieldName:"audioLossRate", labelPrefix:"Audio loss rate", toolTip:"Specifies the audio loss for the NetStream session. This value returns a valid value only for RTMFP streams and would return 0 for RTMP streams. Loss rate is defined as the ratio of lost messages to total messages."} );
 				// Hack hack hack - The last item added doesn't get it's label displayed. So just tack an empty one on.
-				peerStatBlockConfig_AC.addItem( {yFieldName:"", labelPrefix:""} );
-				
-			}
-			
+				peerStatBlockConfig_AC.addItem( {yFieldName:"", labelPrefix:""} );				
+			}			
 			
 			public function set peerStatsVO(value:StatsVO):void{
-				_peerStatsVO = value;
-				var sparkline:Sparkline;
-				
 				if (peerSparkline_vgroup == null)
 					return;
-				
+
+				_peerStatsVO = value;
+				var sparkline:Sparkline;					
 				for (var i:int=0; i<peerSparkline_vgroup.numChildren-1; i++){
 					sparkline = peerSparkline_vgroup.getChildAt(i) as Sparkline;
 					sparkline.statsVO = _peerStatsVO;
 					sparkline.lastValue_label = sparkline.lastValuePrefix +": "+ _peerStatsVO.lastDataRecord[sparkline.yFieldName];
 				}				
 			}
-
 			
 			// TODO What is best place/time to do this?
 			private function handleCreationComplete(event:Event):void	{	

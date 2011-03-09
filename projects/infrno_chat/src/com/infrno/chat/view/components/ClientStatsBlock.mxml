@@ -95,19 +95,11 @@
 		]]>
 	</fx:Script>	
 	<s:BorderContainer id="borderContainer"
-										 backgroundColor="#cecece" 
+										 backgroundColor="#FFFFFF" 
 										 borderColor="#cecece"
 										 width="162" 
 										 >
-		
-		<s:Rect id="background" 
-						width="160" 
-						height="100%">
-			<s:fill>
-				<s:SolidColor color="#FFFFFF"/>
-			</s:fill>
-		</s:Rect>
-		
+
 		<s:VGroup>			
 			<s:VGroup id="serverBlock_vgroup">			
 				<s:Label text="{user_name_label}"
@@ -127,10 +119,11 @@
 			</s:VGroup>
 					
 			<s:List id="peerBlock_list" 
-							width="158"
+							width="160"
 							itemRenderer="spark.skins.spark.DefaultComplexItemRenderer"
 							horizontalCenter="0"
 							verticalCenter="0"
+							borderColor="#FFFFFF"
 							>
 				
 				<s:layout>

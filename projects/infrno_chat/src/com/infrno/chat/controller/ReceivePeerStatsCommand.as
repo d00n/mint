@@ -34,8 +34,10 @@ package com.infrno.chat.controller
 				statsProxy.client_array[client_suid] = client_peerStatsVO_array;
 			}
 
+			var peer_suid:String;
+			
 			// Delete client peers missing from inbound stats collection
-			for (var peer_suid:String in client_peerStatsVO_array) {
+			for (peer_suid in client_peerStatsVO_array) {
 				if (client_peerStatsRecord_array[peer_suid] == null){
 					delete client_peerStatsVO_array[peer_suid];
 					
@@ -58,7 +60,7 @@ package com.infrno.chat.controller
 			var client_peerStatsRecord:Object;
 			
 			// Add new data records to each peerStatVO
-			for (var peer_suid:String in client_peerStatsRecord_array) {
+			for (peer_suid in client_peerStatsRecord_array) {
 				client_peerStatsRecord = client_peerStatsRecord_array[peer_suid];
 				
 				client_peerStatsVO = client_peerStatsVO_array[client_peerStatsRecord.remote_suid];

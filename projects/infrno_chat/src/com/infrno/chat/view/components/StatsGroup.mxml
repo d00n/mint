@@ -17,7 +17,7 @@
 	</fx:Script>
 	
 	<s:List id="statsGroup_list" 
-					width="162"
+					width="100%"
 					itemRenderer="spark.skins.spark.DefaultComplexItemRenderer"
 					horizontalCenter="0"
 					verticalCenter="0"

@@ -88,20 +88,13 @@
 		]]>
 	</fx:Script>	
 	<s:BorderContainer id="borderContainer"
-										 backgroundColor="#cecece" 
-										 borderColor="#cecece"
-										 width="150" 
+										 backgroundColor="#FFFFFF" 
+										 borderColor="#FFFFFF"
+										 width="152" 
 										 >
-		
-		<s:Rect id="background" 
-						width="160" 
-						height="100%">
-			<s:fill>
-				<s:SolidColor color="#FFFFFF"/>
-			</s:fill>
-		</s:Rect>
+
 				
-		<s:VGroup id="peerBlock_vgroup">			
+		<s:VGroup id="peerBlock_vgroup" >			
 			<s:Label text="{user_name_label}"
 							 paddingTop="3"
 							 paddingLeft="3"

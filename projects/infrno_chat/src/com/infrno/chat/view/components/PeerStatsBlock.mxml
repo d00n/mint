@@ -91,11 +91,12 @@
 	<s:BorderContainer id="borderContainer"
 										 backgroundColor="#FFFFFF" 
 										 borderColor="#FFFFFF"
-										 width="152" 
 										 >
 
 				
-		<s:VGroup id="peerBlock_vgroup" >			
+		<s:VGroup id="peerBlock_vgroup" 
+							width="152" 
+							>			
 			<s:Label text="{user_name_label}"
 							 paddingTop="3"
 							 paddingLeft="3"

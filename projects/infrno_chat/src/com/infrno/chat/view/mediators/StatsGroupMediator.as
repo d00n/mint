@@ -28,8 +28,8 @@ package com.infrno.chat.view.mediators
 		}
 		
 		override public function onRegister():void{
-			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_SERVER_STATS,displayServerStats);
-			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_PEER_STATS,displayPeerStats);
+			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_CLIENT_STATS,displayClientStats);
+			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_CLIENT_STATS,displayPeerStats);
 
 			// this gets called a *lot*, far too broad for our needs
 			eventMap.mapListener(eventDispatcher,MSEvent.USERS_OBJ_UPDATE,usersUpdated);	
@@ -120,23 +120,24 @@ package com.infrno.chat.view.mediators
 		}		
 
 
-		private function displayServerStats(statsEvent:StatsEvent):void
+		private function displayClientStats(statsEvent:StatsEvent):void
 		{
 //			trace("StatsGroupMediator.displayServerStats()");
-			var serverStatsVO:StatsVO = statsEvent.statsVO;
 			
-			var statsBlock:ClientStatsBlock = getClientStatsBlock(serverStatsVO.suid);
-			if (statsBlock == null) {
-				trace("StatsGroupMediator.displayServerStats() null statsBlock !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			// TODO This is the only reference of serverStatsVO.suid, should it be client_suid?
+			var clientStatsBlock:ClientStatsBlock = getClientStatsBlock(statsEvent.client_suid);
+			if (clientStatsBlock == null) {
+				trace("StatsGroupMediator.displayServerStats() null clientStatsBlock !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 				return;
 			}		
-			
-			statsBlock.droppedFrames_label = "Dropped frames: " + serverStatsVO.lastDataRecord.droppedFrames;
-			statsBlock.serverStatsVO = serverStatsVO;		
+
+			clientStatsBlock.client_serverStatsVO = statsEvent.client_serverStatsVO;		
 		}		
 		
 		private function displayPeerStats(statsEvent:StatsEvent):void	{
 //			trace("StatsGroupMediator.displayPeerStats()");
+			
+			var clientStats:Object = statsEvent.clientStats;
 			
 			var clientStatsBlock:ClientStatsBlock = getClientStatsBlock(statsEvent.client_suid);
 			if (clientStatsBlock == null || clientStatsBlock.peerStatsBlock_list == null) {
@@ -160,7 +161,7 @@ package com.infrno.chat.view.mediators
 					
 					peerStatsBlock.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
 					{
-						trace("StatsGroupMediator.displayPeerStats() PeerStatsBlock FlexEvent.INIT_COMPLETE event listener")
+						trace("StatsGroupMediator.displayPeerStats() PeerStatsBlock FlexEvent.CREATION_COMPLETE event listener")
 						clientStatsBlock.peerStatsBlock_list.dataProvider.addItem(this);
 					});
 					
@@ -175,25 +176,25 @@ package com.infrno.chat.view.mediators
 			}
 		}
 		
-		private function removePeerStatsBlock(statsEvent:StatsEvent):void{
-			trace("StatsGroupMediator.removePeerStatsBlock()");
-			
-			var clientStatsBlock:ClientStatsBlock = getClientStatsBlock(statsEvent.client_suid);
-			if (clientStatsBlock == null) {
-				trace("StatsGroupMediator.removePeerStatsBlock() null clientStatsBlock !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-				return;
-			}		
-
-			var peerStatsBlock:PeerStatsBlock = getPeerStatsBlock(clientStatsBlock, statsEvent.peer_suid);
-			if (peerStatsBlock == null) {
-				trace("StatsGroupMediator.removePeerStatsBlock() null peerStatsBlock !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-				return;
-			}		
-			
-			var peerStatsBlock_index:int = clientStatsBlock.peerStatsBlock_list.dataProvider.getItemIndex(peerStatsBlock);
-			trace("StatsGroupMediator.removePeerStatsBlock() peerStatsBlock_index="+peerStatsBlock_index);
-			clientStatsBlock.peerStatsBlock_list.dataProvider.removeItemAt(peerStatsBlock_index);
-		}	
+//		private function removePeerStatsBlock(statsEvent:StatsEvent):void{
+//			trace("StatsGroupMediator.removePeerStatsBlock()");
+//			
+//			var clientStatsBlock:ClientStatsBlock = getClientStatsBlock(statsEvent.client_suid);
+//			if (clientStatsBlock == null) {
+//				trace("StatsGroupMediator.removePeerStatsBlock() null clientStatsBlock !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//				return;
+//			}		
+//
+//			var peerStatsBlock:PeerStatsBlock = getPeerStatsBlock(clientStatsBlock, statsEvent.peer_suid);
+//			if (peerStatsBlock == null) {
+//				trace("StatsGroupMediator.removePeerStatsBlock() null peerStatsBlock !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//				return;
+//			}		
+//			
+//			var peerStatsBlock_index:int = clientStatsBlock.peerStatsBlock_list.dataProvider.getItemIndex(peerStatsBlock);
+//			trace("StatsGroupMediator.removePeerStatsBlock() peerStatsBlock_index="+peerStatsBlock_index);
+//			clientStatsBlock.peerStatsBlock_list.dataProvider.removeItemAt(peerStatsBlock_index);
+//		}	
 		
 		private function getPeerStatsBlock(clientStatsBlock:ClientStatsBlock, peer_suid:String): PeerStatsBlock {
 //			trace("StatsGroupMediator.getPeerStatsBlock() peer_suid="+peer_suid)

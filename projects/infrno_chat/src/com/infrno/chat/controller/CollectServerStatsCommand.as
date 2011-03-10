@@ -73,7 +73,7 @@ package com.infrno.chat.controller
 				
 				
 //				statsProxy.displayServerStats(server_stats);
-				msService.sendClientServerStats(server_stats);
+				msService.sendClientStats(server_stats);
 			}
 			
 		}

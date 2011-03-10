@@ -55,25 +55,25 @@ package com.infrno.chat.services
 				dispatch(new ChatEvent(ChatEvent.RECEIVE_CHAT,msgIn));
 			}
 			
-			_netConnection_client.collectClientServerStats = function():void {
-				dispatch(new StatsEvent(StatsEvent.COLLECT_SERVER_STATS));
+			_netConnection_client.collectClientStats = function():void {
+				dispatch(new StatsEvent(StatsEvent.COLLECT_CLIENT_STATS));
 			}
 				
-			_netConnection_client.collectClientPeerStats = function():void {
-				dispatch(new StatsEvent(StatsEvent.COLLECT_PEER_STATS));
-			}
+//			_netConnection_client.collectClientPeerStats = function():void {
+//				dispatch(new StatsEvent(StatsEvent.COLLECT_PEER_STATS));
+//			}
 				
-			_netConnection_client.receiveClientServerStats = function(serverStats:Object):void {
-				var statsEvent:StatsEvent = new StatsEvent(StatsEvent.RECEIVE_SERVER_STATS);
-				statsEvent.statsRecord = serverStats;
+			_netConnection_client.receiveClientStats = function(clientStats:Object):void {
+				var statsEvent:StatsEvent = new StatsEvent(StatsEvent.RECEIVE_CLIENT_STATS);
+				statsEvent.clientStats = clientStats;
 				dispatch(statsEvent);
 			}
 				
-			_netConnection_client.receiveClientPeerStats = function(peerStats:Object):void {
-				var statsEvent:StatsEvent = new StatsEvent(StatsEvent.RECEIVE_PEER_STATS);
-				statsEvent.peerStats = peerStats;
-				dispatch(statsEvent);
-			}
+//			_netConnection_client.receiveClientPeerStats = function(peerStats:Object):void {
+//				var statsEvent:StatsEvent = new StatsEvent(StatsEvent.RECEIVE_PEER_STATS);
+//				statsEvent.peerStats = peerStats;
+//				dispatch(statsEvent);
+//			}
 				
 			_netConnection_client.usePeerConnection = function(use_peer_connection:Boolean):void {
 				trace("MSService.setupClient() _nc_client.usePeerConnection() use_peer_connection:"+use_peer_connection);
@@ -160,15 +160,15 @@ package com.infrno.chat.services
 			trace("MSService.onMetaData() e:" + e.toString());			
 		}
 		
-		public function sendClientServerStats(serverStats:Object):void
+		public function sendClientStats(clientStats:Object):void
 		{
-			_netConnection.call("receiveClientServerStats",null,serverStats);
+			_netConnection.call("receiveClientStats",null,clientStats);
 		}
 		
-		public function sendClientPeerStats(peerStats:Object):void
-		{
-			_netConnection.call("receiveClientPeerStats",null,peerStats);
-		}		
+//		public function sendClientPeerStats(peerStats:Object):void
+//		{
+//			_netConnection.call("receiveClientPeerStats",null,peerStats);
+//		}		
 		
 		public function updatePublishStream():void
 		{

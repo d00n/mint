@@ -39,8 +39,8 @@ package com.infrno.chat.view.mediators
 			
 			// TODO map these after the sparklines are ready
 			// ..or figure out where to create sparklines better/earlier
-			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_PEER_STATS,displayPeerStats);
-			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_SERVER_STATS,displayServerStats);
+			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_CLIENT_STATS,displayPeerStats);
+			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_CLIENT_STATS,displayServerStats);
 			
 			videosGroup.addEventListener(SettingsEvent.SHOW_SETTINGS,handleShowSettings);
 			videosGroup.addEventListener(VideoPresenceEvent.AUDIO_LEVEL,dispatchEventInSystem);

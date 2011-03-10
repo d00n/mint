@@ -33,14 +33,17 @@
 //				serverStatBlockConfig_AC.addItem( {yFieldName:"videoBytesPerSecond", labelPrefix:"Video", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
 //				serverStatBlockConfig_AC.addItem( {yFieldName:"dataBytesPerSecond", labelPrefix:"Data", toolTip:"Specifies the maximum rate at which the NetStream buffer is filled in bytes per second. This value provides information about the capacity of the client network based on the last messages received by the NetStream object. Depending on the size of the buffer specified in NetStream.bufferTime and the bandwidth available on the client, Flash Media Server fills the buffer in bursts. This property provides the maximum rate at which the client buffer is filled."} );
 				serverStatBlockConfig_AC.addItem( {yFieldName:"audioLossRate", labelPrefix:"Audio loss", toolTip:"Specifies the audio loss for the NetStream session. This value returns a valid value only for RTMFP streams and would return 0 for RTMP streams. Loss rate is defined as the ratio of lost messages to total messages."} );			
-				serverStatBlockConfig_AC.addItem( {yFieldName:"droppedFrames", labelPrefix:"Dropped frames", toolTip:"Returns the number of video frames dropped in the current NetStream playback session. In recorded streaming or progressive download, if the video is a high-quality or high-resolution, high-bitrate video, the decoder can lag behind in decoding the required number of frames per second if it does not have adequate system CPU resources. In live streaming, the buffer drops video frames if the latency is too high. This property specifies the number of frames that were dropped and not presented normally."} );			
+//				serverStatBlockConfig_AC.addItem( {yFieldName:"droppedFrames", labelPrefix:"Dropped frames", toolTip:"Returns the number of video frames dropped in the current NetStream playback session. In recorded streaming or progressive download, if the video is a high-quality or high-resolution, high-bitrate video, the decoder can lag behind in decoding the required number of frames per second if it does not have adequate system CPU resources. In live streaming, the buffer drops video frames if the latency is too high. This property specifies the number of frames that were dropped and not presented normally."} );			
 			}			
 			
-			public function set serverStatsVO(value:StatsVO):void{
+			public function set client_serverStatsVO(value:StatsVO):void{
 				if (serverSparkline_vgroup == null)
 					return;
 				
 				_serverStatsVO = value;
+				
+				droppedFrames_label = "Dropped frames: " + _serverStatsVO.lastDataRecord.droppedFrames;			
+				
 				var sparkline:Sparkline;
 				for (var i:int=0; i<serverSparkline_vgroup.numChildren-1; i++){
 					sparkline = serverSparkline_vgroup.getChildAt(i) as Sparkline;
@@ -79,7 +82,7 @@
 				_sparkline.yFieldName 			= yFieldName;
 				_sparkline.lastValuePrefix 	= labelPrefix;
 				_sparkline.toolTip			 		= toolTip;
-				_sparkline.width 						= borderContainer.width;
+				_sparkline.width 						= serverBlock_vgroup.width;
 				
 				sparkline_vgroup.addElement(_sparkline);	
 			}				
@@ -89,13 +92,13 @@
 	</fx:Script>	
 		<s:BorderContainer id="borderContainer"
 											 backgroundColor="#FFFFFF" 
-											 borderColor="#444444"
-											 width="152" 
+											 borderColor="#ececec"
+											 width="100%" 
 											 >
 	
 			<s:HGroup>			
 				<s:VGroup id="serverBlock_vgroup" 										 
-	
+									width="152"
 									>			
 					<s:Label text="{user_name_label}"
 									 paddingTop="3"
@@ -106,6 +109,8 @@
 					<s:Label text="{droppedFrames_label}"
 									 paddingLeft="3"
 									 paddingRight="3"
+									 fontSize="11"
+									 toolTip="Returns the number of video frames dropped in the current NetStream playback session. In recorded streaming or progressive download, if the video is a high-quality or high-resolution, high-bitrate video, the decoder can lag behind in decoding the required number of frames per second if it does not have adequate system CPU resources. In live streaming, the buffer drops video frames if the latency is too high. This property specifies the number of frames that were dropped and not presented normally."
 									 backgroundColor="0xFFFFFF" />
 					
 					<s:VGroup id="serverSparkline_vgroup"  	

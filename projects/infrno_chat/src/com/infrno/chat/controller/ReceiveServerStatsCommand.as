@@ -18,7 +18,7 @@ package com.infrno.chat.controller
 		override public function execute():void{
 //			trace('ReceiveServerStatsCommand.execute()');
 			
-			var serverStatsRecord:Object = event.statsRecord;
+			var serverStatsRecord:Object = event.clientStats;
 			
 			var serverStatsVO:StatsVO = statsProxy.serverStatsVO_array[serverStatsRecord.suid];
 			if (serverStatsVO == null) {
@@ -36,7 +36,7 @@ package com.infrno.chat.controller
 			}
 			
 			var statsEvent:StatsEvent = new StatsEvent(StatsEvent.DISPLAY_SERVER_STATS);
-			statsEvent.statsVO = serverStatsVO;
+//			statsEvent.serverStatsVO = serverStatsVO;
 			dispatch(statsEvent);
 		}	
 	}

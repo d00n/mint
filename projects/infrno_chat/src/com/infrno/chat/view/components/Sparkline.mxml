@@ -39,6 +39,7 @@
 	<mx:LineChart id="peerStatsChart"		
 								dataProvider="{statsVO.data_AC}"
 								backgroundElements="{emptyArrayToRemoveChartLines}"
+								left="0"
 								top="0" 
 								right="0"
 								width="100%"

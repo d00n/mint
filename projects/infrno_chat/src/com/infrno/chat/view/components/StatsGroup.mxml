@@ -17,14 +17,14 @@
 	</fx:Script>
 	
 	<s:List id="clientStatsBlock_list" 
-					width="100%"
+
 					itemRenderer="spark.skins.spark.DefaultComplexItemRenderer"
 					horizontalCenter="0"
 					verticalCenter="0"
 					>
 		
 		<s:layout>
-			<s:HorizontalLayout gap="0"/>
+			<s:VerticalLayout gap="0"/>
 		</s:layout>
 		
 		<s:dataProvider >

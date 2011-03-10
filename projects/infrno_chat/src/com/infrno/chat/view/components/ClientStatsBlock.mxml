@@ -87,51 +87,53 @@
 			
 		]]>
 	</fx:Script>	
-	<s:BorderContainer id="borderContainer"
-										 backgroundColor="#FFFFFF" 
-										 borderColor="#cecece"
-										 width="162" 
-										 >
-
-		<s:VGroup>			
-			<s:VGroup id="serverBlock_vgroup">			
-				<s:Label text="{user_name_label}"
-								 paddingTop="3"
-								 paddingLeft="3"
-								 paddingRight="3"
-								 backgroundColor="0xFFFFFF" />		
-				
-				<s:Label text="{droppedFrames_label}"
-								 paddingLeft="3"
-								 paddingRight="3"
-								 backgroundColor="0xFFFFFF" />
-				
-				<s:VGroup id="serverSparkline_vgroup">			
+		<s:BorderContainer id="borderContainer"
+											 backgroundColor="#FFFFFF" 
+											 borderColor="#444444"
+											 width="152" 
+											 >
+	
+			<s:HGroup>			
+				<s:VGroup id="serverBlock_vgroup" 										 
+	
+									>			
+					<s:Label text="{user_name_label}"
+									 paddingTop="3"
+									 paddingLeft="3"
+									 paddingRight="3"
+									 backgroundColor="0xFFFFFF" />		
 					
+					<s:Label text="{droppedFrames_label}"
+									 paddingLeft="3"
+									 paddingRight="3"
+									 backgroundColor="0xFFFFFF" />
+					
+					<s:VGroup id="serverSparkline_vgroup"  	
+										left="0"
+	
+										/>				
 				</s:VGroup>
-			</s:VGroup>
+						
+				<s:List id="peerStatsBlock_list" 
+								itemRenderer="spark.skins.spark.DefaultComplexItemRenderer"
+								horizontalCenter="0"
+								verticalCenter="0"
+								borderColor="#FFFFFF"
+								>
 					
-			<s:List id="peerStatsBlock_list" 
-							width="160"
-							itemRenderer="spark.skins.spark.DefaultComplexItemRenderer"
-							horizontalCenter="0"
-							verticalCenter="0"
-							borderColor="#FFFFFF"
-							>
+					<s:layout>
+						<s:HorizontalLayout gap="0"/>
+					</s:layout>
+					
+					<s:dataProvider >
+						<s:ArrayList>
+						</s:ArrayList>
+					</s:dataProvider>
+					
+				</s:List>			
 				
-				<s:layout>
-					<s:VerticalLayout gap="0"/>
-				</s:layout>
-				
-				<s:dataProvider >
-					<s:ArrayList>
-					</s:ArrayList>
-				</s:dataProvider>
-				
-			</s:List>			
+			</s:HGroup>
 			
-		</s:VGroup>
-			
-	</s:BorderContainer>
+		</s:BorderContainer>
 	
 </s:Group>

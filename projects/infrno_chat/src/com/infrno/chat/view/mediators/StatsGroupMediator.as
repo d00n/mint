@@ -204,7 +204,7 @@ package com.infrno.chat.view.mediators
 //				trace("StatsGroupMediator.getPeerStatsBlock() i="+i+", statsGroup.statsGroup_list.dataProvider.length="+dataProviderLength);
 				peerStatsBlock = clientStatsBlock.peerStatsBlock_list.dataProvider.getItemAt(i) as PeerStatsBlock;
 //				trace("StatsGroupMediator.getPeerStatsBlock() peerStatsBlock.peer_suid="+peerStatsBlock.peer_suid);
-				if (peerStatsBlock.peer_suid == peer_suid) {
+				if (peerStatsBlock != null && peerStatsBlock.peer_suid == peer_suid) {
 					return peerStatsBlock;
 				}
 			}

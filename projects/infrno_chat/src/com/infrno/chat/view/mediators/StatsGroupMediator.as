@@ -11,6 +11,8 @@ package com.infrno.chat.view.mediators
 	import com.infrno.chat.view.components.Sparkline;
 	import com.infrno.chat.view.components.StatsGroup;
 	
+	import flash.events.Event;
+	
 	import mx.collections.ArrayCollection;
 	import mx.events.FlexEvent;
 	
@@ -156,12 +158,11 @@ package com.infrno.chat.view.mediators
 					peerStatsBlock.user_name_label = "Peer: " + client_peerStatsVO.lastDataRecord.remote_user_name;
 					clientStatsBlock.peerStatsBlock_list.dataProvider.addItem(peerStatsBlock);							
 					
-//					peerStatsBlock.addEventListener(FlexEvent.INIT_COMPLETE, function(e:FlexEvent):void
-//					{
-//						trace("StatsGroupMediator.displayPeerStats() PeerStatsBlock FlexEvent.INIT_COMPLETE event listener")
-//						this.initConfig();
-//						this.createPeerBlock();
-//					});
+					peerStatsBlock.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
+					{
+						trace("StatsGroupMediator.displayPeerStats() PeerStatsBlock FlexEvent.INIT_COMPLETE event listener")
+						clientStatsBlock.peerStatsBlock_list.dataProvider.addItem(this);
+					});
 					
 					
 				} else {

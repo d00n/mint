@@ -16,10 +16,9 @@ package com.infrno.chat.model
 		public var serverStatsVO_array:Array;
 		public var client_array:Array;
 		
-		private var _timer:Timer;
-		private var foo:int = 0;
+//		private var _timer:Timer;
 		public static const NUMBER_OF_DATA_RECORDS_TO_KEEP:int = 20;
-		public var seconds_between_stat_collection:int = 1;
+//		public var seconds_between_stat_collection:int = 1;
 		
 		public function StatsProxy() {
 		}
@@ -29,16 +28,17 @@ package com.infrno.chat.model
 			client_array = new Array();	
 			serverStatsVO_array = new Array();
 			
+			// Stat collection timer now lives on the server
 //			_timer = new Timer(seconds_between_stat_collection * 1000);
 //			_timer.addEventListener(TimerEvent.TIMER, collectStats);
 //			_timer.start();
 		}
 		
-		public function collectStats(event:TimerEvent):void {
+//		public function collectStats(event:TimerEvent):void {
 //			trace('StatsProxy.collectStats()');
-			dispatch(new StatsEvent(StatsEvent.COLLECT_PEER_STATS));
-      dispatch(new StatsEvent(StatsEvent.COLLECT_SERVER_STATS));
-		}
+//			dispatch(new StatsEvent(StatsEvent.COLLECT_PEER_STATS));
+//      dispatch(new StatsEvent(StatsEvent.COLLECT_SERVER_STATS));
+//		}
 		
 		// deprecated
 //		public function submitPeerStats(peerStatsRecord:Object) : void {

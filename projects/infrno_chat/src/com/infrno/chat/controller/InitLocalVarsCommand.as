@@ -48,14 +48,13 @@ package com.infrno.chat.controller
 			if (flash_vars.wowza_chat_app != null)
 				dataProxy.media_app = flash_vars.wowza_chat_app;
 			
-			trace("InitLocalVarsCommand.execute() flashvars loaded:" + dataProxy.room_name +":"+ dataProxy.local_userInfoVO.user_name +":"+ dataProxy.room_id +":"+ dataProxy.auth_key);
-			
-			if (flash_vars.seconds_between_stat_collection != null)
-				statsProxy.seconds_between_stat_collection = flash_vars.seconds_between_stat_collection;
+//			if (flash_vars.seconds_between_stat_collection != null)
+//				statsProxy.seconds_between_stat_collection = flash_vars.seconds_between_stat_collection;
 			
 			if (flash_vars.peer_enabled != null && flash_vars.peer_enabled=="false")
 				dataProxy.peer_enabled = false;
 
+			trace("InitLocalVarsCommand.execute() flashvars loaded:" + dataProxy.room_name +":"+ dataProxy.local_userInfoVO.user_name +":"+ dataProxy.room_id +":"+ dataProxy.auth_key);			
 			trace("InitLocalVarsCommand.execute() peer enabled: "+dataProxy.peer_enabled);
 		}
 	}

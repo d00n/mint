@@ -9,6 +9,7 @@
 			import com.infrno.chat.model.vo.StatsVO;
 			
 			import mx.collections.ArrayCollection;
+			import mx.controls.Spacer;
 			
 			public var peer_suid:String;		
 			
@@ -24,13 +25,14 @@
 
 			public function initConfig():void{
 				peerStatBlockConfig_AC.addItem( {yFieldName:"srtt", labelPrefix:"SRTT", toolTip:"Specifies the Smooth Round Trip Time for the NetStream session. This value returns a valid value only for RTMFP streams and returns 0 for RTMP streams."} );
-				peerStatBlockConfig_AC.addItem( {yFieldName:"currentBytesPerSecond", labelPrefix:"Total", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
+				peerStatBlockConfig_AC.addItem( {yFieldName:"currentBytesPerSecond", labelPrefix:"B/s", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
+				peerStatBlockConfig_AC.addItem( {yFieldName:"maxBytesPerSecond", labelPrefix:"Max B/s", toolTip:"Specifies the maximum rate at which the NetStream buffer is filled in bytes per second. This value provides information about the capacity of the client network based on the last messages received by the NetStream object. Depending on the size of the buffer specified in NetStream.bufferTime and the bandwidth available on the client, Flash Media Server fills the buffer in bursts. This property provides the maximum rate at which the client buffer is filled."} );	
 //				peerStatBlockConfig_AC.addItem( {yFieldName:"audioBytesPerSecond", labelPrefix:"Audio", toolTip:"Specifies the rate at which the NetStream audio buffer is filled in bytes per second. The value is calculated as a smooth average for the audio data received in the last second."} );
 //				peerStatBlockConfig_AC.addItem( {yFieldName:"videoBytesPerSecond", labelPrefix:"Video", toolTip:"Specifies the rate at which the NetStream video buffer is filled in bytes per second. The value is calculated as a smooth average for the video data received in the last second."} );
 //				peerStatBlockConfig_AC.addItem( {yFieldName:"dataBytesPerSecond", labelPrefix:"Data", toolTip:"Specifies the rate at which the NetStream data buffer is filled in bytes per second. The value is calculated as a smooth average for the data messages received in the last second."} );
-//				peerStatBlockConfig_AC.addItem( {yFieldName:"audioLossRate", labelPrefix:"Audio loss rate", toolTip:"Specifies the audio loss for the NetStream session. This value returns a valid value only for RTMFP streams and would return 0 for RTMP streams. Loss rate is defined as the ratio of lost messages to total messages."} );
-				// Hack hack hack - The last item added doesn't get it's label displayed. So just tack an empty one on.
-				peerStatBlockConfig_AC.addItem( {yFieldName:"", labelPrefix:""} );				
+				peerStatBlockConfig_AC.addItem( {yFieldName:"audioLossRate", labelPrefix:"Audio loss", toolTip:"Specifies the audio loss for the NetStream session. This value returns a valid value only for RTMFP streams and would return 0 for RTMP streams. Loss rate is defined as the ratio of lost messages to total messages."} );
+				peerStatBlockConfig_AC.addItem( {yFieldName:"droppedFrames", labelPrefix:"Dropped frames", toolTip:"Returns the number of video frames dropped in the current NetStream playback session. In recorded streaming or progressive download, if the video is a high-quality or high-resolution, high-bitrate video, the decoder can lag behind in decoding the required number of frames per second if it does not have adequate system CPU resources. In live streaming, the buffer drops video frames if the latency is too high. This property specifies the number of frames that were dropped and not presented normally."} );
+			
 			}			
 			
 			public function set peerStatsVO(value:StatsVO):void{
@@ -65,6 +67,10 @@
 					toolTip 				= sparklineConfig.toolTip;
 					createSparkline(yFieldName, labelPrefix, toolTip);
 				}
+				
+				// without this, the last sparkline to be added does not display, although it's tooltip works
+				peerSparkline_vgroup.addElement(new Spacer());	
+				
 			}
 
 			

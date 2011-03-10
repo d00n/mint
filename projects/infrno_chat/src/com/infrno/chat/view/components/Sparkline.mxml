@@ -4,7 +4,7 @@
 				 xmlns:mx="library://ns.adobe.com/flex/mx" 
 				 xmlns:com.infrno.chat.view.components="com.infrno.chat.view.components.*"
 				 width="100%" 
-				 height="50" >
+				 height="20" >
 	
 	<fx:Script>
 		<![CDATA[
@@ -42,7 +42,7 @@
 								top="0" 
 								right="0"
 								width="100%"
-								height="50"
+								height="20"
 								alpha="1"
 								seriesFilters="[]"
 								>
@@ -82,8 +82,7 @@
 	
 	<s:Label id="lastValue_label_id" 
 					 text="{lastValue_label}"
-					 top="3"
-					 left="3"
+					 fontSize="11"
 					 paddingTop="3"
 					 paddingLeft="3"
 					 paddingRight="3"

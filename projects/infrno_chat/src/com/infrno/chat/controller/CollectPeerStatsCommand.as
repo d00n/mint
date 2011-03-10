@@ -58,7 +58,6 @@ package com.infrno.chat.controller
 					
 					var now:Date = new Date();
 					peerStatsRecord.time = now.getSeconds();
-					trace("CollectPeerStatsCommand.execute() peerStatsRecord.time:"+peerStatsRecord.time);
 					
 					// TODO Move header data elsewhere
 					peerStatsRecord.room_name								= dataProxy.room_name;
@@ -103,9 +102,8 @@ package com.infrno.chat.controller
 				var peerStats:Object 							= new Object();
 				peerStats.client_suid							= dataProxy.local_userInfoVO.suid;
 				peerStats.peerStatsRecord_array 	= peerStatsRecord_array;
-				msService.sendPeerStats(peerStats);	
+				msService.sendClientPeerStats(peerStats);	
 			}
-
 		}
 	}
 }

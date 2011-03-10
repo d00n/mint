@@ -29,9 +29,9 @@ package com.infrno.chat.model
 			client_array = new Array();	
 			serverStatsVO_array = new Array();
 			
-			_timer = new Timer(seconds_between_stat_collection * 1000);
-			_timer.addEventListener(TimerEvent.TIMER, collectStats);
-			_timer.start();
+//			_timer = new Timer(seconds_between_stat_collection * 1000);
+//			_timer.addEventListener(TimerEvent.TIMER, collectStats);
+//			_timer.start();
 		}
 		
 		public function collectStats(event:TimerEvent):void {

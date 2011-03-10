@@ -79,7 +79,6 @@ package com.infrno.chat.controller
 			statsEvent.client_suid = client_suid;
 			statsEvent.client_peerStatsVO_array = client_peerStatsVO_array;
 			dispatch(statsEvent);
-		}			
-
+		}		
 	}
 }

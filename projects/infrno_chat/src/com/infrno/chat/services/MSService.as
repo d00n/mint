@@ -55,21 +55,21 @@ package com.infrno.chat.services
 				dispatch(new ChatEvent(ChatEvent.RECEIVE_CHAT,msgIn));
 			}
 			
-			_netConnection_client.getUserStats = function():void {
+			_netConnection_client.collectClientServerStats = function():void {
 				dispatch(new StatsEvent(StatsEvent.COLLECT_SERVER_STATS));
 			}
-			
-			_netConnection_client.generatePeerStats = function():void {
+				
+			_netConnection_client.collectClientPeerStats = function():void {
 				dispatch(new StatsEvent(StatsEvent.COLLECT_PEER_STATS));
 			}
 				
-			_netConnection_client.receiveServerStats = function(serverStats:Object):void {
+			_netConnection_client.receiveClientServerStats = function(serverStats:Object):void {
 				var statsEvent:StatsEvent = new StatsEvent(StatsEvent.RECEIVE_SERVER_STATS);
 				statsEvent.statsRecord = serverStats;
 				dispatch(statsEvent);
 			}
 				
-			_netConnection_client.receivePeerStats = function(peerStats:Object):void {
+			_netConnection_client.receiveClientPeerStats = function(peerStats:Object):void {
 				var statsEvent:StatsEvent = new StatsEvent(StatsEvent.RECEIVE_PEER_STATS);
 				statsEvent.peerStats = peerStats;
 				dispatch(statsEvent);
@@ -160,20 +160,14 @@ package com.infrno.chat.services
 			trace("MSService.onMetaData() e:" + e.toString());			
 		}
 		
-		public function getUserStats():void
+		public function sendClientServerStats(serverStats:Object):void
 		{
-			trace("MSService.getUserStats()");
-			_netConnection.call("getUserStats",null);
+			_netConnection.call("receiveClientServerStats",null,serverStats);
 		}
 		
-		public function sendServerStats(serverStats:Object):void
+		public function sendClientPeerStats(peerStats:Object):void
 		{
-			_netConnection.call("receiveUserStats",null,serverStats);
-		}
-		
-		public function sendPeerStats(peerStats:Object):void
-		{
-			_netConnection.call("receivePeerStats",null,peerStats);
+			_netConnection.call("receiveClientPeerStats",null,peerStats);
 		}		
 		
 		public function updatePublishStream():void

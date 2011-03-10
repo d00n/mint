@@ -27,7 +27,7 @@ package com.infrno.chat.view.mediators
 			eventMap.mapListener(eventDispatcher,MSEvent.USERS_OBJ_UPDATE,updateVideoSource);
 			
 			controlButtons.addEventListener("peer_stream",switchToPeer);
-			controlButtons.addEventListener("report_stats",reportStats);
+//			controlButtons.addEventListener("report_stats",reportStats);
 			controlButtons.addEventListener("wowza_stream",switchToWowza);
 		}
 		
@@ -36,10 +36,10 @@ package com.infrno.chat.view.mediators
 			dispatch(new PeerEvent(PeerEvent.PEER_NETCONNECTION_CONNECTED));
 		}
 		
-		private function reportStats(e:Event):void
-		{
-			msService.getUserStats();
-		}
+//		private function reportStats(e:Event):void
+//		{
+//			msService.getUserStats();
+//		}
 		
 		private function switchToWowza(e:Event):void
 		{

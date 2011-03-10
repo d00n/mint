@@ -104,8 +104,8 @@ package com.infrno.chat.controller
 			clientStats.peer_enabled					= dataProxy.peer_enabled;
 			clientStats.peer_capable					= dataProxy.peer_capable;
 			clientStats.use_peer_connection		= dataProxy.use_peer_connection;
-			clientStats.pubishing_audio				= dataProxy.pubishing_audio;
-			clientStats.pubishing_video				= dataProxy.pubishing_video;
+			clientStats.publishing_audio			= dataProxy.pubishing_audio;
+			clientStats.publishing_video			= dataProxy.pubishing_video;
 			
 			clientStats.serverStatsRecord 		= getServerStats();
 			clientStats.peerStatsRecord_array = peerStatsRecord_array;

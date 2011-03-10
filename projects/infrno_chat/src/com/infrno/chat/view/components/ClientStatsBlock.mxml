@@ -13,9 +13,8 @@
 			
 			public var client_suid:String;		
 			
-			private var _serverStatsVO:StatsVO;
-			
-			// TODO this needs to be an array
+			private var _clientStats:Object;
+			private var _client_serverStatsVO:StatsVO;
 			private var _client_peerStatsVO:StatsVO;
 			
 			[Bindable]
@@ -24,33 +23,63 @@
 			[Bindable]
 			public var droppedFrames_label:String;
 			
-			private var serverStatBlockConfig_AC:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			public var peer_enabled_label:String;
+			
+			[Bindable]
+			public var peer_capable_label:String;
+			
+			[Bindable]
+			public var use_peer_connection_label:String;
+			
+			[Bindable]
+			public var micLevel_label:String;
+			
+			[Bindable]
+			public var publishing_audio_label:String;
+			
+			[Bindable]
+			public var publishing_video_label:String;
+			
+			private var sparklineConfig_AC:ArrayCollection = new ArrayCollection();
+			private var labelConfig_AC:ArrayCollection = new ArrayCollection();
 
 			private function initConfig():void{
-				serverStatBlockConfig_AC.addItem( {yFieldName:"currentBytesPerSecond", labelPrefix:"B/s", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
-				serverStatBlockConfig_AC.addItem( {yFieldName:"maxBytesPerSecond", labelPrefix:"Max B/s", toolTip:"Specifies the maximum rate at which the NetStream buffer is filled in bytes per second. This value provides information about the capacity of the client network based on the last messages received by the NetStream object. Depending on the size of the buffer specified in NetStream.bufferTime and the bandwidth available on the client, Flash Media Server fills the buffer in bursts. This property provides the maximum rate at which the client buffer is filled."} );
-//				serverStatBlockConfig_AC.addItem( {yFieldName:"audioBytesPerSecond", labelPrefix:"Audio", toolTip:"Specifies the rate at which the NetStream audio buffer is filled in bytes per second. The value is calculated as a smooth average for the audio data received in the last second."} );
-//				serverStatBlockConfig_AC.addItem( {yFieldName:"videoBytesPerSecond", labelPrefix:"Video", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
-//				serverStatBlockConfig_AC.addItem( {yFieldName:"dataBytesPerSecond", labelPrefix:"Data", toolTip:"Specifies the maximum rate at which the NetStream buffer is filled in bytes per second. This value provides information about the capacity of the client network based on the last messages received by the NetStream object. Depending on the size of the buffer specified in NetStream.bufferTime and the bandwidth available on the client, Flash Media Server fills the buffer in bursts. This property provides the maximum rate at which the client buffer is filled."} );
-				serverStatBlockConfig_AC.addItem( {yFieldName:"audioLossRate", labelPrefix:"Audio loss", toolTip:"Specifies the audio loss for the NetStream session. This value returns a valid value only for RTMFP streams and would return 0 for RTMP streams. Loss rate is defined as the ratio of lost messages to total messages."} );			
-//				serverStatBlockConfig_AC.addItem( {yFieldName:"droppedFrames", labelPrefix:"Dropped frames", toolTip:"Returns the number of video frames dropped in the current NetStream playback session. In recorded streaming or progressive download, if the video is a high-quality or high-resolution, high-bitrate video, the decoder can lag behind in decoding the required number of frames per second if it does not have adequate system CPU resources. In live streaming, the buffer drops video frames if the latency is too high. This property specifies the number of frames that were dropped and not presented normally."} );			
+				sparklineConfig_AC.addItem( {yFieldName:"currentBytesPerSecond", labelPrefix:"B/s", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
+				sparklineConfig_AC.addItem( {yFieldName:"maxBytesPerSecond", labelPrefix:"Max B/s", toolTip:"Specifies the maximum rate at which the NetStream buffer is filled in bytes per second. This value provides information about the capacity of the client network based on the last messages received by the NetStream object. Depending on the size of the buffer specified in NetStream.bufferTime and the bandwidth available on the client, Flash Media Server fills the buffer in bursts. This property provides the maximum rate at which the client buffer is filled."} );
+//				sparklineConfig_AC.addItem( {yFieldName:"audioBytesPerSecond", labelPrefix:"Audio", toolTip:"Specifies the rate at which the NetStream audio buffer is filled in bytes per second. The value is calculated as a smooth average for the audio data received in the last second."} );
+//				sparklineConfig_AC.addItem( {yFieldName:"videoBytesPerSecond", labelPrefix:"Video", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
+//				sparklineConfig_AC.addItem( {yFieldName:"dataBytesPerSecond", labelPrefix:"Data", toolTip:"Specifies the maximum rate at which the NetStream buffer is filled in bytes per second. This value provides information about the capacity of the client network based on the last messages received by the NetStream object. Depending on the size of the buffer specified in NetStream.bufferTime and the bandwidth available on the client, Flash Media Server fills the buffer in bursts. This property provides the maximum rate at which the client buffer is filled."} );
+				sparklineConfig_AC.addItem( {yFieldName:"audioLossRate", labelPrefix:"Audio loss", toolTip:"Specifies the audio loss for the NetStream session. This value returns a valid value only for RTMFP streams and would return 0 for RTMP streams. Loss rate is defined as the ratio of lost messages to total messages."} );			
+				
+				labelConfig_AC.addItem( {yFieldName:"droppedFrames", labelPrefix:"Dropped frames", toolTip:"Returns the number of video frames dropped in the current NetStream playback session. In recorded streaming or progressive download, if the video is a high-quality or high-resolution, high-bitrate video, the decoder can lag behind in decoding the required number of frames per second if it does not have adequate system CPU resources. In live streaming, the buffer drops video frames if the latency is too high. This property specifies the number of frames that were dropped and not presented normally."} );			
 			}			
 			
 			public function set client_serverStatsVO(value:StatsVO):void{
 				if (serverSparkline_vgroup == null)
 					return;
 				
-				_serverStatsVO = value;
-				
-				droppedFrames_label = "Dropped frames: " + _serverStatsVO.lastDataRecord.droppedFrames;			
-				
+				_client_serverStatsVO = value;
 				var sparkline:Sparkline;
 				for (var i:int=0; i<serverSparkline_vgroup.numChildren-1; i++){
 					sparkline = serverSparkline_vgroup.getChildAt(i) as Sparkline;
-					sparkline.statsVO = _serverStatsVO;
-					sparkline.lastValue_label = sparkline.lastValuePrefix +": "+ _serverStatsVO.lastDataRecord[sparkline.yFieldName];
+					sparkline.statsVO = _client_serverStatsVO;
+					sparkline.lastValue_label = sparkline.lastValuePrefix +": "+ _client_serverStatsVO.lastDataRecord[sparkline.yFieldName];
 				}				
+				
+				droppedFrames_label = "Dropped frames: " + _client_serverStatsVO.lastDataRecord['droppedFrames'];				
 			}
+			
+			public function set clientStats(value:Object):void{
+				_clientStats = value;
+				micLevel_label							= "Mic level: " + _clientStats.mic_level;				
+				peer_enabled_label 					= "Peer enabled: " + _clientStats.peer_enabled;				
+				peer_capable_label					= "Peer capable: " + _clientStats.peer_capable;				
+				publishing_audio_label			= "Publishing audio: " + _clientStats.publishing_audio;				
+				publishing_video_label			= "Publishing video: " + _clientStats.publishing_video;				
+				use_peer_connection_label 	= "Use peer connection: " + _clientStats.use_peer_connection;		
+				user_name_label_id.toolTip = _clientStats.capabilities;	
+			}			
 			
 			// TODO What is best place/time to do this?
 			private function handleCreationComplete(event:Event):void	{	
@@ -64,14 +93,14 @@
 				var labelPrefix:String;
 				var toolTip:String;
 				var sparklineConfig:Object;
-				for (var i:int = 0; i < serverStatBlockConfig_AC.length; i++) {
-					sparklineConfig = serverStatBlockConfig_AC.getItemAt(i);
+				for (var i:int = 0; i < sparklineConfig_AC.length; i++) {
+					sparklineConfig = sparklineConfig_AC.getItemAt(i);
 					yFieldName 			= sparklineConfig.yFieldName;
 					labelPrefix 		= sparklineConfig.labelPrefix;
 					toolTip 				= sparklineConfig.toolTip;
 					createSparkline(serverSparkline_vgroup,yFieldName, labelPrefix, toolTip);
 				}
-				
+			
 				// without this, the last sparkline to be added does not display, although it's tooltip works
 				serverSparkline_vgroup.addElement(new Spacer());	
 			}
@@ -85,7 +114,7 @@
 				_sparkline.width 						= serverBlock_vgroup.width;
 				
 				sparkline_vgroup.addElement(_sparkline);	
-			}				
+			}						
 			
 			
 		]]>
@@ -101,6 +130,7 @@
 									width="152"
 									>			
 					<s:Label text="{user_name_label}"
+									 id = "user_name_label_id"
 									 paddingTop="3"
 									 paddingLeft="3"
 									 paddingRight="3"
@@ -111,6 +141,43 @@
 									 paddingRight="3"
 									 fontSize="11"
 									 toolTip="Returns the number of video frames dropped in the current NetStream playback session. In recorded streaming or progressive download, if the video is a high-quality or high-resolution, high-bitrate video, the decoder can lag behind in decoding the required number of frames per second if it does not have adequate system CPU resources. In live streaming, the buffer drops video frames if the latency is too high. This property specifies the number of frames that were dropped and not presented normally."
+									 backgroundColor="0xFFFFFF" />
+					
+					<s:Label text="{peer_enabled_label}"
+									 paddingLeft="3"
+									 paddingRight="3"
+									 fontSize="11"
+									 backgroundColor="0xFFFFFF" />
+					
+					<s:Label text="{peer_capable_label}"
+									 paddingLeft="3"
+									 paddingRight="3"
+									 fontSize="11"
+									 backgroundColor="0xFFFFFF" />
+					
+					<s:Label text="{use_peer_connection_label}"
+									 paddingLeft="3"
+									 paddingRight="3"
+									 fontSize="11"
+									 backgroundColor="0xFFFFFF" />
+					
+					<s:Label text="{publishing_audio_label}"
+									 paddingLeft="3"
+									 paddingRight="3"
+									 fontSize="11"
+									 backgroundColor="0xFFFFFF" />
+					
+					<s:Label text="{publishing_video_label}"
+									 paddingLeft="3"
+									 paddingRight="3"
+									 fontSize="11"
+									 backgroundColor="0xFFFFFF" />
+					
+					<s:Label text="{micLevel_label}"
+									 paddingLeft="3"
+									 paddingRight="3"
+									 fontSize="11"
+									 toolTip="The amount of sound the microphone is detecting. Values range from 0 (no sound is detected) to 100 (very loud sound is detected). The value of this property can help you determine a good value to pass to the Microphone.setSilenceLevel() method. If the microphone is available but is not yet being used because Microphone.getMicrophone() has not been called, this property is set to -1."
 									 backgroundColor="0xFFFFFF" />
 					
 					<s:VGroup id="serverSparkline_vgroup"  	

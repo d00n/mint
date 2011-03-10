@@ -92,6 +92,7 @@ package com.infrno.chat.controller
 		
 			var statsEvent:StatsEvent = new StatsEvent(StatsEvent.DISPLAY_CLIENT_STATS);
 			statsEvent.client_suid = client_suid;
+			statsEvent.clientStats = clientStats;
 			statsEvent.client_serverStatsVO = client_serverStatsVO;
 			statsEvent.client_peerStatsVO_array = client_peerStatsVO_array;
 			dispatch(statsEvent);

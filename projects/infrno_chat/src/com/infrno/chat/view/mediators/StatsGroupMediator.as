@@ -131,7 +131,8 @@ package com.infrno.chat.view.mediators
 				return;
 			}		
 
-			clientStatsBlock.client_serverStatsVO = statsEvent.client_serverStatsVO;		
+			clientStatsBlock.client_serverStatsVO 	= statsEvent.client_serverStatsVO;		
+			clientStatsBlock.clientStats						= statsEvent.clientStats;		
 		}		
 		
 		private function displayPeerStats(statsEvent:StatsEvent):void	{

@@ -31,7 +31,7 @@
 //				peerStatBlockConfig_AC.addItem( {yFieldName:"videoBytesPerSecond", labelPrefix:"Video", toolTip:"Specifies the rate at which the NetStream video buffer is filled in bytes per second. The value is calculated as a smooth average for the video data received in the last second."} );
 //				peerStatBlockConfig_AC.addItem( {yFieldName:"dataBytesPerSecond", labelPrefix:"Data", toolTip:"Specifies the rate at which the NetStream data buffer is filled in bytes per second. The value is calculated as a smooth average for the data messages received in the last second."} );
 				peerStatBlockConfig_AC.addItem( {yFieldName:"audioLossRate", labelPrefix:"Audio loss", toolTip:"Specifies the audio loss for the NetStream session. This value returns a valid value only for RTMFP streams and would return 0 for RTMP streams. Loss rate is defined as the ratio of lost messages to total messages."} );
-				peerStatBlockConfig_AC.addItem( {yFieldName:"droppedFrames", labelPrefix:"Dropped frames", toolTip:"Returns the number of video frames dropped in the current NetStream playback session. In recorded streaming or progressive download, if the video is a high-quality or high-resolution, high-bitrate video, the decoder can lag behind in decoding the required number of frames per second if it does not have adequate system CPU resources. In live streaming, the buffer drops video frames if the latency is too high. This property specifies the number of frames that were dropped and not presented normally."} );
+//				peerStatBlockConfig_AC.addItem( {yFieldName:"droppedFrames", labelPrefix:"Dropped frames", toolTip:"Returns the number of video frames dropped in the current NetStream playback session. In recorded streaming or progressive download, if the video is a high-quality or high-resolution, high-bitrate video, the decoder can lag behind in decoding the required number of frames per second if it does not have adequate system CPU resources. In live streaming, the buffer drops video frames if the latency is too high. This property specifies the number of frames that were dropped and not presented normally."} );
 			
 			}			
 			
@@ -46,6 +46,8 @@
 					sparkline.statsVO = _peerStatsVO;
 					sparkline.lastValue_label = sparkline.lastValuePrefix +": "+ _peerStatsVO.lastDataRecord[sparkline.yFieldName];
 				}				
+				
+				droppedFrames_label = "Dropped frames: " + _peerStatsVO.lastDataRecord['droppedFrames'];
 			}
 			
 			// TODO What is best place/time to do this?
@@ -106,6 +108,8 @@
 			<s:Label text="{droppedFrames_label}"
 							 paddingLeft="3"
 							 paddingRight="3"
+							 fontSize="11"
+							 toolTip="Returns the number of video frames dropped in the current NetStream playback session. In recorded streaming or progressive download, if the video is a high-quality or high-resolution, high-bitrate video, the decoder can lag behind in decoding the required number of frames per second if it does not have adequate system CPU resources. In live streaming, the buffer drops video frames if the latency is too high. This property specifies the number of frames that were dropped and not presented normally."
 							 backgroundColor="0xFFFFFF" />
 			
 			<s:VGroup id="peerSparkline_vgroup">			

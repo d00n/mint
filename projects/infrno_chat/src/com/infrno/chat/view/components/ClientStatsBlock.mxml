@@ -2,8 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				 xmlns:s="library://ns.adobe.com/flex/spark" 
 				 xmlns:mx="library://ns.adobe.com/flex/mx"
-				 creationComplete="handleCreationComplete(event);"
-				 
+				 creationComplete="handleCreationComplete(event);"				 
 				 >
 	<fx:Script>
 		<![CDATA[			
@@ -109,7 +108,7 @@
 				</s:VGroup>
 			</s:VGroup>
 					
-			<s:List id="peerBlock_list" 
+			<s:List id="peerStatsBlock_list" 
 							width="160"
 							itemRenderer="spark.skins.spark.DefaultComplexItemRenderer"
 							horizontalCenter="0"

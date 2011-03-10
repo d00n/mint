@@ -10,6 +10,7 @@ package com.infrno.chat.controller
 	import flash.net.NetStream;
 	import flash.net.NetStreamInfo;
 	import flash.system.Capabilities;
+	import flash.system.System;
 	
 	import org.robotlegs.mvcs.Command;
 	
@@ -55,6 +56,10 @@ package com.infrno.chat.controller
 					
 	//				peer_stats.application_name				= dataProxy.media_app;
 					
+					var now:Date = new Date();
+					peerStatsRecord.time = now.getSeconds();
+					trace("CollectPeerStatsCommand.execute() peerStatsRecord.time:"+peerStatsRecord.time);
+					
 					// TODO Move header data elsewhere
 					peerStatsRecord.room_name								= dataProxy.room_name;
 					peerStatsRecord.room_id									= dataProxy.room_id;
@@ -91,15 +96,16 @@ package com.infrno.chat.controller
 //					statsProxy.submitPeerStats(peer_stats);
 					
 					peerStatsRecord_array[peerStatsRecord.remote_suid] = peerStatsRecord;
-				}
-				
-				if (peerStatsRecord_array.length > 0) {
-					var peerStats:Object 							= new Object();
-					peerStats.client_suid							= dataProxy.local_userInfoVO.suid;
-					peerStats.peerStatsRecord_array 	= peerStatsRecord_array;
-					msService.sendPeerStats(peerStats);	
-				}
+				}				
 			}
+			
+			if (peerStatsRecord_array.length > 0) {
+				var peerStats:Object 							= new Object();
+				peerStats.client_suid							= dataProxy.local_userInfoVO.suid;
+				peerStats.peerStatsRecord_array 	= peerStatsRecord_array;
+				msService.sendPeerStats(peerStats);	
+			}
+
 		}
 	}
 }

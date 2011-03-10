@@ -10,13 +10,13 @@
 			import mx.events.ResizeEvent;
 			
 			protected function statsGroup_resizeHandler(event:ResizeEvent):void	{
-				statsGroup_list.width = this.width;
-				statsGroup_list.height = this.height;
+				clientStatsBlock_list.width = this.width;
+				clientStatsBlock_list.height = this.height;
 			}
 		]]>
 	</fx:Script>
 	
-	<s:List id="statsGroup_list" 
+	<s:List id="clientStatsBlock_list" 
 					width="100%"
 					itemRenderer="spark.skins.spark.DefaultComplexItemRenderer"
 					horizontalCenter="0"

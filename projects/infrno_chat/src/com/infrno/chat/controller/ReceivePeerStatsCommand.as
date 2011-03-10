@@ -72,6 +72,8 @@ package com.infrno.chat.controller
 				}
 			}
 			
+//			trace('ReceivePeerStatsCommand.execute() client_suid:'+client_suid+' peer_suid:'+peer_suid);
+			
 		
 			var statsEvent:StatsEvent = new StatsEvent(StatsEvent.DISPLAY_PEER_STATS);
 			statsEvent.client_suid = client_suid;

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				 xmlns:s="library://ns.adobe.com/flex/spark" 
-				 xmlns:mx="library://ns.adobe.com/flex/mx"				 
-				 creationComplete="handleCreationComplete(event);"
+				 xmlns:mx="library://ns.adobe.com/flex/mx"
+				 creationComplete="handleCreationComplete(event);"				 
 				 >
 	<fx:Script>
 		<![CDATA[			
@@ -11,91 +11,181 @@
 			import mx.collections.ArrayCollection;
 			import mx.controls.Spacer;
 			
-			public var client_suid:String;
+			public var client_suid:String;		
 			
-			private var _clientStatsVO:StatsVO;
+			private var _clientStats:Object;
+			private var _client_serverStatsVO:StatsVO;
+			private var _client_peerStatsVO:StatsVO;
 			
 			[Bindable]
-			public var blockName_label:String;
+			public var user_name_label:String;
 			
 			[Bindable]
 			public var droppedFrames_label:String;
 			
-			private var statBlockConfig_AC:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			public var peer_enabled_label:String;
+			
+			[Bindable]
+			public var peer_capable_label:String;
+			
+			[Bindable]
+			public var use_peer_connection_label:String;
+			
+			[Bindable]
+			public var micLevel_label:String;
+			
+			[Bindable]
+			public var publishing_audio_label:String;
+			
+			[Bindable]
+			public var publishing_video_label:String;
+			
+			[Bindable]
+			public var user_name_label_id_toolTip:String;
+			
+			private var server_sparklineConfig_AC:ArrayCollection = new ArrayCollection();
+			private var labelConfig_AC:ArrayCollection = new ArrayCollection();
 
-			public function initConfig():void{
-				statBlockConfig_AC.addItem( {yFieldName:"FileInBytesRate", labelPrefix:"FileInBytesRate", toolTip:""} );			
+			private function initConfig():void{
+//				server_sparklineConfig_AC.addItem( {yFieldName:"currentBytesPerSecond", labelPrefix:"B/s", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
+//				server_sparklineConfig_AC.addItem( {yFieldName:"maxBytesPerSecond", labelPrefix:"Max B/s", toolTip:"Specifies the maximum rate at which the NetStream buffer is filled in bytes per second. This value provides information about the capacity of the client network based on the last messages received by the NetStream object. Depending on the size of the buffer specified in NetStream.bufferTime and the bandwidth available on the client, Flash Media Server fills the buffer in bursts. This property provides the maximum rate at which the client buffer is filled."} );
+//				sparklineConfig_AC.addItem( {yFieldName:"audioBytesPerSecond", labelPrefix:"Audio", toolTip:"Specifies the rate at which the NetStream audio buffer is filled in bytes per second. The value is calculated as a smooth average for the audio data received in the last second."} );
+//				sparklineConfig_AC.addItem( {yFieldName:"videoBytesPerSecond", labelPrefix:"Video", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
+//				sparklineConfig_AC.addItem( {yFieldName:"dataBytesPerSecond", labelPrefix:"Data", toolTip:"Specifies the maximum rate at which the NetStream buffer is filled in bytes per second. This value provides information about the capacity of the client network based on the last messages received by the NetStream object. Depending on the size of the buffer specified in NetStream.bufferTime and the bandwidth available on the client, Flash Media Server fills the buffer in bursts. This property provides the maximum rate at which the client buffer is filled."} );
+//				server_sparklineConfig_AC.addItem( {yFieldName:"audioLossRate", labelPrefix:"Audio loss", toolTip:"Specifies the audio loss for the NetStream session. This value returns a valid value only for RTMFP streams and would return 0 for RTMP streams. Loss rate is defined as the ratio of lost messages to total messages."} );			
+				
+//				labelConfig_AC.addItem( {yFieldName:"droppedFrames", labelPrefix:"Dropped frames", toolTip:"Returns the number of video frames dropped in the current NetStream playback session. In recorded streaming or progressive download, if the video is a high-quality or high-resolution, high-bitrate video, the decoder can lag behind in decoding the required number of frames per second if it does not have adequate system CPU resources. In live streaming, the buffer drops video frames if the latency is too high. This property specifies the number of frames that were dropped and not presented normally."} );			
 			}			
 			
-			public function set statsVO(value:StatsVO):void{
-				if (sparkline_vgroup == null)
+			public function set client_serverStatsVO(value:StatsVO):void{
+				if (serverSparkline_vgroup == null)
 					return;
-
-				_clientStatsVO = value;
-				var sparkline:Sparkline;					
-				for (var i:int=0; i<sparkline_vgroup.numChildren-1; i++){
-					sparkline = sparkline_vgroup.getChildAt(i) as Sparkline;
-					sparkline.statsVO = _clientStatsVO;
-					sparkline.lastValue_label = sparkline.lastValuePrefix +": "+ _clientStatsVO.lastDataRecord[sparkline.yFieldName];
+				
+				_client_serverStatsVO = value;
+				var sparkline:Sparkline;
+				for (var i:int=0; i<serverSparkline_vgroup.numChildren-1; i++){
+					sparkline = serverSparkline_vgroup.getChildAt(i) as Sparkline;
+					sparkline.statsVO = _client_serverStatsVO;
+					sparkline.lastValue_label = sparkline.lastValuePrefix +": "+ _client_serverStatsVO.lastDataRecord[sparkline.yFieldName];						
 				}				
 				
+				droppedFrames_label = "Dropped frames: " + _client_serverStatsVO.lastDataRecord['droppedFrames'];				
 			}
+			
+			public function set clientStats(value:Object):void{
+				_clientStats = value;
+				micLevel_label							= "Mic level: " + _clientStats.mic_level;				
+				peer_enabled_label 					= "Peer enabled: " + _clientStats.peer_enabled;				
+				peer_capable_label					= "Peer capable: " + _clientStats.peer_capable;				
+				publishing_audio_label			= "Publishing audio: " + _clientStats.publishing_audio;				
+				publishing_video_label			= "Publishing video: " + _clientStats.publishing_video;				
+				use_peer_connection_label 	= "Use peer connection: " + _clientStats.use_peer_connection;		
+				user_name_label_id_toolTip 	= _clientStats.capabilities;	
+			}			
 			
 			// TODO What is best place/time to do this?
 			private function handleCreationComplete(event:Event):void	{	
-				trace("PeerStatsBlock.handleCreationComplete()")
 				initConfig();
-				createSparklineBlock();
+				createServerBlock();				
 			}
 			
-			public function createSparklineBlock():void{
+			public function createServerBlock():void{
+				user_name_label = "Server";
+					
 				var yFieldName:String;
 				var labelPrefix:String;
 				var toolTip:String;
 				var sparklineConfig:Object;
-				for (var i:int = 0; i < statBlockConfig_AC.length; i++) {
-					sparklineConfig = statBlockConfig_AC.getItemAt(i);
+				for (var i:int = 0; i < server_sparklineConfig_AC.length; i++) {
+					sparklineConfig = server_sparklineConfig_AC.getItemAt(i);
 					yFieldName 			= sparklineConfig.yFieldName;
 					labelPrefix 		= sparklineConfig.labelPrefix;
 					toolTip 				= sparklineConfig.toolTip;
-					createSparkline(yFieldName, labelPrefix, toolTip);
+					createSparkline(serverSparkline_vgroup,yFieldName, labelPrefix, toolTip);
 				}
-				
-				// without this, the last sparkline to be added does not display, (although the tooltip works!?)
-				sparkline_vgroup.addElement(new Spacer());	
-				
+			
+				// without this, the last sparkline to be added does not display, although it's tooltip works
+				serverSparkline_vgroup.addElement(new Spacer());	
 			}
-
 			
 			// WARNING: instantiating Sparkline in the mediator causes the backward/outside container display bug
-			public function createSparkline(yFieldName:String, labelPrefix:String="", toolTip:String=""):void {
+			public function createSparkline(sparkline_vgroup:VGroup, yFieldName:String, labelPrefix:String="", toolTip:String=""):void {
 				var _sparkline:Sparkline 		= new Sparkline(); 
 				_sparkline.yFieldName 			= yFieldName;
 				_sparkline.lastValuePrefix 	= labelPrefix;
 				_sparkline.toolTip			 		= toolTip;
-				_sparkline.width 						= borderContainer.width;
+				_sparkline.width 						= serverBlock_vgroup.width;
 				
 				sparkline_vgroup.addElement(_sparkline);	
-			}				
+			}						
 			
 			
 		]]>
 	</fx:Script>	
-	<s:BorderContainer id="borderContainer"
-										 backgroundColor="#FFFFFF" 
-										 borderColor="#FFFFFF"
-										 borderWeight="0"
-										 >
-
+		<s:BorderContainer id="borderContainer"
+											 backgroundColor="#FFFFFF" 
+											 borderColor="#ececec"
+											 width="100%" 
+											 >
+	
+			<s:HGroup>			
+				<s:VGroup id="serverBlock_vgroup" 										 
+									width="152"
+									>			
+					<s:Label text="{user_name_label}"
+									 id = "user_name_label_id"
+									 paddingTop="3"
+									 paddingLeft="3"
+									 paddingRight="3"
+									 toolTip="{user_name_label_id_toolTip}"
+									 backgroundColor="0xFFFFFF" />		
+					
+					<s:Label text="{droppedFrames_label}"
+									 paddingLeft="3"
+									 paddingRight="3"
+									 fontSize="11"
+									 toolTip="Returns the number of video frames dropped in the current NetStream playback session. In recorded streaming or progressive download, if the video is a high-quality or high-resolution, high-bitrate video, the decoder can lag behind in decoding the required number of frames per second if it does not have adequate system CPU resources. In live streaming, the buffer drops video frames if the latency is too high. This property specifies the number of frames that were dropped and not presented normally."
+									 backgroundColor="0xFFFFFF" />
 				
-		<s:VGroup width="152" >	
+					
+				</s:VGroup>
+				
+				<s:VGroup>
+					<s:Label text="Server"
+									 paddingTop="3"
+									 paddingLeft="3"
+									 paddingRight="3"
+									 backgroundColor="0xFFFFFF" />	
+					
+
+					<s:VGroup id="serverSparkline_vgroup"  	
+										left="0" />
+						
+						
+				</s:VGroup>
+
+						
+				<s:List id="clientStatsBlock_list" 
+								itemRenderer="spark.skins.spark.DefaultComplexItemRenderer"
+								horizontalCenter="0"
+								verticalCenter="0"
+								borderColor="#FFFFFF"
+								>
+					
+					<s:layout>
+						<s:HorizontalLayout gap="0"/>
+					</s:layout>
+					
+					<s:dataProvider >
+						<s:ArrayList>
+						</s:ArrayList>
+					</s:dataProvider>
+					
+				</s:List>			
+				
+			</s:HGroup>
 			
-			<s:Label text="{blockName_label}"
-							 backgroundColor="0xFFFFFF" />		
-			
-			<s:VGroup id="sparkline_vgroup" />			
-			
-		</s:VGroup>
-			
-	</s:BorderContainer>	
+		</s:BorderContainer>
+	
 </s:Group>

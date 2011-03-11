@@ -30,7 +30,11 @@ package com.infrno.chat.controller
 				if (server_clientStatsVO.data_AC.length > StatsProxy.NUMBER_OF_DATA_RECORDS_TO_KEEP) {
 					server_clientStatsVO.data_AC.removeItemAt(0);
 				}
-			}					
+			}
+			
+			var statsEvent:StatsEvent = new StatsEvent(StatsEvent.DISPLAY_SERVER_STATS);
+			statsEvent.server_clientStatsVO_array = statsProxy.server_clientStatsVO_array;
+			dispatch(statsEvent);
 		}	
 	}
 }

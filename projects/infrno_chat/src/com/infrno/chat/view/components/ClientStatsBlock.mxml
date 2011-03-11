@@ -41,6 +41,9 @@
 			[Bindable]
 			public var publishing_video_label:String;
 			
+			[Bindable]
+			public var user_name_label_id_toolTip:String;
+			
 			private var sparklineConfig_AC:ArrayCollection = new ArrayCollection();
 			private var labelConfig_AC:ArrayCollection = new ArrayCollection();
 
@@ -78,7 +81,7 @@
 				publishing_audio_label			= "Publishing audio: " + _clientStats.publishing_audio;				
 				publishing_video_label			= "Publishing video: " + _clientStats.publishing_video;				
 				use_peer_connection_label 	= "Use peer connection: " + _clientStats.use_peer_connection;		
-				user_name_label_id.toolTip = _clientStats.capabilities;	
+				user_name_label_id_toolTip 	= _clientStats.capabilities;	
 			}			
 			
 			// TODO What is best place/time to do this?
@@ -134,6 +137,7 @@
 									 paddingTop="3"
 									 paddingLeft="3"
 									 paddingRight="3"
+									 toolTip="{user_name_label_id_toolTip}"
 									 backgroundColor="0xFFFFFF" />		
 					
 					<s:Label text="{droppedFrames_label}"

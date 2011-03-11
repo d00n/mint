@@ -93,6 +93,7 @@
 	<s:BorderContainer id="borderContainer"
 										 backgroundColor="#FFFFFF" 
 										 borderColor="#FFFFFF"
+										 borderWeight="0"
 										 >
 
 				
@@ -100,9 +101,7 @@
 							width="152" 
 							>			
 			<s:Label text="{user_name_label}"
-							 paddingTop="3"
-							 paddingLeft="3"
-							 paddingRight="3"
+
 							 backgroundColor="0xFFFFFF" />		
 			
 			<s:Label text="{droppedFrames_label}"

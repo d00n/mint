@@ -59,21 +59,17 @@ package com.infrno.chat.services
 				dispatch(new StatsEvent(StatsEvent.COLLECT_CLIENT_STATS));
 			}
 				
-//			_netConnection_client.collectClientPeerStats = function():void {
-//				dispatch(new StatsEvent(StatsEvent.COLLECT_PEER_STATS));
-//			}
-				
 			_netConnection_client.receiveClientStats = function(clientStats:Object):void {
 				var statsEvent:StatsEvent = new StatsEvent(StatsEvent.RECEIVE_CLIENT_STATS);
 				statsEvent.clientStats = clientStats;
 				dispatch(statsEvent);
 			}
 				
-//			_netConnection_client.receiveClientPeerStats = function(peerStats:Object):void {
-//				var statsEvent:StatsEvent = new StatsEvent(StatsEvent.RECEIVE_PEER_STATS);
-//				statsEvent.peerStats = peerStats;
-//				dispatch(statsEvent);
-//			}
+			_netConnection_client.receiveServerStats = function(serverStats:Object):void {
+				var statsEvent:StatsEvent = new StatsEvent(StatsEvent.RECEIVE_SERVER_STATS);
+				statsEvent.serverStats = serverStats;
+				dispatch(statsEvent);
+			}
 				
 			_netConnection_client.usePeerConnection = function(use_peer_connection:Boolean):void {
 				trace("MSService.setupClient() _nc_client.usePeerConnection() use_peer_connection:"+use_peer_connection);

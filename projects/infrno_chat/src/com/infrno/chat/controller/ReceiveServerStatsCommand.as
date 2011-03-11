@@ -16,28 +16,21 @@ package com.infrno.chat.controller
 		public var statsProxy:StatsProxy;
 		
 		override public function execute():void{
-//			trace('ReceiveServerStatsCommand.execute()');
+			var serverStats:Object = event.serverStats;
 			
-			var serverStatsRecord:Object = event.clientStats;
-			
-			var serverStatsVO:StatsVO = statsProxy.serverStatsVO_array[serverStatsRecord.suid];
-			if (serverStatsVO == null) {
-				serverStatsVO = new StatsVO();
-				statsProxy.serverStatsVO_array[serverStatsRecord.suid] = serverStatsVO;
-			}
-			
-			// Hrmmmm..
-			serverStatsVO.suid = serverStatsRecord.suid;
-			
-			serverStatsVO.data_AC.addItem(serverStatsRecord);		
-			
-			if (serverStatsVO.data_AC.length > StatsProxy.NUMBER_OF_DATA_RECORDS_TO_KEEP) {
-				serverStatsVO.data_AC.removeItemAt(0);
-			}
-			
-			var statsEvent:StatsEvent = new StatsEvent(StatsEvent.DISPLAY_SERVER_STATS);
-//			statsEvent.serverStatsVO = serverStatsVO;
-			dispatch(statsEvent);
+			var client_suid:String;
+			for (client_suid in serverStats) {
+				var server_clientStatsVO:StatsVO = statsProxy.server_clientStatsVO_array[client_suid];
+				if (server_clientStatsVO == null) {
+					server_clientStatsVO = new StatsVO();
+					statsProxy.server_clientStatsVO_array[client_suid] = server_clientStatsVO;
+				}
+				
+				server_clientStatsVO.data_AC.addItem(serverStats[client_suid]);		
+				if (server_clientStatsVO.data_AC.length > StatsProxy.NUMBER_OF_DATA_RECORDS_TO_KEEP) {
+					server_clientStatsVO.data_AC.removeItemAt(0);
+				}
+			}					
 		}	
 	}
 }

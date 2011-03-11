@@ -64,7 +64,7 @@
 				for (var i:int=0; i<serverSparkline_vgroup.numChildren-1; i++){
 					sparkline = serverSparkline_vgroup.getChildAt(i) as Sparkline;
 					sparkline.statsVO = _client_serverStatsVO;
-					sparkline.lastValue_label = sparkline.lastValuePrefix +": "+ _client_serverStatsVO.lastDataRecord[sparkline.yFieldName];
+					sparkline.lastValue_label = sparkline.lastValuePrefix +": "+ _client_serverStatsVO.lastDataRecord[sparkline.yFieldName];						
 				}				
 				
 				droppedFrames_label = "Dropped frames: " + _client_serverStatsVO.lastDataRecord['droppedFrames'];				
@@ -180,11 +180,22 @@
 									 toolTip="The amount of sound the microphone is detecting. Values range from 0 (no sound is detected) to 100 (very loud sound is detected). The value of this property can help you determine a good value to pass to the Microphone.setSilenceLevel() method. If the microphone is available but is not yet being used because Microphone.getMicrophone() has not been called, this property is set to -1."
 									 backgroundColor="0xFFFFFF" />
 					
-					<s:VGroup id="serverSparkline_vgroup"  	
-										left="0"
-	
-										/>				
 				</s:VGroup>
+				
+				<s:VGroup>
+					<s:Label text="Server"
+									 paddingTop="3"
+									 paddingLeft="3"
+									 paddingRight="3"
+									 backgroundColor="0xFFFFFF" />	
+					
+
+					<s:VGroup id="serverSparkline_vgroup"  	
+										left="0" />
+						
+						
+				</s:VGroup>
+
 						
 				<s:List id="peerStatsBlock_list" 
 								itemRenderer="spark.skins.spark.DefaultComplexItemRenderer"

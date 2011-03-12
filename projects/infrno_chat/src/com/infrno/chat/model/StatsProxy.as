@@ -17,7 +17,7 @@ package com.infrno.chat.model
 		public var client_serverStatsVO_array:Array;
 		public var peer_array:Array;
 		
-		public static const NUMBER_OF_DATA_RECORDS_TO_KEEP:int = 60;
+		public static const NUMBER_OF_DATA_RECORDS_TO_KEEP:int = 10;
 		
 		public function StatsProxy() {
 		}

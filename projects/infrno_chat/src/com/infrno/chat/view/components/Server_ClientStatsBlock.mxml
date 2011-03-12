@@ -30,7 +30,7 @@
 			public function set statsVO(value:StatsVO):void{
 				if (clientSparkline_vgroup == null)
 					return;
-
+				
 				_clientStatsVO = value;
 				var sparkline:Sparkline;					
 				for (var i:int=0; i<clientSparkline_vgroup.numChildren-1; i++){
@@ -39,6 +39,7 @@
 					sparkline.lastValue_label = sparkline.lastValuePrefix +": "+ _clientStatsVO.lastDataRecord[sparkline.yFieldName];
 				}				
 				
+				blockName_label =  "Client: " + _clientStatsVO.lastDataRecord.user_name;				
 			}
 			
 			// TODO What is best place/time to do this?

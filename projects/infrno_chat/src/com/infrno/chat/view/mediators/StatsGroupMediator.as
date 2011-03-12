@@ -139,13 +139,7 @@ package com.infrno.chat.view.mediators
 				if (server_clientStatsBlock == null) {
 					server_clientStatsBlock = new Server_ClientStatsBlock();
 					server_clientStatsBlock.client_suid = client_suid;
-					
 					statsGroup.serverStatsBlock.clientStatsBlock_list.dataProvider.addItem(server_clientStatsBlock);
-					
-//					server_ClientStatsBlock.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
-//					{
-//						
-//					});
 				}
 				
 				server_clientStatsBlock.statsVO = server_clientStatsVO;

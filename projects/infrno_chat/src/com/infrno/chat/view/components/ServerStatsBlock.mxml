@@ -133,12 +133,10 @@
 				<s:VGroup id="serverBlock_vgroup" 										 
 									width="152"
 									>			
-					<s:Label text="{user_name_label}"
-									 id = "user_name_label_id"
+					<s:Label text="Server"
 									 paddingTop="3"
 									 paddingLeft="3"
 									 paddingRight="3"
-									 toolTip="{user_name_label_id_toolTip}"
 									 backgroundColor="0xFFFFFF" />		
 					
 					<s:Label text="{droppedFrames_label}"
@@ -152,11 +150,7 @@
 				</s:VGroup>
 				
 				<s:VGroup>
-					<s:Label text="Server"
-									 paddingTop="3"
-									 paddingLeft="3"
-									 paddingRight="3"
-									 backgroundColor="0xFFFFFF" />	
+
 					
 
 					<s:VGroup id="serverSparkline_vgroup"  	

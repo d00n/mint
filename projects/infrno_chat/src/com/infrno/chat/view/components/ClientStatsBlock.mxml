@@ -88,10 +88,10 @@
 			private function handleCreationComplete(event:Event):void	{	
 				trace("ClientStatsBlock.handleCreationComplete()")
 				initConfig();
-				createServerBlock();				
+				createSparklineBlock();				
 			}
 			
-			public function createServerBlock():void{
+			public function createSparklineBlock():void{
 				var yFieldName:String;
 				var labelPrefix:String;
 				var toolTip:String;

@@ -127,26 +127,28 @@ package com.infrno.chat.view.mediators
 			if (!statsGroup.serverStatsBlock.initialized)
 				return;
 			
-			var server_ClientStatsBlock:Server_ClientStatsBlock;
+			var server_clientStatsBlock:Server_ClientStatsBlock;
 			var server_clientStatsVO:StatsVO;
 			var server_clientStatsVO_array:Array = statsEvent.server_clientStatsVO_array;
 			
 			for (var  client_suid:String in server_clientStatsVO_array) {
 				server_clientStatsVO = server_clientStatsVO_array[client_suid] as StatsVO;
 				
-				server_ClientStatsBlock = getServer_ClientStatsBlock(client_suid);
+				server_clientStatsBlock = getServer_ClientStatsBlock(client_suid);
 				
-				if (server_ClientStatsBlock == null) {
-					server_ClientStatsBlock = new Server_ClientStatsBlock();
-					server_ClientStatsBlock.client_suid = client_suid;
+				if (server_clientStatsBlock == null) {
+					server_clientStatsBlock = new Server_ClientStatsBlock();
+					server_clientStatsBlock.client_suid = client_suid;
 					
-					server_ClientStatsBlock.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
-					{
-						statsGroup.serverStatsBlock.clientStatsBlock_list.dataProvider.addItem(this);
-					});
+					statsGroup.serverStatsBlock.clientStatsBlock_list.dataProvider.addItem(server_clientStatsBlock);
+					
+//					server_ClientStatsBlock.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
+//					{
+//						
+//					});
 				}
 				
-				server_ClientStatsBlock.statsVO = server_clientStatsVO;
+				server_clientStatsBlock.statsVO = server_clientStatsVO;
 			}
 			
 

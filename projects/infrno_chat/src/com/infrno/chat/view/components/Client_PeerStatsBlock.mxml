@@ -54,10 +54,10 @@
 			private function handleCreationComplete(event:Event):void	{	
 				trace("PeerStatsBlock.handleCreationComplete()")
 				initConfig();
-				createPeerBlock();
+				createSparklineBlock();
 			}
 			
-			public function createPeerBlock():void{
+			public function createSparklineBlock():void{
 				var yFieldName:String;
 				var labelPrefix:String;
 				var toolTip:String;
@@ -97,11 +97,8 @@
 										 >
 
 				
-		<s:VGroup id="peerBlock_vgroup" 
-							width="152" 
-							>			
+		<s:VGroup	width="152">			
 			<s:Label text="{user_name_label}"
-
 							 backgroundColor="0xFFFFFF" />		
 			
 			<s:Label text="{droppedFrames_label}"

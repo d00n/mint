@@ -61,8 +61,7 @@
 				}
 				
 				// without this, the last sparkline to be added does not display, (although the tooltip works!?)
-				clientSparkline_vgroup.addElement(new Spacer());	
-				
+				clientSparkline_vgroup.addElement(new Spacer());					
 			}
 
 			

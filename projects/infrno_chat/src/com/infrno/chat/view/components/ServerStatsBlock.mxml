@@ -15,7 +15,7 @@
 			
 			private var _clientStats:Object;
 			private var _client_serverStatsVO:StatsVO;
-			private var _client_peerStatsVO:StatsVO;
+//			private var _client_peerStatsVO:StatsVO;
 			
 			[Bindable]
 			public var user_name_label:String;
@@ -58,20 +58,20 @@
 //				labelConfig_AC.addItem( {yFieldName:"droppedFrames", labelPrefix:"Dropped frames", toolTip:"Returns the number of video frames dropped in the current NetStream playback session. In recorded streaming or progressive download, if the video is a high-quality or high-resolution, high-bitrate video, the decoder can lag behind in decoding the required number of frames per second if it does not have adequate system CPU resources. In live streaming, the buffer drops video frames if the latency is too high. This property specifies the number of frames that were dropped and not presented normally."} );			
 			}			
 			
-			public function set client_serverStatsVO(value:StatsVO):void{
-				if (serverSparkline_vgroup == null)
-					return;
-				
-				_client_serverStatsVO = value;
-				var sparkline:Sparkline;
-				for (var i:int=0; i<serverSparkline_vgroup.numChildren-1; i++){
-					sparkline = serverSparkline_vgroup.getChildAt(i) as Sparkline;
-					sparkline.statsVO = _client_serverStatsVO;
-					sparkline.lastValue_label = sparkline.lastValuePrefix +": "+ _client_serverStatsVO.lastDataRecord[sparkline.yFieldName];						
-				}				
-				
-				droppedFrames_label = "Dropped frames: " + _client_serverStatsVO.lastDataRecord['droppedFrames'];				
-			}
+//			public function set client_serverStatsVO(value:StatsVO):void{
+//				if (serverSparkline_vgroup == null)
+//					return;
+//				
+//				_client_serverStatsVO = value;
+//				var sparkline:Sparkline;
+//				for (var i:int=0; i<serverSparkline_vgroup.numChildren-1; i++){
+//					sparkline = serverSparkline_vgroup.getChildAt(i) as Sparkline;
+//					sparkline.statsVO = _client_serverStatsVO;
+//					sparkline.lastValue_label = sparkline.lastValuePrefix +": "+ _client_serverStatsVO.lastDataRecord[sparkline.yFieldName];						
+//				}				
+//				
+//				droppedFrames_label = "Dropped frames: " + _client_serverStatsVO.lastDataRecord['droppedFrames'];				
+//			}
 			
 			public function set clientStats(value:Object):void{
 				_clientStats = value;

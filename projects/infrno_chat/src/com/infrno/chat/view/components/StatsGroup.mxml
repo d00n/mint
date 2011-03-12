@@ -11,31 +11,33 @@
 			import mx.events.ResizeEvent;
 			
 			protected function statsGroup_resizeHandler(event:ResizeEvent):void	{
-				clientStatsBlock_list.width = this.width;
-				clientStatsBlock_list.height = this.height;
+				statsGroup_id.width = this.width;
+				statsGroup_id.height = this.height;
 			}
 		]]>
 	</fx:Script>
 	
-	<MyComp:ServerStatsBlock id="serverStatsBlock"/>
-
-	<s:List id="clientStatsBlock_list" 
-
-					itemRenderer="spark.skins.spark.DefaultComplexItemRenderer"
-					horizontalCenter="0"
-					verticalCenter="0"
-					>
-		
-		<s:layout>
-			<s:VerticalLayout gap="0"/>
-		</s:layout>
-		
-		
-		<s:dataProvider >
-			<s:ArrayList>
-			</s:ArrayList>
-		</s:dataProvider>
-		
-	</s:List>
+	<s:VGroup id="statsGroup_id">		
+		<MyComp:ServerStatsBlock id="serverStatsBlock"/>
+	
+		<s:List id="clientStatsBlock_list" 	
+						itemRenderer="spark.skins.spark.DefaultComplexItemRenderer"
+						horizontalCenter="0"
+						verticalCenter="0"
+						borderVisible="false"
+						>
+			
+			<s:layout>
+				<s:VerticalLayout gap="0"/>
+			</s:layout>
+			
+			
+			<s:dataProvider >
+				<s:ArrayList>
+				</s:ArrayList>
+			</s:dataProvider>
+			
+		</s:List>
+	</s:VGroup>
 	
 </s:Group>

@@ -48,7 +48,9 @@ package com.infrno.chat.view.mediators
 		
 		private function updateStatGroup(userInfoVO_array:Array, local_userInfoVO:UserInfoVO):void
 		{
-			removeStalePeerStatBlocks(userInfoVO_array);			
+			removeStaleServer_ClientStatBlocks(userInfoVO_array);			
+
+			removeStaleClient_PeerStatBlocks(userInfoVO_array);			
 			removeStaleClientStatBlocks(userInfoVO_array);			
 			createNewClientStatsBlocks(userInfoVO_array);
 		}
@@ -75,8 +77,9 @@ package com.infrno.chat.view.mediators
 				}
 			}
 		}
+	
 		
-		private function removeStalePeerStatBlocks(userInfoVO_array:Array):void {
+		private function removeStaleClient_PeerStatBlocks(userInfoVO_array:Array):void {
 			var statsGroup_list_dataProviderLength:int = statsGroup.clientStatsBlock_list.dataProvider.length;
 			for(var i:int = 0; i<statsGroup_list_dataProviderLength; i++){
 				try{					
@@ -120,16 +123,38 @@ package com.infrno.chat.view.mediators
 					trace("StatsGroupMediator.createClientStatsBlocks() found existing ClientStatsBlock for suid:"+suid);					
 				}				
 			}
-		}		
-
-		private function displayServerStats(statsEvent:StatsEvent):void	{
-			
+		}				
+		
+		private function removeStaleServer_ClientStatBlocks(userInfoVO_array:Array):void {
 			if (!statsGroup.serverStatsBlock.initialized)
 				return;
 			
+			var server_ClientStatsBlock:Server_ClientStatsBlock;
+			var server_clientStatsBlock_list_dataProviderLength:int = statsGroup.serverStatsBlock.clientStatsBlock_list.dataProvider.length;
+			for(var i:int = 0; i<server_clientStatsBlock_list_dataProviderLength; i++){
+				try{					
+					server_ClientStatsBlock = statsGroup.serverStatsBlock.clientStatsBlock_list.dataProvider.getItemAt(i) as Server_ClientStatsBlock;
+						
+					if(userInfoVO_array[server_ClientStatsBlock.client_suid] == null){
+						var server_ClientStatsBlock_index:int = statsGroup.serverStatsBlock.clientStatsBlock_list.dataProvider.getItemIndex(server_ClientStatsBlock);
+						statsGroup.serverStatsBlock.clientStatsBlock_list.dataProvider.removeItemAt(server_ClientStatsBlock_index);
+					}						
+				}catch(e:Object){
+					trace("StatsGroupMediator.removeStaleServer_ClientStatBlocks() error:" +e.toString());
+				}
+			}
+		}				
+
+		private function displayServerStats(event:StatsEvent):void	{			
+			if (!statsGroup.serverStatsBlock.initialized)
+				return;
+			
+			statsGroup.serverStatsBlock.statsVO = event.serverStatsVO;
+			
+			
 			var server_clientStatsBlock:Server_ClientStatsBlock;
 			var server_clientStatsVO:StatsVO;
-			var server_clientStatsVO_array:Array = statsEvent.server_clientStatsVO_array;
+			var server_clientStatsVO_array:Array = event.server_clientStatsVO_array;
 			
 			for (var  client_suid:String in server_clientStatsVO_array) {
 				server_clientStatsVO = server_clientStatsVO_array[client_suid] as StatsVO;
@@ -144,40 +169,8 @@ package com.infrno.chat.view.mediators
 				
 				server_clientStatsBlock.statsVO = server_clientStatsVO;
 			}
-			
-
-//			
-//			
-//			var client_peerStatsVO:StatsVO;
-//			var peerStatsBlock:Client_PeerStatsBlock;
-//			var client_peerStatsVO_array:Array = statsEvent.client_peerStatsVO_array;
-//			for (var peer_suid:String in client_peerStatsVO_array) {
-//				client_peerStatsVO = client_peerStatsVO_array[peer_suid];		
-//				
-//				peerStatsBlock = getPeerStatsBlock(clientStatsBlock, peer_suid);
-//				if (peerStatsBlock == null) {
-//					trace("StatsGroupMediator.displayPeerStats() adding new PeerStatsBlock for peer_suid:"+peer_suid);
-//					peerStatsBlock = new Client_PeerStatsBlock();
-//					peerStatsBlock.peer_suid = peer_suid;
-//					peerStatsBlock.user_name_label = "Peer: " + client_peerStatsVO.lastDataRecord.remote_user_name;
-//					clientStatsBlock.peerStatsBlock_list.dataProvider.addItem(peerStatsBlock);							
-//					
-//					peerStatsBlock.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
-//					{
-//						trace("StatsGroupMediator.displayPeerStats() PeerStatsBlock FlexEvent.CREATION_COMPLETE event listener")
-//						clientStatsBlock.peerStatsBlock_list.dataProvider.addItem(this);
-//					});
-//					
-//					
-//				} else {
-//					//					trace("StatsGroupMediator.displayPeerStats() found existing PeerStatsBlock for peer_suid:"+peer_suid);					
-//				}					
-//				if (peerStatsBlock.initialized)
-//					peerStatsBlock.peerStatsVO = client_peerStatsVO;	
-//				else
-//					trace("StatsGroupMediator.displayPeerStats() peerStatsBlock.initialized:"+peerStatsBlock.initialized);
-//			}
 		}
+		
 		private function displayClientStats(statsEvent:StatsEvent):void
 		{
 //			trace("StatsGroupMediator.displayServerStats()");
@@ -210,7 +203,7 @@ package com.infrno.chat.view.mediators
 			for (var peer_suid:String in client_peerStatsVO_array) {
 				client_peerStatsVO = client_peerStatsVO_array[peer_suid];		
 				
-				peerStatsBlock = getPeerStatsBlock(clientStatsBlock, peer_suid);
+				peerStatsBlock = getClient_PeerStatsBlock(clientStatsBlock, peer_suid);
 				if (peerStatsBlock == null) {
 					trace("StatsGroupMediator.displayPeerStats() adding new PeerStatsBlock for peer_suid:"+peer_suid);
 					peerStatsBlock = new Client_PeerStatsBlock();
@@ -268,7 +261,7 @@ package com.infrno.chat.view.mediators
 			return null;
 		}
 		
-		private function getPeerStatsBlock(clientStatsBlock:ClientStatsBlock, peer_suid:String): Client_PeerStatsBlock {
+		private function getClient_PeerStatsBlock(clientStatsBlock:ClientStatsBlock, peer_suid:String): Client_PeerStatsBlock {
 //			trace("StatsGroupMediator.getPeerStatsBlock() peer_suid="+peer_suid)
 			
 			var peerStatsBlock:Client_PeerStatsBlock;

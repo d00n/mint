@@ -26,6 +26,7 @@ package com.infrno.chat.model.events
 		public var client_serverStatsVO:StatsVO;		
 		public var client_peerStatsVO_array:Array;
 		public var server_clientStatsVO_array:Array;
+		public var serverStatsVO:StatsVO;
 		
 		public function StatsEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

@@ -13,11 +13,14 @@ package com.infrno.chat.model
 	
 	public class StatsProxy extends Actor
 	{
+		public var serverStatsVO:StatsVO;
 		public var server_clientStatsVO_array:Array;
 		public var client_serverStatsVO_array:Array;
+		
+		// TODO ditch this
 		public var peer_array:Array;
 		
-		public static const NUMBER_OF_DATA_RECORDS_TO_KEEP:int = 10;
+		public static const NUMBER_OF_DATA_RECORDS_TO_KEEP:int = 60;
 		
 		public function StatsProxy() {
 		}
@@ -25,6 +28,7 @@ package com.infrno.chat.model
 		public function init():void {
 			trace('StatsProxy.init()');
 			peer_array = new Array();	
+			serverStatsVO = new StatsVO();
 			client_serverStatsVO_array = new Array();
 			server_clientStatsVO_array = new Array();	
 		}		

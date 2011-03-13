@@ -43,6 +43,12 @@ package com.infrno.chat.controller
 				}
 			}
 			
+			for (client_suid in statsProxy.server_clientStatsVO_array) {
+				if (serverStats[client_suid] == null){
+					delete statsProxy.server_clientStatsVO_array[client_suid];
+				}
+			}
+			
 			var statsEvent:StatsEvent = new StatsEvent(StatsEvent.DISPLAY_SERVER_STATS);
 			statsEvent.server_clientStatsVO_array = statsProxy.server_clientStatsVO_array;
 			statsEvent.serverStatsVO = statsProxy.serverStatsVO;

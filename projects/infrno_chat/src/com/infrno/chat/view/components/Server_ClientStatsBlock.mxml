@@ -26,17 +26,17 @@
 			public function initConfig():void{
 				sparklineConfig_AC.addItem( {yFieldName:"FileInBytes", labelPrefix:"FileInBytes"} );
 				sparklineConfig_AC.addItem( {yFieldName:"FileInBytesRate", labelPrefix:"FileInBytesRate"} );
-				sparklineConfig_AC.addItem( {yFieldName:"MessagesInBytes", labelPrefix:"MessagesInBytes"} );
+				//				sparklineConfig_AC.addItem( {yFieldName:"MessagesInBytes", labelPrefix:"MessagesInBytes"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesInBytesRate", labelPrefix:"MessagesInBytesRate"} );
-				sparklineConfig_AC.addItem( {yFieldName:"MessagesInCount", labelPrefix:"MessagesInCount"} );
+				//				sparklineConfig_AC.addItem( {yFieldName:"MessagesInCount", labelPrefix:"MessagesInCount"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesInCountRate", labelPrefix:"MessagesInCountRate"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossBytes", labelPrefix:"MessagesLossBytes"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossBytesRate", labelPrefix:"MessagesLossBytesRate"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossCount", labelPrefix:"MessagesLossCount"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossCountRate", labelPrefix:"MessagesLossCountRate"} );
-				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutBytes", labelPrefix:"MessagesOutBytes"} );
+				//				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutBytes", labelPrefix:"MessagesOutBytes"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutBytesRate", labelPrefix:"MessagesOutBytesRate"} );
-				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutCount", labelPrefix:"MessagesOutCount"} );
+				//				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutCount", labelPrefix:"MessagesOutCount"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutCountRate", labelPrefix:"MessagesOutCountRate"} );
 				sparklineConfig_AC.addItem( {yFieldName:"FileOutBytes", labelPrefix:"FileOutBytes"} );
 				sparklineConfig_AC.addItem( {yFieldName:"FileOutBytesRate", labelPrefix:"FileOutBytesRate"} );			}			
@@ -101,7 +101,7 @@
 										 >
 
 				
-		<s:VGroup width="352" >	
+		<s:VGroup width="252" >	
 			
 			<s:Label text="{blockName_label}"
 							 backgroundColor="0xFFFFFF" />		

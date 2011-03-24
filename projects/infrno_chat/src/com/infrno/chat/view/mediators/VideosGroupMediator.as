@@ -50,6 +50,9 @@ package com.infrno.chat.view.mediators
 			videosGroup.addEventListener(VideoPresenceEvent.AUDIO_UNMUTED,dispatchEventInSystem);
 			videosGroup.addEventListener(VideoPresenceEvent.VIDEO_MUTED,dispatchEventInSystem);
 			videosGroup.addEventListener(VideoPresenceEvent.VIDEO_UNMUTED,dispatchEventInSystem);
+			
+			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.SHOW_NETWORK_GRAPHS,showNetworkGraphs);
+			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.HIDE_NETWORK_GRAPHS,hideNetworkGraphs);
 		}
 		
 		private function dispatchEventInSystem(e:VideoPresenceEvent):void
@@ -61,6 +64,28 @@ package com.infrno.chat.view.mediators
 		{
 			dispatch( new SettingsEvent( settingsEvent.type ) );
 		}
+		
+		private function showNetworkGraphs(e:VideoPresenceEvent):void
+		{
+			trace("showNetworkGraphs");
+			var videoPresence:VideoPresence;
+			var dataProviderLength:int = videosGroup.videosGroup_list.dataProvider.length;
+			for(var i:int = 0; i < dataProviderLength; i++){
+				videoPresence = videosGroup.videosGroup_list.dataProvider.getItemAt(i) as VideoPresence;
+				videoPresence.sparkline.visible = true;
+			}
+		}		
+		
+		private function hideNetworkGraphs(e:VideoPresenceEvent):void
+		{
+			trace("hideNetworkGraphs");
+			var videoPresence:VideoPresence;
+			var dataProviderLength:int = videosGroup.videosGroup_list.dataProvider.length;
+			for(var i:int = 0; i < dataProviderLength; i++){
+				videoPresence = videosGroup.videosGroup_list.dataProvider.getItemAt(i) as VideoPresence;
+				videoPresence.sparkline.visible = false;
+			}
+		}		
 		
 		private function usersUpdated(msEvent:MSEvent):void
 		{

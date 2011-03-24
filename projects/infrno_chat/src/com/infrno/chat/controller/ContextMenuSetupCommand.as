@@ -2,6 +2,7 @@ package com.infrno.chat.controller
 {
 	import com.infrno.chat.model.DataProxy;
 	import com.infrno.chat.model.events.PeerEvent;
+	import com.infrno.chat.model.events.VideoPresenceEvent;
 	import com.infrno.chat.services.MSService;
 	
 	import flash.events.ContextMenuEvent;
@@ -45,7 +46,15 @@ package com.infrno.chat.controller
 			
 			var peer_status:ContextMenuItem = new ContextMenuItem("Turn on p2p connection");
 			peer_status.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, switchToPeer);
-			custom_menu.customItems.push(peer_status);
+			custom_menu.customItems.push(peer_status);	
+			
+			var showNetworkGraphs_cmi:ContextMenuItem = new ContextMenuItem("Turn on network graphs");
+			showNetworkGraphs_cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, showNetworkGraphs);
+			custom_menu.customItems.push(showNetworkGraphs_cmi);
+			
+			var hideNetworkGraphs_cmi:ContextMenuItem = new ContextMenuItem("Turn off network graphs");
+			hideNetworkGraphs_cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, hideNetworkGraphs);
+			custom_menu.customItems.push(hideNetworkGraphs_cmi);
 			
 			contextView.contextMenu = custom_menu;
 		}
@@ -56,6 +65,16 @@ package com.infrno.chat.controller
 			System.setClipboard(DataProxy.VERSION+" "+Capabilities.version+ (Capabilities.isDebugger?" -D":"") );
 		}
 		
+		private function showNetworkGraphs(e:ContextMenuEvent):void
+		{
+			dispatch(new VideoPresenceEvent(VideoPresenceEvent.SHOW_NETWORK_GRAPHS));
+		}
+		
+		private function hideNetworkGraphs(e:ContextMenuEvent):void
+		{
+			dispatch(new VideoPresenceEvent(VideoPresenceEvent.HIDE_NETWORK_GRAPHS));
+		}
+		
 		// TODO: That event, if correct, needs a better name, like PEER_NETCONNECTION_CONNECT
 		// This is looking suspect. PeerService also throws this when handling NetConnection.Connect.Success,
 		// which implies the connection just succeeded. We are not in a position to say that here.
@@ -63,8 +82,7 @@ package com.infrno.chat.controller
 		{
 			dispatch(new PeerEvent(PeerEvent.PEER_NETCONNECTION_CONNECTED));
 		}
-		
-		
+				
 		private function switchToWowza(e:ContextMenuEvent):void
 		{
 			dispatch(new PeerEvent(PeerEvent.PEER_NETCONNECTION_DISCONNECTED));

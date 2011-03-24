@@ -21,7 +21,7 @@
 			private var _camera:Camera;
 			private var _userInfoVO:UserInfoVO;
 			private var _video:Video;
-			private var _sparkline:Sparkline;
+			public var sparkline:Sparkline;
 			
 			public function get video():Video	{
 				if(_video == null){
@@ -30,14 +30,7 @@
 				}
 				return _video;
 			}
-			
-			public function get sparkline():Sparkline {
-				return _sparkline;
-			}
-			public function set sparkline(info:Sparkline):void{
-				_sparkline = info;
-			}
-			
+
 			public function get userInfoVO():UserInfoVO	{
 				return _userInfoVO;
 			}			
@@ -162,11 +155,6 @@
 				_initialized = true;
 				wrenchToggleButton.visible = _is_local;
 				
-				// TODO Try moving this to the constructor
-				// WARNING: instantiating Sparkline in the mediator causes the backward/outside container display bug
-//				_sparkline = new Sparkline();
-//				borderContainer.addElement(_sparkline);
-				
 				if (_is_local)
 					audio_level.toolTip = "Your mic level";
 				else
@@ -174,8 +162,8 @@
 			}
 			
 			private function handleInitialize(event:Event):void{
-				_sparkline = new Sparkline();
-				borderContainer.addElement(_sparkline);				
+				sparkline = new Sparkline();
+				borderContainer.addElement(sparkline);				
 			}
 			
 			private function handleMouseOver(event:Event):void 	{
@@ -198,25 +186,18 @@
 			private function stateShowControls():void {
 				currentState = "showControls";
 				
-//				peerStatsChart.alpha = 1;
-//				last_ping_value_label.alpha = 1;
 				controlsContainer.alpha = 1;
 			}
 			
 			private function stateUsingControls():void {
 				currentState = "usingControls";
 				
-//				peerStatsChart.alpha = 1;
-//				last_ping_value_label.alpha = 1;
 				controlsContainer.alpha = 1;
 			}
 			
 			private function stateHideControls():void {
 				currentState = "hideControls";
 					
-				// Leaving this off while tuning
-//				peerStatsChart.alpha = .2;
-//				last_ping_value_label.alpha = .2;
 				controlsContainer.alpha = .2;
 			}
 			

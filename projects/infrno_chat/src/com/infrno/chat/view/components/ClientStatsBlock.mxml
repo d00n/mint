@@ -130,7 +130,7 @@
 	
 			<s:HGroup>			
 				<s:VGroup id="serverBlock_vgroup" 										 
-									width="152"
+									width="175"
 									>			
 					<s:Label text="{user_name_label}"
 									 id = "user_name_label_id"
@@ -186,7 +186,7 @@
 					
 				</s:VGroup>
 				
-				<s:VGroup>
+				<s:VGroup width="200" >
 					<s:Label text="Server"
 									 paddingTop="3"
 									 paddingLeft="3"

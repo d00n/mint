@@ -34,52 +34,80 @@ package com.infrno.chat.view.mediators
 			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_CLIENT_STATS,displayPeerStats);
 			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_SERVER_STATS,displayServerStats);
 
+	
+			
+			// handle deletions
+			eventMap.mapListener(eventDispatcher,StatsEvent.DELETE_PEER_STATS,removeBlocksForSuid);	
+			
+			// ..then additions
+			eventMap.mapListener(eventDispatcher,StatsEvent.NEW_CLIENT_BLOCK,addClientStatBlock);	
+			
+			// ..and then remove this:
 			// this gets called a *lot*, far too broad for our needs
-			eventMap.mapListener(eventDispatcher,MSEvent.USERS_OBJ_UPDATE,usersUpdated);	
+//			eventMap.mapListener(eventDispatcher,MSEvent.USERS_OBJ_UPDATE,usersUpdated);
 			
 			// this is more efficent, but does not handle adding clientBlocks yet
 //			eventMap.mapListener(eventDispatcher,StatsEvent.DELETE_PEER_STATS,removePeerStatsBlock);
 		}
 		
-		private function usersUpdated(msEvent:MSEvent):void
-		{
-			updateStatGroup(msEvent.userInfoVO_array, msEvent.local_userInfoVO);
-		}		
+//		private function usersUpdated(msEvent:MSEvent):void
+//		{
+//			updateStatGroup(msEvent.userInfoVO_array, msEvent.local_userInfoVO);
+//		}		
+//		
+//		private function updateStatGroup(userInfoVO_array:Array, local_userInfoVO:UserInfoVO):void
+//		{
+////			removeStaleServer_ClientStatBlocks(userInfoVO_array);					
+////			removeStaleClientStatBlocks(userInfoVO_array);			
+////			removeStaleClient_PeerStatBlocks(userInfoVO_array);			
+//			
+//			createNewClientStatsBlocks(userInfoVO_array);
+//		}
 		
-		private function updateStatGroup(userInfoVO_array:Array, local_userInfoVO:UserInfoVO):void
-		{
-			removeStaleServer_ClientStatBlocks(userInfoVO_array);			
-
-			removeStaleClient_PeerStatBlocks(userInfoVO_array);			
-			removeStaleClientStatBlocks(userInfoVO_array);			
-			createNewClientStatsBlocks(userInfoVO_array);
+		private function removeBlocksForSuid(statsEvent:StatsEvent):void {	
+			removeServer_ClientStatBlock(statsEvent.client_suid);			
+			removeClientStatBlock(statsEvent.client_suid);			
+			removeClient_PeerStatBlocks(statsEvent.client_suid);		
 		}
 		
-		private function removeStaleClientStatBlocks(userInfoVO_array:Array):void {
-//			trace("StatsGroupMediator.removeStaleClientStatBlocks()");
-			var dataProviderLength:int = statsGroup.clientStatsBlock_list.dataProvider.length;
-			for(var i:int = 0; i<dataProviderLength; i++){
-//				trace("StatsGroupMediator.removeClientStatBlocks() i="+i);
+		private function removeServer_ClientStatBlock(suid:String):void {
+			if (!statsGroup.serverStatsBlock.initialized)
+				return;
+			
+			var server_ClientStatsBlock:Server_ClientStatsBlock;
+			var server_clientStatsBlock_list_dataProviderLength:int = statsGroup.serverStatsBlock.clientStatsBlock_list.dataProvider.length;
+			for(var i:int = 0; i<server_clientStatsBlock_list_dataProviderLength; i++){
 				try{					
-					var clientStatsBlock:ClientStatsBlock = statsGroup.clientStatsBlock_list.dataProvider.getItemAt(i) as ClientStatsBlock;
-//					trace("StatsGroupMediator.removeStaleClientStatBlocks() statsBlock.client_suid="+statsBlock.client_suid);
+					server_ClientStatsBlock = statsGroup.serverStatsBlock.clientStatsBlock_list.dataProvider.getItemAt(i) as Server_ClientStatsBlock;
 					
-					if(userInfoVO_array[clientStatsBlock.client_suid] == null){
-						var statsGroup_index:int = statsGroup.clientStatsBlock_list.dataProvider.getItemIndex(clientStatsBlock);
-						trace("StatsGroupMediator.removeStaleClientStatBlocks() clientStatsBlock.client_suid="+clientStatsBlock.client_suid);
-						statsGroup.clientStatsBlock_list.dataProvider.removeItemAt(statsGroup_index);
-					}
+					if(server_ClientStatsBlock.client_suid == suid){
+						var server_ClientStatsBlock_index:int = statsGroup.serverStatsBlock.clientStatsBlock_list.dataProvider.getItemIndex(server_ClientStatsBlock);
+						statsGroup.serverStatsBlock.clientStatsBlock_list.dataProvider.removeItemAt(server_ClientStatsBlock_index);
+						return;
+					}						
+				}catch(e:Object){
+					trace("StatsGroupMediator.removeServer_ClientStatBlock() error:" +e.toString());
+				}
+			}
+		}		
+		
+		private function removeClientStatBlock(suid:String):void {
+			var clientStatsBlock:ClientStatsBlock = getClientStatsBlock(suid);
+			if(clientStatsBlock != null){
+				var statsGroup_index:int = statsGroup.clientStatsBlock_list.dataProvider.getItemIndex(clientStatsBlock);
+				trace("StatsGroupMediator.removeStaleClientStatBlock() clientStatsBlock.client_suid="+clientStatsBlock.client_suid);
+				try{					
+					statsGroup.clientStatsBlock_list.dataProvider.removeItemAt(statsGroup_index);
 				}catch(e:Object){
 					//out of range error I'm sure
 					// TODO Make sure we don't get out of range errors
 					// Things work just fine, but how does this state occur?
-					trace("StatsGroupMediator.removeStaleClientStatBlocks() error:" +e.toString());
+					trace("StatsGroupMediator.removeStaleClientStatBlock() error:" +e.toString());
 				}
 			}
-		}
-	
+		}		
 		
-		private function removeStaleClient_PeerStatBlocks(userInfoVO_array:Array):void {
+		private function removeClient_PeerStatBlocks(suid:String):void {
 			var statsGroup_list_dataProviderLength:int = statsGroup.clientStatsBlock_list.dataProvider.length;
 			for(var i:int = 0; i<statsGroup_list_dataProviderLength; i++){
 				try{					
@@ -89,17 +117,99 @@ package com.infrno.chat.view.mediators
 					for(var j:int = 0; j<peerBlock_list_dataProviderLength; j++){
 						var peerStatsBlock:Client_PeerStatsBlock = clientStatsBlock.peerStatsBlock_list.dataProvider.getItemAt(j) as Client_PeerStatsBlock;
 						
-						if(userInfoVO_array[peerStatsBlock.peer_suid] == null){
+						if(peerStatsBlock.peer_suid == suid){
 							var peerStatsBlock_index:int = clientStatsBlock.peerStatsBlock_list.dataProvider.getItemIndex(peerStatsBlock);
 							trace("StatsGroupMediator.removeStalePeerStatBlocks() removing peerStatsBlock.peer_suid="+peerStatsBlock.peer_suid);
 							clientStatsBlock.peerStatsBlock_list.dataProvider.removeItemAt(peerStatsBlock_index);
+							return;
 						}						
 					}
+				}catch(e:Object){
+					trace("StatsGroupMediator.removeClient_PeerStatBlocks() error:" +e.toString());
+				}
+			}
+		}	
+		
+//		private function removeStaleClientStatBlocks(userInfoVO_array:Array):void {
+////			trace("StatsGroupMediator.removeStaleClientStatBlocks()");
+//			var dataProviderLength:int = statsGroup.clientStatsBlock_list.dataProvider.length;
+//			for(var i:int = 0; i<dataProviderLength; i++){
+////				trace("StatsGroupMediator.removeClientStatBlocks() i="+i);
+//				try{					
+//					var clientStatsBlock:ClientStatsBlock = statsGroup.clientStatsBlock_list.dataProvider.getItemAt(i) as ClientStatsBlock;
+////					trace("StatsGroupMediator.removeStaleClientStatBlocks() statsBlock.client_suid="+statsBlock.client_suid);
+//					
+//					if(userInfoVO_array[clientStatsBlock.client_suid] == null){
+//						var statsGroup_index:int = statsGroup.clientStatsBlock_list.dataProvider.getItemIndex(clientStatsBlock);
+//						trace("StatsGroupMediator.removeStaleClientStatBlocks() clientStatsBlock.client_suid="+clientStatsBlock.client_suid);
+//						statsGroup.clientStatsBlock_list.dataProvider.removeItemAt(statsGroup_index);
+//					}
+//				}catch(e:Object){
+//					//out of range error I'm sure
+//					// TODO Make sure we don't get out of range errors
+//					// Things work just fine, but how does this state occur?
+//					trace("StatsGroupMediator.removeStaleClientStatBlocks() error:" +e.toString());
+//				}
+//			}
+//		}
+//		
+		private function removeStaleClient_PeerStatBlocks(clientStatsBlock:ClientStatsBlock, userInfoVO_array:Array):void {
+
+			for(var i:int = 0; i<clientStatsBlock.peerStatsBlock_list.dataProvider.length; i++){
+				try{					
+					var client_PeerStatsBlock:Client_PeerStatsBlock = clientStatsBlock.peerStatsBlock_list.dataProvider.getItemAt(i) as Client_PeerStatsBlock;
+											
+					if(userInfoVO_array[client_PeerStatsBlock.peer_suid] == null){
+						var peerStatsBlock_index:int = clientStatsBlock.peerStatsBlock_list.dataProvider.getItemIndex(client_PeerStatsBlock.peer_suid);
+						trace("StatsGroupMediator.removeStalePeerStatBlocks() removing client_PeerStatsBlock.peer_suid="+client_PeerStatsBlock.peer_suid);
+						clientStatsBlock.peerStatsBlock_list.dataProvider.removeItemAt(peerStatsBlock_index);
+					}						
 				}catch(e:Object){
 					trace("StatsGroupMediator.removeStalePeerStatBlocks() error:" +e.toString());
 				}
 			}
 		}			
+//		
+//		private function removeStaleServer_ClientStatBlocks(userInfoVO_array:Array):void {
+//			if (!statsGroup.serverStatsBlock.initialized)
+//				return;
+//			
+//			var server_ClientStatsBlock:Server_ClientStatsBlock;
+//			var server_clientStatsBlock_list_dataProviderLength:int = statsGroup.serverStatsBlock.clientStatsBlock_list.dataProvider.length;
+//			for(var i:int = 0; i<server_clientStatsBlock_list_dataProviderLength; i++){
+//				try{					
+//					server_ClientStatsBlock = statsGroup.serverStatsBlock.clientStatsBlock_list.dataProvider.getItemAt(i) as Server_ClientStatsBlock;
+//						
+//					if(userInfoVO_array[server_ClientStatsBlock.client_suid] == null){
+//						var server_ClientStatsBlock_index:int = statsGroup.serverStatsBlock.clientStatsBlock_list.dataProvider.getItemIndex(server_ClientStatsBlock);
+//						statsGroup.serverStatsBlock.clientStatsBlock_list.dataProvider.removeItemAt(server_ClientStatsBlock_index);
+//					}						
+//				}catch(e:Object){
+//					trace("StatsGroupMediator.removeStaleServer_ClientStatBlocks() error:" +e.toString());
+//				}
+//			}
+//		}				
+		
+		private function addClientStatBlock(statsEvent:StatsEvent):void{
+			
+			var clientStatsBlock:ClientStatsBlock = getClientStatsBlock(statsEvent.client_suid);
+			if (clientStatsBlock == null) {
+				trace("StatsGroupMediator.addClientStatBlock() adding new ClientStatsBlock for suid:"+statsEvent.client_suid);
+				clientStatsBlock = new ClientStatsBlock();
+				clientStatsBlock.client_suid = statsEvent.client_suid;
+				clientStatsBlock.user_name_label = "Client: xx" // + userInfoVO.user_name;
+				statsGroup.clientStatsBlock_list.dataProvider.addItem(clientStatsBlock);
+				
+				clientStatsBlock.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
+				{
+					trace("StatsGroupMediator.addClientStatBlock() ClientStatsBlock FlexEvent.CREATION_COMPLETE event listener")
+				});
+				
+			} else {
+				trace("StatsGroupMediator.addClientStatBlock() found existing ClientStatsBlock for suid:"+statsEvent.client_suid);					
+			}				
+			
+		}
 		
 		private function createNewClientStatsBlocks(userInfoVO_array:Array):void{
 			for(var suid:String in userInfoVO_array){
@@ -125,26 +235,6 @@ package com.infrno.chat.view.mediators
 			}
 		}				
 		
-		private function removeStaleServer_ClientStatBlocks(userInfoVO_array:Array):void {
-			if (!statsGroup.serverStatsBlock.initialized)
-				return;
-			
-			var server_ClientStatsBlock:Server_ClientStatsBlock;
-			var server_clientStatsBlock_list_dataProviderLength:int = statsGroup.serverStatsBlock.clientStatsBlock_list.dataProvider.length;
-			for(var i:int = 0; i<server_clientStatsBlock_list_dataProviderLength; i++){
-				try{					
-					server_ClientStatsBlock = statsGroup.serverStatsBlock.clientStatsBlock_list.dataProvider.getItemAt(i) as Server_ClientStatsBlock;
-						
-					if(userInfoVO_array[server_ClientStatsBlock.client_suid] == null){
-						var server_ClientStatsBlock_index:int = statsGroup.serverStatsBlock.clientStatsBlock_list.dataProvider.getItemIndex(server_ClientStatsBlock);
-						statsGroup.serverStatsBlock.clientStatsBlock_list.dataProvider.removeItemAt(server_ClientStatsBlock_index);
-					}						
-				}catch(e:Object){
-					trace("StatsGroupMediator.removeStaleServer_ClientStatBlocks() error:" +e.toString());
-				}
-			}
-		}				
-
 		private function displayServerStats(event:StatsEvent):void	{			
 			if (!statsGroup.serverStatsBlock.initialized)
 				return;
@@ -182,7 +272,10 @@ package com.infrno.chat.view.mediators
 				return;
 			}		
 
+
+			
 			clientStatsBlock.client_serverStatsVO 	= statsEvent.client_serverStatsVO;		
+			clientStatsBlock.user_name_label				= statsEvent.inbound_clientStats.client_user_name;
 			clientStatsBlock.clientStats						= statsEvent.inbound_clientStats;		
 		}		
 		

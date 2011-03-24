@@ -161,11 +161,6 @@ package com.infrno.chat.view.mediators
 						videoPresence.is_local = false;
 					}
 					
-					// Instantiating these here causes the backwards/outside container render bug
-//					var sparkline:Sparkline = new Sparkline();
-//					videoPresence.sparkline = sparkline;
-//					videoPresence.borderContainer.addElement(sparkline);
-					
 					videoPresence.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
 						{
 							trace("VideosGroupMediator.updateVideos() VideoPresence FlexEvent.CREATION_COMPLETE event listener")
@@ -247,8 +242,8 @@ package com.infrno.chat.view.mediators
 				
 				var videoPresence:VideoPresence = getVideoPresenceByName(peer_suid);		
 				
-				if (videoPresence.sparkline == null) {
-					trace("VideosGroupMediator.displayPeerStats() videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
+				if (videoPresence == null || videoPresence.sparkline == null) {
+					trace("VideosGroupMediator.displayPeerStats() videoPresence or videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
 					return;
 				}
 				
@@ -272,11 +267,14 @@ package com.infrno.chat.view.mediators
 		
 		private function displayServerStats(statsEvent:StatsEvent):void
 		{
+			if (_local_videoPresence == null)
+				return;
+			
 			var serverStatsVO:StatsVO = statsEvent.server_clientStatsVO_array[_local_videoPresence.name];
 			var videoPresence:VideoPresence = getVideoPresenceByName(_local_videoPresence.name);
 			
-			if (videoPresence.sparkline == null) {
-				trace("VideosGroupMediator.displayServerStats() videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
+			if (videoPresence == null || videoPresence.sparkline == null) {
+				trace("VideosGroupMediator.displayServerStats()  videoPresence or videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
 				return;
 			}
 			

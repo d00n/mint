@@ -25,6 +25,10 @@ package com.infrno.chat.controller
 			if (client_serverStatsVO == null) {
 				client_serverStatsVO = new StatsVO();
 				statsProxy.client_serverStatsVO_array[client_suid] = client_serverStatsVO;
+				
+				var statsEvent:StatsEvent = new StatsEvent(StatsEvent.NEW_CLIENT_BLOCK);
+				statsEvent.client_suid = client_suid;
+				dispatch(statsEvent);
 			}
 			
 			// Hrmmmm..
@@ -47,6 +51,8 @@ package com.infrno.chat.controller
 			if (peerStatsVO_array == null) {
 				peerStatsVO_array = new Array();
 				statsProxy.peer_array[client_suid] = peerStatsVO_array;
+				
+				// TODO? Add client peer block event??				
 			}
 
 			
@@ -56,12 +62,9 @@ package com.infrno.chat.controller
 				if (peerStatsRecord_array[peer_suid] == null){
 					delete peerStatsVO_array[peer_suid];
 					
-					// We currently delete on MSEvent.USERS_OBJ_UPDATE, but that fires way to often. 
-					// StatsEvent.DELETE_PEER_STATS is better, but we don't yet handle clientBlock adds
-//					var delete_statsEvent:StatsEvent = new StatsEvent(StatsEvent.DELETE_PEER_STATS);
-//					delete_statsEvent.client_suid = client_suid;
-//					delete_statsEvent.peer_suid = peer_suid;
-//					dispatch(delete_statsEvent);
+					var delete_statsEvent:StatsEvent = new StatsEvent(StatsEvent.DELETE_PEER_STATS);
+					delete_statsEvent.client_suid = peer_suid;
+					dispatch(delete_statsEvent);
 				}
 			}			
 			

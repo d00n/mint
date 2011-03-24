@@ -13,7 +13,9 @@ package com.infrno.chat.model.events
 		public static const DISPLAY_SERVER_STATS:String					= "se_display_server_stats";
 		public static const DISPLAY_CLIENT_STATS:String					= "se_display_client_stats";
 		
+		public static const NEW_CLIENT_BLOCK:String							= "se_new_client_block";
 		public static const DELETE_PEER_STATS:String						= "se_delete_peer_stats";
+		
 
 		
 		// Used to receive clientStat records as constructed in CollectClientStatsCommand

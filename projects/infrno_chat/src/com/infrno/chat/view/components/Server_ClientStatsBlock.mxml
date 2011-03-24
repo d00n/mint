@@ -24,24 +24,25 @@
 			private var sparklineConfig_AC:ArrayCollection = new ArrayCollection();
 
 			public function initConfig():void{
-				sparklineConfig_AC.addItem( {yFieldName:"PingRoundTripTime", labelPrefix:"PingRoundTripTime"} );
+				sparklineConfig_AC.addItem( {yFieldName:"PingRoundTripTime", labelPrefix:"Ping"} );
 //				sparklineConfig_AC.addItem( {yFieldName:"PingTimeout", labelPrefix:"PingTimeout"} );
 				sparklineConfig_AC.addItem( {yFieldName:"FileInBytes", labelPrefix:"FileInBytes"} );
 				sparklineConfig_AC.addItem( {yFieldName:"FileInBytesRate", labelPrefix:"FileInBytesRate"} );
-				//				sparklineConfig_AC.addItem( {yFieldName:"MessagesInBytes", labelPrefix:"MessagesInBytes"} );
-				sparklineConfig_AC.addItem( {yFieldName:"MessagesInBytesRate", labelPrefix:"MessagesInBytesRate"} );
+				//				sparklineConfig_AC.addItem( {yFieldName:"MessagesInBytes", labelPrefix:"msgInBytes"} );
+				sparklineConfig_AC.addItem( {yFieldName:"MessagesInBytesRate", labelPrefix:"msgInBytesRate"} );
 				//				sparklineConfig_AC.addItem( {yFieldName:"MessagesInCount", labelPrefix:"MessagesInCount"} );
-				sparklineConfig_AC.addItem( {yFieldName:"MessagesInCountRate", labelPrefix:"MessagesInCountRate"} );
-				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossBytes", labelPrefix:"MessagesLossBytes"} );
-				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossBytesRate", labelPrefix:"MessagesLossBytesRate"} );
-				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossCount", labelPrefix:"MessagesLossCount"} );
-				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossCountRate", labelPrefix:"MessagesLossCountRate"} );
-				//				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutBytes", labelPrefix:"MessagesOutBytes"} );
-				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutBytesRate", labelPrefix:"MessagesOutBytesRate"} );
+				sparklineConfig_AC.addItem( {yFieldName:"MessagesInCountRate", labelPrefix:"msgInCountRate"} );
+				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossBytes", labelPrefix:"msgLossBytes"} );
+				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossBytesRate", labelPrefix:"msgLossBytesRate"} );
+				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossCount", labelPrefix:"msgLossCount"} );
+				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossCountRate", labelPrefix:"msgLossCountRate"} );
+				//				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutBytes", labelPrefix:"msgOutBytes"} );
+				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutBytesRate", labelPrefix:"msgOutBytesRate"} );
 				//				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutCount", labelPrefix:"MessagesOutCount"} );
-				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutCountRate", labelPrefix:"MessagesOutCountRate"} );
-				sparklineConfig_AC.addItem( {yFieldName:"FileOutBytes", labelPrefix:"FileOutBytes"} );
-				sparklineConfig_AC.addItem( {yFieldName:"FileOutBytesRate", labelPrefix:"FileOutBytesRate"} );			}			
+				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutCountRate", labelPrefix:"msgOutCountRate"} );
+//				sparklineConfig_AC.addItem( {yFieldName:"FileOutBytes", labelPrefix:"FileOutBytes"} );
+//				sparklineConfig_AC.addItem( {yFieldName:"FileOutBytesRate", labelPrefix:"FileOutBytesRate"} );			
+			}			
 			
 			public function set statsVO(value:StatsVO):void{
 				if (clientSparkline_vgroup == null)
@@ -103,7 +104,7 @@
 										 >
 
 				
-		<s:VGroup width="252" >	
+		<s:VGroup width="175" >	
 			
 			<s:Label text="{blockName_label}"
 							 backgroundColor="0xFFFFFF" />		

@@ -97,7 +97,7 @@
 										 >
 
 				
-		<s:VGroup	width="152">			
+		<s:VGroup	width="175">			
 			<s:Label text="{user_name_label}"
 							 backgroundColor="0xFFFFFF" />		
 			

@@ -24,6 +24,8 @@
 			private var sparklineConfig_AC:ArrayCollection = new ArrayCollection();
 
 			public function initConfig():void{
+				sparklineConfig_AC.addItem( {yFieldName:"PingRoundTripTime", labelPrefix:"PingRoundTripTime"} );
+				sparklineConfig_AC.addItem( {yFieldName:"PingTimeout", labelPrefix:"PingTimeout"} );
 				sparklineConfig_AC.addItem( {yFieldName:"FileInBytes", labelPrefix:"FileInBytes"} );
 				sparklineConfig_AC.addItem( {yFieldName:"FileInBytesRate", labelPrefix:"FileInBytesRate"} );
 				//				sparklineConfig_AC.addItem( {yFieldName:"MessagesInBytes", labelPrefix:"MessagesInBytes"} );

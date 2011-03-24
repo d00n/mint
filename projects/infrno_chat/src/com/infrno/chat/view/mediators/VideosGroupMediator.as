@@ -210,28 +210,37 @@ package com.infrno.chat.view.mediators
 		private function displayPeerStats(statsEvent:StatsEvent):void
 		{
 //			trace("VideosGroupMediator.displayPeerStats()");
-//			var peerStatsVO:StatsVO = statsEvent.statsVO;
-//			var videoPresence:VideoPresence = getVideoPresenceByName(peerStatsVO.suid.toString());		
-//			
-//			if (videoPresence.sparkline == null) {
-//				trace("VideosGroupMediator.displayPeerStats() videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
-//				return;
-//			}
-//			
-//			videoPresence.sparkline.statsVO = peerStatsVO;
-//			videoPresence.sparkline.yFieldName = 'srtt';
-//			var last_ping_value:int = peerStatsVO.data_AC[peerStatsVO.data_AC.length-1].srtt;
-////			videoPresence.sparkline.lastValue_label = last_ping_value.toString();
-//			videoPresence.sparkline.lastValuePrefix = "Ping";
-//			videoPresence.sparkline.lastValue_label = videoPresence.sparkline.lastValuePrefix +": "+ peerStatsVO.lastDataRecord[videoPresence.sparkline.yFieldName];
-//			videoPresence.sparkline.toolTip = "Ping (peer)";
-//			
-//			if (last_ping_value < Sparkline.MAX_SRTT) {
-//				videoPresence.sparkline.lineStrokeColor = Sparkline.GREEN; 
-//			} else {
-//				videoPresence.sparkline.lineStrokeColor = Sparkline.RED;
-//			}
-			
+			var peerStatsVO:StatsVO;
+			var peerStatsRecord:Object;
+			var peer_suid:String;
+			for (peer_suid in statsEvent.client_peerStatsVO_array) {
+				peerStatsVO = statsEvent.client_peerStatsVO_array[peer_suid];				
+				
+				var videoPresence:VideoPresence = getVideoPresenceByName(peer_suid);		
+				
+				if (videoPresence.sparkline == null) {
+					trace("VideosGroupMediator.displayPeerStats() videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
+					return;
+				}
+				
+				if (videoPresence.is_local) {
+					return;
+				}
+				
+				videoPresence.sparkline.statsVO = peerStatsVO;
+				videoPresence.sparkline.yFieldName = 'srtt';
+				var last_ping_value:int = peerStatsVO.data_AC[peerStatsVO.data_AC.length-1].srtt;
+	//			videoPresence.sparkline.lastValue_label = last_ping_value.toString();
+				videoPresence.sparkline.lastValuePrefix = "Ping";
+				videoPresence.sparkline.lastValue_label = videoPresence.sparkline.lastValuePrefix +": "+ peerStatsVO.lastDataRecord[videoPresence.sparkline.yFieldName];
+				videoPresence.sparkline.toolTip = "Ping (peer)";
+				
+				if (last_ping_value < Sparkline.MAX_SRTT) {
+					videoPresence.sparkline.lineStrokeColor = Sparkline.GREEN; 
+				} else {
+					videoPresence.sparkline.lineStrokeColor = Sparkline.RED;
+				}
+			}			
 		}
 		
 		private function displayServerStats(statsEvent:StatsEvent):void

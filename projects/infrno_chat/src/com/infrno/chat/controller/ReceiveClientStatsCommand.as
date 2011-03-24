@@ -18,7 +18,7 @@ package com.infrno.chat.controller
 		public var statsProxy:StatsProxy;
 		
 		override public function execute():void{			
-			var clientStats:Object = event.clientStats;
+			var clientStats:Object = event.inbound_clientStats;
 			var client_suid:String = clientStats.client_suid;
 			
 			var client_serverStatsVO:StatsVO = statsProxy.client_serverStatsVO_array[client_suid];
@@ -91,7 +91,7 @@ package com.infrno.chat.controller
 		
 			var statsEvent:StatsEvent = new StatsEvent(StatsEvent.DISPLAY_CLIENT_STATS);
 			statsEvent.client_suid = client_suid;
-			statsEvent.clientStats = clientStats;
+			statsEvent.inbound_clientStats = clientStats;
 			statsEvent.client_serverStatsVO = client_serverStatsVO;
 			statsEvent.client_peerStatsVO_array = peerStatsVO_array;
 			dispatch(statsEvent);

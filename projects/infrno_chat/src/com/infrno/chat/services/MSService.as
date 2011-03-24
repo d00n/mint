@@ -61,13 +61,13 @@ package com.infrno.chat.services
 				
 			_netConnection_client.receiveClientStats = function(clientStats:Object):void {
 				var statsEvent:StatsEvent = new StatsEvent(StatsEvent.RECEIVE_CLIENT_STATS);
-				statsEvent.clientStats = clientStats;
+				statsEvent.inbound_clientStats = clientStats;
 				dispatch(statsEvent);
 			}
 				
 			_netConnection_client.receiveServerStats = function(serverStats:Object):void {
 				var statsEvent:StatsEvent = new StatsEvent(StatsEvent.RECEIVE_SERVER_STATS);
-				statsEvent.serverStats = serverStats;
+				statsEvent.inbound_serverStats = serverStats;
 				dispatch(statsEvent);
 			}
 				

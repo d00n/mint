@@ -17,10 +17,11 @@ package com.infrno.chat.model.events
 
 		
 		// Used to receive clientStat records as constructed in CollectClientStatsCommand
-		public var clientStats:Object;
+		public var inbound_clientStats:Object;
 		
 		// Used to receive clientStat records as constructed on the server in UserManager.collectServerStats() 
-		public var serverStats:Object;
+		public var inbound_serverStats:Object;
+		
 		
 		public var client_suid:String;
 		public var client_serverStatsVO:StatsVO;		

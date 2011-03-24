@@ -50,7 +50,7 @@
 //				sparklineConfig_AC.addItem( {yFieldName:"MessagesInBytes", labelPrefix:"MessagesInBytes"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesInBytesRate", labelPrefix:"MessagesInBytesRate"} );
 //				sparklineConfig_AC.addItem( {yFieldName:"MessagesInCount", labelPrefix:"MessagesInCount"} );
-//				sparklineConfig_AC.addItem( {yFieldName:"MessagesInCountRate", labelPrefix:"MessagesInCountRate"} );
+				sparklineConfig_AC.addItem( {yFieldName:"MessagesInCountRate", labelPrefix:"MessagesInCountRate"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossBytes", labelPrefix:"MessagesLossBytes"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossBytesRate", labelPrefix:"MessagesLossBytesRate"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossCount", labelPrefix:"MessagesLossCount"} );
@@ -58,7 +58,7 @@
 //				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutBytes", labelPrefix:"MessagesOutBytes"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutBytesRate", labelPrefix:"MessagesOutBytesRate"} );
 //				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutCount", labelPrefix:"MessagesOutCount"} );
-//				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutCountRate", labelPrefix:"MessagesOutCountRate"} );
+				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutCountRate", labelPrefix:"MessagesOutCountRate"} );
 				sparklineConfig_AC.addItem( {yFieldName:"FileOutBytes", labelPrefix:"FileOutBytes"} );
 				sparklineConfig_AC.addItem( {yFieldName:"FileOutBytesRate", labelPrefix:"FileOutBytesRate"} );
 			}			

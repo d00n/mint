@@ -16,7 +16,7 @@ package com.infrno.chat.controller
 		public var statsProxy:StatsProxy;
 		
 		override public function execute():void{
-			var serverStats:Object = event.serverStats;
+			var serverStats:Object = event.inbound_serverStats;
 			
 			var client_suid:String;
 			var serverRecord_or_clientSuid:String;

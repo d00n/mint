@@ -183,13 +183,13 @@ package com.infrno.chat.view.mediators
 			}		
 
 			clientStatsBlock.client_serverStatsVO 	= statsEvent.client_serverStatsVO;		
-			clientStatsBlock.clientStats						= statsEvent.clientStats;		
+			clientStatsBlock.clientStats						= statsEvent.inbound_clientStats;		
 		}		
 		
 		private function displayPeerStats(statsEvent:StatsEvent):void	{
 //			trace("StatsGroupMediator.displayPeerStats()");
 			
-			var clientStats:Object = statsEvent.clientStats;
+			var clientStats:Object = statsEvent.inbound_clientStats;
 			
 			var clientStatsBlock:ClientStatsBlock = getClientStatsBlock(statsEvent.client_suid);
 			if (clientStatsBlock == null || clientStatsBlock.peerStatsBlock_list == null) {

@@ -32,6 +32,8 @@ package com.infrno.chat.view.mediators
 		[Inject]
 		public var videosGroup:VideosGroup;	
 		
+		private var _local_videoPresence:VideoPresence;
+		
 		override public function onRegister():void
 		{
 			eventMap.mapListener(eventDispatcher,MSEvent.USERS_OBJ_UPDATE,usersUpdated);
@@ -40,7 +42,7 @@ package com.infrno.chat.view.mediators
 			// TODO map these after the sparklines are ready
 			// ..or figure out where to create sparklines better/earlier
 			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_CLIENT_STATS,displayPeerStats);
-			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_CLIENT_STATS,displayServerStats);
+			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_SERVER_STATS,displayServerStats);
 			
 			videosGroup.addEventListener(SettingsEvent.SHOW_SETTINGS,handleShowSettings);
 			videosGroup.addEventListener(VideoPresenceEvent.AUDIO_LEVEL,dispatchEventInSystem);
@@ -85,7 +87,7 @@ package com.infrno.chat.view.mediators
 				}
 			}
 		}
-		
+				
 		private function getVideoPresenceByName(name:String): VideoPresence{
 			var videoPresence:VideoPresence;
 			var dataProviderLength:int = videosGroup.videosGroup_list.dataProvider.length;
@@ -127,10 +129,12 @@ package com.infrno.chat.view.mediators
 					videoPresence.name = userInfoVO.suid.toString();
 					
 					// TODO push this comparison into the is_local attribute
-					if (userInfoVO.suid == local_userInfoVO.suid)
+					if (userInfoVO.suid == local_userInfoVO.suid) {
 						videoPresence.is_local = true;
-					else
+						_local_videoPresence = videoPresence;
+					} else {
 						videoPresence.is_local = false;
+					}
 					
 					// Instantiating these here causes the backwards/outside container render bug
 //					var sparkline:Sparkline = new Sparkline();
@@ -229,13 +233,11 @@ package com.infrno.chat.view.mediators
 				
 				videoPresence.sparkline.statsVO = peerStatsVO;
 				videoPresence.sparkline.yFieldName = 'srtt';
-				var last_ping_value:int = peerStatsVO.data_AC[peerStatsVO.data_AC.length-1].srtt;
-	//			videoPresence.sparkline.lastValue_label = last_ping_value.toString();
 				videoPresence.sparkline.lastValuePrefix = "Ping";
-				videoPresence.sparkline.lastValue_label = videoPresence.sparkline.lastValuePrefix +": "+ peerStatsVO.lastDataRecord[videoPresence.sparkline.yFieldName];
-				videoPresence.sparkline.toolTip = "Ping (peer)";
+				var last_value:int = peerStatsVO.lastDataRecord[videoPresence.sparkline.yFieldName];
+				videoPresence.sparkline.lastValue_label = videoPresence.sparkline.lastValuePrefix +": "+ last_value;
 				
-				if (last_ping_value < Sparkline.MAX_SRTT) {
+				if (last_value < Sparkline.MAX_SRTT) {
 					videoPresence.sparkline.lineStrokeColor = Sparkline.GREEN; 
 				} else {
 					videoPresence.sparkline.lineStrokeColor = Sparkline.RED;
@@ -245,28 +247,25 @@ package com.infrno.chat.view.mediators
 		
 		private function displayServerStats(statsEvent:StatsEvent):void
 		{
-//			var serverStatsVO:StatsVO = statsEvent.statsVO;
-//			var videoPresence:VideoPresence = getVideoPresenceByName(serverStatsVO.suid.toString());
-//			
-//			if (videoPresence.sparkline == null) {
-//				trace("VideosGroupMediator.displayServerStats() videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
-//				return;
-//			}
-//			
-//			videoPresence.sparkline.statsVO = serverStatsVO;
-//			videoPresence.sparkline.yFieldName = 'currentBytesPerSecond';
-//			var currentBytesPerSecond:int = serverStatsVO.data_AC[serverStatsVO.data_AC.length-1].currentBytesPerSecond;
-////			videoPresence.sparkline.lastValue_label = currentBytesPerSecond.toString();
-//			videoPresence.sparkline.lastValuePrefix = "b/s";
-//			videoPresence.sparkline.lastValue_label = videoPresence.sparkline.lastValuePrefix +": "+ serverStatsVO.lastDataRecord[videoPresence.sparkline.yFieldName];
-//
-//			videoPresence.sparkline.toolTip = "Bytes per second to the server";
-//			
-//			if (currentBytesPerSecond < Sparkline.MAX_CURRENT_BYTES_PER_SECOND) {
-//				videoPresence.sparkline.lineStrokeColor = Sparkline.GREEN; 
-//			} else {
-//				videoPresence.sparkline.lineStrokeColor = Sparkline.RED;
-//			}
+			var serverStatsVO:StatsVO = statsEvent.server_clientStatsVO_array[_local_videoPresence.name];
+			var videoPresence:VideoPresence = getVideoPresenceByName(_local_videoPresence.name);
+			
+			if (videoPresence.sparkline == null) {
+				trace("VideosGroupMediator.displayServerStats() videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
+				return;
+			}
+			
+			videoPresence.sparkline.statsVO = serverStatsVO;
+			videoPresence.sparkline.yFieldName = 'PingRoundTripTime';
+			videoPresence.sparkline.lastValuePrefix = "Ping";
+			var last_value:int = serverStatsVO.lastDataRecord[videoPresence.sparkline.yFieldName];
+			videoPresence.sparkline.lastValue_label = videoPresence.sparkline.lastValuePrefix +": "+ last_value;
+			
+			if (last_value < Sparkline.MAX_SRTT) {
+				videoPresence.sparkline.lineStrokeColor = Sparkline.GREEN; 
+			} else {
+				videoPresence.sparkline.lineStrokeColor = Sparkline.RED;
+			}
 			
 		}		
 		

@@ -30,39 +30,36 @@ package com.infrno.chat.view.mediators
 		}
 		
 		override public function onRegister():void{
+//			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_CLIENT_STATS,displayClientStats);
+//			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_CLIENT_STATS,displayPeerStats);
+//			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_SERVER_STATS,displayServerStats);
+
+			// handle deletions
+//			eventMap.mapListener(eventDispatcher,StatsEvent.DELETE_PEER_STATS,removeBlocksForSuid);	
+			
+			// ..then additions
+//			eventMap.mapListener(eventDispatcher,StatsEvent.NEW_CLIENT_BLOCK,addClientStatBlock);	
+
+		}
+
+		
+		public function mapListeners():void{
 			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_CLIENT_STATS,displayClientStats);
 			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_CLIENT_STATS,displayPeerStats);
 			eventMap.mapListener(eventDispatcher,StatsEvent.DISPLAY_SERVER_STATS,displayServerStats);
-
-	
-			
-			// handle deletions
 			eventMap.mapListener(eventDispatcher,StatsEvent.DELETE_PEER_STATS,removeBlocksForSuid);	
-			
-			// ..then additions
-			eventMap.mapListener(eventDispatcher,StatsEvent.NEW_CLIENT_BLOCK,addClientStatBlock);	
-			
-			// ..and then remove this:
-			// this gets called a *lot*, far too broad for our needs
-//			eventMap.mapListener(eventDispatcher,MSEvent.USERS_OBJ_UPDATE,usersUpdated);
-			
-			// this is more efficent, but does not handle adding clientBlocks yet
-//			eventMap.mapListener(eventDispatcher,StatsEvent.DELETE_PEER_STATS,removePeerStatsBlock);
+			eventMap.mapListener(eventDispatcher,StatsEvent.NEW_CLIENT_BLOCK,addClientStatBlock);		
+			statsGroup.visible = true;
 		}
 		
-//		private function usersUpdated(msEvent:MSEvent):void
-//		{
-//			updateStatGroup(msEvent.userInfoVO_array, msEvent.local_userInfoVO);
-//		}		
-//		
-//		private function updateStatGroup(userInfoVO_array:Array, local_userInfoVO:UserInfoVO):void
-//		{
-////			removeStaleServer_ClientStatBlocks(userInfoVO_array);					
-////			removeStaleClientStatBlocks(userInfoVO_array);			
-////			removeStaleClient_PeerStatBlocks(userInfoVO_array);			
-//			
-//			createNewClientStatsBlocks(userInfoVO_array);
-//		}
+		public function unmapListeners():void{
+			eventMap.unmapListener(eventDispatcher,StatsEvent.DISPLAY_CLIENT_STATS,displayClientStats);
+			eventMap.unmapListener(eventDispatcher,StatsEvent.DISPLAY_CLIENT_STATS,displayPeerStats);
+			eventMap.unmapListener(eventDispatcher,StatsEvent.DISPLAY_SERVER_STATS,displayServerStats);
+			eventMap.unmapListener(eventDispatcher,StatsEvent.DELETE_PEER_STATS,removeBlocksForSuid);	
+			eventMap.unmapListener(eventDispatcher,StatsEvent.NEW_CLIENT_BLOCK,addClientStatBlock);				
+			statsGroup.visible = false;
+		}
 		
 		private function removeBlocksForSuid(statsEvent:StatsEvent):void {	
 			removeServer_ClientStatBlock(statsEvent.client_suid);			

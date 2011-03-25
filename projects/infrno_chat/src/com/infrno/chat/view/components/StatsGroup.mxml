@@ -2,7 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				 xmlns:s="library://ns.adobe.com/flex/spark" 
 				 xmlns:mx="library://ns.adobe.com/flex/mx"		
-				 xmlns:MyComp="com.infrno.chat.view.components.*"
+				 xmlns:components="com.infrno.chat.view.components.*"
 				 resize="statsGroup_resizeHandler(event)"
 				 >
 	<fx:Script>
@@ -18,7 +18,7 @@
 	</fx:Script>
 	
 	<s:VGroup id="statsGroup_id">		
-		<MyComp:ServerStatsBlock id="serverStatsBlock"/>
+		<components:ServerStatsBlock id="serverStatsBlock"/>
 	
 		<s:List id="clientStatsBlock_list" 	
 						itemRenderer="spark.skins.spark.DefaultComplexItemRenderer"

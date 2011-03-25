@@ -2,6 +2,7 @@ package com.infrno.chat.controller
 {
 	import com.infrno.chat.model.DataProxy;
 	import com.infrno.chat.model.events.PeerEvent;
+	import com.infrno.chat.model.events.StatsEvent;
 	import com.infrno.chat.model.events.VideoPresenceEvent;
 	import com.infrno.chat.services.MSService;
 	
@@ -56,6 +57,14 @@ package com.infrno.chat.controller
 			hideNetworkGraphs_cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, hideNetworkGraphs);
 			custom_menu.customItems.push(hideNetworkGraphs_cmi);
 			
+			var showNetworkGM_cmi:ContextMenuItem = new ContextMenuItem("Turn on network god mode");
+			showNetworkGM_cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, showNetworkGodMode);
+			custom_menu.customItems.push(showNetworkGM_cmi);
+			
+			var hideNetworkGM_cmi:ContextMenuItem = new ContextMenuItem("Turn off network god mode");
+			hideNetworkGM_cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, hideNetworkGodMode);
+			custom_menu.customItems.push(hideNetworkGM_cmi);
+						
 			contextView.contextMenu = custom_menu;
 		}
 		
@@ -73,6 +82,16 @@ package com.infrno.chat.controller
 		private function hideNetworkGraphs(e:ContextMenuEvent):void
 		{
 			dispatch(new VideoPresenceEvent(VideoPresenceEvent.HIDE_NETWORK_GRAPHS));
+		}		
+		
+		private function showNetworkGodMode(e:ContextMenuEvent):void
+		{
+			dispatch(new StatsEvent(StatsEvent.SHOW_NETWORK_GOD_MODE));
+		}
+		
+		private function hideNetworkGodMode(e:ContextMenuEvent):void
+		{
+			dispatch(new StatsEvent(StatsEvent.HIDE_NETWORK_GOD_MODE));
 		}
 		
 		// TODO: That event, if correct, needs a better name, like PEER_NETCONNECTION_CONNECT

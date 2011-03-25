@@ -16,6 +16,8 @@ package com.infrno.chat.model.events
 		public static const NEW_CLIENT_BLOCK:String							= "se_new_client_block";
 		public static const DELETE_PEER_STATS:String						= "se_delete_peer_stats";
 		
+		public static const SHOW_NETWORK_GOD_MODE:String				= "se_show_network_god_mode";
+		public static const HIDE_NETWORK_GOD_MODE:String				= "se_hide_network_god_mode";
 
 		
 		// Used to receive clientStat records as constructed in CollectClientStatsCommand

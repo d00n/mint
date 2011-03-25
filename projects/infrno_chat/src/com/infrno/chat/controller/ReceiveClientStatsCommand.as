@@ -26,9 +26,9 @@ package com.infrno.chat.controller
 				client_serverStatsVO = new StatsVO();
 				statsProxy.client_serverStatsVO_array[client_suid] = client_serverStatsVO;
 				
-				var statsEvent:StatsEvent = new StatsEvent(StatsEvent.NEW_CLIENT_BLOCK);
-				statsEvent.client_suid = client_suid;
-				dispatch(statsEvent);
+				var newClient_statsEvent:StatsEvent = new StatsEvent(StatsEvent.NEW_CLIENT_BLOCK);
+				newClient_statsEvent.client_suid = client_suid;
+				dispatch(newClient_statsEvent);
 			}
 			
 			// Hrmmmm..
@@ -92,12 +92,12 @@ package com.infrno.chat.controller
 //			trace('ReceiveClientStatsCommand.execute() client_suid:'+client_suid+' peer_suid:'+peer_suid);
 			
 		
-			var statsEvent:StatsEvent = new StatsEvent(StatsEvent.DISPLAY_CLIENT_STATS);
-			statsEvent.client_suid = client_suid;
-			statsEvent.inbound_clientStats = clientStats;
-			statsEvent.client_serverStatsVO = client_serverStatsVO;
-			statsEvent.client_peerStatsVO_array = peerStatsVO_array;
-			dispatch(statsEvent);
+			var displayClientStats_statsEvent:StatsEvent = new StatsEvent(StatsEvent.DISPLAY_CLIENT_STATS);
+			displayClientStats_statsEvent.client_suid = client_suid;
+			displayClientStats_statsEvent.inbound_clientStats = clientStats;
+			displayClientStats_statsEvent.client_serverStatsVO = client_serverStatsVO;
+			displayClientStats_statsEvent.client_peerStatsVO_array = peerStatsVO_array;
+			dispatch(displayClientStats_statsEvent);
 		}		
 	}
 }

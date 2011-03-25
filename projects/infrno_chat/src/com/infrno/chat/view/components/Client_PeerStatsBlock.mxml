@@ -52,7 +52,7 @@
 			
 			// TODO What is best place/time to do this?
 			private function handleCreationComplete(event:Event):void	{	
-				trace("PeerStatsBlock.handleCreationComplete()")
+//				trace("PeerStatsBlock.handleCreationComplete()")
 				initConfig();
 				createSparklineBlock();
 			}

@@ -25,14 +25,10 @@ package com.infrno.chat.controller
 			if (client_serverStatsVO == null) {
 				client_serverStatsVO = new StatsVO();
 				statsProxy.client_serverStatsVO_array[client_suid] = client_serverStatsVO;
-				
-				var newClient_statsEvent:StatsEvent = new StatsEvent(StatsEvent.NEW_CLIENT_BLOCK);
-				newClient_statsEvent.client_suid = client_suid;
-				dispatch(newClient_statsEvent);
 			}
 			
 			// Hrmmmm..
-			client_serverStatsVO.suid = client_suid;
+//			client_serverStatsVO.suid = client_suid;
 			
 			client_serverStatsVO.data_AC.addItem(clientStats.serverStatsRecord);		
 			

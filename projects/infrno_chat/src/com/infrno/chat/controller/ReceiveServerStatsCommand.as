@@ -18,15 +18,15 @@ package com.infrno.chat.controller
 		override public function execute():void{
 			var serverStats:Object = event.inbound_serverStats;
 			
-			// shorthand for 'is statsProxy initialized?'
+			// is statsProxy initialized?
 			if (statsProxy.server_clientStatsVO_array == null)
 				return;
 			
 			var client_suid:String;
 			var serverRecord_or_clientSuid:String;
 			for (serverRecord_or_clientSuid in serverStats) {
-				if (serverRecord_or_clientSuid == 'server record') {				
-					statsProxy.serverStatsVO.data_AC.addItem(serverStats['server record']);		
+				if (serverRecord_or_clientSuid == 'server_record') {				
+					statsProxy.serverStatsVO.data_AC.addItem(serverStats['server_record']);		
 					if (statsProxy.serverStatsVO.data_AC.length > StatsProxy.NUMBER_OF_DATA_RECORDS_TO_KEEP) {
 						statsProxy.serverStatsVO.data_AC.removeItemAt(0);
 					}					

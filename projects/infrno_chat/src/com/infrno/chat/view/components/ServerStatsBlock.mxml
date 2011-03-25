@@ -14,8 +14,8 @@
 			private var _serverStatsVO:StatsVO;
 			private var _client_serverStatsVO:StatsVO;
 			
-//			[Bindable]
-//			public var user_name_label:String;
+			[Bindable]
+			public var clientCount_label:String;
 //			
 //			[Bindable]
 //			public var droppedFrames_label:String;
@@ -59,8 +59,7 @@
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutBytesRate", labelPrefix:"msgOutBytesRate"} );
 //				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutCount", labelPrefix:"msgOutCount"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutCountRate", labelPrefix:"msgOutCountRate"} );
-				sparklineConfig_AC.addItem( {yFieldName:"FileOutBytes", labelPrefix:"FileOutBytes"} );
-				sparklineConfig_AC.addItem( {yFieldName:"FileOutBytesRate", labelPrefix:"FileOutBytesRate"} );
+
 			}			
 			
 //			public function set client_serverStatsVO(value:StatsVO):void{
@@ -83,6 +82,9 @@
 					return;
 				
 				_serverStatsVO = value;
+				
+				clientCount_label = "Client count: " + _serverStatsVO.lastDataRecord.client_count;
+				
 				var sparkline:Sparkline;					
 				for (var i:int=0; i<serverSparkline_vgroup.numChildren-1; i++){
 					sparkline = serverSparkline_vgroup.getChildAt(i) as Sparkline;
@@ -143,6 +145,13 @@
 									 paddingTop="3"
 									 paddingLeft="3"
 									 paddingRight="3"
+									 backgroundColor="0xFFFFFF" />	
+					
+					<s:Label text="{clientCount_label}"
+									 fontSize="11"
+									 paddingTop="1"
+									 paddingLeft="1"
+									 paddingBottom="8"
 									 backgroundColor="0xFFFFFF" />	
 					
 					<s:VGroup id="serverSparkline_vgroup"  

@@ -10,7 +10,7 @@
 	</s:layout>
 	<s:TextArea 
 		id="chat_display"
-		text="How to roll dice:&#13;2d10+3 rolls 2 10-sided dice, adding 3 to the sum&#13;"
+		text="How to roll dice:&#13;2d10+3 rolls 2 d10s, adding 3 to the total&#13;"
 		editable="false" 
 		width="100%" 
 		height="100%"/>

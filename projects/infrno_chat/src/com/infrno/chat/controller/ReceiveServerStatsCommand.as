@@ -18,6 +18,10 @@ package com.infrno.chat.controller
 		override public function execute():void{
 			var serverStats:Object = event.inbound_serverStats;
 			
+			// shorthand for 'is statsProxy initialized?'
+			if (statsProxy.server_clientStatsVO_array == null)
+				return;
+			
 			var client_suid:String;
 			var serverRecord_or_clientSuid:String;
 			for (serverRecord_or_clientSuid in serverStats) {
@@ -30,6 +34,7 @@ package com.infrno.chat.controller
 				} else {
 					client_suid = serverRecord_or_clientSuid;
 				
+					// TODO statsProxy.server_clientStatsVO_array can be null?
 					var server_clientStatsVO:StatsVO = statsProxy.server_clientStatsVO_array[client_suid];
 					if (server_clientStatsVO == null) {
 						server_clientStatsVO = new StatsVO();

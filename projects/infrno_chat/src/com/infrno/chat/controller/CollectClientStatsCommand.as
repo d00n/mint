@@ -36,6 +36,8 @@ package com.infrno.chat.controller
 		{
 			var peerStatsRecord_array:Array = new Array();
 			
+			var peer_count:int = 0;
+			
 			for(var suid:String in dataProxy.userInfoVO_array){
 //				trace("CollectClientStatsCommand.execute() suid:"+suid);		
 				var peer_userInfoVO:UserInfoVO = dataProxy.userInfoVO_array[suid];
@@ -46,6 +48,8 @@ package com.infrno.chat.controller
 					trace("CollectClientStatsCommand.execute() peer_userInfoVO is null");	
 				} else if (peer_userInfoVO.netStream == null) {
 					trace("CollectClientStatsCommand.execute() peer_userInfoVO.netStream is null");	
+				} else if (msService.netConnection == null) {
+					trace("CollectClientStatsCommand.execute() msService.netConnection is null");	
 				} else {
 					var peerStatsRecord:Object = new Object();
 					var netStream:NetStream = peer_userInfoVO.netStream; 
@@ -60,6 +64,8 @@ package com.infrno.chat.controller
 					
 //					var now:Date = new Date();
 //					peerStatsRecord.time = now.getSeconds();
+					
+					peer_count++;
 					
 					// TODO strip remote_ prefix
 					peerStatsRecord.remote_suid							= peer_userInfoVO.suid
@@ -106,6 +112,7 @@ package com.infrno.chat.controller
 			clientStats.use_peer_connection		= dataProxy.use_peer_connection;
 			clientStats.publishing_audio			= dataProxy.pubishing_audio;
 			clientStats.publishing_video			= dataProxy.pubishing_video;
+			clientStats.peer_count						= peer_count;
 			
 			clientStats.serverStatsRecord 		= getServerStats();
 			clientStats.peerStatsRecord_array = peerStatsRecord_array;

@@ -36,6 +36,9 @@
 			public var micLevel_label:String;
 			
 			[Bindable]
+			public var peer_count_label:String;
+			
+			[Bindable]
 			public var publishing_audio_label:String;
 			
 			[Bindable]
@@ -81,6 +84,7 @@
 				publishing_audio_label			= "Publishing audio: " + _clientStats.publishing_audio;				
 				publishing_video_label			= "Publishing video: " + _clientStats.publishing_video;				
 				use_peer_connection_label 	= "Use peer connection: " + _clientStats.use_peer_connection;		
+				peer_count_label 						= "Peer count: " + _clientStats.peer_count;		
 				user_name_label_id_toolTip 	= _clientStats.capabilities;	
 			}			
 			
@@ -184,9 +188,15 @@
 									 toolTip="The amount of sound the microphone is detecting. Values range from 0 (no sound is detected) to 100 (very loud sound is detected). The value of this property can help you determine a good value to pass to the Microphone.setSilenceLevel() method. If the microphone is available but is not yet being used because Microphone.getMicrophone() has not been called, this property is set to -1."
 									 backgroundColor="0xFFFFFF" />
 					
+					<s:Label text="{peer_count_label}"
+									 paddingLeft="3"
+									 paddingRight="3"
+									 fontSize="11"
+									 backgroundColor="0xFFFFFF" />
+					
 				</s:VGroup>
 				
-				<s:VGroup width="200" >
+				<s:VGroup width="175" >
 					<s:Label text="Server"
 									 paddingTop="3"
 									 paddingLeft="3"

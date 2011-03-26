@@ -46,6 +46,7 @@
 								height="20"
 								alpha="1"
 								seriesFilters="[]"
+								
 								>
 
 		<mx:horizontalAxis>
@@ -69,7 +70,7 @@
 		</mx:verticalAxisRenderers>
 		
 		<mx:series>
-			<mx:LineSeries 	id="sparkline_lineSeries"											
+			<mx:LineSeries 	id="sparkline_lineSeries"										
 											yField="{yFieldName}" >	
 				<mx:lineStroke>
 					<mx:SolidColorStroke 						

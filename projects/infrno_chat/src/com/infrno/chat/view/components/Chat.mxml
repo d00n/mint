@@ -3,17 +3,22 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 >
-
 	
 	<s:layout>
 		<s:VerticalLayout/>
 	</s:layout>
-	<s:TextArea 
-		id="chat_display"
-		text="How to roll dice:&#13;2d10+3 rolls 2 d10s, adding 3 to the total&#13;"
-		editable="false" 
-		width="100%" 
-		height="100%"/>
-	<s:TextInput id="chat_in" width="100%" text="Text chat here..." borderColor="0xFF0000"/>
+	
+	<s:TextArea selectable="true"
+							id="chat_display"
+							text="How to roll dice:&#13;2d10+3 rolls 2 d10s, adding 3 to the total&#13;"
+							editable="false" 
+							width="100%" 
+							height="100%"/>
+	
+	<s:TextInput id="chat_in" 
+							 width="100%" 
+							 text="Text chat here..." 
+							 borderColor="0xFF0000" 
+							 selectable="true"/>
 	
 </s:Group>

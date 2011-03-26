@@ -57,13 +57,15 @@ package com.infrno.chat.controller
 			hideNetworkGraphs_cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, hideNetworkGraphs);
 			custom_menu.customItems.push(hideNetworkGraphs_cmi);
 			
-			var showNetworkGM_cmi:ContextMenuItem = new ContextMenuItem("Turn on network god mode");
-			showNetworkGM_cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, showNetworkGodMode);
-			custom_menu.customItems.push(showNetworkGM_cmi);
-			
-			var hideNetworkGM_cmi:ContextMenuItem = new ContextMenuItem("Turn off network god mode");
-			hideNetworkGM_cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, hideNetworkGodMode);
-			custom_menu.customItems.push(hideNetworkGM_cmi);
+			if (dataProxy.enable_god_mode) {
+				var showNetworkGM_cmi:ContextMenuItem = new ContextMenuItem("Turn on network god mode");
+				showNetworkGM_cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, showNetworkGodMode);
+				custom_menu.customItems.push(showNetworkGM_cmi);
+				
+				var hideNetworkGM_cmi:ContextMenuItem = new ContextMenuItem("Turn off network god mode");
+				hideNetworkGM_cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, hideNetworkGodMode);
+				custom_menu.customItems.push(hideNetworkGM_cmi);
+			}
 						
 			contextView.contextMenu = custom_menu;
 		}

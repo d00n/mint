@@ -5,6 +5,7 @@ package com.infrno.chat.view.mediators
 	
 	import flash.events.FocusEvent;
 	
+	import mx.binding.utils.BindingUtils;
 	import mx.events.FlexEvent;
 	
 	import org.robotlegs.core.IMediator;

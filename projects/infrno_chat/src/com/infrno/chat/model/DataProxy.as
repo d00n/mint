@@ -9,13 +9,15 @@ package com.infrno.chat.model
 	
 	public class DataProxy extends Actor
 	{
-		public static const VERSION:String		= "Chat v0.2.22";
+		public static const VERSION:String		= "Chat v0.2.23";
 		
 		// TODO move status vars to a VO, maybe UserInfoVO?
 		
 		// TODO what's the difference between these two?
 		public var peer_enabled:Boolean = true;		
 		public var peer_capable:Boolean;
+		
+		public var enable_god_mode:Boolean = false;		
 		
 		// TODO Is this named well? Does it mean:
 		// attempt_peer_connection

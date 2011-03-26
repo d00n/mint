@@ -18,12 +18,12 @@
 				}
 			}
 			
-			public function updateDimensions(width:int, height:int):void{
-				ChatVGroup.width = width;
-				ChatVGroup.height = height;
-				
-				videosComponent.height = height - chatComponent.height - 10;
-			}
+//			public function updateDimensions(width:int, height:int):void{
+//				ChatVGroup.width = width;
+//				ChatVGroup.height = height;
+//				
+//				videosComponent.height = height - chatComponent.height - 10;
+//			}
 
 		]]>
 	</fx:Script>	

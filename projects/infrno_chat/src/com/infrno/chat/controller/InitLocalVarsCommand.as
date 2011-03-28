@@ -54,9 +54,7 @@ package com.infrno.chat.controller
 			if (flash_vars.enable_god_mode != null && flash_vars.enable_god_mode=="true")
 				dataProxy.enable_god_mode = true;
 			
-			
 			trace("InitLocalVarsCommand.execute() flashvars loaded:" + dataProxy.room_name +":"+ dataProxy.local_userInfoVO.user_name +":"+ dataProxy.room_id +":"+ dataProxy.auth_key);			
-			trace("InitLocalVarsCommand.execute() peer enabled: "+dataProxy.peer_enabled);
 		}
 	}
 }

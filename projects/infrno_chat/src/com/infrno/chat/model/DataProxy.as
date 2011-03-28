@@ -17,7 +17,7 @@ package com.infrno.chat.model
 		public var peer_enabled:Boolean = true;		
 		public var peer_capable:Boolean;
 		
-		public var enable_god_mode:Boolean = false;		
+		public var enable_god_mode:Boolean = true;		
 		
 		// TODO Is this named well? Does it mean:
 		// attempt_peer_connection

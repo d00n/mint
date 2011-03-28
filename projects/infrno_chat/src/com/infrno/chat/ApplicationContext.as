@@ -54,7 +54,7 @@ package com.infrno.chat
 
 			commandMap.mapEvent(SettingsEvent.SHOW_SETTINGS,ShowSettingsCommand);			
 			
-			//Model
+			//Models
 			// mapSingleton provides 1 instance of the requested class for N injections.
 			injector.mapSingleton(DataProxy);
 			injector.mapSingleton(DeviceProxy);
@@ -64,10 +64,12 @@ package com.infrno.chat
 			injector.mapSingleton(MSService);
 			injector.mapSingleton(PeerService);
 			
-			//View
-			mediatorMap.mapView(Chat,ChatMediator);
+			//Views
+			mediatorMap.mapView(InfrnoChat,InfrnoChatMediator);
 			mediatorMap.mapView(VideosGroup,VideosGroupMediator);
-			mediatorMap.mapView(StatsGroup,StatsGroupMediator);
+			mediatorMap.mapView(Chat,ChatMediator);
+			mediatorMap.mapView(StatsGroup, StatsGroupMediator);
+
 			
 //			mediatorMap.mapView(ControlButtons,ControlButtonsMediator);
 			

@@ -49,20 +49,20 @@ package com.infrno.chat.controller
 			peer_status.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, switchToPeer);
 			custom_menu.customItems.push(peer_status);	
 			
-			var showNetworkGraphs_cmi:ContextMenuItem = new ContextMenuItem("Turn on network graphs");
+			var showNetworkGraphs_cmi:ContextMenuItem = new ContextMenuItem("Show network graphs");
 			showNetworkGraphs_cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, showNetworkGraphs);
 			custom_menu.customItems.push(showNetworkGraphs_cmi);
 			
-			var hideNetworkGraphs_cmi:ContextMenuItem = new ContextMenuItem("Turn off network graphs");
+			var hideNetworkGraphs_cmi:ContextMenuItem = new ContextMenuItem("Hide network graphs");
 			hideNetworkGraphs_cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, hideNetworkGraphs);
 			custom_menu.customItems.push(hideNetworkGraphs_cmi);
 			
 			if (dataProxy.enable_god_mode) {
-				var showNetworkGM_cmi:ContextMenuItem = new ContextMenuItem("Turn on network god mode");
+				var showNetworkGM_cmi:ContextMenuItem = new ContextMenuItem("Show network god mode");
 				showNetworkGM_cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, showNetworkGodMode);
 				custom_menu.customItems.push(showNetworkGM_cmi);
 				
-				var hideNetworkGM_cmi:ContextMenuItem = new ContextMenuItem("Turn off network god mode");
+				var hideNetworkGM_cmi:ContextMenuItem = new ContextMenuItem("Hide network god mode");
 				hideNetworkGM_cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, hideNetworkGodMode);
 				custom_menu.customItems.push(hideNetworkGM_cmi);
 			}

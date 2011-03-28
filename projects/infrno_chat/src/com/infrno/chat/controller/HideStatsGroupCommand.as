@@ -1,7 +1,7 @@
 package com.infrno.chat.controller
 {
 	import com.infrno.chat.model.events.StatsEvent;
-	import com.infrno.chat.view.mediators.StatsGroupMediator;
+	import com.infrno.chat.view.mediators.InfrnoChatMediator;
 	
 	import org.robotlegs.mvcs.Command;
 	
@@ -11,11 +11,11 @@ package com.infrno.chat.controller
 		public var event:StatsEvent;
 		
 		[Inject]
-		public var statsGroupMediator:StatsGroupMediator;
+		public var infrnoChatMediator:InfrnoChatMediator;
 		
 		override public function execute( ) : void
 		{
-			statsGroupMediator.unmapListeners();			
+			infrnoChatMediator.removeStatsGroup();			
 		}
 	}
 }

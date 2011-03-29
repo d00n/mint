@@ -57,7 +57,7 @@ package com.infrno.chat.controller
 			hideNetworkGraphs_cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, hideNetworkGraphs);
 			custom_menu.customItems.push(hideNetworkGraphs_cmi);
 			
-			if (dataProxy.enable_god_mode) {
+			if (dataProxy.enable_network_god_mode) {
 				var showNetworkGM_cmi:ContextMenuItem = new ContextMenuItem("Show network god mode");
 				showNetworkGM_cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, showNetworkGodMode);
 				custom_menu.customItems.push(showNetworkGM_cmi);

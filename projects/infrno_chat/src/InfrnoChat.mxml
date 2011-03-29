@@ -22,7 +22,7 @@
 				ChatVGroup.width = width;
 				ChatVGroup.height = height;
 				
-				videosComponent.height = height - chatComponent.height - 10;
+//				videosComponent.height = height - chatComponent.height - 10;
 			}
 
 		]]>

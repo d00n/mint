@@ -201,7 +201,7 @@ package com.infrno.chat.view.mediators
 			trace("VideosGroupMediator.setupLocalVideoPresenceComponent()");
 			videoPresence.is_local = true;
 			videoPresence.camera = deviceProxy.camera;
-			videoPresence.audio_level.value = deviceProxy.mic.gain;
+			videoPresence.audio_level_value = deviceProxy.mic.gain;
 //			videoPresence.audioLevel = deviceProxy.mic.gain;
 			videoPresence.toggleAudio();
 			videoPresence.toggleVideo();

@@ -3,7 +3,6 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:com.infrno.chat.view.components="com.infrno.chat.view.components.*"
-		 creationComplete="handleCreationComplete(event);"
 		 initialize="handleInitialize(event);"
 		 >
 
@@ -23,6 +22,18 @@
 			private var _video:Video;
 			public var sparkline:Sparkline;
 			
+			[Bindable]
+			private var user_name_label:String;
+			
+			[Bindable]
+			public var audio_level_value:Number = 85;
+			
+			[Bindable]
+			public var muteAudio:Boolean = false;
+			
+			[Bindable]
+			public var hideVideo:Boolean = false;
+			
 			public function get video():Video	{
 				if(_video == null){
 					_video = new Video(160,120);
@@ -36,6 +47,8 @@
 			}			
 			public function set userInfoVO(info:UserInfoVO):void{
 				_userInfoVO = info;
+				
+				user_name_label = _userInfoVO.user_name;
 			}
 			
 			public function get is_local():Boolean	{
@@ -78,8 +91,8 @@
 			}
 			
 			public function toggleAudio():void {
-				trace( "VideoPresence.toggleAudio()" );
-				if(audioToggleButton.selected){
+				trace( "VideoPresence.toggleAudio() about to toggle muteAudio=" +muteAudio );
+				if(muteAudio){
 					if(_is_local){
 						dispatchEvent(new VideoPresenceEvent(VideoPresenceEvent.AUDIO_MUTED,true))
 					} else {
@@ -93,12 +106,12 @@
 						dispatchEvent(new VideoPresenceEvent(VideoPresenceEvent.AUDIO_UNMUTED,true))
 					} else {
 						if(_userInfoVO.netStream!=null){
-							setAudioLevel(audio_level.value);
+							setAudioLevel(audio_level_value);
 							_userInfoVO.netStream.receiveAudio(true);
 						}
 					}
-						
 				}
+				muteAudio = !muteAudio;
 			}
 			
 			private function initializeVideo():void	{
@@ -116,10 +129,10 @@
 			}
 			
 			public function toggleVideo():void {
-				trace("VideoPresence.toggleVideo()");
+				trace("VideoPresence.toggleVideo() about to toggle hideVideo=" +hideVideo);
 							
 				//if using peer then we are unable to request a receiveAudio/Video false.. we'd just need to hide it
-				if( videoToggleButton.selected ){
+				if( hideVideo ){
 					if( _is_local ){
 						dispatchEvent(new VideoPresenceEvent(VideoPresenceEvent.VIDEO_MUTED,true));
 						video.attachCamera(null)
@@ -139,6 +152,8 @@
 					
 					video.visible = true;
 				}
+				
+				hideVideo = !hideVideo;
 			}
 			
 			/**
@@ -150,63 +165,21 @@
 					setAudioLevel(audio_level.value);
 			}
 			
-			private function handleCreationComplete(event:Event):void	{
-				currentState="hideControls";
-				_initialized = true;
+			private function controlsContainer_handleCreationComplete(event:Event):void	{
+
 				wrenchToggleButton.visible = _is_local;
 				
 				if (_is_local)
 					audio_level.toolTip = "Your mic level";
 				else
-					audio_level.toolTip = "Peer audio level";
+					audio_level.toolTip = "Volume";
 			}
 			
 			private function handleInitialize(event:Event):void{
 				sparkline = new Sparkline();
+				sparkline.top = 2;
+				sparkline.left = 2;
 				borderContainer.addElement(sparkline);				
-			}
-			
-			private function handleMouseOver(event:Event):void 	{
-				if( currentState == "usingControls" ) {
-					return;
-				}
-
-				stateShowControls( );	
-			}
-			
-			private function handleMouseOut(event:Event):void	{
-				if( currentState == "usingControls" ) {
-					return;
-				}
-				
-				stateHideControls( );
-			}
-			
-			
-			private function stateShowControls():void {
-				currentState = "showControls";
-				
-				controlsContainer.alpha = 1;
-			}
-			
-			private function stateUsingControls():void {
-				currentState = "usingControls";
-				
-				controlsContainer.alpha = 1;
-			}
-			
-			private function stateHideControls():void {
-				currentState = "hideControls";
-					
-				controlsContainer.alpha = .2;
-			}
-			
-			private function handleMouseOverControls(event:Event):void {
-				stateUsingControls( );
-			}
-			
-			private function handleMouseOutControls(event:Event):void	{
-				stateShowControls( );
 			}
 			
 			public function handleShowSettings():void	{
@@ -214,7 +187,7 @@
 			}
 			
 			private function setAudioLevel(levelIn:Number,force:Boolean=false):void	{
-				if( audioToggleButton.selected && !force ) { 
+				if( muteAudio && !force ) { 
 					return;
 				}
 				
@@ -252,9 +225,8 @@
 	</fx:Script>
 	
 	<s:states>
-		<s:State name="showControls" />
-		<s:State name="usingControls" />
 		<s:State name="hideControls" />
+		<s:State name="showControls" />
 	</s:states>
 
 	<s:BorderContainer id="borderContainer"
@@ -262,8 +234,8 @@
 		borderColor="#cecece"
 		width="162" 
 		height="120"
-		mouseOver="handleMouseOver(event);"
-		mouseOut="handleMouseOut(event);">
+		mouseOver='currentState = "showControls";'
+		rollOut='currentState = "hideControls";'>
 		
 		<s:Rect id="background" 
 			width="160" 
@@ -276,7 +248,7 @@
 		<mx:UIComponent id="video_holder" 
 			width="160" 
 			height="120" />		
-
+		
 		<s:HGroup id="controlsContainer"
 			bottom="2"
 			height="20"
@@ -285,34 +257,35 @@
 			paddingTop="0"
 			paddingBottom="0"
 			gap="0"
-			alpha=".2"
-			verticalAlign="middle"
-			includeIn="showControls, usingControls, hideControls"
-			mouseOver="handleMouseOverControls(event);"
-			mouseOut="handleMouseOutControls(event);">
+			verticalAlign="middle" 
+			includeIn="showControls"
+			creationComplete="controlsContainer_handleCreationComplete(event);"
+			>
 			
 			<com.infrno.chat.view.components:ImageToggleButton id="videoToggleButton"
-				styleName="videoToggleButton"				
-				click="toggleVideo()"
-				toolTip="Toggle video"
-				width="20"
-				height="20"/>
+																												 selected = "{hideVideo}"
+																												 styleName="videoToggleButton"				
+																												 click="toggleVideo()"
+																												 toolTip="Toggle video"
+																												 width="20"
+																												 height="20"/>
 			
 			<mx:Spacer width="2" />
 			
-			<com.infrno.chat.view.components:ImageToggleButton id="audioToggleButton"
-				styleName="audioToggleButton"				
-				click="toggleAudio()" 
-				toolTip="Toggle mute"
-				width="20"
-				height="20" />			
+			<com.infrno.chat.view.components:ImageToggleButton id="audioToggleButton" 
+																												 selected = "{muteAudio}"
+																												 styleName="audioToggleButton"				
+																												 click="toggleAudio()" 
+																												 toolTip="Mute"
+																											 	 width="20"
+																											 	 height="20" />			
 			
 			<mx:Spacer width="2" />
 			
 			<com.infrno.chat.view.components:ImageToggleButton id="wrenchToggleButton"
 				styleName="wrenchToggleButton"
 				click="handleShowSettings()" 
-				toolTip="Show settings"
+				toolTip="Settings"
 				width="20"
 				height="20"/>
 			
@@ -320,7 +293,7 @@
 
 			<s:HSlider id="audio_level" 
 				showDataTip="false" 
-				value="75" 
+				value="{audio_level_value}" 
 				maximum="100" 
 				width="100%"
 				height="10"
@@ -330,6 +303,18 @@
 			
 			<mx:Spacer width="2" />		
 		</s:HGroup>
+		
+		<s:Label id="user_name_label_id"
+						 text="{user_name_label}"
+						 bottom="2"
+						 left="2"
+						 paddingLeft="2" 	
+						 paddingTop="2" 	
+						 backgroundColor="0xf5f5f5"
+						 includeIn="hideControls"
+						 />
+		
+		
 		
 	</s:BorderContainer>
 </s:Group>

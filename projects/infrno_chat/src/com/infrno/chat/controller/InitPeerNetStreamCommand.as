@@ -38,6 +38,7 @@ package com.infrno.chat.controller
 			trace("InitPeerNetStreamCommand.execute() dataProxy.peer_capable: "+dataProxy.peer_capable);
 			trace("InitPeerNetStreamCommand.execute() userInfoVO.nearID: "+userInfoVO.nearID);
 			trace("InitPeerNetStreamCommand.execute() userInfoVO.suid: "+userInfoVO.suid);
+			
 			if (userInfoVO.netStream == null)
 				trace("InitPeerNetStreamCommand.execute() userInfoVO.netStream is null");
 			else

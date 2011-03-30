@@ -153,7 +153,6 @@ package com.infrno.chat.view.mediators
 					// TODO this smells. Pick one and stick with it.
 					videoPresence.name = userInfoVO.suid.toString();
 					
-					// TODO push this comparison into the is_local attribute
 					if (userInfoVO.suid == local_userInfoVO.suid) {
 						videoPresence.is_local = true;
 						_local_videoPresence = videoPresence;
@@ -221,8 +220,7 @@ package com.infrno.chat.view.mediators
 			videoPresence.audio_level_value = userInfoVO.netStream.soundTransform.volume*100
 			
 			videoPresence.playVideo();
-			videoPresence.playAudio();
-			
+			videoPresence.playAudio();			
 		}
 		
 		private function displayPeerStats(statsEvent:StatsEvent):void

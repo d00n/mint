@@ -113,12 +113,12 @@ package com.infrno.chat.view.mediators
 			}
 		}
 				
-		private function getVideoPresenceByName(name:String): VideoPresence{
+		private function getVideoPresenceBySuid(suid:String): VideoPresence{
 			var videoPresence:VideoPresence;
 			var dataProviderLength:int = videosGroup.videosGroup_list.dataProvider.length;
 			for(var i:int = 0; i < dataProviderLength; i++){
 				videoPresence = videosGroup.videosGroup_list.dataProvider.getItemAt(i) as VideoPresence;
-				if (videoPresence.name == name) {
+				if (videoPresence.name == suid) {
 					return videoPresence;
 				}
 			}
@@ -138,12 +138,12 @@ package com.infrno.chat.view.mediators
 			
 			// What field in userInfoVO defines 'name' here?
 			// Answer: suid
-			for(var name:String in userInfoVO_array){
-				var userInfoVO:UserInfoVO = userInfoVO_array[name];
+			for(var suid:String in userInfoVO_array){
+				var userInfoVO:UserInfoVO = userInfoVO_array[suid];
 				
-				var videoPresence:VideoPresence = getVideoPresenceByName(name);
+				var videoPresence:VideoPresence = getVideoPresenceBySuid(suid);
 				if(videoPresence == null){
-					trace("VideosGroupMediator.addNewVideos() adding new VideoPresence for name="+name);
+					trace("VideosGroupMediator.addNewVideos() adding new VideoPresence for suid="+suid);
 					
 					videoPresence = new VideoPresence();
 					videosGroup.videosGroup_list.dataProvider.addItem(videoPresence);
@@ -174,24 +174,20 @@ package com.infrno.chat.view.mediators
 						});
 					
 				} else {
-					trace("VideosGroupMediator.updateVideos() found existing VideoPresence for name="+name);
+					trace("VideosGroupMediator.updateVideos() found existing VideoPresence for suid="+suid);
 					
-					// videoPresence is assigned, and not null.
-					// why are we fetching this again? 
-//					videoPresence = getElementbyName(videos.videos_holder, userInfoVO.suid.toString());
+					// videoPresence.isInitialized is always false. this code never runs
 					
-					if(!videoPresence.isInitialized()) {
-						// what about the rest of the collection?
-						return;
-					}
-							
-					videoPresence.is_local = userInfoVO.suid == local_userInfoVO.suid;
-					
-					if(userInfoVO.suid == local_userInfoVO.suid){
-						setupLocalVideoPresenceComponent(videoPresence);
-					} else {
-						setupPeerVideoPresenceNetStream(videoPresence);
-					}					
+//					if(videoPresence.isInitialized()) {	
+//							trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> VideosGroupMediator.updateVideos() videoPresence.isInitialized:" + videoPresence.isInitialized);
+//						videoPresence.is_local = userInfoVO.suid == local_userInfoVO.suid;
+//						
+//						if(userInfoVO.suid == local_userInfoVO.suid){
+//							setupLocalVideoPresenceComponent(videoPresence);
+//						} else {
+//							setupPeerVideoPresenceNetStream(videoPresence);
+//						}					
+//					}
 				}				
 			}
 		}
@@ -199,12 +195,12 @@ package com.infrno.chat.view.mediators
 		private function setupLocalVideoPresenceComponent(videoPresence:VideoPresence):void
 		{
 			trace("VideosGroupMediator.setupLocalVideoPresenceComponent()");
-			videoPresence.is_local = true;
 			videoPresence.camera = deviceProxy.camera;
+
 			videoPresence.audio_level_value = deviceProxy.mic.gain;
-//			videoPresence.audioLevel = deviceProxy.mic.gain;
-			videoPresence.toggleAudio();
-			videoPresence.toggleVideo();
+			
+			videoPresence.playVideo();
+			videoPresence.playAudio();
 		}
 		
 		private function setupPeerVideoPresenceNetStream(videoPresence:VideoPresence):void
@@ -219,16 +215,14 @@ package com.infrno.chat.view.mediators
 		{
 			trace("VideosGroupMediator.setupPeerVideoPresenceComponent()");
 			var userInfoVO:UserInfoVO = vpEvent.userInfoVO;
-			var videoPresence:VideoPresence = getVideoPresenceByName(userInfoVO.suid.toString());			
+			var videoPresence:VideoPresence = getVideoPresenceBySuid(userInfoVO.suid.toString());			
 			videoPresence.netstream = userInfoVO.netStream;
-			videoPresence.toggleAudio();
-			videoPresence.toggleVideo();
+
+			videoPresence.audio_level_value = userInfoVO.netStream.soundTransform.volume*100
 			
-			try{
-				videoPresence.audio_level.value = userInfoVO.netStream.soundTransform.volume*100
-			} catch(e:Object){
-				trace("VideosGroupMediator.setupPeerVideoPresenceComponent() setting videoPresence.audio_level.value threw an error: " + e.toString());
-			}
+			videoPresence.playVideo();
+			videoPresence.playAudio();
+			
 		}
 		
 		private function displayPeerStats(statsEvent:StatsEvent):void
@@ -240,7 +234,7 @@ package com.infrno.chat.view.mediators
 			for (peer_suid in statsEvent.client_peerStatsVO_array) {
 				peerStatsVO = statsEvent.client_peerStatsVO_array[peer_suid];				
 				
-				var videoPresence:VideoPresence = getVideoPresenceByName(peer_suid);		
+				var videoPresence:VideoPresence = getVideoPresenceBySuid(peer_suid);		
 				
 				if (videoPresence == null || videoPresence.sparkline == null) {
 					trace("VideosGroupMediator.displayPeerStats() videoPresence or videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
@@ -271,7 +265,7 @@ package com.infrno.chat.view.mediators
 				return;
 			
 			var serverStatsVO:StatsVO = statsEvent.server_clientStatsVO_array[_local_videoPresence.name];
-			var videoPresence:VideoPresence = getVideoPresenceByName(_local_videoPresence.name);
+			var videoPresence:VideoPresence = getVideoPresenceBySuid(_local_videoPresence.name);
 			
 			if (videoPresence == null || videoPresence.sparkline == null) {
 				trace("VideosGroupMediator.displayServerStats()  videoPresence or videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");

@@ -199,8 +199,6 @@
 				<s:VGroup width="175" >
 					<s:Label text="Server"
 									 paddingTop="3"
-									 paddingLeft="3"
-									 paddingRight="3"
 									 backgroundColor="0xFFFFFF" />	
 					
 

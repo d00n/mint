@@ -30,6 +30,9 @@ package com.infrno.chat
 						
 			commandMap.mapEvent(MSEvent.NETCONNECTION_CONNECTED,ConnectPeerServerCommand);
 			commandMap.mapEvent(MSEvent.NETCONNECTION_CONNECTED,InitStatsProxyCommand);
+			
+			// TODO: Why do we recreate the context menu on user update?
+			// Is it p2p status? Can that be controlled with a bound var?
 			commandMap.mapEvent(MSEvent.USERS_OBJ_UPDATE,ContextMenuSetupCommand);
 					
 			commandMap.mapEvent(PeerEvent.PEER_DISABLE_VIDEO,VideoSourceCommand);

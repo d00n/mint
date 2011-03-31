@@ -45,7 +45,6 @@ package com.infrno.chat
 			commandMap.mapEvent(StatsEvent.HIDE_NETWORK_GOD_MODE, HideStatsGroupCommand);
 			
 			commandMap.mapEvent(PeerEvent.PEER_NETCONNECTION_CONNECTED,ReportPeerConnectionCommand);
-//			commandMap.mapEvent(PeerEvent.PEER_NETCONNECTION_CONNECTED,InitPeerStatsVOCommand);
 			commandMap.mapEvent(PeerEvent.PEER_NETCONNECTION_DISCONNECTED,ReportPeerConnectionCommand);
 			
 			commandMap.mapEvent(VideoPresenceEvent.AUDIO_LEVEL,AudioVideoControlCommand);
@@ -53,6 +52,7 @@ package com.infrno.chat
 			commandMap.mapEvent(VideoPresenceEvent.AUDIO_UNMUTED,AudioVideoControlCommand);
 			commandMap.mapEvent(VideoPresenceEvent.VIDEO_MUTED,AudioVideoControlCommand);
 			commandMap.mapEvent(VideoPresenceEvent.VIDEO_UNMUTED,AudioVideoControlCommand);
+			
 			commandMap.mapEvent(VideoPresenceEvent.SETUP_PEER_NETSTREAM,InitPeerNetStreamCommand);
 
 			commandMap.mapEvent(SettingsEvent.SHOW_SETTINGS,ShowSettingsCommand);			
@@ -73,8 +73,6 @@ package com.infrno.chat
 			mediatorMap.mapView(Chat,ChatMediator);
 			mediatorMap.mapView(StatsGroup, StatsGroupMediator);
 
-			
-//			mediatorMap.mapView(ControlButtons,ControlButtonsMediator);
 			
 			//Startup Commencing
 //			dispatchEvent(new ContextEvent(ContextEvent.STARTUP, StartupCommand));

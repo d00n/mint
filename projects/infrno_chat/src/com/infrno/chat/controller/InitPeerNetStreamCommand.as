@@ -72,6 +72,7 @@ package com.infrno.chat.controller
 			}
 			
 			if (dispatchVpEvent) {
+				// Mediated by VideosGroupMediator.setupPeerVideoPresenceComponent
 				var vpEvent:VideoPresenceEvent= new VideoPresenceEvent(VideoPresenceEvent.SETUP_PEER_VIDEOPRESENCE_COMPONENT);
 				vpEvent.userInfoVO = userInfoVO;
 				dispatch(vpEvent);	

@@ -101,7 +101,7 @@ package com.infrno.chat.view.mediators
 					var videoPresence:VideoPresence = videosGroup.videosGroup_list.dataProvider.getItemAt(i) as VideoPresence;
 					if(userInfoVO_array[videoPresence.name] == null){
 						var vp_index:int = videosGroup.videosGroup_list.dataProvider.getItemIndex(videoPresence);
-						trace("VideosGroupMediator.removeStaleVideos() videoPresence.name="+videoPresence.name);
+						trace("VideosGroupMediator.removeStaleVideos() removing videoPresence.name="+videoPresence.name);
 						videosGroup.videosGroup_list.dataProvider.removeItemAt(vp_index);
 					}
 				}catch(e:Object){
@@ -125,14 +125,14 @@ package com.infrno.chat.view.mediators
 			return null;
 		}
 		
-		private function onVideoPresenceCreationComplete(e:FlexEvent):void{
-			var videoPresence:VideoPresence = e.target as VideoPresence;
-			if(videoPresence.is_local){
-				setupLocalVideoPresenceComponent(videoPresence);
-			} else {
-				setupPeerVideoPresenceNetStream(videoPresence);
-			}
-		}
+//		private function onVideoPresenceCreationComplete(e:FlexEvent):void{
+//			var videoPresence:VideoPresence = e.target as VideoPresence;
+//			if(videoPresence.is_local){
+//				setupLocalVideoPresenceComponent(videoPresence);
+//			} else {
+//				setupPeerVideoPresenceNetStream(videoPresence);
+//			}
+//		}
 		
 		private function addNewVideos(userInfoVO_array:Array, local_userInfoVO:UserInfoVO):void {
 			
@@ -142,6 +142,7 @@ package com.infrno.chat.view.mediators
 				var userInfoVO:UserInfoVO = userInfoVO_array[suid];
 				
 				var videoPresence:VideoPresence = getVideoPresenceBySuid(suid);
+				
 				if(videoPresence == null){
 					trace("VideosGroupMediator.addNewVideos() adding new VideoPresence for suid="+suid);
 					
@@ -177,16 +178,16 @@ package com.infrno.chat.view.mediators
 					
 					// videoPresence.isInitialized is always false. this code never runs
 					
-//					if(videoPresence.isInitialized()) {	
-//							trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> VideosGroupMediator.updateVideos() videoPresence.isInitialized:" + videoPresence.isInitialized);
-//						videoPresence.is_local = userInfoVO.suid == local_userInfoVO.suid;
-//						
-//						if(userInfoVO.suid == local_userInfoVO.suid){
-//							setupLocalVideoPresenceComponent(videoPresence);
-//						} else {
-//							setupPeerVideoPresenceNetStream(videoPresence);
-//						}					
-//					}
+					if(videoPresence.isInitialized()) {	
+							trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> VideosGroupMediator.updateVideos() videoPresence.isInitialized:" + videoPresence.isInitialized);
+						videoPresence.is_local = userInfoVO.suid == local_userInfoVO.suid;
+						
+						if(userInfoVO.suid == local_userInfoVO.suid){
+							setupLocalVideoPresenceComponent(videoPresence);
+						} else {
+							setupPeerVideoPresenceNetStream(videoPresence);
+						}					
+					}
 				}				
 			}
 		}
@@ -204,7 +205,9 @@ package com.infrno.chat.view.mediators
 		
 		private function setupPeerVideoPresenceNetStream(videoPresence:VideoPresence):void
 		{
-			trace("VideosGroupMediator.setupPeerVideoPresenceNetStream() videoPresence.userInfoVO.suid:"+videoPresence.userInfoVO.suid);			
+			trace("VideosGroupMediator.setupPeerVideoPresenceNetStream() videoPresence.userInfoVO.suid:"+videoPresence.userInfoVO.suid);	
+			
+			// Mediated by InitPeerNetStreamCommand
 			var vpEvent:VideoPresenceEvent = new VideoPresenceEvent(VideoPresenceEvent.SETUP_PEER_NETSTREAM);
 			vpEvent.userInfoVO = videoPresence.userInfoVO;
 			dispatch(vpEvent);			

@@ -150,7 +150,7 @@ package com.infrno.chat.view.mediators
 			}			
 			
 			clientStatsBlock.client_serverStatsVO 	= statsEvent.client_serverStatsVO;		
-			clientStatsBlock.user_name_label				= statsEvent.inbound_clientStats.client_user_name;
+			clientStatsBlock.user_name_label				= "Client: " + statsEvent.inbound_clientStats.client_user_name;
 			clientStatsBlock.clientStats						= statsEvent.inbound_clientStats;		
 		}		
 		

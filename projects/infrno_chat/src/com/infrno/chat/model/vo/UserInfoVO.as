@@ -41,7 +41,7 @@ package com.infrno.chat.model.vo
 			return _netStream;
 		}
 		
-		public function set netStream(netStream:NetStream):void
+		public function set netStream(value:NetStream):void
 		{
 			if (_netStream == null) {
 				trace("UserInfoVO.netStream: _netStream is null");
@@ -50,12 +50,15 @@ package com.infrno.chat.model.vo
 				trace("UserInfoVO.netStream: _netStream.hasEventListener(NetStatusEvent.NET_STATUS):"+_netStream.hasEventListener(NetStatusEvent.NET_STATUS));
 			}		
 				
+			// InitPeerNetStreamCommand passes a new NetStream to this setter
+			// This may be how stale peer connections are closed (unpublished?)
 			if(_netStream && _netStream.hasEventListener(NetStatusEvent.NET_STATUS)){
 				_netStream.close();
 				_netStream.removeEventListener(NetStatusEvent.NET_STATUS,handleNetStatus);
 				_netStream = null;
 			}
-			_netStream = netStream;
+			
+			_netStream = value;
 			_netStream.addEventListener(NetStatusEvent.NET_STATUS,handleNetStatus);
 		}
 		

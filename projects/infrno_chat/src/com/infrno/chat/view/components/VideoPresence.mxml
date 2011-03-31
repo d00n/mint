@@ -4,6 +4,7 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:com.infrno.chat.view.components="com.infrno.chat.view.components.*"
 		 initialize="handleInitialize(event);"
+		 creationComplete="handleCreationComplete(event);"
 		 >
 
 	<fx:Script>
@@ -15,7 +16,7 @@
 			
 			import mx.collections.ArrayCollection;
 			
-//			private var _initialized:Boolean = false;
+			private var _initialized:Boolean = false;
 			private var _is_local:Boolean;
 			private var _camera:Camera;
 			private var _userInfoVO:UserInfoVO;
@@ -68,9 +69,9 @@
 				_camera = cam;
 			}
 			
-			public function set netstream(ns:NetStream):void {
+			public function set netstream(value:NetStream):void {
 				video.attachCamera(null);
-				video.attachNetStream(ns);
+				video.attachNetStream(value);
 			}
 
 			private function initializeAudio():void	{
@@ -85,9 +86,9 @@
 				}
 			}	
 					
-//			public function isInitialized():Boolean	{
-//				return _initialized;
-//			}
+			public function isInitialized():Boolean	{
+				return _initialized;
+			}
 			
 			public function toggleAudio():void {
 				trace( "VideoPresence.toggleAudio() about to toggle audioToggle_selected=" +audioToggle_selected );
@@ -181,6 +182,10 @@
 			private function adjustVolume():void {
 				if(_userInfoVO.netStream != null)
 					setAudioLevel(audio_level_value);
+			}
+
+			private function handleCreationComplete(event:Event):void	{
+				_initialized = true;
 			}
 			
 			private function controlsContainer_handleCreationComplete(event:Event):void	{

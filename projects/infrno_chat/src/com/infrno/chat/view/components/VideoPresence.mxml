@@ -91,14 +91,14 @@
 			
 			public function toggleAudio():void {
 				trace( "VideoPresence.toggleAudio() about to toggle audioToggle_selected=" +audioToggle_selected );
+
+				audioToggle_selected = !audioToggle_selected;
 				
 				if(audioToggle_selected){
 					muteAudio();
 				} else {
 					playAudio();
-				}
-				
-				audioToggle_selected = !audioToggle_selected;
+				}				
 			}
 			
 			public function playAudio():void{
@@ -125,6 +125,7 @@
 			
 			public function toggleVideo():void {
 				trace("VideoPresence.toggleVideo() about to toggle videoToggle_selected=" +videoToggle_selected);
+				videoToggle_selected = !videoToggle_selected;
 							
 				//if using peer then we are unable to request a receiveAudio/Video false.. we'd just need to hide it
 				// ... what?
@@ -134,8 +135,6 @@
 				} else {
 					playVideo();
 				}
-				
-				videoToggle_selected = !videoToggle_selected;
 			}
 			
 			public function playVideo():void{

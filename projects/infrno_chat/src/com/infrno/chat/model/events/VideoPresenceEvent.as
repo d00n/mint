@@ -17,9 +17,6 @@ package com.infrno.chat.model.events
 		public static const SHOW_NETWORK_GRAPHS:String 									= "vpe_show_network_graphs";
 		public static const HIDE_NETWORK_GRAPHS:String 									= "vpe_hide_network_graphs";
 		
-//		public static const DISPLAY_PEER_STATS:String 									= "vpe_display_peer_stats";
-//		public static const DISPLAY_SERVER_STATS:String 								= "vpe_display_server_stats";
-		
 
 		private var _value:Number;
 		public var userInfoVO:UserInfoVO;

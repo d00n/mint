@@ -136,8 +136,6 @@ package com.infrno.chat.view.mediators
 		
 		private function addNewVideos(userInfoVO_array:Array, local_userInfoVO:UserInfoVO):void {
 			
-			// What field in userInfoVO defines 'name' here?
-			// Answer: suid
 			for(var suid:String in userInfoVO_array){
 				var userInfoVO:UserInfoVO = userInfoVO_array[suid];
 				
@@ -161,6 +159,8 @@ package com.infrno.chat.view.mediators
 						videoPresence.is_local = false;
 					}
 					
+					// removing this prevents new peers from showing up.
+					// flipping from p2p to server mode will bring them up
 					videoPresence.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
 						{
 							trace("VideosGroupMediator.updateVideos() VideoPresence FlexEvent.CREATION_COMPLETE event listener")
@@ -178,13 +178,17 @@ package com.infrno.chat.view.mediators
 					
 					// videoPresence.isInitialized is always false. this code never runs
 					
-					if(videoPresence.isInitialized()) {	
-							trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> VideosGroupMediator.updateVideos() videoPresence.isInitialized:" + videoPresence.isInitialized);
-						videoPresence.is_local = userInfoVO.suid == local_userInfoVO.suid;
-						
-						if(userInfoVO.suid == local_userInfoVO.suid){
+					if(videoPresence.initialized) {	
+//						videoPresence.is_local = userInfoVO.suid == local_userInfoVO.suid;
+//							if(userInfoVO.suid == local_userInfoVO.suid){
+							
+						// TODO wtf? 
+						// Without this code, the peer netstream does not work.
+						if(videoPresence.is_local){
+							trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> VideosGroupMediator.updateVideos() calling setupLocalVideoPresenceComponent() for suid="+ videoPresence.userInfoVO.suid);
 							setupLocalVideoPresenceComponent(videoPresence);
 						} else {
+							trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> VideosGroupMediator.updateVideos() calling setupPeerVideoPresenceNetStream() for suid="+ videoPresence.userInfoVO.suid);
 							setupPeerVideoPresenceNetStream(videoPresence);
 						}					
 					}
@@ -265,6 +269,7 @@ package com.infrno.chat.view.mediators
 			if (_local_videoPresence == null)
 				return;
 			
+			// TODO change name to suid
 			var serverStatsVO:StatsVO = statsEvent.server_clientStatsVO_array[_local_videoPresence.name];
 			var videoPresence:VideoPresence = getVideoPresenceBySuid(_local_videoPresence.name);
 			

@@ -3,9 +3,10 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:com.infrno.chat.view.components="com.infrno.chat.view.components.*"
-		 initialize="handleInitialize(event);"
-		 creationComplete="handleCreationComplete(event);"
+		 initialize="handleInitialize(event);" 
 		 >
+	<!-- creationComplete="handleCreationComplete(event);" -->
+
 
 	<fx:Script>
 		<![CDATA[
@@ -16,7 +17,7 @@
 			
 			import mx.collections.ArrayCollection;
 			
-			private var _initialized:Boolean = false;
+//			private var _initialized:Boolean = false;
 			private var _is_local:Boolean;
 			private var _camera:Camera;
 			private var _userInfoVO:UserInfoVO;
@@ -86,9 +87,9 @@
 				}
 			}	
 					
-			public function isInitialized():Boolean	{
-				return _initialized;
-			}
+//			public function isInitialized():Boolean	{
+//				return _initialized;
+//			}
 			
 			public function toggleAudio():void {
 				trace( "VideoPresence.toggleAudio() about to toggle audioToggle_selected=" +audioToggle_selected );
@@ -103,6 +104,10 @@
 			}
 			
 			public function playAudio():void{
+				// this is necessary because VideosGroupMediator calls this function on startup/reconnect
+				if (videoToggle_selected)
+					return;
+				
 				if(is_local){
 					dispatchEvent(new VideoPresenceEvent(VideoPresenceEvent.AUDIO_UNMUTED,true))
 				} else {
@@ -125,7 +130,6 @@
 			}		
 			
 			public function toggleVideo():void {
-				trace("VideoPresence.toggleVideo() about to toggle videoToggle_selected=" +videoToggle_selected);
 				videoToggle_selected = !videoToggle_selected;
 							
 				//if using peer then we are unable to request a receiveAudio/Video false.. we'd just need to hide it
@@ -139,6 +143,10 @@
 			}
 			
 			public function playVideo():void{
+				// this is necessary because VideosGroupMediator calls this function on startup/reconnect
+				if (videoToggle_selected)
+					return;
+
 				if(is_local){
 					dispatchEvent(new VideoPresenceEvent(VideoPresenceEvent.VIDEO_UNMUTED,true));
 					video.attachCamera(_camera);
@@ -184,9 +192,9 @@
 					setAudioLevel(audio_level_value);
 			}
 
-			private function handleCreationComplete(event:Event):void	{
-				_initialized = true;
-			}
+//			private function handleCreationComplete(event:Event):void	{
+//				_initialized = true;
+//			}
 			
 			private function controlsContainer_handleCreationComplete(event:Event):void	{
 				if (is_local) {
@@ -199,6 +207,7 @@
 			}
 			
 			private function handleInitialize(event:Event):void{
+				// UGLY Gotta be a better way to create this stuff.
 				sparkline = new Sparkline();
 				sparkline.top = 2;
 				sparkline.left = 2;

@@ -23,7 +23,7 @@ package com.infrno.chat.view.mediators
 			infrnoChat.ChatVDividedBox.addElementAt(statsGroup,1);
 		}
 		public function removeStatsGroup():void {
-			if (statsGroup.initialized) {
+			if (statsGroup != null && statsGroup.initialized) {
 				infrnoChat.ChatVDividedBox.removeElementAt(1);
 			}
 		}

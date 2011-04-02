@@ -3,7 +3,7 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:com.infrno.chat.view.components="com.infrno.chat.view.components.*"
-		 initialize="handleInitialize(event);" 
+		 initialize="onInitialize(event);" 
 		 >
 	<!-- creationComplete="handleCreationComplete(event);" -->
 
@@ -75,17 +75,17 @@
 				video.attachNetStream(value);
 			}
 
-			private function initializeAudio():void	{
-				if( is_local ) {
-					dispatchEvent( new VideoPresenceEvent( VideoPresenceEvent.AUDIO_UNMUTED, true ) );
-					return;
-				}
-				
-				if( hasNetStream() ) {
-					setAudioLevel( 85 );
-					_userInfoVO.netStream.receiveAudio( false );
-				}
-			}	
+//			private function initializeAudio():void	{
+//				if( is_local ) {
+//					dispatchEvent( new VideoPresenceEvent( VideoPresenceEvent.AUDIO_UNMUTED, true ) );
+//					return;
+//				}
+//				
+//				if( hasNetStream() ) {
+//					setAudioLevel( 85 );
+//					_userInfoVO.netStream.receiveAudio( false );
+//				}
+//			}	
 					
 //			public function isInitialized():Boolean	{
 //				return _initialized;
@@ -206,7 +206,7 @@
 				}
 			}
 			
-			private function handleInitialize(event:Event):void{
+			private function onInitialize(event:Event):void{
 				// UGLY Gotta be a better way to create this stuff.
 				sparkline = new Sparkline();
 				sparkline.top = 2;

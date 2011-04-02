@@ -19,7 +19,8 @@ package com.infrno.chat.view.mediators
 		}
 		
 		public function addStatsGroup():void {
-			statsGroup = new StatsGroup();
+			statsGroup = new StatsGroup();		
+			infrnoChat.videosComponent.height = 126;
 			infrnoChat.ChatVDividedBox.addElementAt(statsGroup,1);
 		}
 		public function removeStatsGroup():void {

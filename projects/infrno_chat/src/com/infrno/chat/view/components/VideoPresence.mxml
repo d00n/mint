@@ -189,6 +189,7 @@
 			
 			private function adjustVolume():void {
 				if(_userInfoVO.netStream != null)
+					audio_level_value = this.audio_level.value;
 					setAudioLevel(audio_level_value);
 			}
 
@@ -232,6 +233,8 @@
 					//not initialized
 					return;  
 				}
+				
+				trace("::::::::::::::::::::: levelIn="+levelIn);
 				
 				var curr_transform:SoundTransform = _userInfoVO.netStream.soundTransform;
 				curr_transform.volume = levelIn/100;

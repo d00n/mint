@@ -9,7 +9,7 @@ package com.infrno.chat.model
 	
 	public class DataProxy extends Actor
 	{
-		public static const VERSION:String		= "Chat v0.2.28";
+		public static const VERSION:String		= "Chat v0.2.29";
 		
 		// TODO move status vars to a VO, maybe UserInfoVO?
 		
@@ -34,9 +34,9 @@ package com.infrno.chat.model
 		// Wowza will accept these values for specified hosts.
 		public var auth_key:String		= "sample_auth_key";		
 		public var room_id:String 		= "0";
-		public var room_name:String 	= "";
-		public var user_name:String 	= "";
-		public var user_id:String 		= "";
+		public var room_name:String 	= "Chat_default";
+		public var user_name:String 	= "Chat_default";
+		public var user_id:String 		= "Chat_default";
 		
 		//public const  peer_server_key:String		= "4b9d915ef5ee88cfd38eb359-abf46599bf1f";
 		public const peer_server_key:String		= "6a10a4b24cdfadaebc9765b4-ec2f9e5cf6a2";		

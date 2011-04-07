@@ -51,8 +51,8 @@ package com.infrno.chat.services
 				dataProxy.local_userInfoVO.update(userInfoVO);
 			}
 			
-			_netConnection_client.chatToUser = function(msgIn:String):void {
-				dispatch(new ChatEvent(ChatEvent.RECEIVE_CHAT,msgIn));
+			_netConnection_client.chatToUser = function(msgIn:String, dieRoll:Boolean):void {
+				dispatch(new ChatEvent(ChatEvent.RECEIVE_CHAT,msgIn,dieRoll));
 			}
 			
 			_netConnection_client.collectClientStats = function():void {

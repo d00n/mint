@@ -4,6 +4,12 @@ package com.infrno.chat.view.mediators
 	import com.infrno.chat.view.components.Chat;
 	
 	import flash.events.FocusEvent;
+	import flash.text.engine.FontWeight;
+	import flash.utils.setTimeout;
+	
+	import flashx.textLayout.elements.ParagraphElement;
+	import flashx.textLayout.elements.SpanElement;
+	import flashx.textLayout.elements.TextFlow;
 	
 	import mx.binding.utils.BindingUtils;
 	import mx.events.FlexEvent;
@@ -44,7 +50,20 @@ package com.infrno.chat.view.mediators
 		
 		private function receiveChat(e:ChatEvent):void
 		{
-			chat.chat_display.appendText(e.message+"\n");
+			var span1:SpanElement = new SpanElement();
+			var para:ParagraphElement = new ParagraphElement();
+
+			if (e.dieRoll) {
+				span1.fontWeight = FontWeight.BOLD;
+			}
+			
+			span1.text =  e.message;
+			para.addChild(span1);
+			chat.chat_display.textFlow.addChild(para);
+			setTimeout(function():void{
+				chat.chat_display.scroller.verticalScrollBar.value = chat.chat_display.scroller.verticalScrollBar.maximum + 100;
+			},100);
+
 		}
 		
 		private function sendChat(e:FlexEvent):void

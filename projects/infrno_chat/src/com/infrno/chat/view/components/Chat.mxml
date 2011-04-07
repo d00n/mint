@@ -8,7 +8,7 @@
 		<s:VerticalLayout/>
 	</s:layout>
 	
-	<s:TextArea selectable="true"
+	<s:TextArea selectable="true"  
 							id="chat_display"
 							text="How to roll dice:&#13;2d10+3 rolls 2 d10s, adding 3 to the total&#13;"
 							editable="false" 

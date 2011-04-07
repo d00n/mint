@@ -266,28 +266,36 @@ package com.infrno.chat.view.mediators
 		
 		private function displayServerStats(statsEvent:StatsEvent):void
 		{
-			if (_local_videoPresence == null)
-				return;
+//			var videoPresence:VideoPresence = getVideoPresenceBySuid(_local_videoPresence.name);
 			
-			// TODO change name to suid
-			var serverStatsVO:StatsVO = statsEvent.server_clientStatsVO_array[_local_videoPresence.name];
-			var videoPresence:VideoPresence = getVideoPresenceBySuid(_local_videoPresence.name);
-			
-			if (videoPresence == null || videoPresence.sparkline == null) {
-				trace("VideosGroupMediator.displayServerStats()  videoPresence or videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
+			if (_local_videoPresence == null || _local_videoPresence.sparkline == null) {
+				trace("VideosGroupMediator.displayServerStats()  _local_videoPresence or _local_videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
 				return;
 			}
 			
-			videoPresence.sparkline.statsVO = serverStatsVO;
-			videoPresence.sparkline.yFieldName = 'PingRoundTripTime';
-			videoPresence.sparkline.lastValuePrefix = "Ping";
-			var last_value:int = serverStatsVO.lastDataRecord[videoPresence.sparkline.yFieldName];
-			videoPresence.sparkline.lastValue_label = videoPresence.sparkline.lastValuePrefix +": "+ last_value;
+			// TODO change name to suid
+			var serverStatsVO:StatsVO = statsEvent.server_clientStatsVO_array[_local_videoPresence.name];			
 			
+			_local_videoPresence.sparkline.statsVO = serverStatsVO;
+			_local_videoPresence.sparkline.yFieldName = 'PingRoundTripTime';
+			_local_videoPresence.sparkline.lastValuePrefix = "Ping";
+			var last_value:int = serverStatsVO.lastDataRecord[_local_videoPresence.sparkline.yFieldName];
+			_local_videoPresence.sparkline.lastValue_label = _local_videoPresence.sparkline.lastValuePrefix +": "+ last_value;
+			
+			/* TODO Something very strange is happening when lineStrokeColor is set below
+			 When flipping between colors, it appears as if there are two graphs. 
+			 One full of the high values, and the other full of low values. 
+			 Furthermore, the graphs are slightly out of step with what god mode shows.
+			Trends are accurate, but they're not showing precisely the same data. 
+			Not sure how that's possible, since the Command receiving the data sends it to 
+			both this mediator and StatsMediator. it's the same data....
+			*/
 			if (last_value < Sparkline.MAX_SRTT) {
-				videoPresence.sparkline.lineStrokeColor = Sparkline.GREEN; 
+//				_local_videoPresence.sparkline.lineStrokeColor = Sparkline.GREEN; 
+				_local_videoPresence.sparkline.lastValue_label_id.setStyle("color", Sparkline.GREEN);
 			} else {
-				videoPresence.sparkline.lineStrokeColor = Sparkline.RED;
+//				_local_videoPresence.sparkline.lineStrokeColor = Sparkline.RED;
+				_local_videoPresence.sparkline.lastValue_label_id.setStyle("color", Sparkline.RED);
 			}
 			
 		}		

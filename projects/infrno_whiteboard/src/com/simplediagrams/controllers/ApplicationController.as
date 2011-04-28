@@ -147,7 +147,7 @@ package com.simplediagrams.controllers
 				msg = "ErrorEvent: " + errorEvent.errorID.toString()
 				Logger.error(msg, this);
 			}
-			Alert.show(msg, "Oops! Something is amiss. The authorities have been alerted. Please restart your table.")
+			Alert.show(msg, "Your table has become corrupted. The authorities have been alerted. Please reset your table.")
 		}		
 		
 		[Mediate("mx.events.FlexEvent.APPLICATION_COMPLETE" )] 

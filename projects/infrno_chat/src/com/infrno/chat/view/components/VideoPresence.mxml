@@ -234,8 +234,6 @@
 					return;  
 				}
 				
-				trace("::::::::::::::::::::: levelIn="+levelIn);
-				
 				var curr_transform:SoundTransform = _userInfoVO.netStream.soundTransform;
 				curr_transform.volume = levelIn/100;
 				_userInfoVO.netStream.soundTransform = curr_transform;

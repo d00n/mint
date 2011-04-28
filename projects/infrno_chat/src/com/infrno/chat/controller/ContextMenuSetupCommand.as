@@ -49,13 +49,15 @@ package com.infrno.chat.controller
 			peer_status.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, switchToPeer);
 			custom_menu.customItems.push(peer_status);	
 			
-			var showNetworkGraphs_cmi:ContextMenuItem = new ContextMenuItem("Show network graphs");
-			showNetworkGraphs_cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, showNetworkGraphs);
-			custom_menu.customItems.push(showNetworkGraphs_cmi);
-			
-			var hideNetworkGraphs_cmi:ContextMenuItem = new ContextMenuItem("Hide network graphs");
-			hideNetworkGraphs_cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, hideNetworkGraphs);
-			custom_menu.customItems.push(hideNetworkGraphs_cmi);
+			// TODO right-clicking on a video feed prevents these events from being thrown
+			// Hide until we can sort that out
+//			var showNetworkGraphs_cmi:ContextMenuItem = new ContextMenuItem("Show network graphs");
+//			showNetworkGraphs_cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, showNetworkGraphs);
+//			custom_menu.customItems.push(showNetworkGraphs_cmi);
+//			
+//			var hideNetworkGraphs_cmi:ContextMenuItem = new ContextMenuItem("Hide network graphs");
+//			hideNetworkGraphs_cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, hideNetworkGraphs);
+//			custom_menu.customItems.push(hideNetworkGraphs_cmi);
 			
 			if (dataProxy.enable_network_god_mode) {
 				var showNetworkGM_cmi:ContextMenuItem = new ContextMenuItem("Show network god mode");

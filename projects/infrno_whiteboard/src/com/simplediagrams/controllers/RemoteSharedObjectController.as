@@ -443,6 +443,14 @@ package com.simplediagrams.controllers
 				sd_obj.color 				= sdObjectModel.color;	
 				sd_obj.depth 				= sdObjectModel.depth;	
 				
+				if (sdObjectModel.width < 0) {
+					Logger.error("dispatchUpdate_ObjectChanged() sdObjectModel.width is negative: " + sdObjectModel.width, this);
+				}
+				
+				if (sdObjectModel.height < 0){
+					Logger.error("dispatchUpdate_ObjectChanged() sdObjectModel.height is negative: " + sdObjectModel.height, this);
+				}
+				
 				if (sdObjectModel is SDSymbolModel){
 					var sdSymbolModel:SDSymbolModel = sdObjectModel as SDSymbolModel;
 					
@@ -628,6 +636,16 @@ package com.simplediagrams.controllers
 			sdObjectModel.height		= changeObject.height;
 			sdObjectModel.rotation	= changeObject.rotation;
 			sdObjectModel.depth 		= changeObject.depth;
+			
+			if (sdObjectModel.width < 0) {
+				Logger.error("processUpdate_ObjectChanged() sdObjectModel.width is negative: " + sdObjectModel.width, this);
+				sdObjectModel.width *= -1;
+			}
+			
+			if (sdObjectModel.height < 0){
+				Logger.error("processUpdate_ObjectChanged() sdObjectModel.height is negative: " + sdObjectModel.height, this);
+				sdObjectModel.height *= -1;
+			}
 			
 			if (changeObject.x == null)
 				Logger.error("processUpdate_ObjectChanged() null param: sdObjectModel.x", this);

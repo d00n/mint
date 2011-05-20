@@ -257,9 +257,11 @@ package com.infrno.chat.view.mediators
 				videoPresence.sparkline.lastValue_label = videoPresence.sparkline.lastValuePrefix +": "+ last_value;
 				
 				if (last_value < Sparkline.MAX_SRTT) {
-					videoPresence.sparkline.lineStrokeColor = Sparkline.GREEN; 
+//					videoPresence.sparkline.lineStrokeColor = Sparkline.GREEN; 
+					videoPresence.sparkline.lastValue_label_id.setStyle("color", Sparkline.BLACK); 
 				} else {
-					videoPresence.sparkline.lineStrokeColor = Sparkline.RED;
+//					videoPresence.sparkline.lineStrokeColor = Sparkline.RED;
+					videoPresence.sparkline.lastValue_label_id.setStyle("color", Sparkline.RED);
 				}
 			}			
 		}
@@ -289,10 +291,12 @@ package com.infrno.chat.view.mediators
 			Trends are accurate, but they're not showing precisely the same data. 
 			Not sure how that's possible, since the Command receiving the data sends it to 
 			both this mediator and StatsMediator. it's the same data....
+			
+			More: All graphs appear to be sharing one set of data for green/black, and appropriate data for red. Maybe.
 			*/
 			if (last_value < Sparkline.MAX_SRTT) {
 //				_local_videoPresence.sparkline.lineStrokeColor = Sparkline.GREEN; 
-				_local_videoPresence.sparkline.lastValue_label_id.setStyle("color", Sparkline.GREEN);
+				_local_videoPresence.sparkline.lastValue_label_id.setStyle("color", Sparkline.BLACK);
 			} else {
 //				_local_videoPresence.sparkline.lineStrokeColor = Sparkline.RED;
 				_local_videoPresence.sparkline.lastValue_label_id.setStyle("color", Sparkline.RED);

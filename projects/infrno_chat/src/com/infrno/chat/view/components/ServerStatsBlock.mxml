@@ -45,8 +45,8 @@
 //			private var labelConfig_AC:ArrayCollection = new ArrayCollection();
 
 			private function initConfig():void{
-				sparklineConfig_AC.addItem( {yFieldName:"FileInBytes", labelPrefix:"FileInBytes"} );
-				sparklineConfig_AC.addItem( {yFieldName:"FileInBytesRate", labelPrefix:"FileInBytesRate"} );
+//				sparklineConfig_AC.addItem( {yFieldName:"FileInBytes", labelPrefix:"FileInBytes"} );
+//				sparklineConfig_AC.addItem( {yFieldName:"FileInBytesRate", labelPrefix:"FileInBytesRate"} );
 //				sparklineConfig_AC.addItem( {yFieldName:"MessagesInBytes", labelPrefix:"msgInBytes"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesInBytesRate", labelPrefix:"msgInBytesRate"} );
 //				sparklineConfig_AC.addItem( {yFieldName:"MessagesInCount", labelPrefix:"msgInCount"} );

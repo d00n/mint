@@ -44,7 +44,7 @@
 								top="0" 
 								right="0"
 								width="100%"
-								height="20"
+								height="15"
 								alpha="1"
 								seriesFilters="[]"
 								
@@ -85,7 +85,7 @@
 	
 	<s:Label id="lastValue_label_id" 
 					 text="{lastValue_label}"
-					 fontSize="11"
+					 fontSize="9"
 					 paddingTop="1"
 					 paddingLeft="1"
 					 paddingRight="1"

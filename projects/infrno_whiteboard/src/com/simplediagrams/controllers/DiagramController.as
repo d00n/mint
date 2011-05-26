@@ -587,13 +587,15 @@ package com.simplediagrams.controllers
 		public function onLoadComplete(event:Event):void
 		{				
 			_currModelForImageLoad = new SDImageModel();
-			_currModelForImageLoad.x = 10;
-			_currModelForImageLoad.y = 10;
-			_currModelForImageLoad.imageData = _fileReference.data;		
-			
+			_currModelForImageLoad.x = 20;
+			_currModelForImageLoad.y = 20;
+			_currModelForImageLoad.imageData = _fileReference.data;	
 			_currModelForImageLoad.styleName = SDImageModel.STYLE_NONE;
 			
 			diagramModel.addSDObjectModel(_currModelForImageLoad);			
+			
+			_fileReference.removeEventListener(Event.SELECT, onFileSelect);
+			_fileReference.removeEventListener(Event.CANCEL, onCancelFileSelect);
 			
 			Logger.debug("onLoadComplete() about to dispatch RemoteSharedObjectEvent.LOAD_IMAGE, _currModelForImageLoad.sdID=" + _currModelForImageLoad.sdID,this)
 			

@@ -23,7 +23,7 @@ package com.simplediagrams.model
 	[Bindable]
 	public class ApplicationModel extends EventDispatcher
 	{
-		public static const VERSION:String		= "Whiteboard v0.1.70";
+		public static const VERSION:String		= "Whiteboard v0.1.71";
 		
 		public static var menuDataArr:Array
 		

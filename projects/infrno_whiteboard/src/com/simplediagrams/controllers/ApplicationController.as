@@ -147,7 +147,7 @@ package com.simplediagrams.controllers
 				msg = "ErrorEvent: " + errorEvent.errorID.toString()
 				Logger.error(msg, this);
 			}
-			Alert.show(msg, "Your table has become corrupted. The authorities have been alerted. Please reset your table.")
+			Alert.show(msg, "Your table has become corrupted. A team of highly trained zombies has been dispatched to deal with this situation. Please reset your table.")
 		}		
 		
 		[Mediate("mx.events.FlexEvent.APPLICATION_COMPLETE" )] 

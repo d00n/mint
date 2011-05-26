@@ -40,8 +40,9 @@ package com.simplediagrams.model
 		public function SDImageModel()
 		{
 			super();
-			this.width = 200
-			this.height = 200
+//			Logger.info("SDImageModel():  -----------------------------------------", this)
+//			this.width = 200
+//			this.height = 200
 		}
 	
 		public override function createSDComponent():ISDComponent

@@ -8,8 +8,8 @@ package com.simplediagrams.view.SDComponents
 	
 	import flash.utils.ByteArray;
 	
-	import mx.controls.Image
-		import mx.events.PropertyChangeEvent;
+	import mx.controls.Image;
+	import mx.events.PropertyChangeEvent;
 	
 	[SkinState("normal")]
 	[SkinState("border")]
@@ -31,17 +31,33 @@ package com.simplediagrams.view.SDComponents
 		public var tapeVisible:Boolean
 		public var borderVisible:Boolean
 		
+		private static var MAX_INITIAL_IMAGE_WIDTH:int = 800;
+		
 		public function SDImage()
 		{
-			
+//			Logger.info("SDImage() -----------------------------------------", this)
 			super();
 			this.setStyle("skinClass", Class(SDImageSkin))
 		}
 		
 		protected function onImageLoaded(event:Event):void
 		{
+//			Logger.info("onImageLoaded() -----------------------------------------", this)
 			_model.origWidth = imageHolder.width
 			_model.origHeight = imageHolder.height
+
+			// new images will have NaN for _model.width and height
+			// If so, use actual size, subject to max width
+			if (isNaN(_model.width)) {
+				if (imageHolder.contentWidth > MAX_INITIAL_IMAGE_WIDTH) {
+					_model.width = MAX_INITIAL_IMAGE_WIDTH;
+					var shrinkPercentage:Number = MAX_INITIAL_IMAGE_WIDTH / imageHolder.contentWidth;
+					_model.height = imageHolder.contentHeight * shrinkPercentage;
+				} else {
+					_model.width = imageHolder.contentWidth;
+					_model.height = imageHolder.contentHeight;		
+				}
+			}			
 		}
 		
 		public function onAddImageClick():void

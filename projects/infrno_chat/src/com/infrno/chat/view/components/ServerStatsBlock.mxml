@@ -51,14 +51,14 @@
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesInBytesRate", labelPrefix:"msgInBytesRate"} );
 //				sparklineConfig_AC.addItem( {yFieldName:"MessagesInCount", labelPrefix:"msgInCount"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesInCountRate", labelPrefix:"msgInCountRate"} );
-				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossBytes", labelPrefix:"msgLossBytes"} );
+//				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossBytes", labelPrefix:"msgLossBytes"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossBytesRate", labelPrefix:"msgLossBytesRate"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossCount", labelPrefix:"msgLossCount"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossCountRate", labelPrefix:"msgLossCountRate"} );
 //				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutBytes", labelPrefix:"msgOutBytes"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutBytesRate", labelPrefix:"msgOutBytesRate"} );
 //				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutCount", labelPrefix:"msgOutCount"} );
-				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutCountRate", labelPrefix:"msgOutCountRate"} );
+//				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutCountRate", labelPrefix:"msgOutCountRate"} );
 
 			}			
 			
@@ -147,16 +147,15 @@
 									 paddingRight="3"
 									 backgroundColor="0xFFFFFF" />	
 					
-					<s:Label text="{clientCount_label}"
-									 fontSize="11"
-									 paddingTop="1"
-									 paddingLeft="1"
-									 paddingBottom="8"
-									 backgroundColor="0xFFFFFF" />	
-					
 					<s:VGroup id="serverSparkline_vgroup"  
 										left="0" />
-						
+					
+					<s:Label text="{clientCount_label}"
+									 fontSize="9"
+									 paddingTop="1"
+									 paddingLeft="1"
+									 backgroundColor="0xFFFFFF" />	
+											
 				</s:VGroup>
 						
 				<s:List id="clientStatsBlock_list" 

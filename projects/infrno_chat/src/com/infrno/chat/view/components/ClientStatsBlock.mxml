@@ -147,51 +147,51 @@
 					<s:Label text="{droppedFrames_label}"
 									 paddingLeft="3"
 									 paddingRight="3"
-									 fontSize="11"
+									 fontSize="9"
 									 toolTip="Returns the number of video frames dropped in the current NetStream playback session. In recorded streaming or progressive download, if the video is a high-quality or high-resolution, high-bitrate video, the decoder can lag behind in decoding the required number of frames per second if it does not have adequate system CPU resources. In live streaming, the buffer drops video frames if the latency is too high. This property specifies the number of frames that were dropped and not presented normally."
 									 backgroundColor="0xFFFFFF" />
 					
 					<s:Label text="{peer_enabled_label}"
 									 paddingLeft="3"
 									 paddingRight="3"
-									 fontSize="11"
+									 fontSize="9"
 									 backgroundColor="0xFFFFFF" />
 					
 					<s:Label text="{peer_capable_label}"
 									 paddingLeft="3"
 									 paddingRight="3"
-									 fontSize="11"
+									 fontSize="9"
 									 backgroundColor="0xFFFFFF" />
 					
 					<s:Label text="{use_peer_connection_label}"
 									 paddingLeft="3"
 									 paddingRight="3"
-									 fontSize="11"
+									 fontSize="9"
 									 backgroundColor="0xFFFFFF" />
 					
 					<s:Label text="{publishing_audio_label}"
 									 paddingLeft="3"
 									 paddingRight="3"
-									 fontSize="11"
+									 fontSize="9"
 									 backgroundColor="0xFFFFFF" />
 					
 					<s:Label text="{publishing_video_label}"
 									 paddingLeft="3"
 									 paddingRight="3"
-									 fontSize="11"
+									 fontSize="9"
 									 backgroundColor="0xFFFFFF" />
 					
 					<s:Label text="{micLevel_label}"
 									 paddingLeft="3"
 									 paddingRight="3"
-									 fontSize="11"
+									 fontSize="9"
 									 toolTip="The amount of sound the microphone is detecting. Values range from 0 (no sound is detected) to 100 (very loud sound is detected). The value of this property can help you determine a good value to pass to the Microphone.setSilenceLevel() method. If the microphone is available but is not yet being used because Microphone.getMicrophone() has not been called, this property is set to -1."
 									 backgroundColor="0xFFFFFF" />
 					
 					<s:Label text="{peer_count_label}"
 									 paddingLeft="3"
 									 paddingRight="3"
-									 fontSize="11"
+									 fontSize="9"
 									 backgroundColor="0xFFFFFF" />
 					
 				</s:VGroup>

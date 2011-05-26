@@ -34,8 +34,8 @@ package com.simplediagrams.model
 		private var _sdID:String = "";
 		private var _x:Number = 10;
         private var _y:Number  = 10;
-        public var _height:Number = 50; //needs to be set without invoking dispatch
-        public var _width:Number = 50; //needs to be set without invoking dispatch
+        public var _height:Number; // = 200; //needs to be set without invoking dispatch
+        public var _width:Number; // = 200; //needs to be set without invoking dispatch
         private var _rotation:Number = 0;
 		private var _color:Number= -1
 		public var maintainProportion:Boolean = false;

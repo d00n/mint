@@ -4,7 +4,7 @@
 				 xmlns:mx="library://ns.adobe.com/flex/mx" 
 				 xmlns:com.infrno.chat.view.components="com.infrno.chat.view.components.*"
 				 width="100%" 
-				 height="20" >
+				 height="10" >
 	
 	<fx:Script>
 		<![CDATA[
@@ -44,7 +44,7 @@
 								top="0" 
 								right="0"
 								width="100%"
-								height="15"
+								height="10"
 								alpha="1"
 								seriesFilters="[]"
 								

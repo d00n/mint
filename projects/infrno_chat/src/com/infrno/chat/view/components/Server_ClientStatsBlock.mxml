@@ -26,14 +26,14 @@
 			public function initConfig():void{
 				sparklineConfig_AC.addItem( {yFieldName:"PingRoundTripTime", labelPrefix:"Ping"} );
 //				sparklineConfig_AC.addItem( {yFieldName:"PingTimeout", labelPrefix:"PingTimeout"} );
-				sparklineConfig_AC.addItem( {yFieldName:"FileInBytes", labelPrefix:"FileInBytes"} );
-				sparklineConfig_AC.addItem( {yFieldName:"FileInBytesRate", labelPrefix:"FileInBytesRate"} );
+//				sparklineConfig_AC.addItem( {yFieldName:"FileInBytes", labelPrefix:"FileInBytes"} );
+//				sparklineConfig_AC.addItem( {yFieldName:"FileInBytesRate", labelPrefix:"FileInBytesRate"} );
 				//				sparklineConfig_AC.addItem( {yFieldName:"MessagesInBytes", labelPrefix:"msgInBytes"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesInBytesRate", labelPrefix:"msgInBytesRate"} );
 				//				sparklineConfig_AC.addItem( {yFieldName:"MessagesInCount", labelPrefix:"MessagesInCount"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesInCountRate", labelPrefix:"msgInCountRate"} );
-				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossBytes", labelPrefix:"msgLossBytes"} );
-				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossBytesRate", labelPrefix:"msgLossBytesRate"} );
+//				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossBytes", labelPrefix:"msgLossBytes"} );
+//				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossBytesRate", labelPrefix:"msgLossBytesRate"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossCount", labelPrefix:"msgLossCount"} );
 				sparklineConfig_AC.addItem( {yFieldName:"MessagesLossCountRate", labelPrefix:"msgLossCountRate"} );
 				//				sparklineConfig_AC.addItem( {yFieldName:"MessagesOutBytes", labelPrefix:"msgOutBytes"} );

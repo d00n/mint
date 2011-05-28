@@ -9,7 +9,7 @@ package com.infrno.chat.model
 	
 	public class DataProxy extends Actor
 	{
-		public static const VERSION:String		= "Chat v0.2.30";
+		public static const VERSION:String		= "Chat v0.2.31";
 		
 		// TODO move status vars to a VO, maybe UserInfoVO?
 		

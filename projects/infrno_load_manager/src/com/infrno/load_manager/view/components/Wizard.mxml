@@ -35,6 +35,8 @@
             	displayObject.removeEventListener( "WIZARD_CLOSE", handleWizardClose );
             	
             	setupWizardSwfLoader.source = "";
+							
+//							setupWizardSwfLoader.unloadAndStop(true);
             	
             	dispatchEvent( new Event( EventConstants.WIZARD_CLOSE, true, true ) );
             }

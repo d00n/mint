@@ -43,7 +43,7 @@ package com.infrno.chat.controller
 							trace( "AudioVideoControlCommand.execute() deviceProxy.mic is null" )
 						}
 						
-						// Attach a null mic?
+						// Attach a possibly null mic?
 						dataProxy.ns.attachAudio(deviceProxy.mic);
 					}
 					break;

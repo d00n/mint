@@ -162,13 +162,13 @@ package com.infrno.chat.model
 			dispatch(new DeviceEvent(DeviceEvent.CAMERA_CHANGED));
 		}
 		
-		public function setMic(mic_index_in:int=-1,skip_notify:Boolean=false):Microphone
-		{
-			if(!skip_notify)
-				dispatch(new DeviceEvent(DeviceEvent.MIC_CHANGED));
-			
-			return initMic(mic_index_in);
-		}
+//		public function setMic(mic_index_in:int=-1,skip_notify:Boolean=false):Microphone
+//		{
+//			if(!skip_notify)
+//				dispatch(new DeviceEvent(DeviceEvent.MIC_CHANGED));
+//			
+//			return initMic(mic_index_in);
+//		}
 		
 		public function get mic():Microphone
 		{

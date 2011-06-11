@@ -14,7 +14,9 @@ package com.infrno.chat.view.mediators
 	import com.infrno.chat.view.components.VideosGroup;
 	
 	import flash.display.DisplayObject;
+	import flash.display.Sprite;
 	
+	import mx.controls.Alert;
 	import mx.core.IVisualElement;
 	import mx.events.FlexEvent;
 	import mx.logging.Log;
@@ -53,6 +55,8 @@ package com.infrno.chat.view.mediators
 			
 			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.SHOW_NETWORK_GRAPHS,showNetworkGraphs);
 			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.HIDE_NETWORK_GRAPHS,hideNetworkGraphs);
+			
+			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.SHOW_MIC_DISCONNECTED,showMicDisconnected);
 		}
 		
 		private function dispatchEventInSystem(e:VideoPresenceEvent):void
@@ -87,6 +91,14 @@ package com.infrno.chat.view.mediators
 			}
 		}		
 		
+		private function showMicDisconnected(e:VideoPresenceEvent):void
+		{
+			trace("showMicDisconnected");
+			Alert.show("Your mic is disconnected. Press OK to reconnect.", "Awwwoooga!", mx.controls.Alert.OK, contextView.parent as Sprite);
+			
+			//TODO mute/unmute?
+		}			
+		
 		private function usersUpdated(msEvent:MSEvent):void
 		{
 			removeStaleVideos(msEvent.userInfoVO_array, msEvent.local_userInfoVO);
@@ -113,6 +125,7 @@ package com.infrno.chat.view.mediators
 			}
 		}
 				
+		// TODO rename to getVideoPresence()
 		private function getVideoPresenceBySuid(suid:String): VideoPresence{
 			var videoPresence:VideoPresence;
 			var dataProviderLength:int = videosGroup.videosGroup_list.dataProvider.length;

@@ -21,6 +21,8 @@ package com.infrno.chat.controller
 			
 			override public function execute():void
 			{
+				trace("ToggleConnectionCommand.execute() event.type:" +event.type);
+
 				dataProxy.local_userInfoVO.report_connection_status = !(dataProxy.local_userInfoVO.peer_connection_status == event.type);
 
 				if(dataProxy.peer_enabled){

@@ -16,6 +16,7 @@ package com.infrno.chat.model.events
 		public static const SETUP_PEER_VIDEOPRESENCE_COMPONENT:String 	= "vpe_setup_peer_videopresence_component";
 		public static const SHOW_NETWORK_GRAPHS:String 									= "vpe_show_network_graphs";
 		public static const HIDE_NETWORK_GRAPHS:String 									= "vpe_hide_network_graphs";
+		public static const SHOW_MIC_DISCONNECTED:String 								= "vpe_show_mic_disconnected";
 		
 
 		private var _value:Number;

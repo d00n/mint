@@ -30,7 +30,7 @@ package com.infrno.setup.controller
 			netConnection.eventDispatcher.addEventListener(NetConnectionEvent.NETCONNECTION_CONNECTED,serverConnectionStatus);
 			netConnection.eventDispatcher.addEventListener(NetConnectionEvent.NETCONNECTION_CONNECTING,serverConnectionStatus);
 			netConnection.eventDispatcher.addEventListener(NetConnectionEvent.NETCONNECTION_DISCONNECTED,serverConnectionStatus);
-			netConnection.connect(dataProxy.media_server);
+//			netConnection.connect(dataProxy.media_server);
 			
 			netConnection.connect(dataProxy.connectionUri, 
 				dataProxy.my_info, 

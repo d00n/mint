@@ -27,7 +27,9 @@ package com.infrno.setup.services
 		
 		public function close():void
 		{
+			_nc.removeEventListener(NetStatusEvent.NET_STATUS,handleNetStatus);
 			_nc.close();
+			_nc = null;
 		}
 		
 		public function connect(uri:String,... params):void

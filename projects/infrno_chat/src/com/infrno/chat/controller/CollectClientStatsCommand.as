@@ -4,6 +4,7 @@ package com.infrno.chat.controller
 	import com.infrno.chat.model.DeviceProxy;
 	import com.infrno.chat.model.StatsProxy;
 	import com.infrno.chat.model.events.PeerEvent;
+	import com.infrno.chat.model.events.VideoPresenceEvent;
 	import com.infrno.chat.model.vo.UserInfoVO;
 	import com.infrno.chat.services.MSService;
 	import com.infrno.chat.services.PeerService;
@@ -118,6 +119,11 @@ package com.infrno.chat.controller
 			clientStats.peerStatsRecord_array = peerStatsRecord_array;
 			
 			msService.sendClientStats(clientStats);	
+			
+			
+			if (deviceProxy.mic_level == -1) {
+				dispatch(new VideoPresenceEvent(VideoPresenceEvent.SHOW_MIC_DISCONNECTED));
+			}
 		}
 		
 		private function getServerStats():Object {

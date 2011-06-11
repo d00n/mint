@@ -27,6 +27,7 @@ package com.infrno.load_manager.view.mediators
 		
 		private function loadChat(e:Event):void
 		{
+			displayManager.wizard = null;
 			displayManager.currentState = "chat";
 		}
 		private function loadWizard(e:Event):void

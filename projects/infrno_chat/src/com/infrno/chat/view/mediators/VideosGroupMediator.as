@@ -94,9 +94,11 @@ package com.infrno.chat.view.mediators
 		private function showMicDisconnected(e:VideoPresenceEvent):void
 		{
 			trace("showMicDisconnected");
-			Alert.show("Your mic is disconnected. Press OK to reconnect.", "Awwwoooga!", mx.controls.Alert.OK, contextView.parent as Sprite);
+			dispatchEventInSystem(new VideoPresenceEvent(VideoPresenceEvent.AUDIO_UNMUTED,true));
+//			Alert.show("There is a bug causing this, which we are working on.\n\nIn the meantime, I have hooked your microphone back up. After your game, please report how often you saw this message to feedback@infrno.net.\n\nThanks!", "Your microphone was disconnected.", mx.controls.Alert.OK, contextView.parent as Sprite);
 			
-			//TODO mute/unmute?
+			_local_videoPresence.audioToggle_selected = false;
+
 		}			
 		
 		private function usersUpdated(msEvent:MSEvent):void

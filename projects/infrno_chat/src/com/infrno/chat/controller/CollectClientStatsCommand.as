@@ -9,10 +9,14 @@ package com.infrno.chat.controller
 	import com.infrno.chat.services.MSService;
 	import com.infrno.chat.services.PeerService;
 	
+	import flash.display.Sprite;
+	import flash.media.Microphone;
 	import flash.net.NetStream;
 	import flash.net.NetStreamInfo;
 	import flash.system.Capabilities;
 	import flash.system.System;
+	
+	import mx.controls.Alert;
 	
 	import org.robotlegs.mvcs.Command;
 	
@@ -123,6 +127,11 @@ package com.infrno.chat.controller
 			
 			if (deviceProxy.mic_level == -1) {
 				dispatch(new VideoPresenceEvent(VideoPresenceEvent.SHOW_MIC_DISCONNECTED));
+				
+//				var tmp_mic:Microphone = deviceProxy.mic;
+//				Alert.show("We're working on this, but in the meantime, I have hooked your microphone back up.\n\nAfter your game, please report how often you saw this message to feedback@infrno.net.\n\nThanks!", 
+//					"Your microphone was disconnected.", mx.controls.Alert.OK, contextView.parent as Sprite);
+
 			}
 		}
 		

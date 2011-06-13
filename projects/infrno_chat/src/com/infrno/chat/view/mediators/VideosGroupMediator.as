@@ -15,6 +15,7 @@ package com.infrno.chat.view.mediators
 	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	
 	import mx.controls.Alert;
 	import mx.core.IVisualElement;
@@ -35,6 +36,8 @@ package com.infrno.chat.view.mediators
 		public var videosGroup:VideosGroup;	
 		
 		private var _local_videoPresence:VideoPresence;
+		
+		private var _disconnectedMicAlert_is_visible:Boolean = false;
 		
 		override public function onRegister():void
 		{
@@ -95,11 +98,19 @@ package com.infrno.chat.view.mediators
 		{
 			trace("showMicDisconnected");
 			dispatchEventInSystem(new VideoPresenceEvent(VideoPresenceEvent.AUDIO_UNMUTED,true));
-//			Alert.show("There is a bug causing this, which we are working on.\n\nIn the meantime, I have hooked your microphone back up. After your game, please report how often you saw this message to feedback@infrno.net.\n\nThanks!", "Your microphone was disconnected.", mx.controls.Alert.OK, contextView.parent as Sprite);
+			
+			if (!_disconnectedMicAlert_is_visible) {
+				_disconnectedMicAlert_is_visible = true;
+				Alert.show("This is a bug, and it is nervous, because it feels my boots coming closer.\n\nYour microphone is now connected, and unmuted.\n\nAfter your game, do your duty! Report how often you saw this message to feedback@infrno.net.\n\nHoorah!", 
+					"Your microphone was disconnected.", mx.controls.Alert.OK, contextView.parent as Sprite, closeMicDisconnectAlert);
+			}
 			
 			_local_videoPresence.audioToggle_selected = false;
-
 		}			
+		
+		private function closeMicDisconnectAlert(e:Event):void{
+			_disconnectedMicAlert_is_visible = false;
+		}
 		
 		private function usersUpdated(msEvent:MSEvent):void
 		{

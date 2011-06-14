@@ -50,7 +50,7 @@ package com.infrno.chat.controller
 			// TODO rename this command
 			// If it's purpose is to cause the connection to switch, reporting that switch is secondary
 			// .. and this update here is what causes a connection switch:
-			msService.updateUserInfo();
+			msService.sendUserInfoToServer();
 			// AND it mediates PeerEvent.PEER_NETCONNECTION_CONNECTED
 		}
 	}

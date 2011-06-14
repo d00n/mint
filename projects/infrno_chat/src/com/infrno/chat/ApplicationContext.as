@@ -25,7 +25,7 @@ package com.infrno.chat
 			commandMap.mapEvent(ChatEvent.SEND_CHAT,SendChatCommand);
 
 			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, InitLocalVarsCommand);
-			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, ContextMenuSetupCommand);
+//			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, ContextMenuSetupCommand);
 			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, ConnectMediaServerCommand);
 						
 			commandMap.mapEvent(MSEvent.NETCONNECTION_CONNECTED,ConnectPeerServerCommand);
@@ -37,15 +37,14 @@ package com.infrno.chat
 					
 			commandMap.mapEvent(PeerEvent.PEER_DISABLE_VIDEO,VideoSourceCommand);
 			commandMap.mapEvent(PeerEvent.PEER_ENABLE_VIDEO,VideoSourceCommand);
+			commandMap.mapEvent(PeerEvent.PEER_NETCONNECTION_CONNECTED,ReportPeerConnectionCommand);
+			commandMap.mapEvent(PeerEvent.PEER_NETCONNECTION_DISCONNECTED,ReportPeerConnectionCommand);
 			
 			commandMap.mapEvent(StatsEvent.COLLECT_CLIENT_STATS, CollectClientStatsCommand);
 			commandMap.mapEvent(StatsEvent.RECEIVE_CLIENT_STATS, ReceiveClientStatsCommand);
 			commandMap.mapEvent(StatsEvent.RECEIVE_SERVER_STATS, ReceiveServerStatsCommand);
 			commandMap.mapEvent(StatsEvent.SHOW_NETWORK_GOD_MODE, ShowStatsGroupCommand);
 			commandMap.mapEvent(StatsEvent.HIDE_NETWORK_GOD_MODE, HideStatsGroupCommand);
-			
-			commandMap.mapEvent(PeerEvent.PEER_NETCONNECTION_CONNECTED,ReportPeerConnectionCommand);
-			commandMap.mapEvent(PeerEvent.PEER_NETCONNECTION_DISCONNECTED,ReportPeerConnectionCommand);
 			
 			commandMap.mapEvent(VideoPresenceEvent.AUDIO_LEVEL,AudioVideoControlCommand);
 			commandMap.mapEvent(VideoPresenceEvent.AUDIO_MUTED,AudioVideoControlCommand);

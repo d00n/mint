@@ -80,7 +80,7 @@ package com.infrno.chat.services
 				}
 			}
 				
-			_netConnection_client.updateUsers = updateUsers;
+			_netConnection_client.updateUsers = updateUserInfoVOs;
 		}
 		
 		private function setupNetConnection():void
@@ -193,40 +193,40 @@ package com.infrno.chat.services
 			}
 		}
 		
-		public function updateUserInfo():void
+		public function sendUserInfoToServer():void
 		{
-			trace("MSService.updateUserInfo() dataProxy.local_userInfoVO.suid="+dataProxy.local_userInfoVO.suid);
+			trace("MSService.sendUserInfoToServer() dataProxy.local_userInfoVO.suid="+dataProxy.local_userInfoVO.suid);
 			_netConnection.call("updateUserInfo",null,dataProxy.local_userInfoVO);
 		}
 		
-		private function updateUsers(userInfoVOs:Object):void
+		private function updateUserInfoVOs(userInfoVOs:Object):void
 		{
-			trace("MSService.updateUsers()");
+			trace("MSService.updateUserInfoVOs()");
 			
 			// TODO: don't delete what hasn't changed.			
 			//removing data
 			for(var n:String in dataProxy.userInfoVO_array)
 			{
-				trace("MSService.updateUsers() looking to delete n="+n);
+				trace("MSService.updateUserInfoVOs() looking to delete n="+n);
 				if(userInfoVOs[n] == null)
 					delete dataProxy.userInfoVO_array[n];
 			}
 			
 			//adding/updating info
 			for(var m:String in userInfoVOs){
-				trace("MSService.updateUsers() looking to add m="+m);				
+				trace("MSService.updateUserInfoVOs() looking to add m="+m);				
 				var userInfoVO:UserInfoVO = dataProxy.userInfoVO_array[m];				
 				
 				if(userInfoVO == null){
-					trace("MSService.updateUsers() creating new UserInfoVO for m="+m);				
+					trace("MSService.updateUserInfoVOs() creating new UserInfoVO for m="+m);				
 					dataProxy.userInfoVO_array[m] = new UserInfoVO(userInfoVOs[m]);
 				} else {
-					trace("MSService.updateUsers() updating UserInfoVO for m="+m);						
+					trace("MSService.updateUserInfoVOs() updating UserInfoVO for m="+m);						
 					userInfoVO.update(userInfoVOs[m]);
 				}
 			}
 			
-			trace("MSService.updateUsers() dispatching MSEvent.USERS_OBJ_UPDATE)");	
+			trace("MSService.updateUserInfoVOs() dispatching MSEvent.USERS_OBJ_UPDATE)");	
 			var msEvent:MSEvent = new MSEvent(MSEvent.USERS_OBJ_UPDATE);
 			msEvent.userInfoVO_array = dataProxy.userInfoVO_array;
 			msEvent.local_userInfoVO = dataProxy.local_userInfoVO;
@@ -253,7 +253,7 @@ package com.infrno.chat.services
 					break;
 				case "NetConnection.Connect.Success":
 					setupNetStream();
-					updateUserInfo();
+					sendUserInfoToServer();
 					dispatch(new MSEvent(MSEvent.NETCONNECTION_CONNECTED));
 					break;
 				

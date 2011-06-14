@@ -35,11 +35,12 @@ package com.infrno.chat.controller
 			msService.updatePublishStream();
 			peerService.updatePublishStream();
 			
-			trace("VideoSourceCommand.execute() dispatching MSEvent.USERS_OBJ_UPDATE)");	
-			var msEvent:MSEvent = new MSEvent(MSEvent.USERS_OBJ_UPDATE);
-			msEvent.userInfoVO_array = dataProxy.userInfoVO_array;
-			msEvent.local_userInfoVO = dataProxy.local_userInfoVO;
-			dispatch(msEvent);
+			// XXX TODO disabling for experimentation, June 13
+//			trace("VideoSourceCommand.execute() dispatching MSEvent.USERS_OBJ_UPDATE)");	
+//			var msEvent:MSEvent = new MSEvent(MSEvent.USERS_OBJ_UPDATE);
+//			msEvent.userInfoVO_array = dataProxy.userInfoVO_array;
+//			msEvent.local_userInfoVO = dataProxy.local_userInfoVO;
+//			dispatch(msEvent);
 		}
 	}
 }

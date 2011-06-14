@@ -163,6 +163,7 @@ package com.infrno.chat.view.mediators
 		private function addNewVideos(userInfoVO_array:Array, local_userInfoVO:UserInfoVO):void {
 			
 			for(var suid:String in userInfoVO_array){
+				trace("VideosGroupMediator.addNewVideos() working with suid="+suid);
 				var userInfoVO:UserInfoVO = userInfoVO_array[suid];
 				
 				var videoPresence:VideoPresence = getVideoPresenceBySuid(suid);
@@ -189,7 +190,7 @@ package com.infrno.chat.view.mediators
 					// flipping from p2p to server mode will bring them up
 					videoPresence.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
 						{
-							trace("VideosGroupMediator.updateVideos() VideoPresence FlexEvent.CREATION_COMPLETE event listener")
+							trace("VideosGroupMediator.addNewVideos() VideoPresence FlexEvent.CREATION_COMPLETE event listener")
 							
 							var videoPresence:VideoPresence = e.target as VideoPresence;
 							if(videoPresence.is_local){
@@ -200,26 +201,23 @@ package com.infrno.chat.view.mediators
 						});
 					
 				} else {
-					trace("VideosGroupMediator.updateVideos() found existing VideoPresence for suid="+suid);
-					
-					// videoPresence.isInitialized is always false. this code never runs
+					trace("VideosGroupMediator.addNewVideos() found existing VideoPresence for suid="+suid);
 					
 					if(videoPresence.initialized) {	
-//						videoPresence.is_local = userInfoVO.suid == local_userInfoVO.suid;
-//							if(userInfoVO.suid == local_userInfoVO.suid){
-							
 						// TODO wtf? 
 						// Without this code, the peer netstream does not work.
 						if(videoPresence.is_local){
-							trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> VideosGroupMediator.updateVideos() calling setupLocalVideoPresenceComponent() for suid="+ videoPresence.userInfoVO.suid);
+							trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> VideosGroupMediator.addNewVideos() calling setupLocalVideoPresenceComponent() for suid="+ videoPresence.userInfoVO.suid);
 							setupLocalVideoPresenceComponent(videoPresence);
 						} else {
-							trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> VideosGroupMediator.updateVideos() calling setupPeerVideoPresenceNetStream() for suid="+ videoPresence.userInfoVO.suid);
+							trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> VideosGroupMediator.addNewVideos() calling setupPeerVideoPresenceNetStream() for suid="+ videoPresence.userInfoVO.suid);
 							setupPeerVideoPresenceNetStream(videoPresence);
 						}					
 					}
 				}				
 			}
+			
+			trace("VideosGroupMediator.addNewVideos() exiting");
 		}
 		
 		private function setupLocalVideoPresenceComponent(videoPresence:VideoPresence):void

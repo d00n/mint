@@ -172,8 +172,10 @@ package com.infrno.chat.model
 		
 		public function get mic():Microphone
 		{
-			initTimers();
-			initMic();
+			if (_mic == null) {				
+				initTimers();
+				initMic();	
+			}
 			
 			return _mic;
 		}

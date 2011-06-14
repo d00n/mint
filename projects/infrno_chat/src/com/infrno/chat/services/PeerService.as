@@ -34,11 +34,11 @@ package com.infrno.chat.services
 			setupNetConnection();
 		}
 		
-		private function setupNetConnectionClient():void
-		{
-			_netConnection_client = new Object();
-		}
-		
+//		private function setupNetConnectionClient():void
+//		{
+//			_netConnection_client = new Object();
+//		}
+//		
 		private function setupNetConnection():void
 		{
 			_netConnection = new NetConnection();
@@ -107,7 +107,6 @@ package com.infrno.chat.services
 			// TODO Report these to the server
 			switch(e.info.code){
 				case "NetConnection.Connect.Success":
-					trace("PeerService.handleNetStatus() NetConnection.Connect.Success _netConnection.nearID:"+_netConnection.nearID);
 					dispatch(new PeerEvent(PeerEvent.PEER_NETCONNECTION_CONNECTED,_netConnection.nearID));
 					break;
 				case "NetConnection.Connect.Closed":

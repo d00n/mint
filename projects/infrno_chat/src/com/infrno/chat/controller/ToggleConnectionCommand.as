@@ -31,7 +31,7 @@ package com.infrno.chat.controller
 					dataProxy.local_userInfoVO.peer_connection_status = PeerEvent.PEER_NETCONNECTION_DISCONNECTED; //force server connection
 				}
 				
-				msService.updateUserInfo();
+				msService.sendUserInfoToServer();
 			}
 		}
 	}

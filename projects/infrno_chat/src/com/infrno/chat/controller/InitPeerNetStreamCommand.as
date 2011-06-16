@@ -72,10 +72,13 @@ package com.infrno.chat.controller
 			}
 			
 			if (dispatchVpEvent) {
+				trace("InitPeerNetStreamCommand.execute() dispatching VideoPresenceEvent.SETUP_PEER_VIDEOPRESENCE_COMPONENT");
 				// Mediated by VideosGroupMediator.setupPeerVideoPresenceComponent
 				var vpEvent:VideoPresenceEvent= new VideoPresenceEvent(VideoPresenceEvent.SETUP_PEER_VIDEOPRESENCE_COMPONENT);
 				vpEvent.userInfoVO = userInfoVO;
 				dispatch(vpEvent);	
+			} else {
+				trace("InitPeerNetStreamCommand.execute() NOT dispatching VideoPresenceEvent.SETUP_PEER_VIDEOPRESENCE_COMPONENT");
 			}
 		}
 	}

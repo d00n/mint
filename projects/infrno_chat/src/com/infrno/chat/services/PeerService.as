@@ -22,6 +22,9 @@ package com.infrno.chat.services
 		[Inject]
 		public var deviceProxy:DeviceProxy;
 		
+		[Inject]
+		public var msService:MSService;
+		
 		private var _published:Boolean;		
 		private var _netConnection:NetConnection;
 		private var _netStream:NetStreamPeer;		
@@ -104,6 +107,8 @@ package com.infrno.chat.services
 		private function handleNetStatus(e:NetStatusEvent):void
 		{
 			trace("PeerService.handleNetStatus() "+e.info.code+" _netConnection.nearID:"+_netConnection.nearID);
+			msService.sendLogMessageToServer("PeerService.handleNetStatus() e.info.code=" +e.info.code);
+
 			// TODO Report these to the server
 			switch(e.info.code){
 				case "NetConnection.Connect.Success":
@@ -127,6 +132,8 @@ package com.infrno.chat.services
 		private function handleOutgoingNetStatus(e:NetStatusEvent):void
 		{
 			trace("PeerService.handleOutgoingNetStatus() event: "+e.info.code);
+			msService.sendLogMessageToServer("PeerService.handleOutgoingNetStatus() e.info.code=" +e.info.code);
+
 			switch(e.info.code){
 				case "NetStream.Play.Start":
 					break;
@@ -161,6 +168,7 @@ package com.infrno.chat.services
 			client.onPeerConnect = function(netStream:NetStream):Boolean
 			{
 				trace("PeerService.setupOutgoingNetStream() client.onPeerConnect() netStream.farID: " + netStream.farID);
+				msService.sendLogMessageToServer("PeerService.setupOutgoingNetStream() client.onPeerConnect() farID: " + netStream.farID);
 				return true;
 			}
 			_netStream.client = client;

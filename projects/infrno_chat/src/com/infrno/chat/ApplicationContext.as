@@ -22,7 +22,7 @@ package com.infrno.chat
 		override public function startup():void
 		{
 			//Controller
-			commandMap.mapEvent(ChatEvent.SEND_CHAT,SendChatCommand);
+			commandMap.mapEvent(ChatEvent.SEND_CHAT,SendLogMessageCommand);
 
 			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, InitLocalVarsCommand);
 //			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, ContextMenuSetupCommand);
@@ -35,8 +35,10 @@ package com.infrno.chat
 			// Is it p2p status? Can that be controlled with a bound var?
 			commandMap.mapEvent(MSEvent.USERS_OBJ_UPDATE,ContextMenuSetupCommand);
 					
+			// These are exclusively fired in response to server commands
 			commandMap.mapEvent(PeerEvent.PEER_DISABLE_VIDEO,VideoSourceCommand);
 			commandMap.mapEvent(PeerEvent.PEER_ENABLE_VIDEO,VideoSourceCommand);
+			
 			commandMap.mapEvent(PeerEvent.PEER_NETCONNECTION_CONNECTED,ReportPeerConnectionCommand);
 			commandMap.mapEvent(PeerEvent.PEER_NETCONNECTION_DISCONNECTED,ReportPeerConnectionCommand);
 			
@@ -55,6 +57,9 @@ package com.infrno.chat
 			commandMap.mapEvent(VideoPresenceEvent.SETUP_PEER_NETSTREAM,InitPeerNetStreamCommand);
 
 			commandMap.mapEvent(SettingsEvent.SHOW_SETTINGS,ShowSettingsCommand);			
+			
+			commandMap.mapEvent(LogEvent.SEND_TO_SERVER,SendLogMessageCommand);
+
 			
 			//Models
 			// mapSingleton provides 1 instance of the requested class for N injections.

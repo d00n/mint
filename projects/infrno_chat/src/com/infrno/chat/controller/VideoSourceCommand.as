@@ -3,6 +3,7 @@ package com.infrno.chat.controller
 	import com.infrno.chat.model.DataProxy;
 	import com.infrno.chat.model.events.MSEvent;
 	import com.infrno.chat.model.events.PeerEvent;
+	import com.infrno.chat.model.events.VideoPresenceEvent;
 	import com.infrno.chat.services.MSService;
 	import com.infrno.chat.services.PeerService;
 	import com.infrno.chat.view.components.ControlButtons;
@@ -35,12 +36,23 @@ package com.infrno.chat.controller
 			msService.updatePublishStream();
 			peerService.updatePublishStream();
 			
-			// XXX TODO disabling for experimentation, June 13
-//			trace("VideoSourceCommand.execute() dispatching MSEvent.USERS_OBJ_UPDATE)");	
-//			var msEvent:MSEvent = new MSEvent(MSEvent.USERS_OBJ_UPDATE);
-//			msEvent.userInfoVO_array = dataProxy.userInfoVO_array;
-//			msEvent.local_userInfoVO = dataProxy.local_userInfoVO;
-//			dispatch(msEvent);
+			// XXX TODO 
+			// This is mediated by VideosGroupMediator.usersUpdated(), which eventually calls
+			// VideosGroupMediator.setupPeerVideoPresenceNetStream(), which fires a
+			// VideoPresenceEvent.SETUP_PEER_NETSTREAM, which is mediated by
+			// InitPeerNetStreamCommand
+			trace("VideoSourceCommand.execute() dispatching MSEvent.USERS_OBJ_UPDATE)");	
+			var msEvent:MSEvent = new MSEvent(MSEvent.USERS_OBJ_UPDATE);
+			msEvent.userInfoVO_array = dataProxy.userInfoVO_array;
+			msEvent.local_userInfoVO = dataProxy.local_userInfoVO;
+			dispatch(msEvent);		
+			
+			// Does not work
+//			for(var suid:String in dataProxy.userInfoVO_array) {
+//				var vpEvent:VideoPresenceEvent = new VideoPresenceEvent(VideoPresenceEvent.SETUP_PEER_NETSTREAM);
+//				vpEvent.userInfoVO = dataProxy.userInfoVO_array[suid];
+//				dispatch(vpEvent);
+//			}
 		}
 	}
 }

@@ -1,6 +1,6 @@
 package com.infrno.chat.controller
 {
-	import com.infrno.chat.model.events.ChatEvent;
+	import com.infrno.chat.model.events.LogEvent;
 	import com.infrno.chat.services.MSService;
 	
 	import org.robotlegs.mvcs.Command;
@@ -8,14 +8,15 @@ package com.infrno.chat.controller
 	public class SendLogMessageCommand extends Command
 	{
 		[Inject]
-		public var event:ChatEvent;
+		public var event:LogEvent;
 		
 		[Inject]
 		public var msService:MSService;
 		
 		override public function execute():void
 		{
-			msService.chatToServer(event.message);
+			var msg:String = event.func +", "+ event.peer +", "+ event.message;
+			msService.sendLogMessageToServer(msg);
 		}
 		
 	}

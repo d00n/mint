@@ -61,6 +61,15 @@ package com.simplediagrams.view.SDComponents
 			moveToFrontCMI.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, moveToFrontSelected);
 			
 			var cm:ContextMenu = new ContextMenu()
+				
+			cm.builtInItems.forwardAndBack = false;
+			cm.builtInItems.loop = false;
+			cm.builtInItems.play = false;
+			cm.builtInItems.print = false;
+			cm.builtInItems.quality = false;
+			cm.builtInItems.rewind = false;
+			cm.builtInItems.save = false;
+			cm.builtInItems.zoom = false;
 			
 			cm.customItems = [moveToBackCMI, moveBackwardCMI, moveForwardCMI, moveToFrontCMI]
 		

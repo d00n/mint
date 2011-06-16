@@ -4,6 +4,7 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:com.infrno.chat.view.components="com.infrno.chat.view.components.*"
 		 initialize="onInitialize(event);" 
+		 creationComplete="handleCreationComplete(event);"
 		 >
 	<!-- creationComplete="handleCreationComplete(event);" -->
 
@@ -17,7 +18,7 @@
 			
 			import mx.collections.ArrayCollection;
 			
-//			private var _initialized:Boolean = false;
+			private var _initialized:Boolean = false;
 			private var _is_local:Boolean;
 			private var _camera:Camera;
 			private var _userInfoVO:UserInfoVO;
@@ -71,6 +72,7 @@
 			}
 			
 			public function set netstream(value:NetStream):void {
+				
 				video.attachCamera(null);
 				video.attachNetStream(value);
 			}
@@ -87,9 +89,9 @@
 //				}
 //			}	
 					
-//			public function isInitialized():Boolean	{
-//				return _initialized;
-//			}
+			public function isInitialized():Boolean	{
+				return _initialized;
+			}
 			
 			public function toggleAudio():void {
 				trace( "VideoPresence.toggleAudio() about to toggle audioToggle_selected=" +audioToggle_selected );
@@ -193,9 +195,9 @@
 					setAudioLevel(audio_level_value);
 			}
 
-//			private function handleCreationComplete(event:Event):void	{
-//				_initialized = true;
-//			}
+			private function handleCreationComplete(event:Event):void	{
+				_initialized = true;
+			}
 			
 			private function controlsContainer_handleCreationComplete(event:Event):void	{
 				if (is_local) {

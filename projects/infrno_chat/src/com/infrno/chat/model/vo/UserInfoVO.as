@@ -1,5 +1,6 @@
 package com.infrno.chat.model.vo
 {
+	import com.infrno.chat.model.events.LogEvent;
 	import com.infrno.chat.model.events.PeerEvent;
 	
 	import flash.events.NetStatusEvent;
@@ -7,6 +8,7 @@ package com.infrno.chat.model.vo
 
 	public class UserInfoVO
 	{
+		
 //		public var peer_capable				:Boolean;
 		public var report_connection_status:Boolean;
 		
@@ -47,7 +49,7 @@ package com.infrno.chat.model.vo
 				trace("UserInfoVO.netStream: _netStream is null");
 			} else {
 				trace("UserInfoVO.netStream: _netStream is not null");
-				trace("UserInfoVO.netStream: _netStream.hasEventListener(NetStatusEvent.NET_STATUS):"+_netStream.hasEventListener(NetStatusEvent.NET_STATUS));
+				trace("UserInfoVO.netStream: _netStream.hasEventListener(NetStatusEvent.NET_STATUS)="+_netStream.hasEventListener(NetStatusEvent.NET_STATUS));
 			}		
 				
 			// InitPeerNetStreamCommand passes a new NetStream to this setter
@@ -75,6 +77,11 @@ package com.infrno.chat.model.vo
 		private function handleNetStatus(e:NetStatusEvent):void
 		{
 			trace("UserInfoVO.handleNetStatus() user_name=" +user_name+" : "+e.info.code);
+			
+			// TODO XXX log this to the server
+			
+//			var msg:String = "UserInfoVO.handleNetStatus() local="+user_name+" e.info.code=" +e.info.code;
+//			dispatch(new LogEvent(LogEvent.SEND_TO_SERVER, "UserInfoVO.handleNetStatus()", "tbd", e.info.code));
 		}
 	}
 }

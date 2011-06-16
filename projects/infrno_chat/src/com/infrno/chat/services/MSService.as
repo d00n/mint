@@ -98,6 +98,13 @@ package com.infrno.chat.services
 			_netConnection.call("chatToServer",null,msgIn,targetUsers);
 		}
 		
+		public function sendLogMessageToServer(msgIn:String):void
+		{
+			trace("MSService.sendLogMessageToServer() "+msgIn);
+			var msgOut:String = dataProxy.local_userInfoVO.user_name +", "+ msgIn;
+			_netConnection.call("logMessage",null,msgOut);
+		}
+		
 		public function connect():void
 		{
 			var connection_uri:String = dataProxy.media_server +":"+ dataProxy.media_port +"/"+ dataProxy.media_app +"/"+ dataProxy.room_id;
@@ -242,6 +249,8 @@ package com.infrno.chat.services
 		public function netStatusHandler(e:NetStatusEvent):void
 		{
 			trace("MSService.netStatusHandler() e.info.code: "+e.info.code);
+			sendLogMessageToServer("MSService.netStatusHandler() e.info.code=" +e.info.code);
+			
 			switch(e.info.code){
 				
 				// TODO MSEvent.NETCONNECTION_DISCONNECTED is not mediated

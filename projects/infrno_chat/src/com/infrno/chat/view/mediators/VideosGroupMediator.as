@@ -188,17 +188,18 @@ package com.infrno.chat.view.mediators
 					
 					// removing this prevents new peers from showing up.
 					// flipping from p2p to server mode will bring them up
-					videoPresence.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
-						{
-							trace("VideosGroupMediator.addNewVideos() VideoPresence FlexEvent.CREATION_COMPLETE event listener")
-							
-							var videoPresence:VideoPresence = e.target as VideoPresence;
-							if(videoPresence.is_local){
-								setupLocalVideoPresenceComponent(videoPresence);
-							} else {
-								setupPeerVideoPresenceNetStream(videoPresence);
-							}
-						});
+					// XXX 6/16 Does not seem to be needed anymore
+//					videoPresence.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
+//						{
+//							trace("VideosGroupMediator.addNewVideos() VideoPresence FlexEvent.CREATION_COMPLETE event listener")
+//							
+//							var videoPresence:VideoPresence = e.target as VideoPresence;
+//							if(videoPresence.is_local){
+//								setupLocalVideoPresenceComponent(videoPresence);
+//							} else {
+//								setupPeerVideoPresenceNetStream(videoPresence);
+//							}
+//						});
 					
 				} else {
 					trace("VideosGroupMediator.addNewVideos() found existing VideoPresence for suid="+suid);

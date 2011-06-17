@@ -47,6 +47,7 @@ package com.infrno.chat.controller
 			msEvent.local_userInfoVO = dataProxy.local_userInfoVO;
 			dispatch(msEvent);		
 			
+			// Experimenting with a more precise event. The above seems kind of heavy and rigid. 
 			// Does not work
 //			for(var suid:String in dataProxy.userInfoVO_array) {
 //				var vpEvent:VideoPresenceEvent = new VideoPresenceEvent(VideoPresenceEvent.SETUP_PEER_NETSTREAM);

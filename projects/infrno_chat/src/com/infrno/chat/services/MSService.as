@@ -72,7 +72,7 @@ package com.infrno.chat.services
 			}
 				
 			_netConnection_client.usePeerConnection = function(use_peer_connection:Boolean):void {
-				trace("MSService.setupClient() _nc_client.usePeerConnection() use_peer_connection:"+use_peer_connection);
+				trace("MSService.setupClient() _netConnection_client.usePeerConnection() use_peer_connection:"+use_peer_connection);
 				if(use_peer_connection){
 					dispatch(new PeerEvent(PeerEvent.PEER_ENABLE_VIDEO));
 				} else {
@@ -101,8 +101,8 @@ package com.infrno.chat.services
 		public function sendLogMessageToServer(msgIn:String):void
 		{
 			trace("MSService.sendLogMessageToServer() "+msgIn);
-			var msgOut:String = dataProxy.local_userInfoVO.user_name +", "+ msgIn;
-			_netConnection.call("logMessage",null,msgOut);
+//			var msgOut:String = dataProxy.local_userInfoVO.user_name +" reporting, "+ msgIn;
+			_netConnection.call("logMessage",null,msgIn);
 		}
 		
 		public function connect():void
@@ -146,6 +146,7 @@ package com.infrno.chat.services
 			var ns_client:Object = new Object();
 			
 			// TODO useful QoS data?
+			// I've never seen these called
 			ns_client.onPlayStatus = onPlayStatus;
 			ns_client.onMetaData = onMetaData;
 			
@@ -156,11 +157,11 @@ package com.infrno.chat.services
 		}
 		
 		public function onPlayStatus(e:Object):void {
-			trace("MSService.onPlayStatus() e:" + e.toString());			
+			trace("----------------------------------------------MSService.onPlayStatus() e:" + e.toString());			
 		}
 		
 		public function onMetaData(e:Object):void {
-			trace("MSService.onMetaData() e:" + e.toString());			
+			trace("----------------------------------------------MSService.onMetaData() e:" + e.toString());			
 		}
 		
 		public function sendClientStats(clientStats:Object):void
@@ -210,30 +211,29 @@ package com.infrno.chat.services
 		{
 			trace("MSService.updateUserInfoVOs()");
 			
-			// TODO: don't delete what hasn't changed.			
-			//removing data
 			for(var n:String in dataProxy.userInfoVO_array)
 			{
-				trace("MSService.updateUserInfoVOs() looking to delete n="+n);
-				if(userInfoVOs[n] == null)
+				if(userInfoVOs[n] == null){
+					trace("MSService.updateUserInfoVOs() deleting UserInfoVO for "+n);
 					delete dataProxy.userInfoVO_array[n];
+				}
 			}
 			
 			//adding/updating info
 			for(var m:String in userInfoVOs){
-				trace("MSService.updateUserInfoVOs() looking to add m="+m);				
 				var userInfoVO:UserInfoVO = dataProxy.userInfoVO_array[m];				
 				
 				if(userInfoVO == null){
-					trace("MSService.updateUserInfoVOs() creating new UserInfoVO for m="+m);				
+					trace("MSService.updateUserInfoVOs() creating UserInfoVO for "+m);				
 					dataProxy.userInfoVO_array[m] = new UserInfoVO(userInfoVOs[m]);
 				} else {
-					trace("MSService.updateUserInfoVOs() updating UserInfoVO for m="+m);						
+					trace("MSService.updateUserInfoVOs() updating UserInfoVO for "+m);						
 					userInfoVO.update(userInfoVOs[m]);
 				}
 			}
 			
 			trace("MSService.updateUserInfoVOs() dispatching MSEvent.USERS_OBJ_UPDATE)");	
+			// Mediated by VideosGroupMediator.usersUpdated()
 			var msEvent:MSEvent = new MSEvent(MSEvent.USERS_OBJ_UPDATE);
 			msEvent.userInfoVO_array = dataProxy.userInfoVO_array;
 			msEvent.local_userInfoVO = dataProxy.local_userInfoVO;

@@ -8,6 +8,7 @@ package com.infrno.chat.controller
 	import com.infrno.chat.services.NetStreamPeer;
 	import com.infrno.chat.services.PeerService;
 	
+	import flash.events.NetStatusEvent;
 	import flash.net.NetStream;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
@@ -33,6 +34,7 @@ package com.infrno.chat.controller
 		{
 			var userInfoVO:UserInfoVO = event.userInfoVO;			
 			var dispatchVpEvent:Boolean = false;
+			var netStream:NetStream;
 			
 			trace("InitPeerNetStreamCommand.execute() dataProxy.use_peer_connection: "+dataProxy.use_peer_connection);
 			trace("InitPeerNetStreamCommand.execute() dataProxy.peer_capable: "+dataProxy.peer_capable);
@@ -57,16 +59,17 @@ package com.infrno.chat.controller
 //				userInfoVO.netStream.play(userInfoVO.suid.toString());
 				
 				// becomes:
-				var netStream:NetStream = peerService.getNewNetStream(userInfoVO.nearID);
+				netStream = peerService.getNewNetStream(userInfoVO.nearID);
 				netStream.play(userInfoVO.suid.toString());
-				userInfoVO.netStream = netStream;
+				userInfoVO.set_netStream(netStream, handleNetStatus);
 				
 				dispatchVpEvent = true;
 			} else if(!dataProxy.use_peer_connection && 
 					!(userInfoVO.netStream is NetStreamMS) )
 			{
 				trace("InitPeerNetStreamCommand.execute() setting up and playing from the server connection");
-				userInfoVO.netStream = msService.getNewNetStream();
+				netStream = msService.getNewNetStream();
+				userInfoVO.set_netStream(netStream, handleNetStatus);
 				userInfoVO.netStream.play(userInfoVO.suid.toString(),-1);
 				dispatchVpEvent = true;
 			}
@@ -80,6 +83,14 @@ package com.infrno.chat.controller
 			} else {
 				trace("InitPeerNetStreamCommand.execute() NOT dispatching VideoPresenceEvent.SETUP_PEER_VIDEOPRESENCE_COMPONENT");
 			}
+		}
+		
+		private function handleNetStatus(e:NetStatusEvent):void
+		{
+			// XXX maybe add a connection_type param?
+			trace("InitPeerNetStreamCommand.handleNetStatus() e.info.code="+e.info.code);
+			var msg:String = "UserInfoVO.handleNetStatus e.info.code="+ e.info.code;
+			msService.sendLogMessageToServer(msg);
 		}
 	}
 }

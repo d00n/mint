@@ -15,8 +15,8 @@ package com.infrno.chat.controller
 		
 		override public function execute():void
 		{
-			var msg:String = event.func +", "+ event.peer +", "+ event.message;
-			msService.sendLogMessageToServer(msg);
+//			var msg:String = event.location +", "+ event.peer +", "+ event.message;
+//			msService.sendLogMessageToServer(msg);
 		}
 		
 	}

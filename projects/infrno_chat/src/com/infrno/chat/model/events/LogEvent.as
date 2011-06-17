@@ -6,16 +6,16 @@ package com.infrno.chat.model.events
 	{
 		public static const		SEND_TO_SERVER:String 	= "send_to_server";
 		
-		private var _func:String;
+		private var _location:String;
 		private var _peer:String;
 		private var _message:String;
 		
-		public function LogEvent(type:String, func:String = null, peer:String=null, message:String=null)
+		public function LogEvent(type:String, location:String = null, peer:String=null, message:String=null)
 		{
 			super(type);
 			_message = message;			
 			_peer = peer;			
-			_func = func;			
+			_location = location;			
 		}
 		
 		public function get message():String
@@ -26,9 +26,9 @@ package com.infrno.chat.model.events
 		{
 			return _peer;
 		}		
-		public function get func():String
+		public function get location():String
 		{
-			return _func;
+			return _location;
 		}		
 	}
 }

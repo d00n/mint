@@ -71,7 +71,7 @@ package com.infrno.chat.view.mediators
 			if(stripWhite(chat.chat_in.text).length == 0)
 				return;
 			
-			var msg:String = chat.chat_in.text;			
+			var msg:String = stripWhite(chat.chat_in.text);			
 			dispatch(new ChatEvent(ChatEvent.SEND_CHAT, msg));
 			clearChat();
 		}

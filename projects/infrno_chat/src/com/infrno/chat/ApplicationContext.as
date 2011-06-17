@@ -22,7 +22,7 @@ package com.infrno.chat
 		override public function startup():void
 		{
 			//Controller
-			commandMap.mapEvent(ChatEvent.SEND_CHAT,SendLogMessageCommand);
+			commandMap.mapEvent(ChatEvent.SEND_CHAT,SendChatCommand);
 
 			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, InitLocalVarsCommand);
 //			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, ContextMenuSetupCommand);
@@ -58,7 +58,7 @@ package com.infrno.chat
 
 			commandMap.mapEvent(SettingsEvent.SHOW_SETTINGS,ShowSettingsCommand);			
 			
-			commandMap.mapEvent(LogEvent.SEND_TO_SERVER,SendLogMessageCommand);
+//			commandMap.mapEvent(LogEvent.SEND_TO_SERVER,SendLogMessageCommand);
 
 			
 			//Models

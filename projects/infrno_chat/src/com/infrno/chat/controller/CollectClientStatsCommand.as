@@ -128,13 +128,9 @@ package com.infrno.chat.controller
 			if (deviceProxy.mic_level == -1) {
 				trace("CollectClientStatsCommand.execute() deviceProxy.mic_level == -1, deviceProxy.mic = " + deviceProxy.mic.toString());
 				msService.sendLogMessageToServer("deviceProxy.mic_level == -1");
-				dispatch(new VideoPresenceEvent(VideoPresenceEvent.SHOW_MIC_DISCONNECTED));
-				
-//				var tmp_mic:Microphone = deviceProxy.mic;
-//				Alert.show("We're working on this, but in the meantime, I have hooked your microphone back up.\n\nAfter your game, please report how often you saw this message to feedback@infrno.net.\n\nThanks!", 
-//					"Your microphone was disconnected.", mx.controls.Alert.OK, contextView.parent as Sprite);
-
+//				dispatch(new VideoPresenceEvent(VideoPresenceEvent.SHOW_MIC_DISCONNECTED));				
 			}
+			
 		}
 		
 		private function getServerStats():Object {

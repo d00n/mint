@@ -99,11 +99,11 @@ package com.infrno.chat.view.mediators
 			trace("showMicDisconnected");
 			dispatchEventInSystem(new VideoPresenceEvent(VideoPresenceEvent.AUDIO_UNMUTED,true));
 			
-			if (!_disconnectedMicAlert_is_visible) {
-				_disconnectedMicAlert_is_visible = true;
-				Alert.show("This is a bug, and it is nervous, because it feels my boots coming closer.\n\nYour microphone is now connected, and unmuted.\n\nAfter your game, do your duty! Report how often you saw this message to feedback@infrno.net.\n\nHoorah!", 
-					"Your microphone was disconnected.", mx.controls.Alert.OK, contextView.parent as Sprite, closeMicDisconnectAlert);
-			}
+//			if (!_disconnectedMicAlert_is_visible) {
+//				_disconnectedMicAlert_is_visible = true;
+//				Alert.show("This is a bug, and it is nervous, because it feels my boots coming closer.\n\nYour microphone is now connected, and unmuted.\n\nAfter your game, do your duty! Report how often you saw this message to feedback@infrno.net.\n\nHoorah!", 
+//					"Your microphone was disconnected.", mx.controls.Alert.OK, contextView.parent as Sprite, closeMicDisconnectAlert);
+//			}
 			
 			_local_videoPresence.audioToggle_selected = false;
 		}			
@@ -188,18 +188,18 @@ package com.infrno.chat.view.mediators
 					
 					// removing this prevents new peers from showing up.
 					// flipping from p2p to server mode will bring them up
-					// XXX 6/16 Does not seem to be needed anymore
-//					videoPresence.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
-//						{
-//							trace("VideosGroupMediator.addNewVideos() VideoPresence FlexEvent.CREATION_COMPLETE event listener")
-//							
-//							var videoPresence:VideoPresence = e.target as VideoPresence;
-//							if(videoPresence.is_local){
-//								setupLocalVideoPresenceComponent(videoPresence);
-//							} else {
-//								setupPeerVideoPresenceNetStream(videoPresence);
-//							}
-//						});
+					// XXX 6/16 works w/o it locally, but not on staging
+					videoPresence.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:FlexEvent):void
+						{
+							trace("VideosGroupMediator.addNewVideos() VideoPresence FlexEvent.CREATION_COMPLETE event listener")
+							
+							var videoPresence:VideoPresence = e.target as VideoPresence;
+							if(videoPresence.is_local){
+								setupLocalVideoPresenceComponent(videoPresence);
+							} else {
+								setupPeerVideoPresenceNetStream(videoPresence);
+							}
+						});
 					
 				} else {
 					trace("VideosGroupMediator.addNewVideos() found existing VideoPresence for suid="+suid);

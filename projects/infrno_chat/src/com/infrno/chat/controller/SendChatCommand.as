@@ -5,7 +5,7 @@ package com.infrno.chat.controller
 	
 	import org.robotlegs.mvcs.Command;
 	
-	public class SendLogMessageCommand extends Command
+	public class SendChatCommand extends Command
 	{
 		[Inject]
 		public var event:ChatEvent;

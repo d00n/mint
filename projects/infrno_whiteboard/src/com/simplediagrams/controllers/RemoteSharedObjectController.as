@@ -1,5 +1,6 @@
 package com.simplediagrams.controllers
 {
+	import com.google.analytics.GATracker;
 	import com.simplediagrams.business.FileManager;
 	import com.simplediagrams.commands.AddImageItem;
 	import com.simplediagrams.commands.AddLibraryItemCommand;
@@ -30,6 +31,7 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.model.mementos.SDLineMemento;
 	import com.simplediagrams.model.mementos.TransformMemento;
 	import com.simplediagrams.util.Logger;
+	import com.simplediagrams.view.DrawingBoard;
 	import com.simplediagrams.view.SDComponents.SDBase;
 	import com.simplediagrams.view.SDComponents.SDLine;
 	import com.simplediagrams.view.SDComponents.SDTextArea;
@@ -45,6 +47,7 @@ package com.simplediagrams.controllers
 	import flash.events.NetStatusEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.events.SyncEvent;
+	import flash.events.TimerEvent;
 	import flash.net.FileFilter;
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
@@ -54,6 +57,7 @@ package com.simplediagrams.controllers
 	import flash.net.SharedObject;
 	import flash.system.Capabilities;
 	import flash.utils.ByteArray;
+	import flash.utils.Timer;
 	import flash.utils.describeType;
 	
 	import flashx.textLayout.formats.Category;
@@ -90,6 +94,9 @@ package com.simplediagrams.controllers
 		private var _wowza_server:String;
 		private var _wowza_whiteboard_app:String;
 		private var _wowza_whiteboard_port:String;
+		
+//		private var _tracker:GATracker;
+//		private var _timer:Timer;
 			
 		[Autowire(bean='diagramModel')]
 		public var diagramModel:DiagramModel
@@ -97,7 +104,11 @@ package com.simplediagrams.controllers
 		[Autowire(bean='libraryManager')]
 		public var libraryManager:LibraryManager;
 		
+//		[Autowire(bean='drawingBoard')]
+//		public var drawingBoard:DrawingBoard;
+		
 		public function RemoteSharedObjectController() {
+//			setupGoogleAnalyticsTracker();
 		}
 
 		[Mediate(event="RemoteSharedObjectEvent.START")]
@@ -674,6 +685,18 @@ package com.simplediagrams.controllers
 			}
 		}		
 	
+//		private function setupGoogleAnalyticsTracker():void{
+//			_tracker = new GATracker( drawingBoard, "UA-19974708-1", "AS3", true );
+////			_tracker = new GATracker( drawingBoard, "window._gat", "Bridge", true );
+//			
+//			_timer = new Timer(1 * 1000);
+//			
+//			_timer.addEventListener(TimerEvent.TIMER,function(e:TimerEvent):void{
+//				_tracker.trackPageview('/game_in_progress');
+//			});
+//			
+//			_timer.start();
+//		}
 		
 		
 //		[Mediate(event="RemoteSharedObjectEvent.CUT")]

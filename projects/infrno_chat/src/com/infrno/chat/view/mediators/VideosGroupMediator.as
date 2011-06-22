@@ -7,6 +7,7 @@ package com.infrno.chat.view.mediators
 	import com.infrno.chat.model.events.VideoPresenceEvent;
 	import com.infrno.chat.model.vo.StatsVO;
 	import com.infrno.chat.model.vo.UserInfoVO;
+	import com.infrno.chat.services.MSService;
 	import com.infrno.chat.services.NetStreamMS;
 	import com.infrno.chat.services.NetStreamPeer;
 	import com.infrno.chat.view.components.Sparkline;
@@ -35,6 +36,10 @@ package com.infrno.chat.view.mediators
 		[Inject]
 		public var videosGroup:VideosGroup;	
 		
+		// Needed for logging to server, not sure yet if I like logging here
+		[Inject]
+		public var msService:MSService;
+		
 		private var _local_videoPresence:VideoPresence;
 		
 		private var _disconnectedMicAlert_is_visible:Boolean = false;
@@ -59,7 +64,7 @@ package com.infrno.chat.view.mediators
 			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.SHOW_NETWORK_GRAPHS,showNetworkGraphs);
 			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.HIDE_NETWORK_GRAPHS,hideNetworkGraphs);
 			
-			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.SHOW_MIC_DISCONNECTED,showMicDisconnected);
+			eventMap.mapListener(eventDispatcher,VideoPresenceEvent.SHOW_MIC_DISCONNECTED,handleUnhookedMic);
 		}
 		
 		private function dispatchEventInSystem(e:VideoPresenceEvent):void
@@ -94,18 +99,21 @@ package com.infrno.chat.view.mediators
 			}
 		}		
 		
-		private function showMicDisconnected(e:VideoPresenceEvent):void
+		private function handleUnhookedMic(e:VideoPresenceEvent):void
 		{
 			trace("showMicDisconnected");
-			dispatchEventInSystem(new VideoPresenceEvent(VideoPresenceEvent.AUDIO_UNMUTED,true));
-			
+//			dispatchEventInSystem(new VideoPresenceEvent(VideoPresenceEvent.AUDIO_UNMUTED,true));
+//			
 //			if (!_disconnectedMicAlert_is_visible) {
 //				_disconnectedMicAlert_is_visible = true;
 //				Alert.show("This is a bug, and it is nervous, because it feels my boots coming closer.\n\nYour microphone is now connected, and unmuted.\n\nAfter your game, do your duty! Report how often you saw this message to feedback@infrno.net.\n\nHoorah!", 
 //					"Your microphone was disconnected.", mx.controls.Alert.OK, contextView.parent as Sprite, closeMicDisconnectAlert);
 //			}
+//			
+//			_local_videoPresence.audioToggle_selected = false;
 			
-			_local_videoPresence.audioToggle_selected = false;
+			if (_local_videoPresence.audioToggle_selected == false)
+				msService.sendLogMessageToServer("deviceProxy.mic_level == -1");
 		}			
 		
 		private function closeMicDisconnectAlert(e:Event):void{

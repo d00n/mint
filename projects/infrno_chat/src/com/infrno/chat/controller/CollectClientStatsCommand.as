@@ -125,10 +125,10 @@ package com.infrno.chat.controller
 			msService.sendClientStats(clientStats);	
 			
 			
-			if (deviceProxy.mic_level == -1) {
+			if (deviceProxy.mic_level == -1 ) {
 				trace("CollectClientStatsCommand.execute() deviceProxy.mic_level == -1, deviceProxy.mic = " + deviceProxy.mic.toString());
-				msService.sendLogMessageToServer("deviceProxy.mic_level == -1");
-//				dispatch(new VideoPresenceEvent(VideoPresenceEvent.SHOW_MIC_DISCONNECTED));				
+//				msService.sendLogMessageToServer("deviceProxy.mic_level == -1");
+				dispatch(new VideoPresenceEvent(VideoPresenceEvent.SHOW_MIC_DISCONNECTED));				
 			}
 			
 		}

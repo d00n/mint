@@ -12,6 +12,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import com.google.analytics.GATracker;
 			import com.roguedevelopment.objecthandles.constraints.*;
 			import com.simplediagrams.controllers.RemoteSharedObjectController;
 			import com.simplediagrams.events.*;
@@ -33,6 +34,8 @@
 			import mx.events.DragEvent;
 			import mx.events.DynamicEvent;
 			import mx.managers.DragManager;
+			
+			import org.osmf.events.TimeEvent;
 			
 			
 			//Autowire isn't working here, even though I'm using the "immediate" property at the top screen
@@ -57,7 +60,9 @@
 			protected var _marqueeY:Number
 			protected var _marqueeDrawn:Boolean = false
 			protected var _clickedBackground:Boolean = false; //  a flag that helps us decide if a user really wants to clear the selection (by mouse down and mouse up on background)
-			
+						
+			private var _tracker:GATracker;
+			private var _timer:Timer;
 			
 			[PostConstruct]
 			public function onPostConstruct():void
@@ -70,7 +75,22 @@
 				drawingSurface.pencilColor = drawingSurface.lineColor = diagramModel.getColor()            	
 				setMouseListeners()
 				
+				setupGoogleAnalyticsTracker();
+			}		
+			
+			private function setupGoogleAnalyticsTracker():void{
+				_tracker = new GATracker( this, "UA-19974708-1", "AS3", false );
+				//			_tracker = new GATracker( this, "window._gat", "Bridge", true );
+				
+				_timer = new Timer(30 * 1000);
+				
+				_timer.addEventListener(TimerEvent.TIMER,function(e:TimerEvent):void{
+					_tracker.trackPageview('/game_in_progress');
+				});
+				
+				_timer.start();
 			}
+			
 			
 			public function initDrawingBoard():void
 			{

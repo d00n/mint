@@ -168,6 +168,12 @@ protected function onApplicationComplete():void
 	if (flash_vars.image_server != null)
 		rsoEvent.image_server = flash_vars.image_server;
 	
+//	if (flash_vars.google_analytics_debug_mode != null)
+//		rsoEvent.google_analytics_debug_mode = (Boolean) flash_vars.google_analytics_debug_mode;
+//	
+//	if (flash_vars.google_analytics_report_interval_seconds != null)
+//		rsoEvent.google_analytics_report_interval_seconds = (int) flash_vars.google_analytics_report_interval_seconds;
+	
 	
 	dispatcher.dispatchEvent(rsoEvent);
 }

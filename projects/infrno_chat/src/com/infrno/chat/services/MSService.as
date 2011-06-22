@@ -7,7 +7,7 @@ package com.infrno.chat.services
 	import com.infrno.chat.model.events.PeerEvent;
 	import com.infrno.chat.model.events.StatsEvent;
 	import com.infrno.chat.model.vo.UserInfoVO;
-	
+		
 	import flash.events.NetStatusEvent;
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
@@ -36,7 +36,7 @@ package com.infrno.chat.services
 			trace("MSService constructor");
 			super();
 			setupClient();
-			setupNetConnection();
+			setupNetConnection();	
 		}		
 		
 		private function setupClient():void

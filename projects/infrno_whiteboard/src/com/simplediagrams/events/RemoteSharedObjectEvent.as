@@ -61,6 +61,8 @@ package com.simplediagrams.events
 		public var wowza_whiteboard_app:String = "whiteboard";
 		public var wowza_whiteboard_port:String = "1936";
 		public var image_server:String = "http://localhost";
+//		public var google_analytics_report_interval_seconds:int = 60;
+//		public var google_analytics_debug_mode:Boolean = false;
 
 		public function RemoteSharedObjectEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

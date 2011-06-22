@@ -12,7 +12,9 @@ package com.infrno.chat.view.mediators
 	import flashx.textLayout.elements.TextFlow;
 	
 	import mx.binding.utils.BindingUtils;
+	import mx.effects.easing.Back;
 	import mx.events.FlexEvent;
+	import mx.utils.StringUtil;
 	
 	import org.robotlegs.core.IMediator;
 	import org.robotlegs.mvcs.Mediator;
@@ -68,22 +70,38 @@ package com.infrno.chat.view.mediators
 		
 		private function sendChat(e:FlexEvent):void
 		{
-			if(stripWhite(chat.chat_in.text).length == 0)
+			var msg:String = StringUtil.trim(chat.chat_in.text);
+			
+			var lastCharWasSpace:Boolean = false;
+			var msgSingleSpaces:String = "";
+			for (var i:int=0; i < msg.length; i++) {
+				if (msg.charAt(i) != " ") {
+					lastCharWasSpace = false;
+					msgSingleSpaces += msg.charAt(i);
+				}
+				
+				if (msg.charAt(i) == " " && !lastCharWasSpace) 
+					msgSingleSpaces += msg.charAt(i);
+			
+				if (msg.charAt(i) == " ")
+					lastCharWasSpace = true;
+			}
+				
+			if(msgSingleSpaces.length == 0)
 				return;
 			
-			var msg:String = stripWhite(chat.chat_in.text);			
-			dispatch(new ChatEvent(ChatEvent.SEND_CHAT, msg));
+			dispatch(new ChatEvent(ChatEvent.SEND_CHAT, msgSingleSpaces));
 			clearChat();
 		}
 		
-		private function stripWhite(stringIn:String):String
-		{
-			var stripped_string:String="";
-			var no_whitespace:Array = stringIn.split(" ");
-			for(var i:String in no_whitespace){
-				stripped_string+=no_whitespace[i];
-			}
-			return stripped_string;
-		}
+//		private function stripWhite(stringIn:String):String
+//		{
+//			var stripped_string:String="";
+//			var no_whitespace:Array = stringIn.split(" ");
+//			for(var i:String in no_whitespace){
+//				stripped_string+=no_whitespace[i];
+//			}
+//			return stripped_string;
+//		}
 	}
 }

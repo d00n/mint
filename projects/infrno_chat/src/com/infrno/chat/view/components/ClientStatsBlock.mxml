@@ -6,6 +6,7 @@
 				 >
 	<fx:Script>
 		<![CDATA[			
+			import com.infrno.chat.model.StatsProxy;
 			import com.infrno.chat.model.vo.StatsVO;
 			
 			import mx.collections.ArrayCollection;
@@ -53,15 +54,18 @@
 			public var user_name_label_id_toolTip:String;
 			
 			private var client_sparklineConfig_AC:ArrayCollection = new ArrayCollection();
+			private var server_sparklineConfig_AC:ArrayCollection = new ArrayCollection();
 //			private var labelConfig_AC:ArrayCollection = new ArrayCollection();
 
 			private function initConfig():void{
-				client_sparklineConfig_AC.addItem( {yFieldName:"currentBytesPerSecond", labelPrefix:"B/s", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
-				client_sparklineConfig_AC.addItem( {yFieldName:"maxBytesPerSecond", labelPrefix:"Max B/s", toolTip:"Specifies the maximum rate at which the NetStream buffer is filled in bytes per second. This value provides information about the capacity of the client network based on the last messages received by the NetStream object. Depending on the size of the buffer specified in NetStream.bufferTime and the bandwidth available on the client, Flash Media Server fills the buffer in bursts. This property provides the maximum rate at which the client buffer is filled."} );
-//				sparklineConfig_AC.addItem( {yFieldName:"audioBytesPerSecond", labelPrefix:"Audio", toolTip:"Specifies the rate at which the NetStream audio buffer is filled in bytes per second. The value is calculated as a smooth average for the audio data received in the last second."} );
-//				sparklineConfig_AC.addItem( {yFieldName:"videoBytesPerSecond", labelPrefix:"Video", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
-//				sparklineConfig_AC.addItem( {yFieldName:"dataBytesPerSecond", labelPrefix:"Data", toolTip:"Specifies the maximum rate at which the NetStream buffer is filled in bytes per second. This value provides information about the capacity of the client network based on the last messages received by the NetStream object. Depending on the size of the buffer specified in NetStream.bufferTime and the bandwidth available on the client, Flash Media Server fills the buffer in bursts. This property provides the maximum rate at which the client buffer is filled."} );
-				client_sparklineConfig_AC.addItem( {yFieldName:"audioLossRate", labelPrefix:"Audio loss", toolTip:"Specifies the audio loss for the NetStream session. This value returns a valid value only for RTMFP streams and would return 0 for RTMP streams. Loss rate is defined as the ratio of lost messages to total messages."} );			
+				client_sparklineConfig_AC.addItem( {yFieldName:"memory", labelPrefix:"", toolTip:""} );
+								
+				server_sparklineConfig_AC.addItem( {yFieldName:"currentBytesPerSecond", labelPrefix:"B/s", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
+				server_sparklineConfig_AC.addItem( {yFieldName:"maxBytesPerSecond", labelPrefix:"Max B/s", toolTip:"Specifies the maximum rate at which the NetStream buffer is filled in bytes per second. This value provides information about the capacity of the client network based on the last messages received by the NetStream object. Depending on the size of the buffer specified in NetStream.bufferTime and the bandwidth available on the client, Flash Media Server fills the buffer in bursts. This property provides the maximum rate at which the client buffer is filled."} );
+//				server_sparklineConfig_AC.addItem( {yFieldName:"audioBytesPerSecond", labelPrefix:"Audio", toolTip:"Specifies the rate at which the NetStream audio buffer is filled in bytes per second. The value is calculated as a smooth average for the audio data received in the last second."} );
+//				server_sparklineConfig_AC.addItem( {yFieldName:"videoBytesPerSecond", labelPrefix:"Video", toolTip:"Specifies the rate at which the NetStream buffer is filled in bytes per second. The value is calculated as a smooth average for the total data received in the last second."} );
+//				server_sparklineConfig_AC.addItem( {yFieldName:"dataBytesPerSecond", labelPrefix:"Data", toolTip:"Specifies the maximum rate at which the NetStream buffer is filled in bytes per second. This value provides information about the capacity of the client network based on the last messages received by the NetStream object. Depending on the size of the buffer specified in NetStream.bufferTime and the bandwidth available on the client, Flash Media Server fills the buffer in bursts. This property provides the maximum rate at which the client buffer is filled."} );
+				server_sparklineConfig_AC.addItem( {yFieldName:"audioLossRate", labelPrefix:"Audio loss", toolTip:"Specifies the audio loss for the NetStream session. This value returns a valid value only for RTMFP streams and would return 0 for RTMP streams. Loss rate is defined as the ratio of lost messages to total messages."} );			
 				
 //				labelConfig_AC.addItem( {yFieldName:"droppedFrames", labelPrefix:"Dropped frames", toolTip:"Returns the number of video frames dropped in the current NetStream playback session. In recorded streaming or progressive download, if the video is a high-quality or high-resolution, high-bitrate video, the decoder can lag behind in decoding the required number of frames per second if it does not have adequate system CPU resources. In live streaming, the buffer drops video frames if the latency is too high. This property specifies the number of frames that were dropped and not presented normally."} );			
 			}			
@@ -81,8 +85,33 @@
 				droppedFrames_label = "Dropped frames: " + _client_serverStatsVO.lastDataRecord['droppedFrames'];				
 			}
 			
-			public function set clientStats(value:Object):void{
+			public function set clientStats(value:Object):void{				
 				_clientStats = value;
+				
+				var _sparkline:Sparkline;
+				for (var i:int=0; i<clientBlock_vgroup.numChildren-1; i++){
+					_sparkline = clientBlock_vgroup.getChildAt(i) as Sparkline;
+					if (_sparkline != null) {
+						
+						var clientStatsRecord:Object = new Object();
+						clientStatsRecord.memory = _clientStats.memory;
+						_sparkline.statsVO.data_AC.addItem(clientStatsRecord);
+						
+						if (_sparkline.statsVO.data_AC.length > StatsProxy.NUMBER_OF_DATA_RECORDS_TO_KEEP) {
+							_sparkline.statsVO.data_AC.removeItemAt(0);
+						}
+						
+						var deltaMemory:String;
+						if (_previousMemory < _clientStats.memory)
+							deltaMemory = " +" + byteConvert(Math.abs(_previousMemory - _clientStats.memory));
+						else
+							deltaMemory = " -" + byteConvert(Math.abs(_previousMemory - _clientStats.memory));
+						
+						_sparkline.lastValue_label = byteConvert(_clientStats.memory) + deltaMemory;		
+						_previousMemory = _clientStats.memory;
+					}
+				}				
+				
 				micLevel_label							= "Mic level: " + _clientStats.mic_level;				
 				peer_enabled_label 					= "Peer enabled: " + _clientStats.peer_enabled;				
 				peer_capable_label					= "Peer capable: " + _clientStats.peer_capable;				
@@ -90,18 +119,7 @@
 				publishing_video_label			= "Publishing video: " + _clientStats.publishing_video;				
 				use_peer_connection_label 	= "Use peer connection: " + _clientStats.use_peer_connection;		
 				peer_count_label 						= "Peer count: " + _clientStats.peer_count;		
-				user_name_label_id_toolTip 	= _clientStats.capabilities;	
-				
-				var deltaMemory:String;
-				if (_previousMemory < _clientStats.memory)
-					deltaMemory = " (+" + byteConvert(Math.abs(_previousMemory - _clientStats.memory)) + ")";
-				else
-					deltaMemory = " (-" + byteConvert(Math.abs(_previousMemory - _clientStats.memory)) + ")";
-				
-				_previousMemory = _clientStats.memory;
-					
-				memory_label = "Memory: " + byteConvert(_clientStats.memory) + deltaMemory;		
-
+				user_name_label_id_toolTip 	= _clientStats.capabilities;					
 			}			
 			
 			private function byteConvert(num:int):String {
@@ -146,27 +164,56 @@
 					result = Math.round(result);
 				}
 				// Concatenate result and unit together for the return value
-				return result.toString() + " " + unit;
+				return result.toString() + "" + unit;
 			}			
 			
 			// TODO What is best place/time to do this?
 			private function handleCreationComplete(event:Event):void	{	
 //				trace("ClientStatsBlock.handleCreationComplete()")
 				initConfig();
-				createSparklineBlock();				
+				createClientSparklines();		
+				createServerSparklines();
 			}
 			
-			public function createSparklineBlock():void{
+			public function createClientSparklines():void{
 				var yFieldName:String;
 				var labelPrefix:String;
 				var toolTip:String;
 				var sparklineConfig:Object;
+				var _sparkline:Sparkline
 				for (var i:int = 0; i < client_sparklineConfig_AC.length; i++) {
 					sparklineConfig = client_sparklineConfig_AC.getItemAt(i);
 					yFieldName 			= sparklineConfig.yFieldName;
 					labelPrefix 		= sparklineConfig.labelPrefix;
 					toolTip 				= sparklineConfig.toolTip;
-					createSparkline(serverSparkline_vgroup,yFieldName, labelPrefix, toolTip);
+					_sparkline = createSparkline(clientBlock_vgroup, yFieldName, labelPrefix, toolTip);
+					
+					_sparkline.statsVO = new StatsVO();
+					
+					for (var i:int = 0; i < StatsProxy.NUMBER_OF_DATA_RECORDS_TO_KEEP ; i++) 
+						_sparkline.statsVO.data_AC.addItem(new Object);
+					
+//					clientBlock_vgroup.addElement(_sparkline);	
+				}
+				
+				// without this, the last sparkline to be added does not display, although it's tooltip works
+				clientBlock_vgroup.addElement(new Spacer());	
+			}			
+			
+			public function createServerSparklines():void{
+				var yFieldName:String;
+				var labelPrefix:String;
+				var toolTip:String;
+				var sparklineConfig:Object;
+				var _sparkline:Sparkline
+				for (var i:int = 0; i < server_sparklineConfig_AC.length; i++) {
+					sparklineConfig = server_sparklineConfig_AC.getItemAt(i);
+					yFieldName 			= sparklineConfig.yFieldName;
+					labelPrefix 		= sparklineConfig.labelPrefix;
+					toolTip 				= sparklineConfig.toolTip;
+					_sparkline = createSparkline(serverSparkline_vgroup, yFieldName, labelPrefix, toolTip);
+					
+//					serverSparkline_vgroup.addElement(_sparkline);	
 				}
 			
 				// without this, the last sparkline to be added does not display, although it's tooltip works
@@ -174,14 +221,16 @@
 			}
 			
 			// WARNING: instantiating Sparkline in the mediator causes the backward/outside container display bug
-			public function createSparkline(sparkline_vgroup:VGroup, yFieldName:String, labelPrefix:String="", toolTip:String=""):void {
+			public function createSparkline(parentGroup:Group, yFieldName:String, labelPrefix:String="", toolTip:String=""):Sparkline {
 				var _sparkline:Sparkline 		= new Sparkline(); 
 				_sparkline.yFieldName 			= yFieldName;
 				_sparkline.lastValuePrefix 	= labelPrefix;
 				_sparkline.toolTip			 		= toolTip;
-				_sparkline.width 						= serverBlock_vgroup.width;
+				_sparkline.width 						= clientBlock_vgroup.width;
 				
-				sparkline_vgroup.addElement(_sparkline);	
+				parentGroup.addElement(_sparkline);	
+				
+				return _sparkline;
 			}						
 			
 			
@@ -194,7 +243,7 @@
 											 >
 	
 			<s:HGroup>			
-				<s:VGroup id="serverBlock_vgroup" 										 
+				<s:VGroup id="clientBlock_vgroup" 										 
 									width="175"
 									>			
 					<s:Label text="{user_name_label}"
@@ -254,12 +303,7 @@
 									 paddingRight="3"
 									 fontSize="9"
 									 backgroundColor="0xFFFFFF" />
-					
-					<s:Label text="{memory_label}"
-									 paddingLeft="3"
-									 paddingRight="3"
-									 fontSize="9"
-									 backgroundColor="0xFFFFFF" />
+
 					
 				</s:VGroup>
 				

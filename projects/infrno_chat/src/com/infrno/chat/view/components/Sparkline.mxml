@@ -33,7 +33,7 @@
 			public static const YELLOW:String											= "0xFFFF00";
 			public static const BLACK:String											= "0x000000";
 			public static const MAX_SRTT:int											= 200;
-			public static const MAX_CURRENT_BYTES_PER_SECOND:int	= 170000;
+//			public static const MAX_CURRENT_BYTES_PER_SECOND:int	= 170000;
 		]]>		
 	</fx:Script>
 	

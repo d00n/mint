@@ -35,8 +35,6 @@
 			import mx.events.DynamicEvent;
 			import mx.managers.DragManager;
 			
-			import org.osmf.events.TimeEvent;
-			
 			
 			//Autowire isn't working here, even though I'm using the "immediate" property at the top screen
 			//[Bindable]

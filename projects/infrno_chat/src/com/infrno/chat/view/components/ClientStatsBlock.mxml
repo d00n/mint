@@ -17,6 +17,8 @@
 			private var _client_serverStatsVO:StatsVO;
 			private var _client_peerStatsVO:StatsVO;
 			
+			private var _previousMemory:int = 0;
+			
 			[Bindable]
 			public var user_name_label:String;
 			
@@ -37,6 +39,9 @@
 			
 			[Bindable]
 			public var peer_count_label:String;
+			
+			[Bindable]
+			public var memory_label:String;
 			
 			[Bindable]
 			public var publishing_audio_label:String;
@@ -86,6 +91,62 @@
 				use_peer_connection_label 	= "Use peer connection: " + _clientStats.use_peer_connection;		
 				peer_count_label 						= "Peer count: " + _clientStats.peer_count;		
 				user_name_label_id_toolTip 	= _clientStats.capabilities;	
+				
+				var deltaMemory:String;
+				if (_previousMemory < _clientStats.memory)
+					deltaMemory = " (+" + byteConvert(Math.abs(_previousMemory - _clientStats.memory)) + ")";
+				else
+					deltaMemory = " (-" + byteConvert(Math.abs(_previousMemory - _clientStats.memory)) + ")";
+				
+				_previousMemory = _clientStats.memory;
+					
+				memory_label = "Memory: " + byteConvert(_clientStats.memory) + deltaMemory;		
+
+			}			
+			
+			private function byteConvert(num:int):String {
+				var result:Number = 0;
+				var unit:String = "";
+				var unitValue:int = 0;
+				// Set unit variables for convenience
+				var bytes:int = 1;
+				var KB:int = 1024;
+				var MB:int = 1048576;
+				var GB:int = 1073741824;
+				
+				// Check for non-numeric or negative num argument
+				if (num < 0)
+					return "Negative numbers not supported";
+				
+				// Set unit depending on the size of num
+				if      (num < KB) {
+					unit ="bytes";
+					unitValue = bytes;					
+				} else if (num < MB) {
+					unit ="KB";
+					unitValue = KB;					
+				} else if (num < GB) {
+					unit ="MB";
+					unitValue = MB;									
+				} else  {	
+					unit ="GB";
+					unitValue = GB;					
+				}		
+				
+				// Find the result by dividing num by the number represented by the unit
+				result = num / unitValue;
+				
+				// Format the result
+				if (result < 10)
+				{
+					result = Math.round(result * 100) / 100;
+				} else if (result < 100) {
+					result = Math.round(result * 10) / 10;
+				} else {
+					result = Math.round(result);
+				}
+				// Concatenate result and unit together for the return value
+				return result.toString() + " " + unit;
 			}			
 			
 			// TODO What is best place/time to do this?
@@ -189,6 +250,12 @@
 									 backgroundColor="0xFFFFFF" />
 					
 					<s:Label text="{peer_count_label}"
+									 paddingLeft="3"
+									 paddingRight="3"
+									 fontSize="9"
+									 backgroundColor="0xFFFFFF" />
+					
+					<s:Label text="{memory_label}"
 									 paddingLeft="3"
 									 paddingRight="3"
 									 fontSize="9"

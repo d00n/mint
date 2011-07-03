@@ -102,6 +102,8 @@ package com.infrno.chat.controller
 			
 			var clientStats:Object 						= new Object();
 			
+			clientStats.memory								= System.totalMemory;
+			
 			clientStats.client_suid						= dataProxy.local_userInfoVO.suid;
 			clientStats.client_user_id				= dataProxy.local_userInfoVO.user_id;
 			clientStats.client_user_name			= dataProxy.local_userInfoVO.user_name;
@@ -124,12 +126,13 @@ package com.infrno.chat.controller
 			
 			msService.sendClientStats(clientStats);	
 			
+//			msService.sendLogMessageToServer("System.totalMemory=" + System.totalMemory.toString());
 			
-			if (deviceProxy.mic_level == -1 ) {
-				trace("CollectClientStatsCommand.execute() deviceProxy.mic_level == -1, deviceProxy.mic = " + deviceProxy.mic.toString());
-//				msService.sendLogMessageToServer("deviceProxy.mic_level == -1");
-				dispatch(new VideoPresenceEvent(VideoPresenceEvent.SHOW_MIC_DISCONNECTED));				
-			}
+//			if (deviceProxy.mic_level == -1 ) {
+//				trace("CollectClientStatsCommand.execute() deviceProxy.mic_level == -1, deviceProxy.mic = " + deviceProxy.mic.toString());
+////				msService.sendLogMessageToServer("deviceProxy.mic_level == -1");
+//				dispatch(new VideoPresenceEvent(VideoPresenceEvent.SHOW_MIC_DISCONNECTED));				
+//			}
 			
 		}
 		

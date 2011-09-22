@@ -6,7 +6,7 @@ package com.infrno.setup.model
 	
 	public class DataProxy extends Actor
 	{
-		public static const VERSION				:String		= "Wizard v0.1.5";
+		public static const VERSION				:String		= "Wizard v0.1.6";
 		
 		public var stream_connection_success	:Boolean;
 		public var stratus_connection_success	:Boolean;

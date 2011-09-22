@@ -34,9 +34,7 @@
             	displayObject.removeEventListener( "WIZARD_NEXT_AUDIO", handleWizardNextAudio );
             	displayObject.removeEventListener( "WIZARD_CLOSE", handleWizardClose );
             	
-            	setupWizardSwfLoader.source = "";
-							
-//							setupWizardSwfLoader.unloadAndStop(true);
+							setupWizardSwfLoader.unloadAndStop(true);
             	
             	dispatchEvent( new Event( EventConstants.WIZARD_CLOSE, true, true ) );
             }

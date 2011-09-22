@@ -100,7 +100,7 @@ package com.infrno.chat.services
 		
 		public function sendLogMessageToServer(msgIn:String):void
 		{
-			trace("MSService.sendLogMessageToServer() "+msgIn);
+//			trace("MSService.sendLogMessageToServer() "+msgIn);
 //			var msgOut:String = dataProxy.local_userInfoVO.user_name +" reporting, "+ msgIn;
 			_netConnection.call("logMessage",null,msgIn);
 		}

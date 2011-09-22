@@ -50,9 +50,11 @@ package com.infrno.chat.controller
 			
 			if (flash_vars.peer_enabled != null && flash_vars.peer_enabled=="false")
 				dataProxy.peer_enabled = false;
+//			dataProxy.peer_enabled = false;
 			
 			if (flash_vars.enable_network_god_mode != null && flash_vars.enable_network_god_mode=="false")
 				dataProxy.enable_network_god_mode = false;
+			
 			
 			trace("InitLocalVarsCommand.execute() flashvars loaded:" + dataProxy.room_name +":"+ dataProxy.local_userInfoVO.user_name +":"+ dataProxy.room_id +":"+ dataProxy.auth_key);			
 		}

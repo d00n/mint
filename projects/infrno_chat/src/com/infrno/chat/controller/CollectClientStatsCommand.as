@@ -7,6 +7,7 @@ package com.infrno.chat.controller
 	import com.infrno.chat.model.events.VideoPresenceEvent;
 	import com.infrno.chat.model.vo.UserInfoVO;
 	import com.infrno.chat.services.MSService;
+	import com.infrno.chat.services.NetStreamPeer;
 	import com.infrno.chat.services.PeerService;
 	
 	import flash.display.Sprite;
@@ -55,6 +56,8 @@ package com.infrno.chat.controller
 					trace("CollectClientStatsCommand.execute() peer_userInfoVO.netStream is null");	
 				} else if (msService.netConnection == null) {
 					trace("CollectClientStatsCommand.execute() msService.netConnection is null");	
+				} else if (!(peer_userInfoVO.netStream is NetStreamPeer)) {
+//					trace("CollectClientStatsCommand.execute() peer_userInfoVO.netStream is NOT NetStreamPeer");	
 				} else {
 					var peerStatsRecord:Object = new Object();
 					var netStream:NetStream = peer_userInfoVO.netStream; 

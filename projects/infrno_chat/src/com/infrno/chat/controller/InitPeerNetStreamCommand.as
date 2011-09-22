@@ -61,7 +61,7 @@ package com.infrno.chat.controller
 				// becomes:
 				netStream = peerService.getNewNetStream(userInfoVO.nearID);
 				netStream.play(userInfoVO.suid.toString());
-				userInfoVO.set_netStream(netStream, handleNetStatus);
+				userInfoVO.set_netStream(netStream, handleNetStatus_NetStreamPeer);
 				
 				dispatchVpEvent = true;
 			} else if(!dataProxy.use_peer_connection && 
@@ -69,7 +69,7 @@ package com.infrno.chat.controller
 			{
 				trace("InitPeerNetStreamCommand.execute() setting up and playing from the server connection");
 				netStream = msService.getNewNetStream();
-				userInfoVO.set_netStream(netStream, handleNetStatus);
+				userInfoVO.set_netStream(netStream, handleNetStatus_NetStreamMS);
 				userInfoVO.netStream.play(userInfoVO.suid.toString(),-1);
 				dispatchVpEvent = true;
 			}
@@ -85,11 +85,17 @@ package com.infrno.chat.controller
 			}
 		}
 		
-		private function handleNetStatus(e:NetStatusEvent):void
+		private function handleNetStatus_NetStreamPeer(e:NetStatusEvent):void
 		{
-			// XXX maybe add a connection_type param?
-			trace("InitPeerNetStreamCommand.handleNetStatus() e.info.code="+e.info.code);
-			var msg:String = "UserInfoVO.handleNetStatus e.info.code="+ e.info.code;
+			trace("InitPeerNetStreamCommand.handleNetStatus_NetStreamPeer() e.info.code="+e.info.code);
+			var msg:String = "InitPeerNetStreamCommand.handleNetStatus_NetStreamPeer e.info.code="+ e.info.code;
+			msService.sendLogMessageToServer(msg);
+		}
+		
+		private function handleNetStatus_NetStreamMS(e:NetStatusEvent):void
+		{
+			trace("InitPeerNetStreamCommand.handleNetStatus_NetStreamMS() e.info.code="+e.info.code);
+			var msg:String = "InitPeerNetStreamCommand.handleNetStatus_NetStreamMS e.info.code="+ e.info.code;
 			msService.sendLogMessageToServer(msg);
 		}
 	}

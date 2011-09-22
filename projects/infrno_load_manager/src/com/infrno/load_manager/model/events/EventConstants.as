@@ -10,5 +10,6 @@ package com.infrno.load_manager.model.events
 		public static const WIZARD_COMPLETE		:String		= "wizard_complete";
 		
 		public static const WIZARD_CLOSE			:String 	= "wizard_close";
+		public static const CHAT_CLOSE				:String 	= "chat_close";
 	}
 }

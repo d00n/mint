@@ -51,7 +51,7 @@ package com.simplediagrams.events
 		// Wowza will accept these values for specified hosts.
 		public var auth_key:String = "sample_auth_key";
 		
-		public var room_id:String = "224";
+		public var room_id:String = "err2015";
 //		public var room_id:String = "neg-width-on-SDTextArea";
 		
 		public var room_name:String = "";

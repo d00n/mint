@@ -9,6 +9,8 @@ package com.infrno.chat
 	
 	import flash.display.DisplayObjectContainer;
 	
+	import mx.states.OverrideBase;
+	
 	import org.robotlegs.base.ContextEvent;
 	import org.robotlegs.mvcs.Context;
 	
@@ -84,5 +86,66 @@ package com.infrno.chat
 			//Startup Complete
 			super.startup();
 		}
+		
+		override public function shutdown():void {
+			//Controller
+			commandMap.unmapEvent(ChatEvent.SEND_CHAT,SendChatCommand);
+			
+			commandMap.unmapEvent(ContextEvent.STARTUP_COMPLETE, InitLocalVarsCommand);
+			//			commandMap.unmapEvent(ContextEvent.STARTUP_COMPLETE, ContextMenuSetupCommand);
+			commandMap.unmapEvent(ContextEvent.STARTUP_COMPLETE, ConnectMediaServerCommand);
+			
+			commandMap.unmapEvent(MSEvent.NETCONNECTION_CONNECTED,ConnectPeerServerCommand);
+			commandMap.unmapEvent(MSEvent.NETCONNECTION_CONNECTED,InitStatsProxyCommand);
+			
+			// TODO: Why do we recreate the context menu on user update?
+			// Is it p2p status? Can that be controlled with a bound var?
+			commandMap.unmapEvent(MSEvent.USERS_OBJ_UPDATE,ContextMenuSetupCommand);
+			
+			// These are exclusively fired in response to server commands
+			commandMap.unmapEvent(PeerEvent.PEER_DISABLE_VIDEO,VideoSourceCommand);
+			commandMap.unmapEvent(PeerEvent.PEER_ENABLE_VIDEO,VideoSourceCommand);
+			
+			commandMap.unmapEvent(PeerEvent.PEER_NETCONNECTION_CONNECTED,ReportPeerConnectionCommand);
+			commandMap.unmapEvent(PeerEvent.PEER_NETCONNECTION_DISCONNECTED,ReportPeerConnectionCommand);
+			
+			commandMap.unmapEvent(StatsEvent.COLLECT_CLIENT_STATS, CollectClientStatsCommand);
+			commandMap.unmapEvent(StatsEvent.RECEIVE_CLIENT_STATS, ReceiveClientStatsCommand);
+			commandMap.unmapEvent(StatsEvent.RECEIVE_SERVER_STATS, ReceiveServerStatsCommand);
+			commandMap.unmapEvent(StatsEvent.SHOW_NETWORK_GOD_MODE, ShowStatsGroupCommand);
+			commandMap.unmapEvent(StatsEvent.HIDE_NETWORK_GOD_MODE, HideStatsGroupCommand);
+			
+			commandMap.unmapEvent(VideoPresenceEvent.AUDIO_LEVEL,AudioVideoControlCommand);
+			commandMap.unmapEvent(VideoPresenceEvent.AUDIO_MUTED,AudioVideoControlCommand);
+			commandMap.unmapEvent(VideoPresenceEvent.AUDIO_UNMUTED,AudioVideoControlCommand);
+			commandMap.unmapEvent(VideoPresenceEvent.VIDEO_MUTED,AudioVideoControlCommand);
+			commandMap.unmapEvent(VideoPresenceEvent.VIDEO_UNMUTED,AudioVideoControlCommand);
+			
+			commandMap.unmapEvent(VideoPresenceEvent.SETUP_PEER_NETSTREAM,InitPeerNetStreamCommand);
+			
+			commandMap.unmapEvent(SettingsEvent.SHOW_SETTINGS,ShowSettingsCommand);			
+			
+			//			commandMap.unmapEvent(LogEvent.SEND_TO_SERVER,SendLogMessageCommand);
+			
+			
+			//Models
+			injector.unmap(DataProxy);
+			injector.unmap(DeviceProxy);
+			injector.unmap(StatsProxy);
+			
+			//Services
+			injector.unmap(MSService);
+			injector.unmap(PeerService);
+			
+			//Views
+			mediatorMap.unmapView(InfrnoChat);
+			mediatorMap.unmapView(VideosGroup);
+			mediatorMap.unmapView(Chat);
+			mediatorMap.unmapView(StatsGroup);
+			
+			
+			super.shutdown()
+		}
+
 	}
 }

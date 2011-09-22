@@ -190,7 +190,7 @@
 					
 					_sparkline.statsVO = new StatsVO();
 					
-					for (var i:int = 0; i < StatsProxy.NUMBER_OF_DATA_RECORDS_TO_KEEP ; i++) 
+					for (i = 0; i < StatsProxy.NUMBER_OF_DATA_RECORDS_TO_KEEP ; i++) 
 						_sparkline.statsVO.data_AC.addItem(new Object);
 					
 //					clientBlock_vgroup.addElement(_sparkline);	

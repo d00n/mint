@@ -29,7 +29,7 @@
 			private var user_name_label:String;
 			
 			[Bindable]
-			public var audio_level_value:Number = 85;
+			public var audio_level_value:Number = 50;
 			
 //			[Bindable]
 //			public var wrenchToggleButton_visible:Boolean = false;

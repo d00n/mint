@@ -24,6 +24,8 @@ package com.infrno.load_manager.view.mediators
 		
 		public function closeWizard( event:Event ) : void
 		{
+			wizard.removeEventListener( EventConstants.WIZARD_CLOSE, closeWizard );
+			
 			trace( "WizardMediator.closeWizard( )" );
 			dispatch( new Event( EventConstants.WIZARD_COMPLETE ) );
 		}

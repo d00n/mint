@@ -252,13 +252,13 @@ package com.infrno.chat.view.mediators
 		
 		private function setupPeerVideoPresenceComponent(vpEvent:VideoPresenceEvent):void
 		{
-			trace("VideosGroupMediator.setupPeerVideoPresenceComponent()");
+			trace("VideosGroupMediator.setupPeerVideoPresenceComponent() userInfoVO.user_name:" + vpEvent.userInfoVO.user_name);
 			var userInfoVO:UserInfoVO = vpEvent.userInfoVO;
 			var videoPresence:VideoPresence = getVideoPresenceBySuid(userInfoVO.suid.toString());			
 			
 			if (videoPresence.isInitialized()) {
 				videoPresence.netstream = userInfoVO.netStream;
-				videoPresence.audio_level_value = userInfoVO.netStream.soundTransform.volume*100
+				videoPresence.audio_level_value = userInfoVO.netStream.soundTransform.volume*100;
 				videoPresence.playVideo();
 				videoPresence.playAudio();			
 			}
@@ -277,11 +277,11 @@ package com.infrno.chat.view.mediators
 				
 				if (videoPresence == null || videoPresence.sparkline == null) {
 					trace("VideosGroupMediator.displayPeerStats() videoPresence or videoPresence.sparkline is null !!!!!!!!!!!!!!!!!!");
-					return;
+					continue;
 				}
 				
 				if (videoPresence.is_local) {
-					return;
+					continue;
 				}
 				
 				videoPresence.sparkline.statsVO = peerStatsVO;

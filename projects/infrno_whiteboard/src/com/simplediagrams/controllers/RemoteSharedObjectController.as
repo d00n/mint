@@ -750,7 +750,7 @@ package com.simplediagrams.controllers
 			// TODO Clean this up. The coupling is too tight.
 			// To prevent throwing an RSOEvent from within diagramModel.addSDObjectModel()
 			// we perform it's responsibilities here:	
-			if (!isCorruptObject &&diagramModel.sdObjectModelsAC.contains(sdObjectModel) == false) {
+			if (!isCorruptObject && diagramModel.sdObjectModelsAC.contains(sdObjectModel) == false) {
 				Logger.info("processUpdate_ObjectChanged() about to add sdObjectModel=" +sdObjectModel+" "+sdObjectModel.sdID+" x,y,width,height,depth="+
 					sdObjectModel.x+","+
 					sdObjectModel.y+","+

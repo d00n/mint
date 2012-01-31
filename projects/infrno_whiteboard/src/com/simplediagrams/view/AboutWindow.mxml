@@ -36,13 +36,15 @@
 										"to help you make simple diagrams quickly and easily." +
 										"<br/><br/>Confused? Need help?<br/>" + 
 										"<ul><li><font color='#3c69e1'><a href='http://www.simplediagrams.com/support'>Support Page</a></font></li>" +
-										"<ul><li><font color='#3c69e1'><a href='http://www.simplediagrams.com/tutorials'>Tutorials</a></font></li>" +
 										"<ul><li><font color='#3c69e1'><a href='http://www.simplediagrams.com/contact'>Contact Us</a></font></li>" +
 										"<br/>Big thanks to the following open source projects:<br/>" + 
 										"<ul><li><font color='#3c69e1'><a href='http://code.google.com/p/flex-object-handles/'>ObjectHandles</a></font></li>" + 
 										"<li><font color='#3c69e1'><a href='http://groups.google.com/group/swiz-framework'>Swiz</a></font></li>" +
+										"<li><font color='#3c69e1'><a href='http://subtlepatterns.com'>SubtlePatterns</a></font> a project by <font color='#3c69e1'><a href='http://atlemo.com/'>Atle Mo</a></font></li>" +
+										"<li><font color='#3c69e1'><a href='http://codeazur.com.br/lab/fzip'>FZIP</a></font></li>" +
+										"<li><font color='#3c69e1'><a href='http://flexdevtips.blogspot.com/2010/01/drawing-dashed-lines-and-cubic-curves.html'>GraphicsUtils.as</a></font></li>" +
 										"<br/>And thanks to <font color='#3c69e1'><a href='http://www.famfamfam.com'>FamFamFam</a></font> for a few of the icons<br/>" 
-										"<br/><br/><b>SimpleDiagrams is copyright 2009 McQuillen Interactive." + 
+										"<br/><br/><b>SimpleDiagrams is copyright 2009-2011 McQuillen Interactive." + 
 										"<br/>All Rights Reserved.</b>"
 			
 			public function onCloseWindow():void
@@ -68,7 +70,7 @@
 		]]>
 	</fx:Script>
 	
-	<mx:Image source="{Bkgd}" />
+	<s:Image source="{Bkgd}" />
 	
 	
 	<mx:Label text="About SimpleDiagrams" x="10" y="7" styleName="infoWindowHeader" />
@@ -91,6 +93,6 @@
 			/>	
 			
 			
-	<s:Button label="close" click="onCloseWindow()" styleName="blueButton" width="120" x="140" y="320" height="30" />
+	<s:Button label="OK" click="onCloseWindow()" styleName="blueButton" width="120" x="140" y="320" height="30" />
 	
 </s:Group>

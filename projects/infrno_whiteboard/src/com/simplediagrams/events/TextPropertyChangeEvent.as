@@ -23,6 +23,8 @@ package com.simplediagrams.events
 		public static const TEXT_POSITION_BOTTOM:String = "bottom"
 		public static const TEXT_POSITION_BELOW:String = "below"
 		
+		public static const CHANGE_BACKGROUND_COLOR:String = "changeBackgroundColor"
+			
 		public var fontSize:Number = 0
 		public var fontFamily:String = ""
 		
@@ -30,6 +32,8 @@ package com.simplediagrams.events
 		public var selected:Boolean
 		public var textAlign:String
 		public var textPosition:String
+		
+		public var backgroundColor:uint = 0x000000
 		
 		public function TextPropertyChangeEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

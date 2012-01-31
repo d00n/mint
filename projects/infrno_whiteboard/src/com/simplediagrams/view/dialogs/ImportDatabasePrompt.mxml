@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 width="420"
+		 title="Import Old Libraries?"
+		 
+		 >
+	
+	<fx:Script>
+		<![CDATA[
+			import com.simplediagrams.events.ApplicationEvent;
+			import com.simplediagrams.events.LibraryEvent;
+			
+			[Dispatcher]
+			public var dispatcher:IEventDispatcher;
+			
+			protected function doImport(event:MouseEvent):void
+			{
+				dispatcher.dispatchEvent(new LibraryEvent(LibraryEvent.IMPORT_DEFAULT_DATABASE));
+				dispatcher.dispatchEvent(new ApplicationEvent(ApplicationEvent.HIDE_IMPORT_DATABASE_PROMPT));
+			}
+			
+			protected function cancelImport(event:MouseEvent):void
+			{
+				dispatcher.dispatchEvent(new ApplicationEvent(ApplicationEvent.HIDE_IMPORT_DATABASE_PROMPT));
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:VGroup width="100%" height="100%" paddingLeft="10" paddingRight="10" paddingBottom="10">
+		
+		<s:Label 	
+				 	width="100%" 
+				 	height="100%"
+					text="It looks like you’ve created some custom libraries in SimpleDiagrams 1.3. Custom libraries are now stored as plugins in SimpleDiagrams 1.5. Do you want to import your custom libraries now?"
+					paddingTop="20"
+					paddingBottom="20"
+					/>
+		
+		<s:HGroup horizontalAlign="right" width="100%">		
+			<s:Button click="doImport(event)" label="Yes" styleName="blueButton" width="90" height="30"/>
+			<s:Button click="cancelImport(event)" label="No" styleName="blueButton" width="90" height="30"/>
+		</s:HGroup>
+	</s:VGroup>
+	
+	
+</s:TitleWindow>

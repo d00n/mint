@@ -1,6 +1,7 @@
 package com.simplediagrams.events
 {
 	import com.simplediagrams.model.SDBackgroundModel;
+	import com.simplediagrams.model.libraries.LibraryItem;
 	
 	import flash.events.Event;
 	
@@ -8,7 +9,7 @@ package com.simplediagrams.events
 	{
 		public static const BACKGROUND_ITEM_DROPPED_EVENT:String = "backgroundItemDroppedEvent"
 			
-		public var sdBackgroundModel:SDBackgroundModel
+		public var libItem:LibraryItem;
 		
 		public function BackgroundItemDroppedEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

@@ -1,6 +1,7 @@
 package com.simplediagrams.business
 {
 	import com.simplediagrams.model.BasecampModel;
+	import com.simplediagrams.model.DiagramManager;
 	import com.simplediagrams.model.DiagramModel;
 	import com.simplediagrams.model.vo.PersonVO;
 	import com.simplediagrams.util.Logger;
@@ -20,7 +21,7 @@ package com.simplediagrams.business
 		public var basecampModel:BasecampModel;
 		
 		[Inject]
-		public var diagramModel:DiagramModel;
+		public var diagramManager:DiagramManager;
 				
 		
 		private var _token:AsyncToken

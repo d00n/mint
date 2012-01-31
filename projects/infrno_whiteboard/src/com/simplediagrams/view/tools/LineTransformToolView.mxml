@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:tools="com.simplediagrams.view.tools.*">
+	<fx:Script>
+		<![CDATA[
+			import com.simplediagrams.model.TransformData;
+			import com.simplediagrams.model.tools.ConnectorPoint;
+			import com.simplediagrams.model.tools.LineHandleRoles;
+			import com.simplediagrams.model.tools.LineTransformTool;
+			import com.simplediagrams.model.tools.MarqueeTool;
+			import com.simplediagrams.model.tools.ToolBase;
+			private var _tool:LineTransformTool;
+			
+			public function get tool():ToolBase
+			{
+				return _tool;
+			}
+			
+			public function set tool(value:ToolBase):void
+			{
+				if(_tool)
+					_tool.removeEventListener(Event.CHANGE, onToolChange);
+				_tool = value as LineTransformTool;
+				if(_tool)
+				{
+					onToolChange(null);
+					_tool.addEventListener(Event.CHANGE, onToolChange);
+				}
+				else
+					visible = false;
+			}
+			
+			public function onToolChange(event:Event):void
+			{
+				var points:Array = _tool.controlPoints;
+				if(points != null && points.length == 3)
+				{
+					visible = true;
+					var point:Point = points[0];
+					start.move(point.x, point.y);
+					point = points[1];
+					bend.move(point.x, point.y);
+					point = points[2];
+					end.move(point.x, point.y);
+					connectorPoints.removeAllElements();
+					for each(var connectorPoint:ConnectorPoint in _tool.connectorPoints)
+					{
+						var connectorView:ConnectPointView = new ConnectPointView();
+						connectorView.connectionPoint = connectorPoint;
+						connectorPoints.addElement(connectorView);
+					}
+				}
+				else
+				{
+					visible = false;
+				}
+				redraw();
+			}
+			
+			public var dashLen:Number = 5;
+			public var spaceLen:Number = 5;
+			
+			private function drawDashedLine(
+				thickness:uint,
+				color:uint,
+				start:Point,
+				end:Point,
+				segmentLength:Number,
+				intervalLength:Number,
+				offsetFromStart:int = 0):void {
+				
+				// First segment visible part length.
+				offsetFromStart %= segmentLength;
+				
+				// All length of line.
+				var length:Number = Point.distance(end, start);
+				
+				// Reducing of CPU calculations.
+				var cosa:Number = (end.x - start.x) / length;
+				var sina:Number = (end.y - start.y) / length;
+				
+				// Calculating of drawing part of segment incrementals.
+				var sdx:Number = (segmentLength - intervalLength) * cosa;
+				var sdy:Number = (segmentLength - intervalLength) * sina;
+				
+				// Calculating of shifting incrementals to the next segment.
+				var sidx:Number = intervalLength * cosa;
+				var sidy:Number = intervalLength * sina;
+				
+				// Calculating real length without first segment
+				length -= offsetFromStart;
+				
+				// Calculating the full segments amount in real length.
+				var ii:int=length / segmentLength;
+				
+				graphics.lineStyle(thickness, color, 0.5);
+				
+				// Set draw cursor to the start point.
+				var x:Number = start.x;
+				var y:Number = start.y;
+				graphics.moveTo(x,y);
+				
+				// Draw first segment if we have visible part of first segment.
+				if(offsetFromStart > intervalLength) {
+					graphics.lineTo(
+						x + (offsetFromStart - intervalLength) * cosa,
+						y + (offsetFromStart - intervalLength) * sina);
+				}
+				
+				// Mmove draw cursor to the start of the next segment.
+				x += offsetFromStart * cosa;
+				y += offsetFromStart * sina;
+				graphics.moveTo(x,y);
+				
+				// Drawing of main segments.
+				for(var i:int = 0; i < ii; ++i) {
+					x += sdx;
+					y += sdy;
+					graphics.lineTo(x, y);
+					
+					x += sidx;
+					y += sidy;
+					graphics.moveTo(x, y);
+				}
+				
+				// Drawing the last piece to the end point.
+				graphics.lineTo(end.x, end.y);
+			}
+			
+			public function redraw():void
+			{
+				graphics.clear();
+				if(start)
+				{
+					drawDashedLine(1, 0xAAAAAA, new Point(start.x, start.y), new Point(bend.x, bend.y), 10, 5);
+					drawDashedLine(1, 0xAAAAAA, new Point(end.x, end.y), new Point(bend.x, bend.y), 10, 5);
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:Group id="connectorPoints">
+		
+	</s:Group>
+	<tools:LineTransformHandle id="start" role="{LineHandleRoles.START}"/>
+	<tools:LineTransformHandle id="end" role="{LineHandleRoles.END}"/>
+	<tools:LineTransformHandle id="bend" role="{LineHandleRoles.BEND}"/>
+
+</s:Group>

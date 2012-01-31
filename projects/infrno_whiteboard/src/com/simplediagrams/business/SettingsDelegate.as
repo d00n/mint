@@ -109,11 +109,87 @@ package com.simplediagrams.business
 
 		private function processXMLData():void
 		{
-//			settingsModel.defaultDiagramStyle = sdSettingsXML.defaultStyle.@name			
+//			var path:String = sdSettingsXML.defaultDirectory.@path	
+//			
+//			if (path!=null && path!="")
+//			{
+//				settingsModel.defaultDirectoryPath = path
+//			}
+//			
+//			 path = sdSettingsXML.defaultExportDirectory.@path	
+//			
+//			if (path!=null && path!="")
+//			{
+//				settingsModel.defaultExportDirectoryPath = path
+//			}	
+//						
 //			settingsModel.defaultImageStyle = sdSettingsXML.defaultStyle.@defaultImageStyle
+//			settingsModel.defaultLineStyle = sdSettingsXML.defaultStyle.@defaultLineStyle
 //			settingsModel.defaultEndLineStyle = sdSettingsXML.defaultStyle.@defaultEndLineStyle
 //			settingsModel.defaultStartLineStyle = sdSettingsXML.defaultStyle.@defaultStartLineStyle 
 //			settingsModel.defaultTextPosition = sdSettingsXML.defaultStyle.@defaultTextPosition 
+//			settingsModel.appVersion = sdSettingsXML.appVersion;
+//			
+//			
+//			//sticky note
+//			var value:String = 	sdSettingsXML.defaultStyle.annotations.defaultStickyNote.backgroundColor
+//			if (value!=null && value!="")
+//			{				
+//				settingsModel.defaultStickyNoteBGColor = uint(value)
+//			}
+//			value = sdSettingsXML.defaultStyle.annotations.defaultStickyNote.width
+//			if (value!=null && value!="")
+//			{				
+//				settingsModel.defaultStickyNoteWidth = uint(value)
+//			}
+//			value = sdSettingsXML.defaultStyle.annotations.defaultStickyNote.height
+//			if (value!=null && value!="")
+//			{				
+//				settingsModel.defaultStickyNoteWidth = uint(value)
+//			}
+//			
+//			//index card
+//			value = sdSettingsXML.defaultStyle.annotations.defaultIndexCard.backgroundColor 
+//			if (value!=null && value!="")
+//			{				
+//				settingsModel.defaultIndexCardBGColor = uint(value)
+//			}
+//			value = sdSettingsXML.defaultStyle.annotations.defaultIndexCard.width
+//			if (value!=null && value!="")
+//			{				
+//				settingsModel.defaultIndexCardWidth = uint(value)
+//			}
+//			value = sdSettingsXML.defaultStyle.annotations.defaultIndexCard.height
+//			if (value!=null && value!="")
+//			{				
+//				settingsModel.defaultIndexCardHeight = uint(value)
+//			}
+//			value = sdSettingsXML.defaultStyle.annotations.defaultIndexCard.showTape
+//			if (value!=null && value!="")
+//			{				
+//				settingsModel.defaultIndexCardShowTape = (value =="true")
+//			}
+//			
+//			
+//			
+//			var height:Number = Number(sdSettingsXML.defaultDiagramSize.@height)
+//			if (isNaN(height)==false && height > 0)
+//			{				
+//				settingsModel.defaultDiagramHeight = height
+//			}
+//			
+//			var width:Number = Number(sdSettingsXML.defaultDiagramSize.@width)
+//			if (isNaN(width)==false && width > 0)
+//			{				
+//				settingsModel.defaultDiagramWidth = width
+//			}
+//			
+//			
+//			if("promptDatabaseImport" in sdSettingsXML)
+//			{
+//				settingsModel.promptDatabaseImport = (sdSettingsXML.promptDatabaseImport == "true");
+//			}
+//			
 //			var fontFamily:String = sdSettingsXML.defaultStyle.@defaultFontFamily 
 //			if (applicationModel.fontAvailable(fontFamily))
 //			{
@@ -121,15 +197,28 @@ package com.simplediagrams.business
 //			}
 //			else
 //			{
-//				settingsModel.defaultFontFamily = ApplicationModel.DEFAULT_SYSTEM_FAULT
+//				settingsModel.defaultFontFamily = ApplicationModel.DEFAULT_SYSTEM_FONT
 //			}
+//			
+//			settingsModel.hideBGOnExport = (sdSettingsXML.export.@hideBackgroundOnExport=="true")
 //			
 //			
 //			var lineWeight:uint = sdSettingsXML.defaultStyle.@defaultLineWeight
 //			if (lineWeight<1) lineWeight = 0
 //			if (lineWeight>100) lineWeight = 100
-//			settingsModel.defaultLineWeight = lineWeight			
+//			settingsModel.defaultLineWeight = lineWeight	
+//				
 //			
+//			var pencilLineWeight:uint = sdSettingsXML.defaultStyle.@pencilLineWeight
+//			if (pencilLineWeight<1) pencilLineWeight = 0
+//			if (pencilLineWeight>100) pencilLineWeight = 100
+//			settingsModel.defaultPencilLineWeight = pencilLineWeight	
+//				
+//			var symbolLineWeight:uint = sdSettingsXML.defaultStyle.@defaultSymbolLineWeight
+//			if (symbolLineWeight<1) lineWeight = 0
+//			if (symbolLineWeight>10) lineWeight = 10
+//			settingsModel.defaultSymbolLineWeight = lineWeight	
+//				
 //			//read in previously opened files
 //			for each (var fileXML:XML in sdSettingsXML.recentFiles.*)
 //			{
@@ -139,18 +228,20 @@ package com.simplediagrams.business
 //				{
 //					recentFileVO.data = nativePath
 //					recentFileVO.label = new File(nativePath).name
-//					libraryManager.recentDiagramsAC.addItem(recentFileVO)
+//					settingsModel.recentDiagramsAC.addItem(recentFileVO)
 //				}
 //			}
-			
+//			
 		}
 		
 				
 		private function createAppSettingsXML():void 
 		{
 			sdSettingsXML = <appSettings>
+								<defaultDirectory/>
 								<defaultStyle/>
 								<recentFiles/>
+								<export/>
 								<basecamp/>
 							</appSettings>
 			/*
@@ -160,20 +251,41 @@ package com.simplediagrams.business
 			appSettingsXML.windowState.@y = stage.nativeWindow.y;
 			*/
 			
-			sdSettingsXML.defaultStyle.@name = settingsModel.defaultDiagramStyle
+			
+			sdSettingsXML.appVersion = settingsModel.appVersion;
+			sdSettingsXML.promptDatabaseImport = settingsModel.promptDatabaseImport;
+			sdSettingsXML.defaultDirectory.@path = settingsModel.defaultDirectoryPath
+			sdSettingsXML.defaultExportDirectory.@path = settingsModel.defaultExportDirectoryPath
 			sdSettingsXML.defaultStyle.@defaultImageStyle = settingsModel.defaultImageStyle
+			sdSettingsXML.defaultStyle.@defaultLineStyle = settingsModel.defaultLineStyle
 			sdSettingsXML.defaultStyle.@defaultEndLineStyle = settingsModel.defaultEndLineStyle
 			sdSettingsXML.defaultStyle.@defaultStartLineStyle = settingsModel.defaultStartLineStyle
 			sdSettingsXML.defaultStyle.@defaultLineWeight = settingsModel.defaultLineWeight
+			sdSettingsXML.defaultStyle.@defaultPencilLineWeight = settingsModel.defaultPencilLineWeight
+			sdSettingsXML.defaultStyle.@defaultSymbolLineWeight = settingsModel.defaultSymbolLineWeight
 			sdSettingsXML.defaultStyle.@defaultTextPosition = settingsModel.defaultTextPosition
 			sdSettingsXML.defaultStyle.@defaultFontFamily = settingsModel.defaultFontFamily
 			
-			var recentFilesAC:ArrayCollection = settingsModel.recentFilesAC
-			var len:uint = libraryManager.recentDiagramsAC.length
+			sdSettingsXML.defaultStyle.annotations.defaultStickyNote.backgroundColor = settingsModel.defaultStickyNoteBGColor
+			sdSettingsXML.defaultStyle.annotations.defaultStickyNote.width = settingsModel.defaultStickyNoteWidth
+			sdSettingsXML.defaultStyle.annotations.defaultStickyNote.height = settingsModel.defaultStickyNoteHeight
+				
+			sdSettingsXML.defaultStyle.annotations.defaultIndexCard.backgroundColor = settingsModel.defaultIndexCardBGColor
+			sdSettingsXML.defaultStyle.annotations.defaultIndexCard.width = settingsModel.defaultIndexCardWidth
+			sdSettingsXML.defaultStyle.annotations.defaultIndexCard.height = settingsModel.defaultIndexCardHeight
+			sdSettingsXML.defaultStyle.annotations.defaultIndexCard.showTape = settingsModel.defaultIndexCardShowTape.toString()
+				
+				
+			sdSettingsXML.defaultDiagramSize.@width = settingsModel.defaultDiagramWidth
+			sdSettingsXML.defaultDiagramSize.@height = settingsModel.defaultDiagramHeight
+			
+			sdSettingsXML.export.@hideBackgroundOnExport = settingsModel.hideBGOnExport
+				
+			var len:uint = settingsModel.recentDiagramsAC.length
 			for (var i:uint=0;i<len;i++)
 			{
 				var newChild:XML = <recentFile />
-				newChild.@nativePath = libraryManager.recentDiagramsAC.getItemAt(i).data	
+				newChild.@nativePath = settingsModel.recentDiagramsAC.getItemAt(i).data	
 				sdSettingsXML.recentFiles.appendChild(newChild)		
 			}
 			

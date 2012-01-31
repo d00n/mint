@@ -4,16 +4,13 @@
 	xmlns:mx="library://ns.adobe.com/flex/mx"
 	xmlns:swiz="http://swiz.swizframework.org"
 	xmlns:business="com.simplediagrams.business.*"
-  	xmlns:controllers="com.simplediagrams.controllers.*"
-		xmlns:components="com.simplediagrams.view.components.*"		
-		xmlns:view="com.simplediagrams.view.*"		
+	xmlns:controllers="com.simplediagrams.controllers.*"
 	xmlns:model="com.simplediagrams.model.*" xmlns:objecthandles="com.roguedevelopment.objecthandles.*">
 		
  
 	<fx:Declarations>
 	
 		<controllers:UndoRedoController id="undoRedoController" /> 
-		<controllers:ObjectHandlesController id="objectHandlesController" /> 
 		<controllers:DownloadController id="downloadController" /> 
 		<controllers:DialogsController id="dialogsController" /> 
         <controllers:ApplicationController id="applicationController"/> 
@@ -30,26 +27,30 @@
 		<controllers:BasecampController id="basecampController" /> 
 		<controllers:SymbolEditController id="symbolEditController" /> 
 		<controllers:YammerController id="yammerController" /> 
-		<controllers:DesktopController id="desktopController" /> 
-		<controllers:RemoteSharedObjectController id="remoteSharedObjectController" /> 
+		<controllers:TextEditorController id="textEditorController" /> 
+		<controllers:KeyboardController id="keyboardController" /> 
+		<controllers:ToolPanelController id="toolsController"/>
+		<controllers:LibraryController id="libraryController"/>
+		<controllers:AnnotationController id="annotationController"/>
 		
 		<model:UndoRedoManager id="undoRedoManager" />    
 		<model:DownloadManager id="downloadManager" />    
-        <model:ApplicationModel id="applicationModel" />    
-        <model:DiagramModel id="diagramModel" />                 
-				<model:DrawingBoardGridModel id="drawingBoardGridModel" />                 
-        <model:LibraryManager id="libraryManager" />          
-        <model:DefaultToolsManager id="defaultToolsManager" /> 
-        <model:DiagramStyleManager id="diagramStyleManager" /> 
-        <model:SettingsModel id="settingsModel" /> 
-        <model:RegistrationManager id="registrationManager" /> 
-        <model:PropertiesPanelModel id="propertiesPanelModel" /> 
+		<model:ApplicationModel id="applicationModel" />    
+		<model:LibraryManager id="libraryManager" />          
+		<model:DefaultToolsManager id="defaultToolsManager" /> 
+		<model:SettingsModel id="settingsModel" /> 
+		<model:RegistrationManager id="registrationManager" /> 
+		<model:PropertiesPanelModel id="propertiesPanelModel" /> 
 		<model:BasecampModel id="basecampModel" /> 
 		<model:UserModel id="userModel" /> 
-		<model:SDObjectHandles id="sdObjectHandles" /> 
 		<model:YammerModel id="yammerModel" /> 
+		<model:TextEditorModel id="textEditorModel" /> 
+		<model:DiagramManager id="diagramManager"/>
+		<model:ToolsManager id="toolsManager"/>
 		
 		<components:DrawingBoardGrid id="drawingBoardGrid" /> 
+    <model:DrawingBoardGridModel id="drawingBoardGridModel" /> 
+  	<controllers:RemoteSharedObjectController id="remoteSharedObjectController" /> 
         
         <business:FileManager id="fileManager" />                                    
         <business:SettingsDelegate id="settingsManager" />                         
@@ -59,20 +60,20 @@
 		<business:DBManager id="dbManager" /> 
 		
 		<mx:HTTPService id="basecampService"
-					     contentType="application/xml"
-						 method="GET"
-						 useProxy="false" 
-						/>   
+										contentType="application/xml"
+										method="GET"
+										useProxy="false" 
+										/>   
 		
 		<mx:HTTPService id="yammerService"
-						method="GET"
-						useProxy="false" 
-					    resultFormat="flashvars"
-						/>   
-	
+										method="GET"
+										useProxy="false" 
+										resultFormat="flashvars"
+										/>   
 		
-
-        
+		
+		
+		
 	</fx:Declarations>
 	
 </swiz:BeanProvider>

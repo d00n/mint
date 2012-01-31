@@ -1,5 +1,7 @@
 package com.simplediagrams.events
 {
+	import com.simplediagrams.model.libraries.LibraryItem;
+	
 	import flash.events.Event;
 	
 	public class DrawingBoardItemDroppedEvent extends Event
@@ -18,7 +20,8 @@ package com.simplediagrams.events
 		public var depth:Number
 		
 		public var isCustomSymbol:Boolean = false
-		public var customSymbolID:int = 0
+		public var customSymbolID:int = 0;
+		public var libraryItem:LibraryItem;
 		
 		public function DrawingBoardItemDroppedEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

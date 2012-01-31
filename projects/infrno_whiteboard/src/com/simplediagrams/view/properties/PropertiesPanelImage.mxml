@@ -16,57 +16,16 @@
 			import com.simplediagrams.events.MultiSelectEvent;
 			import com.simplediagrams.events.SelectionEvent;
 			import com.simplediagrams.model.DiagramModel;
+			import com.simplediagrams.model.PropertiesPanelModel;
 			import com.simplediagrams.model.SDImageModel;
 			import com.simplediagrams.model.SDLineModel;
 			import com.simplediagrams.model.SDObjectModel;
 			import com.simplediagrams.model.SettingsModel;
-			import com.simplediagrams.model.mementos.SDImageMemento;
 			import com.simplediagrams.util.Logger;
 			
 			import mx.collections.ArrayCollection;
 			import mx.events.PropertyChangeEvent;
-			
-			
-			[Inject]
-			public var diagramModel:DiagramModel
-			
-			[Inject]
-			public var settingsModel:SettingsModel
-			
-			
-			[PreDestroy]
-			public function preDestroy():void
-			{
-				diagramModel = null					
-			}
-			
-			[PostConstruct]
-			public function postConstruct():void
-			{	
-				resetProperties()	
-			}
-			
-			
-			[Mediate(event="SelectionEvent.ADDED_TO_SELECTION")]
-			public function onAddedToSelection(event:SelectionEvent):void
-			{
-				resetProperties()
-			}
-						
-			[Mediate(event="SelectionEvent.REMOVED_FROM_SELECTION")]
-			public function onRemovedFromSelection(event:SelectionEvent):void
-			{
-				resetProperties()
-			}
-					
-			[Mediate(event="MultiSelectEvent.DRAG_MULTI_SELECTION_FINISHED")]
-			public function onSelectionChanged(event:MultiSelectEvent):void
-			{
-				resetProperties()
-			}	
-			
-			
-						
+
 			[Bindable]
 			protected var _imageStylesAC:ArrayCollection = new ArrayCollection ( [ 	
 				{label:"Plain", data:SDImageModel.STYLE_NONE },
@@ -74,71 +33,39 @@
 				{label:"Tape", data:SDImageModel.STYLE_TAPE },
 				{label:"Border & Tape", data:SDImageModel.STYLE_BORDER_AND_TAPE } ] );
 						
-			protected var _imageStyle:String
+			private var _propertiesModel:PropertiesPanelModel;
 			
-			protected var sdImageModel:SDImageModel
-						
-			public function resetProperties():void
+			[Bindable]
+			[Inject]
+			public function get propertiesModel():PropertiesPanelModel
 			{
-				if (diagramModel==null || diagramModel.selectedArray.length==0) return
-				var sdObjectModelsArr:Array = diagramModel.selectedArray
-				
-				if (sdObjectModelsArr.length==1)
+				return _propertiesModel;
+			}
+			
+			public function set propertiesModel(value:PropertiesPanelModel):void
+			{
+				if(_propertiesModel)
+					_propertiesModel.removeEventListener(PropertiesPanelModel.SELECTION_CHANGED, onSelectionChange);
+				_propertiesModel = value;
+				if(_propertiesModel)
+					_propertiesModel.addEventListener(PropertiesPanelModel.SELECTION_CHANGED, onSelectionChange);
+			}
+			
+			private function onSelectionChange(event:Event):void
+			{
+				if(_propertiesModel == null) return;
+				if(ddlImageStyle)
 				{
-					setControlsFromModel()				
-				}
-				else
-				{	
-					//blank out controls unless all models have same value
-					var imageStyleSame:Boolean = true		
-					var lastImageModel:SDImageModel = null
-					for each (var sdObjectModel:SDObjectModel in sdObjectModelsArr)
+					var i:int = -1;
+					for(i = 0; i < _imageStylesAC.length;i++)
 					{
-						if (!sdObjectModel is SDImageMemento) return
-						
-						var sdImageModel:SDImageModel = SDImageModel(sdObjectModel)
-						//skip first iteration
-						if (lastImageModel==null) 
+						if(_propertiesModel.imageStyle == _imageStylesAC.getItemAt(i).data)
 						{
-							lastImageModel = sdImageModel
-							continue
+							break;
 						}
-						if (lastImageModel)
-						{
-							if (sdImageModel.styleName != lastImageModel.styleName)
-							{
-								imageStyleSame = false
-							}							
-						}	
-						lastImageModel = sdImageModel
-					}					
-					
-					if (imageStyleSame)
-					{
-						_imageStyle = lastImageModel.styleName
 					}
-					else
-					{
-						_imageStyle = ""
-					}					
-					
-					setControlsFromProps()	
+					ddlImageStyle.selectedIndex = i;
 				}
-				
-			}
-			
-			protected function setControlsFromModel():void
-			{		
-				if (diagramModel.selectedArray[0] && diagramModel.selectedArray[0] is SDImageModel)
-				{
-					var sdImageModel:SDImageModel = diagramModel.selectedArray[0] as SDImageModel									
-					setImageStyleddl(sdImageModel.styleName)
-				}
-			}
-			
-			protected function setControlsFromProps():void
-			{						
-				setImageStyleddl(_imageStyle)						
 			}
 			
 			protected function setImageStyleddl(styleName:String):void
@@ -164,10 +91,10 @@
 			
 			protected function onImageStyleChange():void
 			{				
-				if (ddlImageStyle.selectedIndex==-1) return
-				var event:ImageStyleEvent = new ImageStyleEvent(ImageStyleEvent.IMAGE_STYLE_CHANGE, true)
-				event.imageStyle = ddlImageStyle.selectedItem.data
-				dispatchEvent(event)
+				if (ddlImageStyle.selectedIndex==-1) return;
+				var event:ImageStyleEvent = new ImageStyleEvent(ImageStyleEvent.IMAGE_STYLE_CHANGE, true);
+				event.imageStyle = ddlImageStyle.selectedItem.data;
+				dispatchEvent(event);
 			}
 		
 			
@@ -182,9 +109,5 @@
 					height="23"
 					width="180"
 					change="onImageStyleChange()"
-					/>
-	
-	
-	
-	
+					/>	
 </s:Group>

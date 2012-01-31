@@ -11,16 +11,15 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import com.simplediagrams.model.DiagramManager;
 			
-			import com.simplediagrams.model.DiagramModel
-			
-			import flash.utils.Timer
-			import flash.events.TimerEvent
+			import flash.events.TimerEvent;
+			import flash.utils.Timer;
 			
 			//[Bindable]
 			[Inject]
 			[Bindable]
-			public var diagramModel:DiagramModel
+			public var diagramManager:DiagramManager
 				
 			[Bindable]
 			protected var percent:String = "100%"
@@ -59,7 +58,7 @@
 		
 			protected function showPercent():void
 			{				
-	  			percent = (diagramModel.scaleX * 100).toString() + "%"		
+	  			percent = (Math.round(diagramManager.diagramModel.scaleX * 100)).toString() + "%"		
 			}
 			
 		]]>
@@ -78,7 +77,7 @@
     
     <s:Group id="display" includeIn="show" width="100%" height="100%">
     
-    	<s:Rect left="0" right="0" top="0" bottom="0" radiusX="5" radiusY="5" alpha=".4"  >
+    	<s:Rect left="0" right="2" top="0" bottom="0" radiusX="5" radiusY="5" alpha=".4"  >
 		<s:fill>
 			<s:LinearGradient rotation="90" >
 				<s:GradientEntry color="0x000000" />
@@ -87,7 +86,7 @@
 		</s:fill>    		
 		</s:Rect>
 		
-		<s:Label id="lblPercent" text="{percent}" color="#FFFFFF"  fontSize="14" width="100%" paddingTop="5" alpha=".9" textAlign="center" />
+		<s:Label id="lblPercent" text="{percent}" color="#FFFFFF"  fontSize="14" width="100%" paddingTop="8" alpha=".9" textAlign="center" />
 		
     </s:Group>    
 	

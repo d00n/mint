@@ -19,10 +19,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import com.simplediagrams.events.DeleteLibraryEvent;
 			import com.simplediagrams.model.LibraryManager;
-			import com.simplediagrams.model.libraries.ILibrary;
-			import com.simplediagrams.model.libraries.MissingSymbolInfo;
 			
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
@@ -96,18 +93,13 @@
 	>
 		<components:columns>
 									
-			<mx:DataGridColumn
-				dataField="libraryType"
-				headerText="Library Type"
-				/>
-			
 			<mx:DataGridColumn 
 				dataField="libraryName"
 				headerText="Library Name"
 				/>
 			
 			<mx:DataGridColumn 
-				dataField="symbolName"
+				dataField="symbolDisplayName"
 			  	headerText="Symbol Name"
 			/>			
 		</components:columns>

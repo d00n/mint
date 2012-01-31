@@ -1,7 +1,7 @@
 package com.simplediagrams.controllers
 {
 	
-	import com.simplediagrams.events.EditSymbolTextEvent;
+	import com.simplediagrams.events.EditSDComponentTextEvent;
 	import com.simplediagrams.model.*;
 	import com.simplediagrams.util.Logger;
 	
@@ -15,7 +15,7 @@ package com.simplediagrams.controllers
 	{
 		
 		[Inject]
-		public var diagramModel:DiagramModel;
+		public var diagramManager:DiagramManager;
 		
 		
 		public function SymbolEditController()
@@ -23,10 +23,10 @@ package com.simplediagrams.controllers
 			
 		}
 				
-		[Mediate(event='EditSymbolTextEvent.EDIT_SYMBOL_TEXT')]
-		public function onEditSymbolTextEvent(event:EditSymbolTextEvent):void
+		[Mediate(event='EditSDComponentTextEvent.START_EDIT')]
+		public function onEditSymbolTextEvent(event:EditSDComponentTextEvent):void
 		{			
-			var model:SDSymbolModel = event.sdSymbolModel					
+			var model:SDSymbolModel = event.sdObjectModel as SDSymbolModel					
 		}
 		
 		protected function onMouseClick(event:MouseEvent):void

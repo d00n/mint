@@ -2,6 +2,7 @@ package com.simplediagrams.model
 {
 	
 	import com.simplediagrams.util.Logger;
+	import com.simplediagrams.view.components.StickyNoteIcon;
 	
 	import flash.events.EventDispatcher;
 	
@@ -15,65 +16,39 @@ package com.simplediagrams.model
 		[Embed(source='assets/tool_shapes/default_tools.swf', symbol='PhotoTool')]
 		public var PhotoToolIcon:Class;
 		
-		
-		[Embed(source='assets/tool_shapes/default_tools.swf', symbol='StickyNote')]
-		public var StickyNote:Class		
+			
 		
 		[Embed(source='assets/tool_shapes/default_tools.swf', symbol='IndexCard')]
 		public var IndexCard:Class		
 		
-		[Embed(source='assets/tool_shapes/default_tools.swf', symbol='Napkin')]
-		public var Napkin:Class		
-				
-		
-		public static const DEFAULT_TOOLS:String = "defaultTools";
-		
-		public static const IMAGE_TOOL:String = "imageTool"
-		public static const STICKY_NOTE_TOOL:String = "stickyNoteTool"
-		public static const INDEX_CARD:String = "indexCard"
-		public static const NAPKIN:String = "napkin"
+			
 						
-						
-		public var sdObjectsAC:ArrayCollection = new ArrayCollection()
+		public var annotToolsAC:ArrayCollection = new ArrayCollection()
 					
 		public function DefaultToolsManager()
-		{
-			
-			sdObjectsAC = new ArrayCollection()
-			
-			var sdObj:SDSymbolModel = new SDSymbolModel()
-			sdObj.libraryName = DefaultToolsManager.DEFAULT_TOOLS
-			sdObj.symbolName = IMAGE_TOOL
-			sdObj.displayName = "photo"
-			sdObj.iconClass = PhotoToolIcon
-			sdObjectsAC.addItem(sdObj)
+		{			
+			var annot:AnnotationToolModel = new AnnotationToolModel()
+			annot.type = AnnotationToolModel.IMAGE_TOOL
+			annot.toolTip = "Photo" 
+			annot.displayName = "photo"
+			annot.iconClass = PhotoToolIcon
+			annotToolsAC.addItem(annot)
 						
-			sdObj = new SDSymbolModel()
-			sdObj.libraryName = DefaultToolsManager.DEFAULT_TOOLS
-			sdObj.symbolName = STICKY_NOTE_TOOL
-			sdObj.displayName = "stickyNote"
-			sdObj.iconClass = StickyNote
-			sdObjectsAC.addItem(sdObj)
+			annot = new AnnotationToolModel()
+			annot.type = AnnotationToolModel.STICKY_NOTE_TOOL
+			annot.toolTip = "Sticky Note" 
+			annot.displayName = "stickyNote"
+			annot.iconClass = StickyNoteIcon
+			annotToolsAC.addItem(annot)
 				
-			sdObj = new SDSymbolModel()
-			sdObj.libraryName = DefaultToolsManager.DEFAULT_TOOLS
-			sdObj.symbolName = INDEX_CARD
-			sdObj.displayName = "indexCard"
-			sdObj.iconClass = IndexCard
-			sdObjectsAC.addItem(sdObj)
-				
-			
-			/*
-			sdObj = new SDSymbolModel()
-			sdObj.libraryName = DefaultToolsManager.DEFAULT_TOOLS
-			sdObj.symbolName = NAPKIN
-			sdObj.displayName = "napkin"
-			sdObj.iconClass = Napkin
-			sdObjectsAC.addItem(sdObj)
-			*/
-				
-			sdObjectsAC.refresh()
-			Logger.debug("### 	basic tools created!", this)
+			annot = new AnnotationToolModel()
+			annot.type = AnnotationToolModel.INDEX_CARD
+			annot.toolTip = "Index Card" 
+			annot.displayName = "indexCard"
+			annot.iconClass = IndexCard
+			annotToolsAC.addItem(annot)
+								
+			annotToolsAC.refresh()
 			
 		}
 		

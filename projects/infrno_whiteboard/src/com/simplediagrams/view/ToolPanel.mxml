@@ -15,17 +15,13 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import com.simplediagrams.events.ChangeDepthEvent;
 			import com.simplediagrams.events.ColorEvent;
-			import com.simplediagrams.events.DeleteSDObjectModelEvent;
-			import com.simplediagrams.events.GridEvent;
-			import com.simplediagrams.events.LoadImageEvent;
-			import com.simplediagrams.events.PositionEvent;
-			import com.simplediagrams.events.ShapesPanelEvent;
 			import com.simplediagrams.events.StyleEvent;
 			import com.simplediagrams.events.ToolPanelEvent;
-			import com.simplediagrams.events.UndoRedoEvent;
 			import com.simplediagrams.model.DiagramModel;
-			import com.simplediagrams.model.DiagramStyleManager;
+			import com.simplediagrams.model.ToolsManager;
+			import com.simplediagrams.model.tools.Tools;
 			import com.simplediagrams.util.Logger;
 			
 			import flash.events.MouseEvent;				
@@ -35,12 +31,8 @@
 						
 			[Inject]
 			[Bindable]
-			public var diagramModel:DiagramModel
-			
-			[Inject]
-			[Bindable]
-			public var diagramStyleManager:DiagramStyleManager
-						
+			public var toolsManager:ToolsManager;
+									
 			[Bindable]
 			protected var _backgroundColor:Number = 0xFFFFFF;
 	
@@ -105,18 +97,10 @@
 			
 			protected function onCC():void
 			{
-				cp.selectedColor = diagramStyleManager.defaultSymbolColor
-				backgroundColor.color = diagramStyleManager.toolBarBackgroundColor
+				cp.selectedColor = 0xFFFFFF
+				backgroundColor.color = 0xFFFFFF
 			}
 			
-			[Mediate(event="StyleEvent.STYLE_CHANGED")]
-			public function onStyleChanged(event:StyleEvent):void
-			{
-				cp.selectedColor = diagramStyleManager.defaultSymbolColor
-				cp.invalidateProperties()
-				backgroundColor.color = diagramStyleManager.toolBarBackgroundColor
-				onColorChange()
-			}
 			
 			protected function onMouseDown(event:MouseEvent):void
 			{
@@ -133,7 +117,7 @@
 			protected function onPencilTool():void
 			{
 				var evt:ToolPanelEvent = new ToolPanelEvent(ToolPanelEvent.TOOL_SELECTED, true)
-				evt.toolTypeSelected = DiagramModel.PENCIL_TOOL
+				evt.toolTypeSelected = Tools.PENCIL_TOOL;
 				dispatchEvent(evt)
 			}
 			
@@ -159,7 +143,7 @@
 			protected function onPointerTool():void	
 			{					
 				var evt:ToolPanelEvent = new ToolPanelEvent(ToolPanelEvent.TOOL_SELECTED, true)
-				evt.toolTypeSelected = DiagramModel.POINTER_TOOL
+				evt.toolTypeSelected = Tools.POINTER_TOOL;
 				dispatchEvent(evt)					
 			}
 			
@@ -167,21 +151,21 @@
 			protected function onLineTool():void
 			{				
 				var evt:ToolPanelEvent = new ToolPanelEvent(ToolPanelEvent.TOOL_SELECTED, true)
-				evt.toolTypeSelected = DiagramModel.LINE_TOOL
+				evt.toolTypeSelected = Tools.LINE_TOOL;
 				dispatchEvent(evt)
 			}
 						
 			protected function onTextTool():void
 			{	
 				var evt:ToolPanelEvent = new ToolPanelEvent(ToolPanelEvent.TOOL_SELECTED, true)
-				evt.toolTypeSelected = DiagramModel.TEXT_TOOL
+				evt.toolTypeSelected = Tools.TEXT_TOOL;
 				dispatchEvent(evt)				
 			}
 
 			protected function onZoomTool():void
 			{								
 				var evt:ToolPanelEvent = new ToolPanelEvent(ToolPanelEvent.TOOL_SELECTED, true)
-				evt.toolTypeSelected = DiagramModel.ZOOM_TOOL
+				evt.toolTypeSelected = Tools.ZOOM_TOOL;
 				dispatchEvent(evt)
 			}			
 			
@@ -201,12 +185,14 @@
 			
 			protected function onMoveForward():void
 			{
-				dispatchEvent(new PositionEvent(PositionEvent.MOVE_FORWARD, true))
+				var eventChangeDepth:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.MOVE_TO_FRONT, true);
+				dispatchEvent(eventChangeDepth);			
 			}
 			
 			protected function onMoveBackward():void
 			{
-				dispatchEvent(new PositionEvent(PositionEvent.MOVE_BACKWARD, true))				
+			  var eventChangeDepth:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.MOVE_TO_BACK, true);
+				dispatchEvent(eventChangeDepth);				
 			}
 			
 			protected function onToggleShapeDrawer():void
@@ -229,13 +215,13 @@
 	<s:VGroup width="24" height="100%" horizontalAlign="center" paddingTop="2" paddingBottom="2" gap="2">
 		
 
-		<mx:Button icon="{arrowIcon}" click="onPointerTool()" width="20" height="20"  toolTip="Pointer tool"/>
+		<mx:Button icon="{arrowIcon}" click="onPointerTool()" width="20" height="20"  toolTip="Pointer tool (CTRL-P)"/>
 		
-		<mx:Button icon="{pencilIcon}" click="onPencilTool()" width="20" height="20" toolTip="Pencil tool" />
+		<mx:Button icon="{pencilIcon}" click="onPencilTool()" width="20" height="20" toolTip="Pencil tool (CTRL-N)" />
 	
-		<mx:Button icon="{lineIcon}" click="onLineTool()" width="20" height="20" toolTip="Line tool"/>		
+		<mx:Button icon="{lineIcon}" click="onLineTool()" width="20" height="20" toolTip="Line tool (CTRL-L)"/>		
 								
-		<mx:Button icon="{textIcon}" click="onTextTool()" width="20" height="20" toolTip="Text tool"/>	
+		<mx:Button icon="{textIcon}" click="onTextTool()" width="20" height="20" toolTip="Text tool (CTRL-T)"/>	
 		
 		<mx:Button icon="{addPictureIcon}" click="onAddPictureIcon()" width="20" height="20" toolTip="Add picture"/>
 		
@@ -247,7 +233,7 @@
 		
 		<mx:Button icon="{redoIcon}" click="onRedoIcon()" width="20" height="20" toolTip="Redo"/>
 		
-		<mx:Button icon="{magnifier}" click="onZoomTool()" width="20" height="20" toolTip="Zoom In/Out"/>			
+		<mx:Button icon="{magnifier}" click="onZoomTool()" width="20" height="20" toolTip="Zoom In/Out (CTRL + and CTRL -)""/>			
 		-->
 		
 		<mx:Button icon="{deleteSelected}" click="onDeleteSelected()" width="20" height="20" toolTip="Delete"/>	
@@ -266,7 +252,26 @@
 					/>
 		
 		
+		<!--
+		<components:SparkColorPicker id="cp" 
+									 width="30" 
+									 height="30" 
+									 close="onColorChange()" 
+									 doubleClickEnabled="true" 
+									 doubleClick="onColorChange()" 
+									 skinClass="com.simplediagrams.view.components.ColorPickerListSkin"
+									 color="0x000000"/>
+		-->
 		
+		<components:MyColorPicker
+			id="cp" 
+			width="30" 
+			height="30" 
+			close="onColorChange()" 
+			doubleClickEnabled="true" 
+			doubleClick="onColorChange()" 
+			color="0xFFFFFF"/>		
+
 	</s:VGroup>
 		
 	

@@ -3,7 +3,7 @@
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	xmlns:mx="library://ns.adobe.com/flex/mx" 
 	xmlns:properties="com.simplediagrams.view.properties.*"
-	creationComplete="onCC()"
+	creationComplete="onCreationComplete()"
 	>
 	
 	
@@ -18,63 +18,17 @@
 			import com.simplediagrams.events.TextPropertyChangeEvent;
 			import com.simplediagrams.model.ApplicationModel;
 			import com.simplediagrams.model.DiagramModel;
+			import com.simplediagrams.model.PropertiesPanelModel;
 			import com.simplediagrams.model.RegistrationManager;
+			import com.simplediagrams.model.SDObjectModel;
 			import com.simplediagrams.model.SDTextAreaModel;
 			import com.simplediagrams.util.Logger;
+			import com.simplediagrams.view.SDComponents.SDTextArea;
 			
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.core.UIComponent;
 			import mx.events.CloseEvent;
-			
-			
-			
-			[Inject]
-			[Bindable]
-			public var diagramModel:DiagramModel		
-			
-			[PostConstruct]
-			public function postConstruct():void
-			{				
-				resetProperties()	
-			}
-			
-			[PreDestroy]
-			public function preDestroy():void
-			{
-				diagramModel = null					
-			}
-						
-			protected function onCC():void
-			{
-				resetProperties()				
-			}
-			
-			[Bindable]
-			protected var _fontsAC:ArrayCollection = new ArrayCollection( [	{ label:"6", data:6 },
-																		{ label:"8", data:8 },
-																		{ label:"9", data:9 },
-																		{ label:"10", data:10 },
-																		{ label:"12", data:12 },
-																		{ label:"14", data:14 },
-																		{ label:"18", data:18 },
-																		{ label:"24", data:24 },
-																		{ label:"30", data:30 },
-																		{ label:"36", data:36 },
-																		{ label:"48", data:48 },
-																		{ label:"60", data:60 },
-																		{ label:"72", data:72 } ] );
-			
-			
-			[Bindable]
-			[Inject(bean="applicationModel", property="fontsAC")]
-			public var fontFamiliesAC:ArrayCollection	
-			
-			
-			[Bindable]			
-			[Inject]
-			public var registrationManager:RegistrationManager	
-						
 			
 			[Bindable]
 			[Embed(source="assets/img/icons/font_size.png")]
@@ -96,156 +50,129 @@
 			[Embed(source="assets/img/icons/text_align_justify.png")]
 			protected var textAlignJustify:Class					
 			
-			protected var _fontSize:String
-			protected var _textAlign:String = "";
-			protected var _fontFamily:String = "";
-			protected var _startFontFamilyIndex:int = -1;
-			protected var _internalPropChange:Boolean = true;
 			
-			[Mediate(event="MultiSelectEvent.DRAG_MULTI_SELECTION_FINISHED")]
-			[Mediate(event="SelectionEvent.ADDED_TO_SELECTION")]
-			[Mediate(event="SelectionEvent.REMOVED_FROM_SELECTION")]
-			public function onMultiSelectFinished(event:Event):void
+			[Bindable]
+			protected var _fontsAC:ArrayCollection = new ArrayCollection( [	{ label:"6", data:6 },
+																		{ label:"8", data:8 },
+																		{ label:"9", data:9 },
+																		{ label:"10", data:10 },
+																		{ label:"12", data:12 },
+																		{ label:"14", data:14 },
+																		{ label:"18", data:18 },
+																		{ label:"24", data:24 },
+																		{ label:"30", data:30 },
+																		{ label:"36", data:36 },
+																		{ label:"48", data:48 },
+																		{ label:"60", data:60 },
+																		{ label:"72", data:72 } ] );
+			
+			
+			[Bindable]
+			[Inject(bean="applicationModel", property="fontsAC")]
+			public var fontFamiliesAC:ArrayCollection	
+			
+						
+			[Bindable]			
+			[Inject]
+			public var registrationManager:RegistrationManager;
+						
+			private var _propertiesModel:PropertiesPanelModel;
+
+			[Bindable]
+			[Inject]
+			public function get propertiesModel():PropertiesPanelModel
 			{
-				resetProperties()
-			}
-							
-				
-			public function resetProperties():void
-			{				
-				if (diagramModel==null || diagramModel.selectedArray.length==0) return					
-				var sdTextAreaModelsArr:Array = diagramModel.selectedArray
-				
-				_internalPropChange = true					
-				if (sdTextAreaModelsArr.length==1)
-				{
-					setControlsFromModel()				
-				}
-				else
-				{	
-					//blank out controls unless all models have same value
-					var fontSizeSame:Boolean = true
-					var textAlignSame:Boolean = true
-					var fontFamilySame:Boolean = true
-					var textPositionSame:Boolean = true
-					var lastTextAreaModel:SDTextAreaModel
-					for each (var sdTextAreaModel:SDTextAreaModel in sdTextAreaModelsArr)
-					{
-						//skip first iteration
-						if (lastTextAreaModel==null) 
-						{
-							lastTextAreaModel = sdTextAreaModel
-							continue
-						}
-						if (lastTextAreaModel)
-						{
-							if (sdTextAreaModel.fontSize != lastTextAreaModel.fontSize)
-							{
-								fontSizeSame = false
-							}
-							if (sdTextAreaModel.textAlign != lastTextAreaModel.textAlign)
-							{
-								textAlignSame = false
-							}						
-							if (sdTextAreaModel.fontFamily != lastTextAreaModel.fontFamily)
-							{
-								fontFamilySame = false
-							}
-						}	
-						lastTextAreaModel = sdTextAreaModel
-					}					
-					
-					if (fontSizeSame)
-					{
-						_fontSize = lastTextAreaModel.fontSize.toString()
-					}
-					else
-					{
-						_fontSize = ""
-					}
-					
-					if (textAlignSame)
-					{
-						_textAlign = lastTextAreaModel.textAlign
-					}
-					else
-					{
-						_textAlign = ""
-					}
-					
-					if (fontFamilySame)
-					{
-						_fontFamily = lastTextAreaModel.fontFamily
-					}
-					else
-					{
-						_fontFamily = ""
-						ddlFontFamily.selectedIndex = -1
-					}
-					
-					setControlsFromProps()	
-				}
-				_internalPropChange = false
+				return _propertiesModel;
 			}
 			
-			protected function setControlsFromModel():void
-			{		
-				if (cbxFontSize==null || cbxFontSize.textInput==null) return
-				if (diagramModel.selectedArray[0] && diagramModel.selectedArray[0] is SDTextAreaModel)
-				{
-					var sdTextAreaModel:SDTextAreaModel = diagramModel.selectedArray[0] as SDTextAreaModel
-					setTextAlign(sdTextAreaModel.textAlign)					
-					cbxFontSize.textInput.text = sdTextAreaModel.fontSize.toString()		
-					setFontFamilyDropDownList(sdTextAreaModel.fontFamily)
-				}
-			}
-			
-			protected function setControlsFromProps():void
-			{						
-				if (cbxFontSize==null) return
-				setTextAlign(this._textAlign)
-				cbxFontSize.textInput.text = this._fontSize		
-				setFontFamilyDropDownList(_fontFamily)
-			}
-			
-			protected function setFontFamilyDropDownList(fontFamily:String):void
+			public function set propertiesModel(value:PropertiesPanelModel):void
 			{
-				if (ddlFontFamily==null) return
-				var len:uint = fontFamiliesAC.length
-				for (var i:uint=0;i<len;i++)
+				if(_propertiesModel)
 				{
-					if (fontFamiliesAC.getItemAt(i).fontName == fontFamily)
-					{
-						ddlFontFamily.selectedIndex = i
-						_startFontFamilyIndex = i
-						return
-					}
+					_propertiesModel.removeEventListener(PropertiesPanelModel.SELECTION_CHANGED, onSelectionChange);
+				}
+				_propertiesModel = value;
+				onSelectionChange(null);
+				if(_propertiesModel)
+				{
+					_propertiesModel.addEventListener(PropertiesPanelModel.SELECTION_CHANGED, onSelectionChange);
 				}
 			}
 			
-			
-			protected function setTextAlign(textAlign:String):void
+			private function onSelectionChange(event:Event):void
 			{
+				if(_propertiesModel == null) return;
+				if(cbxFontSize && cbxFontSize.textInput)
+				{
+					cbxFontSize.textInput.text = _propertiesModel.fontSize;
+				}
+				if(btnBar)
+				{
+					btnBar.selectedIndex = getTextAlignIndex(_propertiesModel.textAlign);
+				}
+				if(btnBold)
+				{
+					btnBold.selected = isFontWeightSelected(_propertiesModel.fontWeight);
+				}
+				if(cbxFontFamily)
+				{
+					cbxFontFamily.selectedIndex = getSelectedFontFamilyIndex(_propertiesModel.fontFamily);
+				}
+				if(colorPicker && colorPicker.visible)
+				{
+					colorPicker.selectedColor = _propertiesModel.backgroundColor
+				}
+			}
+			
+			private function onCreationComplete():void
+			{
+				onSelectionChange(null);
+			}
+			
+			
+	
+
+			protected function getTextAlignIndex(textAlign:String):int
+			{
+				var index:int = -1;
 				switch (textAlign)
 				{
 					case "left":
-						btnBar.selectedIndex = 0
+						index = 0
 						break
 					case "center":
-						btnBar.selectedIndex = 1
-						
+						index = 1;
 						break
 					case "right":
-						btnBar.selectedIndex = 2
-						
+						index = 2
 						break
 					case "justify":
-						btnBar.selectedIndex = 3
-						
+						index = 3
 						break
 					default:
-						btnBar.selectedIndex = -1							
+						index = -1;							
 				}
+				return index;
+			}
+			
+			
+			public function getSelectedFontFamilyIndex(fontFamily:String):int
+			{
+				if (fontFamily=="" || fontFamiliesAC == null) return 0;				
+				var len:uint = fontFamiliesAC.length;
+				for (var i:uint=0;i < len;i++)
+				{
+					if (fontFamiliesAC.getItemAt(i).fontName == fontFamily)
+					{
+						return i;
+					}
+				}
+				return 0;
+			}
+			
+			protected function isFontWeightSelected(fontWeight:String):Boolean
+			{
+				return (fontWeight == "bold");
 			}
 			
 			protected function onFontSizeChange():void
@@ -256,83 +183,72 @@
 			
 			protected function fontSizeUpdated():void
 			{
-				if (_internalPropChange==false)
-				{
-					if (cbxFontSize.textInput.text=="") return
-					var evt:TextPropertyChangeEvent = new TextPropertyChangeEvent(TextPropertyChangeEvent.CHANGE_FONT_SIZE, true)
-					evt.fontSize = Number(cbxFontSize.textInput.text)
-					dispatchEvent(evt)
-				}
+				if (cbxFontSize.textInput.text=="") return
+				var evt:TextPropertyChangeEvent = new TextPropertyChangeEvent(TextPropertyChangeEvent.CHANGE_FONT_SIZE, true)
+				evt.fontSize = Number(cbxFontSize.textInput.text)
+				dispatchEvent(evt);
 			}
 			
-			protected function onFontFamilyChange():void
+			protected function onFontFamilyCBXChange():void
 			{									
-				if (registrationManager.isLicensed==false)return
-				if (_internalPropChange==false)
-				{
-					if (ddlFontFamily.selectedItem)
-					{										
+				if (cbxFontFamily.selectedIndex>=0)
+				{										
+					var font:Font = fontFamiliesAC.getItemAt(cbxFontFamily.selectedIndex) as Font
+					if (font)
+					{
 						var evt:TextPropertyChangeEvent = new TextPropertyChangeEvent(TextPropertyChangeEvent.CHANGE_FONT_FAMILY, true)
-						evt.fontFamily = ddlFontFamily.selectedItem.fontName
+						evt.fontFamily = font.fontName
 						dispatchEvent(evt)
 					}
 				}
 			}
 			
-			
-			
-			
 			protected function onTextAlignChange():void
-			{				
-				if (_internalPropChange==false)
-				{					
-					var evt:TextPropertyChangeEvent = new TextPropertyChangeEvent(TextPropertyChangeEvent.CHANGE_TEXT_ALIGN, true)
-					evt.textAlign = btnBar.selectedItem.label
-					dispatchEvent(evt)
-				}
+			{							
+				var evt:TextPropertyChangeEvent = new TextPropertyChangeEvent(TextPropertyChangeEvent.CHANGE_TEXT_ALIGN, true)
+				evt.textAlign = btnBar.selectedItem.label
+				dispatchEvent(evt)
 			}
 			
 			
 			protected function onBoldChange():void
 			{
-				if (_internalPropChange==false)
-				{	
-					var evt:TextPropertyChangeEvent = new TextPropertyChangeEvent(TextPropertyChangeEvent.CHANGE_FONT_WEIGHT, true)
-					
-					if (btnBold.selected)
-					{
-						evt.fontWeight = "bold"
-					}
-					else
-					{
-						evt.fontWeight = "normal"
-					}
-					dispatchEvent(evt)
+				var evt:TextPropertyChangeEvent = new TextPropertyChangeEvent(TextPropertyChangeEvent.CHANGE_FONT_WEIGHT, true)
+				if (btnBold.selected)
+				{
+					evt.fontWeight = "bold"
 				}
+				else
+				{
+					evt.fontWeight = "normal"
+				}
+				dispatchEvent(evt);
 			}
 			
 							
-			protected function onFontFamilyDDLClose():void
+			protected function onFontFamilyCBXClose():void
 			{
-				if (registrationManager && registrationManager.isLicensed==false)
-				{
-					Alert.show("Font selection is only available to Full Version users. Visit simpledigrams.com and upgrade to Full Version today!", "Full Version Only")			
-					ddlFontFamily.selectedIndex = this._startFontFamilyIndex
-				}
+				
 			}
 			
+			
+			protected function onColorPickerChange():void
+			{
+				var evt:TextPropertyChangeEvent = new TextPropertyChangeEvent(TextPropertyChangeEvent.CHANGE_BACKGROUND_COLOR, true)
+				evt.backgroundColor = colorPicker.selectedColor
+				dispatchEvent(evt)
+			}
+
 		]]>
 	</fx:Script>
-	
-	
 
-	<mx:Image source="{fontSize}" width="20" height="20" />
-	
+	<s:Image source="{fontSize}" width="20" height="20" />
 	<s:ComboBox
-				 id="cbxFontSize" 
+				 id="cbxFontSize"
   				 dataProvider="{_fontsAC}"
 				 restrict="0-9"		
 				 change="onFontSizeChange()"
+				 toolTip="Font size"
 				 height="21"
 				 width="60"/>
 	
@@ -340,6 +256,7 @@
 				 requireSelection="true"
 				 skinClass="com.simplediagrams.view.properties.TextAlignButtonBarSkin"
 				 click="onTextAlignChange()"
+				 toolTip="Text align"
 				 width="80">
 		<s:dataProvider>
 			<s:ArrayList>
@@ -358,29 +275,33 @@
 		</s:dataProvider>
 	</s:ButtonBar>
 	
-	<s:ToggleButton id="btnBold"
+	<s:ToggleButton id="btnBold" 
 					click="onBoldChange()"
 					label="B"
+					toolTip="Bold"
 					width="30"
 					/>
 	
-	<s:DropDownList
-		id="ddlFontFamily" 
+	<s:ComboBox
+		id="cbxFontFamily" 
 		dataProvider="{fontFamiliesAC}"
 		labelField="fontName"	
-	    close="onFontFamilyDDLClose()"
-		change="onFontFamilyChange()"
+		toolTip="font family"
+	    close="onFontFamilyCBXClose()"
+		change="onFontFamilyCBXChange()"
 		width="100%"
 		maxWidth="250"
 		>
-		<s:layout>				
-			<s:VerticalLayout gap="0"								  
-							  variableRowHeight="true"								  
-							  horizontalAlign="justify" />				
-		</s:layout>
 		
-	</s:DropDownList>
+	</s:ComboBox>
 
+	<s:Spacer width="5"/>
+	<s:Label text="Bg:" toolTip="Background color" paddingTop="7" />
+	<mx:ColorPicker id="colorPicker"
+					toolTip = "Background color"
+					change="onColorPickerChange()"
+					visible="{_propertiesModel.allHaveBackground}"
+					/>
 
 
 	

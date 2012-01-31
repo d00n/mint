@@ -1,69 +1,44 @@
 package com.simplediagrams.commands
 {
-	import com.simplediagrams.model.DiagramModel;
+	import com.simplediagrams.model.CopyUtil;
 	import com.simplediagrams.model.SDObjectModel;
-	import com.simplediagrams.model.mementos.TransformMemento;
-	import com.simplediagrams.util.Logger
+	import com.simplediagrams.model.TransformData;
 	
+	import flash.geom.Rectangle;
+	
+	import mx.collections.ArrayCollection;
+
 	public class TransformCommand extends UndoRedoCommand
-	{	
-		//each object in _transformedObjectsArr array has form {sdID:(sdID of sdObjectModel), fromState:TransformMemento, toState:TransformMemento}		
-		protected var _transformedObjectsArr:Array 		
-		protected var _diagramModel:DiagramModel
-		
-		public function TransformCommand(diagramModel:DiagramModel, transformedObjectsArr:Array)
+	{
+		public function TransformCommand(targets:Array, newTransforms:Array, oldTransforms:Array, backups:Array)
 		{
-			_diagramModel = diagramModel
-			_transformedObjectsArr = transformedObjectsArr
 			super();
+			this.targets = targets;
+			this.newTransforms = newTransforms;
+			this.oldTransforms = oldTransforms;
+			this.backups = backups;
 		}
 		
-		public function get TransformedObjectsArray () : Array { return _transformedObjectsArr; }
-		
-		override public function execute():void
+		public var oldTransforms:Array;
+		public var newTransforms:Array;
+		private var targets:Array;
+		private var backups:Array;
+
+		public override function redo():void
 		{
-			redo()
-		}
-		
-		override public function redo():void
-		{
-			Logger.debug("redo() TRANSFORM" ,this)
-			for each (var obj:Object in _transformedObjectsArr)
+			for( var i:int = 0; i < targets.length;i++)
 			{
-				var sdObjectModel:SDObjectModel = _diagramModel.getModelByID(obj.sdID)
-				Logger.debug("sdObjectModel.sdID: " + sdObjectModel.sdID, this)
-				if (sdObjectModel)
-				{
-					sdObjectModel.setTransformState(obj.toState)
-					Logger.debug("after setting memento sdObjectModel.sdID" + sdObjectModel.sdID, this)
-				}
-				else
-				{
-					Logger.warn("Couldn't find model with id: " + obj.sdID + " for redoing transform command",this)
-				}
-			}	
+				var c:SDObjectModel = targets[i];
+				c.applyTransform(newTransforms[i], oldTransforms[i],backups[i]);
+			}
 		}
 		
-		override public function undo():void
+		public override function undo():void
 		{
-			Logger.debug("undo() _transformedObjectsArr.length: " + _transformedObjectsArr.length,this)
-			for each (var obj:Object in _transformedObjectsArr)
+			for( var i:int = 0; i < targets.length;i++)
 			{
-				Logger.debug("undo() finding _sd:" + obj.sdID,this)
-				var sdObjectModel:SDObjectModel = _diagramModel.getModelByID(obj.sdID)
-				if (sdObjectModel)
-				{
-					sdObjectModel.setTransformState(obj.fromState)
-				}
-				else
-				{
-					Logger.warn("Couldn't find model with id: " + obj.sdID + " for undoing transform command",this)
-				}
-			}			
+				CopyUtil.copyFrom(targets[i],backups[i]);
+			}
 		}
-		
-	
-		
-		
 	}
 }

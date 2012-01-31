@@ -3,7 +3,7 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 xmlns:properties="com.simplediagrams.view.properties.*"
-		 creationComplete="onCC()"
+		 creationComplete="onCreationComplete()"
 		 >
 	
 	
@@ -13,10 +13,13 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import com.simplediagrams.events.LineStyleEvent;
 			import com.simplediagrams.events.MultiSelectEvent;
 			import com.simplediagrams.events.SelectionEvent;
 			import com.simplediagrams.events.TextPropertyChangeEvent;
+			import com.simplediagrams.model.ApplicationModel;
 			import com.simplediagrams.model.DiagramModel;
+			import com.simplediagrams.model.PropertiesPanelModel;
 			import com.simplediagrams.model.RegistrationManager;
 			import com.simplediagrams.model.SDObjectModel;
 			import com.simplediagrams.model.SDSymbolModel;
@@ -25,27 +28,11 @@
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			
+			private var _propertiesModel:PropertiesPanelModel;
 			
-			[Inject]
-			[Bindable]
-			public var diagramModel:DiagramModel		
 			
-			[PostConstruct]
-			public function postConstruct():void
-			{	
-				resetProperties()				
-			}
 			
-			[PreDestroy]
-			public function preDestroy():void
-			{
-				diagramModel = null					
-			}
 			
-			protected function onCC():void
-			{
-				resetProperties()				
-			}
 			
 			
 			[Bindable]		
@@ -107,20 +94,26 @@
 			[Bindable]
 			[Embed(source="assets/img/icons/text_valign_below.png")]
 			protected var textValignBelow:Class	
-											
-			protected var _fontSize:String
-			protected var _fontFamily:String
-			protected var _textPosition:String = ""
-			protected var _textAlign:String = "";
-			protected var _startFontFamilyIndex:int = -1;
-			protected var _internalPropChange:Boolean = true;
-									
+			
+			
 			[Bindable]
-			[Inject(bean="registrationManager")]
-			public var registrationManager:RegistrationManager	
-											
+			protected var _lineWeightsAC:ArrayCollection = new ArrayCollection ( [ 	{label:"1", data:1 },
+				{label:"2", data:2 },
+				{label:"3", data:3 },
+				{label:"4", data:4 },
+				{label:"5", data:5 },
+				{label:"6", data:6 },
+				{label:"7", data:7 },
+				{label:"8", data:8 },
+				{label:"9", data:9 },
+				{label:"10", data:10 } ] );
+			
+		
+			
 			[Bindable]
 			protected var _fontFamiliesAC:ArrayCollection
+			
+			
 			
 			
 			[Inject(bean="applicationModel", property="fontsAC")]
@@ -132,202 +125,166 @@
 				}
 			}
 			
-			[Mediate(event="MultiSelectEvent.DRAG_MULTI_SELECTION_FINISHED")]
-			[Mediate(event="SelectionEvent.ADDED_TO_SELECTION")]
-			[Mediate(event="SelectionEvent.REMOVED_FROM_SELECTION")]
-			public function onMultiSelectFinished(event:Event):void
-			{
-				resetProperties()
-			}
-											
+			[Bindable]
+			[Inject(bean="registrationManager")]
+			public var registrationManager:RegistrationManager	
 			
-			
-			protected function resetProperties():void
+			[Bindable]
+			[Inject]
+			public function get propertiesModel():PropertiesPanelModel
 			{
-				
-				if (diagramModel==null || diagramModel.selectedArray.length==0) return	
-					
-				_internalPropChange = true
-				var sdSymbolModelsArr:Array = diagramModel.selectedArray
-					
-				if (sdSymbolModelsArr.length==1)
-				{
-					setControlsFromModel()				
-				}
-				else
-				{
-					//blank out controls unless all models have same value
-					
-					var fontSizeSame:Boolean = true
-					var textAlignSame:Boolean = true
-					var textPositionSame:Boolean = true
-					var fontFamilySame:Boolean = true
-					var lastSymbolModel:SDSymbolModel
-					for each (var sdSymbolModel:SDSymbolModel in sdSymbolModelsArr)
-					{
-						//skip first iteration
-						if (lastSymbolModel==null) 
-						{
-							lastSymbolModel = sdSymbolModel
-							continue
-						}
-						if (lastSymbolModel)
-						{
-							if (sdSymbolModel.fontSize != lastSymbolModel.fontSize)
-							{
-								fontSizeSame = false
-							}
-							if (sdSymbolModel.textAlign != lastSymbolModel.textAlign)
-							{
-								textAlignSame = false
-							}
-							if (sdSymbolModel.textPosition != lastSymbolModel.textPosition)
-							{
-								textPositionSame = false
-							}
-							if (sdSymbolModel.fontFamily != lastSymbolModel.fontFamily)
-							{
-								fontFamilySame = false
-							}
-						}	
-						lastSymbolModel = sdSymbolModel
-					}					
-					
-					if (fontSizeSame)
-					{
-						_fontSize = lastSymbolModel.fontSize.toString()
-					}
-					else
-					{
-						_fontSize = ""
-					}
-										
-					if (textAlignSame)
-					{
-						_textAlign = lastSymbolModel.textAlign
-					}
-					else
-					{
-						_textAlign = ""
-					}
-					
-					if (textPositionSame)
-					{
-						_textPosition = lastSymbolModel.textPosition
-					}
-					else
-					{
-						_textPosition = ""
-					}
-					
-					if (fontFamilySame)
-					{
-						_fontFamily = lastSymbolModel.fontFamily
-					}
-					else
-					{
-						_fontFamily = ""
-						ddlFontFamily.selectedIndex = -1
-					}
-					
-					setControlsFromProps()		
-					
-				}
-				_internalPropChange = false
+				return _propertiesModel;
 			}
 			
-			protected function setControlsFromModel():void
-			{				
-				
-				if (cbxFontSize==null || cbxFontSize.textInput==null) return
-				if (diagramModel.selectedArray[0] && diagramModel.selectedArray[0] is SDSymbolModel)
+			
+			
+			
+			public function set propertiesModel(value:PropertiesPanelModel):void
+			{
+				ddlLineWeight.visible = lblWeight.visible = true
+				if(_propertiesModel)
 				{
-					var sdSymbolModel:SDSymbolModel = diagramModel.selectedArray[0] as SDSymbolModel
-					setTextAlign(sdSymbolModel.textAlign)
-					setTextPosition(sdSymbolModel.textPosition)
-					cbxFontSize.textInput.text = sdSymbolModel.fontSize.toString()
-					setFontFamilyDropDownList(sdSymbolModel.fontFamily)
+					_propertiesModel.removeEventListener(PropertiesPanelModel.SELECTION_CHANGED, onSelectionChange);
+				}
+				_propertiesModel = value;
+				if(_propertiesModel)
+				{
+					_propertiesModel.addEventListener(PropertiesPanelModel.SELECTION_CHANGED, onSelectionChange);
+					if (_propertiesModel.allObjectsAreSWFItems)
+					{
+						ddlLineWeight.visible = lblWeight.visible = false
+					}
 				}
 			}
 			
-			protected function setControlsFromProps():void
-			{						
-				
-				if (cbxFontSize==null) return
-				setTextAlign(this._textAlign)
-				setTextPosition(this._textPosition)
-				cbxFontSize.textInput.text = this._fontSize
-				setFontFamilyDropDownList(_fontFamily)				
+			private function onSelectionChange(event:Event):void
+			{
+				if(_propertiesModel == null) return;
+				ddlLineWeight.visible = lblWeight.visible = true
+				if(cbxFontSize && cbxFontSize.textInput)
+				{
+					cbxFontSize.textInput.text = _propertiesModel.fontSize;
+				}
+				if(btnBar)
+				{
+					btnBar.selectedIndex = getTextAlignIndex(_propertiesModel.textAlign);
+				}
+				if(btnBarValign)
+				{
+					btnBarValign.selectedIndex = getTextPositionIndex(_propertiesModel.textPosition);
+				}
+				if(btnBold)
+				{
+					btnBold.selected = isFontWeightSelected(_propertiesModel.fontWeight);
+				}
+				if(cbxFontFamily)
+				{
+					cbxFontFamily.selectedIndex = getSelectedFontFamilyIndex(_propertiesModel.fontFamily);
+				}
+				if(ddlLineWeight)
+				{
+					ddlLineWeight.selectedIndex = getLineWidthIndex(_propertiesModel.lineWeight);
+				}
+				if (_propertiesModel.allObjectsAreSWFItems)
+				{
+					ddlLineWeight.visible = lblWeight.visible = false
+				}
 			}
 			
-			
-			protected function setFontFamilyDropDownList(fontFamily:String):void
+			public function getSelectedFontFamilyIndex(fontFamily:String):int
 			{
-				if (fontFamily=="") return
-				if (ddlFontFamily.selectedItem && ddlFontFamily.selectedItem.fontName==fontFamily) return
-					
-				var len:uint = _fontFamiliesAC.length
-				for (var i:uint=0;i<len;i++)
+				if (fontFamily=="") return 0;				
+				var len:uint = _fontFamiliesAC.length;
+				for (var i:uint=0;i < len;i++)
 				{
 					if (_fontFamiliesAC.getItemAt(i).fontName == fontFamily)
 					{
-						ddlFontFamily.selectedIndex = i						
-						return
+						return i;
 					}
 				}
+				return 0;
 			}
-						
 			
-		
-			protected function setTextAlign(textAlign:String):void
+			protected function getLineWidthIndex(lineWidth:String):int
 			{
+				if(lineWidth == "")
+				{
+					return -1;
+				}
+				var len:uint = _lineWeightsAC.length;
+				for (var i:uint=0;i < len;i++)
+				{
+					if (_lineWeightsAC.getItemAt(i).label == lineWidth)
+					{
+						return i;
+					}
+				}
+				return -1;
+			}
+			
+			protected function isFontWeightSelected(fontWeight:String):Boolean
+			{
+				return (fontWeight == "bold");
+			}
+			
+			private function onCreationComplete():void
+			{
+				onSelectionChange(null);
+			}
+			
+			
+			
+			
+			
+			protected function getTextAlignIndex(textAlign:String):int
+			{
+				var index:int = -1;
 				switch (textAlign)
 				{
 					case "left":
-						btnBar.selectedIndex = 0
+						index = 0
 						break
-					
 					case "center":
-						btnBar.selectedIndex = 1						
+						index = 1;
 						break
-					
 					case "right":
-						btnBar.selectedIndex = 2						
+						index = 2
 						break
-					
 					case "justify":
-						btnBar.selectedIndex = 3						
+						index = 3
 						break
-					
 					default:
-						btnBar.selectedIndex = -1					
+						index = -1;							
 				}
+				return index;
 			}
 			
-			protected function setTextPosition(textPosition:String):void
+			
+			protected function getTextPositionIndex(textPosition:String):int
 			{
+				var index:int = -1;
 				switch (textPosition)
 				{
-					case SDObjectModel.TEXT_POSITION_ABOVE:
-						btnBarValign.selectedIndex = 0
+					case SDSymbolModel.TEXT_POSITION_ABOVE:
+						index = 0
 						break
-					case SDObjectModel.TEXT_POSITION_TOP:
-						btnBarValign.selectedIndex = 1
+					case SDSymbolModel.TEXT_POSITION_TOP:
+						index = 1
 						break
-					case SDObjectModel.TEXT_POSITION_MIDDLE:
-						btnBarValign.selectedIndex = 2						
+					case SDSymbolModel.TEXT_POSITION_MIDDLE:
+						index = 2						
 						break
-					case SDObjectModel.TEXT_POSITION_BOTTOM:
-						btnBarValign.selectedIndex = 3						
+					case SDSymbolModel.TEXT_POSITION_BOTTOM:
+						index = 3						
 						break
-					case SDObjectModel.TEXT_POSITION_BELOW:
-						btnBarValign.selectedIndex = 4						
+					case SDSymbolModel.TEXT_POSITION_BELOW:
+						index = 4						
 						break
 					default:
-						Logger.debug("trying to deselect the vAlign button bar",this)
-						btnBarValign.selectedIndex = -1				
+						index = -1				
 				
 				}
+				return index;
 			}
 			
 			
@@ -338,24 +295,21 @@
 			
 			protected function fontSizeUpdated():void
 			{
-				if (_internalPropChange==false)
-				{
-					if (cbxFontSize.textInput.text=="") return
-					var evt:TextPropertyChangeEvent = new TextPropertyChangeEvent(TextPropertyChangeEvent.CHANGE_FONT_SIZE, true)
-					evt.fontSize = Number(cbxFontSize.textInput.text)
-					dispatchEvent(evt)
-				}
+				if (cbxFontSize.textInput.text=="") return
+				var evt:TextPropertyChangeEvent = new TextPropertyChangeEvent(TextPropertyChangeEvent.CHANGE_FONT_SIZE, true)
+				evt.fontSize = Number(cbxFontSize.textInput.text)	
+				dispatchEvent(evt)
 			}
 			
 			protected function onFontFamilyChange():void
 			{								
-				if (registrationManager.isLicensed==false) return
-				if (_internalPropChange==false)
-				{
-					if (ddlFontFamily.selectedItem)
-					{										
+				if (cbxFontFamily.selectedIndex>=0)
+				{										
+					var font:Font = _fontFamiliesAC.getItemAt(cbxFontFamily.selectedIndex) as Font
+					if (font)
+					{
 						var evt:TextPropertyChangeEvent = new TextPropertyChangeEvent(TextPropertyChangeEvent.CHANGE_FONT_FAMILY, true)
-						evt.fontFamily = ddlFontFamily.selectedItem.fontName
+						evt.fontFamily = font.fontName
 						dispatchEvent(evt)
 					}
 				}
@@ -365,61 +319,53 @@
 			protected function onTextAlignChange():void
 			{				
 				var evt:TextPropertyChangeEvent = new TextPropertyChangeEvent(TextPropertyChangeEvent.CHANGE_TEXT_ALIGN, true)
-				if (_internalPropChange==false)
+				if (btnBar.selectedItem && btnBar.selectedItem.label)
 				{
-					if (btnBar.selectedItem && btnBar.selectedItem.label)
-					{
-						evt.textAlign = btnBar.selectedItem.label
-						dispatchEvent(evt)
-					}
+					evt.textAlign = btnBar.selectedItem.label
+					dispatchEvent(evt)
 				}
 			}
 			
 			protected function onBoldChange():void
 			{
-				if (_internalPropChange==false)
-				{
 					var evt:TextPropertyChangeEvent = new TextPropertyChangeEvent(TextPropertyChangeEvent.CHANGE_FONT_WEIGHT, true)				
 					if (btnBold.selected)
-					{
-						evt.fontWeight = "bold"
-					}
+						evt.fontWeight = "bold";
 					else
-					{
-						evt.fontWeight = "normal"
-					}
-					dispatchEvent(evt)	
-				}
+						evt.fontWeight = "normal";
+					dispatchEvent(evt);	
 			}
 						
 			protected function onTextPositionChange():void
 			{				
-				if (_internalPropChange==false)
+				var evt:TextPropertyChangeEvent = new TextPropertyChangeEvent(TextPropertyChangeEvent.CHANGE_TEXT_POSITION, true)					
+				if (btnBarValign && btnBarValign.selectedItem && btnBarValign.selectedItem.label)
 				{
-					var evt:TextPropertyChangeEvent = new TextPropertyChangeEvent(TextPropertyChangeEvent.CHANGE_TEXT_POSITION, true)					
-					if (btnBarValign && btnBarValign.selectedItem && btnBarValign.selectedItem.label)
-					{
-						evt.textPosition = btnBarValign.selectedItem.label
-						dispatchEvent(evt)
-					}
+					evt.textPosition = btnBarValign.selectedItem.label
+					dispatchEvent(evt)
 				}
-				
 			}
 		
-			
-			protected function onFontFamilyDDLClose():void
+			protected function onLineWeightChange():void
 			{
-				if (registrationManager.isLicensed==false)
-				{
-					Alert.show("Font selection is only available to Full Version users. Visit simpledigrams.com and upgrade to Full Version today!", 
-						"Full Version Only")			
-					ddlFontFamily.selectedIndex = this._startFontFamilyIndex
-				}
+					if (ddlLineWeight.selectedIndex==-1) return;
+					var event:LineStyleEvent = new LineStyleEvent(LineStyleEvent.SYMBOL_LINE_WEIGHT_CHANGE, true)
+					event.lineWeight = ddlLineWeight.selectedItem.data
+					dispatchEvent(event)
 			}
+			
+			
+			protected function onFontFamilyCBXClose():void
+			{
+				
+			}
+			
+			
+			
 		]]>
 	</fx:Script>
 		
-	<mx:Image source="{fontSizeIcon}" width="20" height="20" />
+	<s:Image source="{fontSizeIcon}" width="20" height="20" />
 	
 	
 	<s:ComboBox
@@ -489,25 +435,26 @@
 					width="30"
 					/>
 	
-	<s:DropDownList
-		id="ddlFontFamily" 
+	<s:ComboBox
+		id="cbxFontFamily" 
 		dataProvider="{_fontFamiliesAC}"
 		labelField="fontName"	
-		close="onFontFamilyDDLClose()"
+		close="onFontFamilyCBXClose()"
 		change="onFontFamilyChange()"
 		width="100%"
 		maxWidth="250"
-		>
-		<s:layout>				
-			<s:VerticalLayout gap="0"								  
-							  variableRowHeight="true"								  
-							  horizontalAlign="justify" />				
-		</s:layout>
-		
-	</s:DropDownList>
+		/>
 
 	
 	
+	<s:Label id="lblWeight" text="weight:" paddingTop="7" paddingLeft="10" visible="{propertiesModel.showLineWeight}" />
 	
+	<s:DropDownList id="ddlLineWeight"
+					dataProvider="{_lineWeightsAC}"
+					change="onLineWeightChange()"
+					height="23"
+					width="55"
+					visible="{propertiesModel.showLineWeight}"
+					/>
 	
 </s:Group>

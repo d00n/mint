@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:tools="com.simplediagrams.view.tools.*">
+	<fx:Script>
+		<![CDATA[
+			import com.simplediagrams.model.tools.HandleRoles;
+			import com.simplediagrams.model.TransformData;
+			import com.simplediagrams.model.tools.MarqueeTool;
+			import com.simplediagrams.model.tools.ToolBase;
+			import com.simplediagrams.model.tools.TransformTool;
+			private var _tool:TransformTool;
+			
+			public function get tool():ToolBase
+			{
+				return _tool;
+			}
+			
+			public function set tool(value:ToolBase):void
+			{
+				if(_tool)
+					_tool.removeEventListener(Event.CHANGE, onToolChange);
+				_tool = value as TransformTool;
+				if(_tool)
+				{
+					onToolChange(null);
+					_tool.addEventListener(Event.CHANGE, onToolChange);
+				}
+				else
+					contentGroup.visible = false;
+			}
+			
+			public function onToolChange(event:Event):void
+			{
+				var transform:TransformData = _tool.displayTransform;
+				if(transform != null)
+				{
+					contentGroup.visible = true;
+					contentGroup.x = transform.x;
+					contentGroup.y = transform.y;
+					contentGroup.width = transform.width;
+					contentGroup.height = transform.height;
+					contentGroup.rotation = transform.rotation;
+				}
+				else
+				{
+					contentGroup.visible = false;
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:Group id="contentGroup" visible="false" x="100" y="100" width="300" height="300">
+		<tools:ObjectTransformHandle role="{HandleRoles.RESIZE_LEFT|HandleRoles.RESIZE_UP}" left="0" top="0"/>
+		<tools:ObjectTransformHandle role="{HandleRoles.RESIZE_UP}"  horizontalCenter="0" top="0"/>
+		<tools:ObjectTransformHandle role="{HandleRoles.RESIZE_RIGHT|HandleRoles.RESIZE_UP}"  right="0" top="0"/>
+		
+		<tools:ObjectTransformHandle role="{HandleRoles.RESIZE_LEFT}"  left="0" verticalCenter="0"/>
+		<tools:ObjectTransformHandle role="{HandleRoles.RESIZE_RIGHT}"  right="0" verticalCenter="0"/>
+		
+		<tools:ObjectTransformHandle role="{HandleRoles.RESIZE_LEFT|HandleRoles.RESIZE_DOWN}"  left="0"  bottom="0"/>
+		<tools:ObjectTransformHandle role="{HandleRoles.RESIZE_DOWN}"  horizontalCenter="0"  bottom="0"/>
+		<tools:ObjectTransformHandle role="{HandleRoles.RESIZE_RIGHT|HandleRoles.RESIZE_DOWN}" right="0"  bottom="0"/>
+		
+		<tools:ObjectTransformHandle role="{HandleRoles.ROTATE}" verticalCenter="0" right="-20"/>
+	</s:Group>
+</s:Group>

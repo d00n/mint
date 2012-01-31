@@ -44,13 +44,12 @@ package com.simplediagrams.view.SDComponents
             
             x = _model.x;
             y = _model.y;         
-			depth = _model.depth;      
 		  	width = _model.width
 			height = _model.height
 			lineColor=_model.color
 			lineWeight=_model.lineWeight
 			linePath=_model.linePath  
-                	
+           	depth = _model.depth;     	
             _model.addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );
         	
             

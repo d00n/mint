@@ -3,10 +3,12 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.business.FileManager;
 	import com.simplediagrams.events.*;
 	import com.simplediagrams.model.ApplicationModel;
+	import com.simplediagrams.model.DiagramManager;
 	import com.simplediagrams.model.DiagramModel;
 	import com.simplediagrams.model.LibraryManager;
 	import com.simplediagrams.model.RegistrationManager;
-	import com.simplediagrams.model.libraries.MissingSymbolInfo;
+	import com.simplediagrams.model.SettingsModel;
+	import com.simplediagrams.model.UndoRedoManager;
 	import com.simplediagrams.util.Logger;
 	import com.simplediagrams.view.dialogs.MissingSymbolsDialog;
 	import com.simplediagrams.view.dialogs.NewDiagramDialog;
@@ -15,8 +17,9 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.vo.RecentFileVO;
 	
 	import flash.events.Event;
-//	import flash.filesystem.File;
+	import flash.filesystem.File;
 	
+	import mx.containers.TitleWindow;
 	import mx.controls.Alert;
 	import mx.core.UIComponent;
 	
@@ -25,87 +28,152 @@ package com.simplediagrams.controllers
 
 	public class FileController extends AbstractController
 	{
-		[Bindable]
+		
+		
 		[Inject]
 		public var libraryManager:LibraryManager;
 				
-		[Bindable]
 		[Inject]
 		public var appModel:ApplicationModel;
 			
-		[Bindable]	
 		[Inject]
-		public var diagramModel:DiagramModel
+		public var diagramManager:DiagramManager
 		
-		[Bindable]	
 		[Inject]
 		public var fileManager:FileManager
 				
-		[Bindable]	
 		[Inject]
 		public var dialogsController:DialogsController
+				
+		[Inject]
+		public var settingsModel:SettingsModel
 		
-		[Bindable]	
 		[Inject]
 		public var registrationManager:RegistrationManager
 		
-		private var _saveBeforeActionDialog:SaveBeforeActionDialog
-		
-		private var _newDiagramDialog:NewDiagramDialog
-		
-		private var _actionAfterSave:String //remembers what to do after a saveBeforeAction event is processed
 		
 		public function FileController()
 		{
 		}
 		
-		[Mediate(event="LoadDiagramEvent.LOAD_DIAGRAM")]
+		
+		
+		
+		[Mediate(event="LoadDiagramEvent.LOAD_DIAGRAM_FROM_FILE")]
 		public function loadDiagram(event:LoadDiagramEvent):void
 		{
-//			Logger.debug("loadDiagram() nativePath: " + event.nativePath, this)	
-//			
-//				
-//			if (event.nativePath)
-//			{
-//				var f:File = new File()
-//				f.nativePath = event.nativePath
-//				if (f.exists)
-//				{		
-//					dialogsController.showLoadingFileDialog()	
-//					fileManager.loadSimpleDiagramFromFile(event.nativePath)	
-//				}
-//				else
-//				{					
-//					Alert.show("This file no longer exists at " + event.nativePath)
-//					//remove file from recent list
-//					for (var i:uint=0;i<libraryManager.recentDiagramsAC.length; i++)
-//					{
-//						if (RecentFileVO(libraryManager.recentDiagramsAC.getItemAt(i)).data==event.nativePath)
-//						{
-//							libraryManager.recentDiagramsAC.removeItemAt(i)							
-//						}
-//					}
-//					libraryManager.recentDiagramsAC.refresh()
-//				}
-//			}
-//			else
-//			{			
-//				dialogsController.showLoadingFileDialog()	
-//				fileManager.loadSimpleDiagramFromFile()	
-//			}
-//								
+										
+			if(event.nativePath=="")
+			{			
+				Logger.error("loadDiagram() event didn't have nativePath defined",this)
+				return
+			}
+			
+			var f:File = new File()
+			f.nativePath = event.nativePath
+			if (f.exists)
+			{		
+				//dialogsController.showLoadingFileDialog()	
+				fileManager.loadDiagramFromFile(event.nativePath)	
+			}
+			else
+			{					
+				Alert.show("A file no longer exists at " + event.nativePath)
+				//remove file from recent list
+				for (var i:uint=0;i<settingsModel.recentDiagramsAC.length; i++)
+				{
+					if (RecentFileVO(settingsModel.recentDiagramsAC.getItemAt(i)).data==event.nativePath)
+					{
+						settingsModel.recentDiagramsAC.removeItemAt(i)							
+					}
+				}
+				settingsModel.recentDiagramsAC.refresh()
+			}			
+											
 		}	
 		
-		[Mediate(event="LoadDiagramEvent.DIAGRAM_LOADED")]
-		public function diagramLoaded(event:LoadDiagramEvent):void
+		[Mediate(event="LoadDiagramEvent.DIAGRAM_PARSED")]
+		public function onDiagramParsed(event:LoadDiagramEvent):void
 		{
-			libraryManager.addRecentFilePath(event.nativePath, event.fileName)	
-			//the loading dialog will be removed by the diagramController after the diagram is completely built	
-			//we'll show any unavailable fonts at that point
+			
+			appModel.diagramLoaded = true
+			appModel.viewing = ApplicationModel.VIEW_DIAGRAM	
+			
+			//Check to make sure all symbols loaded. If not, show warning
+			
+			if (fileManager.missingSymbolsArr && fileManager.missingSymbolsArr.length>0)
+			{				
+				var dialog:MissingSymbolsDialog = dialogsController.showMissingSymbolsDialog()
+				dialog.addEventListener(Event.CANCEL, onCancelLoadDiagram)
+				dialog.addEventListener("OK", onFinishLoadDiagramAfterResolvingMissingSymbols)
+				dialog.missingSymbolsArr = fileManager.missingSymbolsArr
+				dialog.nativePath = event.nativePath
+				dialog.fileName = event.fileName
+				return
+			}
+			
+				
+			var evt:LoadDiagramEvent = new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_LOADED_FROM_FILE, true)
+			evt.nativePath = event.nativePath
+			evt.fileName = event.fileName
+			evt.success = true
+			dispatcher.dispatchEvent(evt)
+				
+			settingsModel.addRecentFilePath(event.nativePath, event.fileName)	
+				
+			var readyEvt:LoadDiagramEvent = new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_READY, true)			
+			dispatcher.dispatchEvent(readyEvt)
+			
+			
 		}	
 		
+		protected function onCancelLoadDiagram(event:Event):void
+		{			
+			removeMissingSymbolDialog(event.target as TitleWindow)
+			closeDiagram()
+		}
 		
+		protected function onFinishLoadDiagramAfterResolvingMissingSymbols(event:Event):void
+		{			
+			removeMissingSymbolDialog(event.target as TitleWindow)
+				
+			var evt:LoadDiagramEvent = new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_LOADED_FROM_FILE, true)	
+			dispatcher.dispatchEvent(evt)
+							
+			var readyEvt:LoadDiagramEvent = new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_READY, true)			
+			dispatcher.dispatchEvent(readyEvt)
+				
+		}
 		
+		protected function removeMissingSymbolDialog(dialog:TitleWindow):void
+		{
+			dialog.removeEventListener(Event.CANCEL, onCancelLoadDiagram)
+			dialog.removeEventListener("OK", onFinishLoadDiagramAfterResolvingMissingSymbols)
+			dialogsController.removeDialog()			
+		}
+		
+				
+		[Mediate(event="PluginEvent.COPY_DEFAULT_PLUGINS_TO_USER_DIR")]
+		public function copyPlugsToUserDir():void
+		{
+			//copy default libraries to lib folder if it doesn't exist (will happen on first install of 1.3 and above)
+			try
+			{
+				var libFiles:File = File.applicationDirectory.resolvePath("lib")
+				var dest:File = ApplicationModel.baseStorageDir.resolvePath(ApplicationModel.LIBRARY_PLUGIN_PATH)
+				if (dest.exists==false)
+				{
+					dest.createDirectory()
+					libFiles.copyTo(dest, true)					
+				}					
+			}				
+			catch(error:Error)
+			{
+				Logger.error("copyPlugsToUserDir() Couldn't copy lib file. Error: " + error, this)
+			}
+		}
+		
+				
 		
 		
 		
@@ -121,76 +189,77 @@ package com.simplediagrams.controllers
 			Logger.debug("diagramLoadError()",this)
 			Alert.show(event.errorMessage, "Load Error")
 			dialogsController.removeDialog()			
+			fileManager.clearFilePaths()
 		}					
 
 		
 		[Mediate(event="SaveDiagramEvent.SAVE_DIAGRAM_AS")]
 		public function saveDiagramAs(event:SaveDiagramEvent):void
-		{
-			Logger.debug("saveDiagramAs()",this)
-			//make sure user is licensed
-			if (registrationManager.isLicensed==false && appModel.firstInstallDate!=null)
-			{
-				Alert.show("Only Full Version users have the ability to save files. Visit www.simpledigrams.com and upgrade to Full Version today!", "Full Version Only")
-				return
-			}			
-			fileManager.saveSimpleDiagramAs()		
+		{		
+			fileManager.saveDiagramAs()		
 		}
 		
 		
 		[Mediate(event="SaveDiagramEvent.SAVE_DIAGRAM")]
 		public function saveDiagram(event:SaveDiagramEvent):void
-		{			
-			//make sure user is licensed
-			if (registrationManager.isLicensed==false && appModel.firstInstallDate!=null)
-			{
-				Alert.show("Only Full Version users have the ability to save files. Visit www.simpledigrams.com and upgrade to Full Version today!", "Full Version Only")
-				return
-			}			
-			fileManager.saveSimpleDiagram()
+		{		
+			fileManager.saveDiagram()
 		}
 		
 		[Mediate(event="SaveDiagramEvent.DIAGRAM_SAVED")]
 		public function diagramSaved(event:SaveDiagramEvent):void
 		{	
-			libraryManager.addRecentFilePath(event.nativePath, event.fileName)
-			if (_actionAfterSave) performActionAfterSave()
+			settingsModel.addRecentFilePath(event.nativePath, event.fileName)
+			if (fileManager.actionAfterSave) performActionAfterSave()
 		}
 						
-		protected function onSaveNewDiagram(event:Event):void
+		protected function onSaveNewDiagramResponse(event:Event):void
 		{
-			fileManager.saveSimpleDiagramAs()
-			//TODO : Add to recently loaded list 			libraryManager.loadDiagrams()
+			fileManager.saveDiagramAs()
+							
+			//TODO : Add to recently loaded list 			
 			
-			dialogsController.removeDialog(_newDiagramDialog)	
+			dialogsController.removeDialog(fileManager.newDiagramDialog)	
 			removeSaveNewDiagramListeners()
 				
 		}
 		
 		protected function onCancelSaveNewDiagram(event:Event):void
 		{
-			dialogsController.removeDialog(_newDiagramDialog)			
+			dialogsController.removeDialog(fileManager.newDiagramDialog)			
 			removeSaveNewDiagramListeners()	
 		}
 		
 		protected function removeSaveNewDiagramListeners():void
 		{
-			_newDiagramDialog.removeEventListener(NewDiagramDialog.SAVE, onSaveNewDiagram)
-			_newDiagramDialog.removeEventListener(Event.CANCEL, onCancelSaveNewDiagram)	
+			fileManager.newDiagramDialog.removeEventListener(NewDiagramDialog.SAVE, onSaveNewDiagramResponse)
+			fileManager.newDiagramDialog.removeEventListener(Event.CANCEL, onCancelSaveNewDiagram)	
 		}
 		
 						
-			
-//		[Mediate(event="OpenDiagramEvent.OPEN_DIAGRAM_EVENT")]
+		[Inject]
+		public var undoRedoManager:UndoRedoManager;
+		
+		[Mediate(event="OpenDiagramEvent.OPEN_DIAGRAM")]
 		public function openDiagram(event:OpenDiagramEvent):void
 		{							
-			if (diagramModel.isDirty)
+			fileManager.filePathToOpen = null
+								
+			if (undoRedoManager.isDirty)
 			{
 				checkSaveBeforeOpen()
 			}
 			else
 			{
-				fileManager.loadSimpleDiagramFromFile()
+				if (event.openFile)
+				{
+					fileManager.loadDiagramFromFile(event.openFile.nativePath)
+				}
+				else
+				{
+					fileManager.browseToLoadDiagram()	
+				}
+				
 			}			
 		}
 				
@@ -200,7 +269,7 @@ package com.simplediagrams.controllers
 		public function onCloseDiagram(event:CloseDiagramEvent):void
 		{			
 			
-			if (diagramModel.isDirty)
+			if (undoRedoManager.isDirty)
 			{
 				checkSaveBeforeClose()
 			}
@@ -213,8 +282,9 @@ package com.simplediagrams.controllers
 		protected function closeDiagram():void
 		{
 			appModel.viewing = ApplicationModel.VIEW_STARTUP
-			diagramModel.initDiagramModel()
-			fileManager.clear()
+			diagramManager.clearDiagram();
+			undoRedoManager.clear();
+			fileManager.clearFilePaths()
 			appModel.diagramLoaded = false
 			dispatcher.dispatchEvent(new CloseDiagramEvent(CloseDiagramEvent.DIAGRAM_CLOSED, true))
 		}
@@ -223,7 +293,8 @@ package com.simplediagrams.controllers
 		[Mediate(event="CreateNewDiagramEvent.CREATE_NEW_DIAGRAM")]
 		public function createNewDiagram(event:CreateNewDiagramEvent):void
 		{				
-			if(diagramModel.isDirty)
+			
+			if(diagramManager && diagramManager.diagramModel && undoRedoManager.isDirty)
 			{
 				checkSaveBeforeNew()
 			}
@@ -236,64 +307,74 @@ package com.simplediagrams.controllers
 		
 		private function startNewDiagram():void
 		{
+			//setup default background		
+			var diagramModel:DiagramModel = new DiagramModel();
+			diagramModel.background = libraryManager.getDefaultBackgroundModel()
+			diagramModel.width = settingsModel.defaultDiagramWidth
+			diagramModel.height = settingsModel.defaultDiagramHeight
+			
 			appModel.viewing = ApplicationModel.VIEW_DIAGRAM			
-				
-			diagramModel.createNew()		//this will launch an "new diagram created" event
-			appModel.diagramLoaded = true
+			
+			diagramManager.newDiagram(diagramModel);
+			libraryManager.clearLocalLibrary();
+			appModel.diagramLoaded = true;
+			fileManager.clearFilePaths()
 		}
 			
 		
 		public function checkSaveBeforeOpen():void
 		{
-//			if (_saveBeforeActionDialog)
-//			{				
-//				dialogsController.removeDialog(_saveBeforeActionDialog)
-//			}
-//			
-//			_saveBeforeActionDialog = dialogsController.showSaveBeforeActionDialog()
-//			_saveBeforeActionDialog.mode = SaveBeforeActionDialog.MODE_SAVE_BEFORE_OPEN
-//			_saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.SAVE, onSaveBeforeAction)
-//			_saveBeforeActionDialog.addEventListener(Event.CANCEL, onCancelSaveBeforeAction)
-//			_saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.DONT_SAVE, onDontSaveBeforeAction)		
+			if (fileManager.saveBeforeActionDialog)
+			{				
+				dialogsController.removeDialog(fileManager.saveBeforeActionDialog)
+			}
+			
+			fileManager.actionAfterSave = FileManager.MODE_SAVE_BEFORE_OPEN
+			fileManager.saveBeforeActionDialog = dialogsController.showSaveBeforeActionDialog()
+			fileManager.saveBeforeActionDialog.mode = FileManager.MODE_SAVE_BEFORE_OPEN
+			fileManager.saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.SAVE, onSaveBeforeAction)
+			fileManager.saveBeforeActionDialog.addEventListener(Event.CANCEL, onCancelSaveBeforeAction)
+			fileManager.saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.DONT_SAVE, onDontSaveBeforeAction)		
 									
 		}
 		
 		public function checkSaveBeforeClose():void
 		{
-//			if (_saveBeforeActionDialog)
-//			{				
-//				dialogsController.removeDialog(_saveBeforeActionDialog)
-//			}
-//			
-//			_saveBeforeActionDialog = dialogsController.showSaveBeforeActionDialog()
-//			_saveBeforeActionDialog.mode = SaveBeforeActionDialog.MODE_SAVE_BEFORE_CLOSE
-//			_saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.SAVE, onSaveBeforeAction)
-//			_saveBeforeActionDialog.addEventListener(Event.CANCEL, onCancelSaveBeforeAction)
-//			_saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.DONT_SAVE, onDontSaveBeforeAction)		
+			if (fileManager.saveBeforeActionDialog)
+			{				
+				dialogsController.removeDialog(fileManager.saveBeforeActionDialog)
+			}
+			
+			fileManager.actionAfterSave = FileManager.MODE_SAVE_BEFORE_CLOSE
+			fileManager.saveBeforeActionDialog = dialogsController.showSaveBeforeActionDialog()
+			fileManager.saveBeforeActionDialog.mode = FileManager.MODE_SAVE_BEFORE_CLOSE
+			fileManager.saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.SAVE, onSaveBeforeAction)
+			fileManager.saveBeforeActionDialog.addEventListener(Event.CANCEL, onCancelSaveBeforeAction)
+			fileManager.saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.DONT_SAVE, onDontSaveBeforeAction)		
 									
 		}
 		
 		public function checkSaveBeforeNew():void
 		{
-//			if (_saveBeforeActionDialog)
-//			{				
-//				dialogsController.removeDialog(_saveBeforeActionDialog)
-//			}
-//			
-//			_saveBeforeActionDialog = dialogsController.showSaveBeforeActionDialog()
-//			_saveBeforeActionDialog.mode = SaveBeforeActionDialog.MODE_SAVE_BEFORE_NEW
-//			_saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.SAVE, onSaveBeforeAction)
-//			_saveBeforeActionDialog.addEventListener(Event.CANCEL, onCancelSaveBeforeAction)
-//			_saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.DONT_SAVE, onDontSaveBeforeAction)
+			if (fileManager.saveBeforeActionDialog)
+			{				
+				dialogsController.removeDialog(fileManager.saveBeforeActionDialog)
+			}
+			
+			fileManager.actionAfterSave = FileManager.MODE_SAVE_BEFORE_NEW
+			fileManager.saveBeforeActionDialog = dialogsController.showSaveBeforeActionDialog()
+			fileManager.saveBeforeActionDialog.mode = FileManager.MODE_SAVE_BEFORE_NEW
+			fileManager.saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.SAVE, onSaveBeforeAction)
+			fileManager.saveBeforeActionDialog.addEventListener(Event.CANCEL, onCancelSaveBeforeAction)
+			fileManager.saveBeforeActionDialog.addEventListener(SaveBeforeActionDialog.DONT_SAVE, onDontSaveBeforeAction)
 						
 		}
 		
 		public function onSaveBeforeAction(event:Event):void
 		{										
-			_actionAfterSave = _saveBeforeActionDialog.mode
 			try
 			{				
-				saveDiagram(null)
+				fileManager.saveDiagram()
 			}
 			catch (err:Error)
 			{
@@ -306,65 +387,76 @@ package com.simplediagrams.controllers
 		
 		public function performActionAfterSave():void
 		{
-//			switch (_actionAfterSave)		
-//			{
-//				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_NEW:
-//					startNew()
-//					break
-//					
-//				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_CLOSE:					
-//					closeDiagram()
-//					break
-//					
-//				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_OPEN:
-//					fileManager.loadSimpleDiagramFromFile()
-//					break
-//					
-//				default:				
-//			}
-//			_actionAfterSave = null
-//			fileManager.clear()
-//			dialogsController.removeDialog(_saveBeforeActionDialog)			
-//			removeSaveBeforeActionEventListeners()
+			dialogsController.removeDialog(fileManager.saveBeforeActionDialog)
+			removeSaveBeforeActionEventListeners()	
+			switch (fileManager.actionAfterSave)		
+			{
+				case FileManager.MODE_SAVE_BEFORE_NEW:
+					startNewDiagram()
+					break
+					
+				case FileManager.MODE_SAVE_BEFORE_CLOSE:					
+					closeDiagram()
+					break
+					
+				case FileManager.MODE_SAVE_BEFORE_OPEN:
+					fileManager.browseToLoadDiagram()
+					break
+					
+				default:				
+			}
+			fileManager.actionAfterSave = ""		
 		}
 		
 		
 		public function onCancelSaveBeforeAction(event:Event):void
 		{			
-			dialogsController.removeDialog(_saveBeforeActionDialog)
+			fileManager.actionAfterSave = ""
+			dialogsController.removeDialog(fileManager.saveBeforeActionDialog)
 			removeSaveBeforeActionEventListeners()
 			//and then let user continue working...
 		}	
 		
 		public function onDontSaveBeforeAction(event:Event):void
 		{
-//			switch (_saveBeforeActionDialog.mode)		
-//			{
-//				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_NEW:
-//					startNew()
-//					break
-//					
-//				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_CLOSE:
-//					closeDiagram()
-//					break
-//					
-//				case SaveBeforeActionDialog.MODE_SAVE_BEFORE_OPEN:
-//					fileManager.loadSimpleDiagramFromFile()
-//					break
-//					
-//				default:				
-//			}
-//			
-//			dialogsController.removeDialog(_saveBeforeActionDialog)			
-//			removeSaveBeforeActionEventListeners()
+			switch (fileManager.actionAfterSave)		
+			{
+				case FileManager.MODE_SAVE_BEFORE_NEW:
+					startNewDiagram()
+					break
+					
+				case FileManager.MODE_SAVE_BEFORE_CLOSE:
+					closeDiagram()
+					break
+					
+				case FileManager.MODE_SAVE_BEFORE_OPEN:
+					fileManager.browseToLoadDiagram()
+					break
+					
+				default:				
+			}
+			
+			dialogsController.removeDialog(fileManager.saveBeforeActionDialog)	
+			fileManager.actionAfterSave = ""
+			removeSaveBeforeActionEventListeners()
 		}
 		
 		private function removeSaveBeforeActionEventListeners():void
 		{		
-//			_saveBeforeActionDialog.removeEventListener(SaveBeforeActionDialog.SAVE, onSaveBeforeAction)
-//			_saveBeforeActionDialog.removeEventListener(Event.CANCEL, onCancelSaveBeforeAction)
-//			_saveBeforeActionDialog.removeEventListener(SaveBeforeActionDialog.DONT_SAVE, onDontSaveBeforeAction)		
-//			_saveBeforeActionDialog = null
+			if (fileManager.saveBeforeActionDialog)
+			{
+				fileManager.saveBeforeActionDialog.removeEventListener(SaveBeforeActionDialog.SAVE, onSaveBeforeAction)
+				fileManager.saveBeforeActionDialog.removeEventListener(Event.CANCEL, onCancelSaveBeforeAction)
+				fileManager.saveBeforeActionDialog.removeEventListener(SaveBeforeActionDialog.DONT_SAVE, onDontSaveBeforeAction)		
+				fileManager.saveBeforeActionDialog = null
+			}
+		}
+		
+		
+		[Mediate(event="ExportDiagramEvent.SAVE_IMAGE_TO_FILE")]
+		public function exportDiagramImageToFile(event:ExportDiagramEvent):void
+		{	
+			fileManager.saveDiagramImageToFile(event.imageByteArray)			
 		}
 		
 		

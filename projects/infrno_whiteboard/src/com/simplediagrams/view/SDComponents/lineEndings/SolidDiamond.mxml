@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lineEndings:LineEnding xmlns:fx="http://ns.adobe.com/mxml/2009" 
+						xmlns:s="library://ns.adobe.com/flex/spark" 
+						xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:lineEndings="com.simplediagrams.view.SDComponents.lineEndings.*">
+	<s:Path x="-2" data="M 0,0 L 10,-10 L 20,0 L 10,10 z">
+		<s:fill>
+			<s:SolidColor id="fill"/>
+		</s:fill>
+	</s:Path>
+	<fx:Script>
+		<![CDATA[
+			protected override function commitProperties():void
+			{
+				super.commitProperties();
+				if(fill)
+					fill.color = lineColor;
+			}
+		]]>
+	</fx:Script>
+</lineEndings:LineEnding>

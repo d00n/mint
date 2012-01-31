@@ -84,7 +84,7 @@
 					dispatcher.dispatchEvent(evt)
 				}
 				
-//				cbxMsgIsPrivate.selected = basecampModel.defaultMessageToPrivate
+				cbxMsgIsPrivate.selected = basecampModel.defaultMessageToPrivate
 				
 			}
 			
@@ -238,7 +238,7 @@
 			
 			<s:VGroup width="200">
 				<s:Label text="Image Preview (not to scale):" paddingTop="3"  styleName="formItemTitle"/>
-				<mx:Image id="imgDiagram" width="150" height="150"/>
+				<s:Image id="imgDiagram" width="150" height="150"/>
 				<mx:Text width="200" 
 							 color="#888888">
 						<mx:htmlText>

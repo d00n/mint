@@ -1,5 +1,7 @@
 package com.simplediagrams.events
 {
+	import com.simplediagrams.model.SDLineModel;
+	
 	import flash.events.Event;
 	
 	public class LineTransformEvent extends Event
@@ -11,9 +13,14 @@ package com.simplediagrams.events
 		public var bendX:Number
 		public var bendY:Number
 		
-		public function LineStyleEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
+		public var oldState:SDLineModel;
+		public var newState:SDLineModel;
+		
+		public function LineTransformEvent(type:String, bubbles:Boolean=true, cancelable:Boolean=false)
 		{
 			super(type, bubbles, cancelable);
 		}
+		
+		public static const TRANSFORM_LINE:String = "lineTransform";
 	}
 }

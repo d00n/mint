@@ -141,6 +141,28 @@ package com.simplediagrams.model
 //			EncryptedLocalStore.setItem("enableNotifications", ba )		
 		}
 		
+		
+		public function get defaultMessageToPrivate():Boolean
+		{			
+			var defaultMessageToPrivateBA:ByteArray = EncryptedLocalStore.getItem("defaultMessageToPrivate")
+			if (defaultMessageToPrivateBA) 
+			{
+				return (defaultMessageToPrivateBA.readUTFBytes(defaultMessageToPrivateBA.length) == "true")
+			}
+			else
+			{
+				return true
+			}
+		}
+		
+		public function set defaultMessageToPrivate(value:Boolean):void
+		{					
+			var ba:ByteArray = new ByteArray()
+			ba.writeUTFBytes(value.toString())
+			EncryptedLocalStore.setItem("defaultMessageToPrivate", ba )		
+		}
+		
+		
 				
 		public function loadFromEncryptedStore():void
 		{

@@ -1,65 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:SparkSkin 
-        xmlns:fx="http://ns.adobe.com/mxml/2009"
-        xmlns:mx="library://ns.adobe.com/flex/mx"
-        xmlns:s="library://ns.adobe.com/flex/spark"
-        minWidth="70" minHeight="70"
-        mouseChildren="{currentState=='selected'}"
-       >
-    
-    <fx:Metadata>
-    	<![CDATA[
-       		[HostComponent("com.simplediagrams.view.SDComponents.SDTextArea")]
-    	]]>
-    </fx:Metadata> 
-    
-    <!-- states -->
-    <s:states>
-        <s:State name="normal"/>
-        <s:State name="selected"/>
-    </s:states>
-    
-
-    <fx:Script>
-    	<![CDATA[
-	        /* Define the skin elements that should not be colorized.
-	           For text area, the skin itself is colorized but the individual parts are not. */
-	        static private const exclusions:Array = ["mainTextArea"];
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	minWidth="50" minHeight="50"
+	doubleClickEnabled="true"
+	doubleClick="{hostComponent.onDoubleClick()}"
+	>
 	
-	        override public function get colorizeExclusions():Array {return exclusions;}
+	<fx:Metadata>
+		<![CDATA[
+		[HostComponent("com.simplediagrams.view.SDComponents.SDTextArea")]
+		]]>
+	</fx:Metadata> 
 	
-	        	        
-	         [Bindable]
-	        [Embed(source='assets/tool_shapes/default_tools.swf', symbol='StickyNote')]
-	        public var StickyNote:Class
-	        
-    	]]>
-    </fx:Script>
-
-   
-   <mx:Image id="backgroundImage" source="{StickyNote}" width="{hostComponent.width+15}" height="{hostComponent.height+15}" />
-  	
-   <s:TextArea id="mainTextArea"
-        		  fontSize="{hostComponent.fontSize}"
-        		  contentBackgroundAlpha="0"
-        		  borderVisible="false"
-        		  selectable="true"
-        		  x = "10"
-        		  y = "10"
-        		  text="{hostComponent.text}"
-        		  width="{hostComponent.width-20}"
-        		  height="{hostComponent.height-25}"   		
-				  fontFamily="{hostComponent.fontFamily}"  
-        		  verticalScrollPolicy="off"
-        		  horizontalScrollPolicy="off"
-                  heightInLines="10"
-                  widthInChars="15"/>
-                  
-  
-   
-         
-    
-
+	<!-- states -->
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="selected"/>
+	</s:states>
+	
+	
+	<fx:Script>
+		<![CDATA[
+			/* Define the skin elements that should not be colorized.
+			For text area, the skin itself is colorized but the individual parts are not. */
+			static private const exclusions:Array = ["mainTextArea"];
+			
+			override public function get colorizeExclusions():Array {return exclusions;}
+			
+			
+		]]>
+	</fx:Script>
+	
+	<!-- sticky note shape -->
+	<s:Group mouseEnabled="false" left="0" right="0" top="0" bottom="0"  scaleGridLeft="10" scaleGridRight="90" scaleGridTop="10" scaleGridBottom="90">
+		
+		<s:Path data="M97.4 2.7 100 97.1 95.65 97.1Q97.25 67.2 97.4 24 97.4 22.6 97.4 21.15L97.4 2.7">
+			<s:fill>
+				<s:SolidColor color="0x000000" alpha="0.2"/>
+			</s:fill>
+		</s:Path>
+		
+		<!-- solid color as selected by user -->
+		<s:Path data="M95.65 97.1Q95.65 98.55 95.45 100L0 99.6Q3.7 60.9 3.7 41.75 3.55 22.6 3.7 21.15L3.7 0 97.4 0 97.4 2.7 97.4 21.15Q97.4 22.6 97.4 24 97.25 67.2 95.65 97.1">
+			<s:fill>
+				<s:SolidColor color="{hostComponent.backgroundColor}"/>
+			</s:fill>
+		</s:Path>
+		
+		<!-- overlay to give some shadows -->
+		<s:Path data="M95.65 97.1Q95.65 98.55 95.45 100L0 99.6Q3.7 60.9 3.7 41.75 3.55 22.6 3.7 21.15L3.7 0 97.4 0 97.4 2.7 97.4 21.15Q97.4 22.6 97.4 24 97.25 67.2 95.65 97.1">
+			<s:fill>
+				<s:LinearGradient x="49.2625" y="-1.8875" scaleX="99.081387" rotation="90.741285">
+					<s:GradientEntry ratio="0" color="0x000000" alpha=".05"/>
+					<s:GradientEntry ratio="0.72941176" color="0x000000"  alpha=".05"/>
+					<s:GradientEntry ratio="1" color="0xFFFFFF"  alpha=".1"/>
+				</s:LinearGradient>
+			</s:fill>
+		</s:Path>
+	</s:Group>
+	
+	
+	
+	<s:RichEditableText id="mainText"
+						color="{hostComponent.fontColor}"
+						fontSize="{hostComponent.fontSize}"
+						textAlign="{hostComponent.textAlign}"
+						fontWeight="{hostComponent.fontWeight}"
+						text="{hostComponent.text}"
+						width="{hostComponent.width-25}"
+						height="{hostComponent.height-20}"  
+						fontFamily="{hostComponent.fontFamily}"
+						enabled="{hostComponent.textAreaEnabled}"
+						left = "10"
+						top = "10"
+						bottom="10" 
+						right="10"
+						/>
+	
+	
+	
+	
+	
+	
 </s:SparkSkin>
 
 

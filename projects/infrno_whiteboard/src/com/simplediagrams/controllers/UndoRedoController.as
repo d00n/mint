@@ -37,7 +37,7 @@ package com.simplediagrams.controllers
 		}
 		
 		 
-		[Mediate(event="LoadDiagramEvent.DIAGRAM_LOADED")]
+		[Mediate(event="LoadDiagramEvent.DIAGRAM_LOADED_FROM_FILE")]
 		[Mediate(event="CreateNewDiagramEvent.NEW_DIAGRAM_CREATED")]
 		public function onClear(event:Event):void
 		{

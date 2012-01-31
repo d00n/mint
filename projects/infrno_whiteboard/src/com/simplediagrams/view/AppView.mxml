@@ -4,26 +4,68 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 		
 		 xmlns:view="com.simplediagrams.view.*"
 		 xmlns:swiz="org.swizframework.*" 
+		 xmlns:register="com.simplediagrams.view.register.*"
+		 xmlns:components="com.simplediagrams.view.components.*"
+		 xmlns:startup="com.simplediagrams.view.startup.*"
 		 currentState="{applicationModel.viewing}"
-		 width="400" height="300">
+		 width="400" height="300" >
 	
 	<fx:Script>
 		<![CDATA[
-			
+			import com.simplediagrams.events.RegisterLicenseEvent;
 			import com.simplediagrams.model.ApplicationModel;
+			import com.simplediagrams.model.RegistrationManager;
+			import com.simplediagrams.view.dialogs.CreateCustomLibraryDialog;
+			import com.simplediagrams.view.dialogs.ImportDatabasePrompt;
+			import com.simplediagrams.view.dialogs.ManageLibrariesDialog;
 			
 			[Bindable]
 			[Inject]
 			public var applicationModel:ApplicationModel
-
+			
+			[Inject]
+			[Bindable]
+			public var registrationManager:RegistrationManager
+			
+			
+			
+			[Mediate(event="RegisterLicenseEvent.LICENSE_VALIDATED")]
+			public function onLicenseValidated(event:RegisterLicenseEvent):void
+			{
+				removeTrialBar()
+			}
+						
+			[PostConstruct]
+			public function onPostConstruct():void
+			{
+				if (registrationManager && registrationManager.isLicensed==true)
+				{
+					removeTrialBar()
+				}	
+				else
+				{
+					trialBar.height=150				
+				}
+			}
+					
+			protected function removeTrialBar():void
+			{
+				if (this.trialBar)
+				{
+					this.removeElement(trialBar)
+				}
+			}
+			
 			
 			
 		]]>
 	</fx:Script>
 	
 	
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	<fx:Declarations>	
+		<components:PopupDisplay popup="{ManageLibrariesDialog}" display="{applicationModel.showManageLibraries}" modal="false"/>
+		<components:PopupDisplay popup="{CreateCustomLibraryDialog}" display="{applicationModel.showCreateCustomLibrary}" modal="true"/>
+		<components:PopupDisplay popup="{ImportDatabasePrompt}" display="{applicationModel.showImportDatabasePrompt}" modal="true"/>
 	</fx:Declarations>
 	
 	<s:layout>
@@ -32,19 +74,35 @@
 	
 	<s:states>
 		<!-- Define the new view states. -->
+		<s:State name="default" />
+		<s:State name="eulaView"/>
 		<s:State name="registrationView"/>
-		<s:State name="startupView" />
 		<s:State name="diagramView"/>
 	</s:states>    
 	
 	<s:transitions>
-		<s:Transition fromState="registrationView" toState="startupView">
+		
+		<s:Transition fromState="default" toState="registrationView">			
 			<s:Fade targets="{[registration, startup]}"/>
 		</s:Transition>
+		
+		<s:Transition fromState="registrationView" toState="default">			
+			<s:Fade targets="{[startup, registration]}"/>
+		</s:Transition>
+				
+		<s:Transition fromState="eulaView" toState="registrationView" >
+			<s:Fade targets="{[eula, registration]}"/>
+		</s:Transition>
+		
+		<s:Transition fromState="eulaView" toState="default" >
+			<s:Fade targets="{[eula, startup]}"/>
+		</s:Transition>		
+		
+		
 	</s:transitions>
 	
 	
-	<s:Group width="100%" height="100%" >
+	<s:Group width="100%" height="100%" id="viewHolder">
 		
 		<s:layout>
 			<s:BasicLayout/>
@@ -57,31 +115,33 @@
 			</s:fill>  
 		</s:Rect>  
 		
+		
 		<view:DiagramView id="diagram" 
 						  width="100%" 
 						  height="100%" 
 						  includeIn="diagramView" 
-						  itemCreationPolicy="immediate"
 						  itemDestructionPolicy="never"		    
 						  />	
 		
-		<view:StartupMenuView id="startup" 
-							  includeIn="startupView"	
+		<startup:StartupMenuView id="startup" 
+							  includeIn="default"	
 							  horizontalCenter="0"
 							  verticalCenter="0"
-							  itemCreationPolicy="immediate"	
-							  itemDestructionPolicy="never"	
 							  />			 
 		
 		
 		<view:RegistrationView id="registration"
-							   includeIn="registrationView"
-							   itemCreationPolicy="immediate"		
+							   includeIn="registrationView"		
 							   horizontalCenter="0"
 							   verticalCenter="0"
 							   />		
 		
-
+		<view:EULAView id="eula"
+					   includeIn="eulaView"		
+					   	horizontalCenter="0"
+						verticalCenter="0"
+						/>
+		
 		
 	</s:Group>
 

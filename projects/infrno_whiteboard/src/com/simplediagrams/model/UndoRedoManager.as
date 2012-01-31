@@ -66,6 +66,7 @@ package com.simplediagrams.model
 		
 		public function clear():void
 		{
+			isDirty = false;
 			_stack = new ArrayCollection()
 			stackIndex = -1
 			dispatchEvent(new Event("countChanged"))
@@ -110,6 +111,7 @@ package com.simplediagrams.model
 		 */
 		public function push(cmd:IUndoRedoCommand):void
 		{
+			isDirty = true;
 			//If there are redo's on the stack after the current index, wipe them out
 			if (canRedo)
 			{
@@ -128,8 +130,11 @@ package com.simplediagrams.model
 			
 		}
 		
+		public var isDirty:Boolean = false;
+		
 		public function undo():void
 		{
+			isDirty = true;
 			if (stackIndex==-1)
 			{
 				Logger.error("undo() can't undo because stackIndex = -1",this)
@@ -147,6 +152,7 @@ package com.simplediagrams.model
 		
 		public function redo():void
 		{
+			isDirty = true;
 			if (!canRedo) 
 			{ 
 				Logger.debug("can't redo.",this)

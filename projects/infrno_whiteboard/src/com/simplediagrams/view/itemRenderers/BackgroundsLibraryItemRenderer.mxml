@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:components="com.simplediagrams.view.components.*"
+				doubleClickEnabled="true"
+				doubleClick="onDoubleClick()"
+				>
+	
+	<fx:Script> 
+		<![CDATA[    
+			import com.simplediagrams.events.BackgroundItemDroppedEvent;
+			import com.simplediagrams.model.LibraryManager;
+			import com.simplediagrams.model.libraries.ImageBackground;
+			import com.simplediagrams.model.libraries.ImageShape;
+			import com.simplediagrams.model.libraries.LibraryItem;
+			import com.simplediagrams.model.libraries.SWFBackground;
+			import com.simplediagrams.model.libraries.VectorShape;
+			override public function set data(value:Object):void
+			{
+				super.data = value
+				invalidateProperties();
+			}
+			
+			protected function onDoubleClick():void
+			{
+				var bgDroppedEvt:BackgroundItemDroppedEvent = new BackgroundItemDroppedEvent(BackgroundItemDroppedEvent.BACKGROUND_ITEM_DROPPED_EVENT, true)
+				bgDroppedEvt.libItem = data as LibraryItem
+				dispatchEvent(bgDroppedEvt)
+			}
+			
+			protected override function commitProperties():void
+			{
+				super.commitProperties();
+				if (data)
+				{
+					this.toolTip = LibraryItem(data).displayName
+					if (data is ImageBackground)
+					{
+						var model:ImageBackground = data as ImageBackground;
+						iconImage.source = LibraryManager.getAssetPath(model, model.thumbnailPath);
+						iconImage.visible = true
+						swfImage.visible = false
+					}
+					else if (data is SWFBackground)
+					{
+						var swfModel:SWFBackground = data as SWFBackground;
+						swfImage.source = LibraryManager.getAssetPath(swfModel, swfModel.thumbnailPath);
+						swfImage.visible = true
+						iconImage.visible = false
+					}
+				}			
+			}
+			
+		]]> 
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="normal" />
+	</s:states>	
+	
+	<mx:Image id="swfImage" width="40" height="40" horizontalCenter="0" verticalCenter="0" scaleContent="true" maintainAspectRatio="false" mouseEnabled="false"  mouseChildren="false" />
+		
+	<s:Image id="iconImage"  smooth="true" smoothingQuality="high" scaleMode="letterbox" width="40" height="40" horizontalCenter="0" verticalCenter="0"/>
+	
+</s:ItemRenderer>

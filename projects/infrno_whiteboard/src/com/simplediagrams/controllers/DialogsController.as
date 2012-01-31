@@ -11,6 +11,7 @@ package com.simplediagrams.controllers
 	import flash.events.Event;
 	import flash.utils.Dictionary;
 	
+	import mx.containers.TitleWindow;
 	import mx.core.FlexGlobals;
 	import mx.core.UIComponent;
 	import mx.managers.PopUpManager;
@@ -37,20 +38,24 @@ package com.simplediagrams.controllers
 			_dialogInfo[VerifyQuitDialog] = 					{ width:420, height:130 }
 			_dialogInfo[ExportDiagramToBasecampDialog] = 		{ width:650, height:660 }
 			_dialogInfo[ExportDiagramToYammerDialog] =	 		{ width:650, height:400 }
-			_dialogInfo[OpenDiagramDialog] = 					{ width:770, height:590 }
-			_dialogInfo[ManageLibrariesDialog] = 				{ width:650, height:400 }
-			_dialogInfo[MissingSymbolsDialog] = 				{ width:650, height:400 }
 			_dialogInfo[NewDiagramDialog] = 					{ width:350, height:150 }
 			_dialogInfo[AboutWindow] = 							{ width:620, height:360 }
-			_dialogInfo[PreferencesDialog] = 					{ width:400, height:500 }
+			_dialogInfo[PreferencesDialog] = 					{ width:620, height:500 }
 			_dialogInfo[LoadingLibraryPluginsDialog] = 			{ width:400, height:180 }
 			_dialogInfo[LoadingLibraryPluginProgressDialog] = 	{ width:400, height:180 }
 			_dialogInfo[LoadingFileDialog] = 					{ width:400, height:180 }
 			_dialogInfo[UnavailableFontsDialog] = 				{ width:400, height:500 }
 			_dialogInfo[CreateCustomLibraryDialog] = 			{ width:450, height:200 }
-			_dialogInfo[RenameCustomLibraryItemDialog] = 		{ width:450, height:200 }
 			_dialogInfo[DeleteCustomSymbolDialog] =		 		{ width:450, height:200 }
+			_dialogInfo[DefaultStickyNotePropsDialog] =		 	{ width:350, height:270 }
+			_dialogInfo[DefaultIndexCardPropsDialog] =		 	{ width:350, height:320 }
 				
+				
+				
+			//_dialogInfo[ManageLibrariesDialog] = 				{ width:800, height:500 }
+			//_dialogInfo[MissingSymbolsDialog] = 				{ width:650, height:400 }
+			//_dialogInfo[RenameCustomLibraryItemDialog] = 		{ width:450, height:200 }
+			
 			FlexGlobals.topLevelApplication.addEventListener(Event.RESIZE, onResize)
 			
 		}
@@ -86,15 +91,25 @@ package com.simplediagrams.controllers
 			
 		}
 		
+		public function showDefaultStickyNotePropsDialog():DefaultStickyNotePropsDialog
+		{
+			return showDialog(DefaultStickyNotePropsDialog) as DefaultStickyNotePropsDialog
+		}
+		
+		public function showDefaultIndexCardPropsDialog():DefaultIndexCardPropsDialog
+		{
+			return showDialog(DefaultIndexCardPropsDialog) as DefaultIndexCardPropsDialog
+		}
+		
 		
 		public function showDeleteCustomSymbolDialog():DeleteCustomSymbolDialog
 		{
 			return showDialog(DeleteCustomSymbolDialog) as DeleteCustomSymbolDialog
 		}
 		
-		public function showRenameCustomLibraryItemDialog():RenameCustomLibraryItemDialog
+		public function showRenameCustomLibraryItemDialog():TitleWindow
 		{
-			return showDialog(RenameCustomLibraryItemDialog) as RenameCustomLibraryItemDialog
+			return null;//showDialog(RenameCustomLibraryItemDialog) as RenameCustomLibraryItemDialog
 		}
 		
 		public function showMissingSymbolsDialog():MissingSymbolsDialog
@@ -102,9 +117,9 @@ package com.simplediagrams.controllers
 			return showDialog(MissingSymbolsDialog) as MissingSymbolsDialog
 		}
 		
-		public function showCreateCustomLibraryDialog():CreateCustomLibraryDialog
+		public function showCreateCustomLibraryDialog():TitleWindow
 		{
-			return showDialog(CreateCustomLibraryDialog) as CreateCustomLibraryDialog
+			return null;//showDialog(CreateCustomLibraryDialog) as CreateCustomLibraryDialog
 		}
 		
 		public function showLoadingFileDialog():LoadingFileDialog
@@ -167,14 +182,10 @@ package com.simplediagrams.controllers
 			return showDialog(ExportDiagramToYammerDialog) as ExportDiagramToYammerDialog
 		}
 		
-		public function showOpenDiagramDialog():OpenDiagramDialog
-		{			
-			return showDialog(OpenDiagramDialog) as OpenDiagramDialog			
-		}
 				
-		public function showManageLibrariesDialog():ManageLibrariesDialog
+		public function showManageLibrariesDialog():TitleWindow
 		{			
-			return showDialog(ManageLibrariesDialog) as ManageLibrariesDialog			
+			return null;//showDialog(ManageLibrariesDialog) as ManageLibrariesDialog			
 		}
 				
 		public function showCreateDiagramDialog():NewDiagramDialog
@@ -217,14 +228,24 @@ package com.simplediagrams.controllers
 		
 		public function removeDialog(dialog:UIComponent=null, clearCurrent:Boolean = true):void
 		{
-			if (dialog)
+			try
 			{
-				PopUpManager.removePopUp(dialog)
+				if (dialog)
+				{
+					
+					PopUpManager.removePopUp(dialog)
+				}
+				else
+				{
+					PopUpManager.removePopUp(_currDialog)
+				}
 			}
-			else
+			catch(error:Error)
 			{
-				PopUpManager.removePopUp(_currDialog)
+				//flex giving stupid scroller error here sometimes
+				Logger.error("Error: " + error.message, this)
 			}
+			
 			
 			if (clearCurrent)
 			{				

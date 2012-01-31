@@ -27,6 +27,7 @@
 package com.simplediagrams.events
 {
 	import flash.events.Event;
+	import flash.geom.Rectangle;
 	
 	public class SelectionEvent extends Event
 	{
@@ -36,9 +37,12 @@ package com.simplediagrams.events
 		public static const SELECT_ALL:String = "selectAllObjects";
 		public static const SELECTED:String = "selected";
 		
+		public static const SELECT_IN_RECT:String = "selectInRect";
+
 		public var targets:Array = [];
+		public var rect:Rectangle;
 		
-		public function SelectionEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
+		public function SelectionEvent(type:String, bubbles:Boolean=true, cancelable:Boolean=false)
 		{
 			super(type, bubbles, cancelable);
 		}

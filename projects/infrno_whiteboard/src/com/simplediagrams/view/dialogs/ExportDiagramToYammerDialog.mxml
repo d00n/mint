@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 title="Export Diagram to Yammer"		 
 		 contentBackgroundColor="0xFFFFFF"
-		 creationComplete="onCC()"
+		 creationComplete="{this.closeButton.visible=false }"
 		 xmlns:myComps="*" 
 		 xmlns:components="com.simplediagrams.view.components.*">
 	
@@ -24,6 +24,7 @@
 			import com.simplediagrams.model.YammerModel;
 			import com.simplediagrams.util.Logger;
 			
+			
 			import mx.controls.Alert
 			import flash.utils.ByteArray;
 			
@@ -39,9 +40,6 @@
 				imgDiagram.source = ba
 			}
 						
-			protected function onCC():void
-			{				
-			}
 			
 						
 			protected function onExport():void
@@ -102,7 +100,7 @@
 			<s:VGroup width="200" height="100%" gap="0">
 				<s:Label text="Image Preview (not to scale):" paddingTop="3" paddingBottom="5"/>
 				<s:HGroup width="100%" height="160" contentBackgroundColor="#F6F6F6" contentBackgroundAlpha="1">					
-					<mx:Image id="imgDiagram" width="100%" height="100%" />
+					<s:Image id="imgDiagram" width="100%" height="100%" />
 				</s:HGroup>
 				<mx:Text width="200"				
 						 color="#888888">
@@ -139,4 +137,4 @@
 	
 	
 	
-</s:Panel>
+</s:TitleWindow>

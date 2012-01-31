@@ -13,7 +13,7 @@
 	
 	<fx:Script>
 		<![CDATA[         
-//			import com.simplediagrams.model.SDImageModel;
+			import com.simplediagrams.model.SDImageModel;
 			import com.simplediagrams.util.Logger;
 			
 			/* Define the skin elements that should not be colorized. 
@@ -68,11 +68,11 @@
 	</s:Graphic>
 	
 	
-	<mx:Image  id="imageHolder" 
+	<s:Image  id="imageHolder" 
 				x="0" y="0"
 				x.border="10" y.border="10" 
 				x.photoStyle="10" y.photoStyle="10" 
-				source="{hostComponent.imageSource}" 
+				source="{hostComponent.imageData}" 
 				width="{hostComponent.width}" 
 				height="{hostComponent.height}"		
 				width.border="{hostComponent.width-20}" 
@@ -84,7 +84,7 @@
 			 />
 	
 	
-	<mx:Image id="tapeGraphic"
+	<s:Image id="tapeGraphic"
 			  includeIn="tape, photoStyle"
 			  x="{hostComponent.width/2}" y="-20"
 			  source="{PieceOfTape}"

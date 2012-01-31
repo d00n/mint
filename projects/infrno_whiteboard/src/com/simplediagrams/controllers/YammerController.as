@@ -44,7 +44,7 @@ package com.simplediagrams.controllers
 		public var registrationManager:RegistrationManager
 		
 		[Inject]
-		public var diagramModel:DiagramModel
+		public var diagramManager:DiagramManager
 		
 		[Inject]
 		public var yammerDelegate:YammerDelegate;
@@ -91,14 +91,7 @@ package com.simplediagrams.controllers
 			{
 				removeLoginInfoDialog()
 			}
-				
-			//make sure user is licensed
-			if (registrationManager.isLicensed==false)
-			{
-				Alert.show("This feature is only available to Full Version users. Visit simpledigrams.com and upgrade to Full Version today!", "Full Version Only")
-				return
-			}
-			
+										
 			_view = event.view as Group
 			
 			//do authorization routine if no perm. token exist
@@ -206,7 +199,7 @@ package com.simplediagrams.controllers
 			_exportDialog.addEventListener("cancel", onUploadCancel)
 				
 			_view.clipAndEnableScrolling = false
-			var bd:BitmapData = new BitmapData(diagramModel.width, diagramModel.height)
+			var bd:BitmapData = new BitmapData(diagramManager.diagramModel.width, diagramManager.diagramModel.height)
 			bd.draw(_view)
 			_imageByteArray = new PNGEncoder().encode(bd)	
 			_exportDialog.imageData = _imageByteArray		

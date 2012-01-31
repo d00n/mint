@@ -16,7 +16,7 @@
 		
 			protected function onUseInTrialFinishedMode():void
 			{
-				var evt:RegistrationViewEvent = new RegistrationViewEvent(RegistrationViewEvent.USE_IN_FREE_MODE, true)
+				var evt:RegistrationViewEvent = new RegistrationViewEvent(RegistrationViewEvent.USE_IN_TRIAL_MODE, true)
 				dispatchEvent(evt)
 			}
 			

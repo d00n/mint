@@ -7,6 +7,10 @@ package com.simplediagrams.events
 		
 		public static const VALIDATE_LICENSE:String = "validateLicense"
 		public static const VALIDATE_LICENSE_RESULT:String = "validateLicenseResult"
+			
+		public static const UNREGISTER_LICENSE:String = "unregisterLicense"
+		public static const LICENSE_UNREGISTERED:String = "licenseUnregistered"
+			
 		public static const LICENSE_VALIDATED:String = "licenseValidated"
 		public static const LICENSE_KEY_NOT_FOUND:String = "licenseKeyNotFound"
 		public static const LICENSE_KEY_MAXED_OUT:String = "licenseKeyMaxedOut"

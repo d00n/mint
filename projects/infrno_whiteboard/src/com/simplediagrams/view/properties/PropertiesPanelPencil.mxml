@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:components="com.simplediagrams.view.components.*"
+		 creationComplete="onCC()"
+		 >
+	
+	<s:layout>
+		<s:HorizontalLayout paddingTop="3" paddingLeft="20" />
+	</s:layout>	
+	
+	<fx:Script>
+		<![CDATA[
+			import com.simplediagrams.events.LineStyleEvent;
+			import com.simplediagrams.events.PencilStyleEvent;
+			import com.simplediagrams.model.DiagramManager;
+			import com.simplediagrams.model.DiagramModel;
+			import com.simplediagrams.model.SDPencilDrawingModel;
+			import com.simplediagrams.model.SettingsModel;
+			import com.simplediagrams.util.Logger;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			import mx.core.UIComponent;
+			import mx.events.CollectionEvent;
+			import mx.events.PropertyChangeEvent;
+									
+			
+			[Bindable]
+			protected var _lineWeightsAL:ArrayList = new ArrayList ( [1,2,3,4,5,6,7,8,9,10] );
+			
+			
+			[Inject]
+			public var diagramManager:DiagramManager
+			
+			[Inject]
+			public var settingsModel:SettingsModel
+			
+			
+			
+			
+			// this flag is set to false when I set the properties of the pulldowns directly from the model 
+			// (e.g. the model was changed due to something other than a control located here)
+			// When this happens, we don't want the controls to then throw events which change the model again (to the same value)
+			// because if this happens, it messes up undo/redo by adding extra commands
+			
+			
+			protected var sdPencilModel:SDPencilDrawingModel
+			
+			[PostConstruct]
+			public function postConstruct():void
+			{	
+				resetProperties()	
+			}
+			
+			[PreDestroy]
+			public function preDestroy():void
+			{
+				
+			}
+			
+			private var _diagramModel:DiagramModel;
+			
+			
+			
+			
+			
+			
+			[Inject(source='diagramManager.diagramModel',bind='true')]
+			public function get diagramModel():DiagramModel
+			{
+				return _diagramModel;
+			}
+			
+			public function set diagramModel(value:DiagramModel):void
+			{
+				if(_diagramModel)
+				{
+					_diagramModel.selectedObjects.removeEventListener( CollectionEvent.COLLECTION_CHANGE, onCollectionChange );
+				}
+				_diagramModel = value;
+				if(_diagramModel)
+				{
+					_diagramModel.selectedObjects.addEventListener( CollectionEvent.COLLECTION_CHANGE, onCollectionChange );	
+				}
+			}
+			
+			private function onCollectionChange(event:CollectionEvent):void
+			{
+				resetProperties();
+			}
+			
+			
+			
+			
+			
+			
+			public function resetProperties():void
+			{
+				
+				if(diagramModel == null || diagramManager == null || diagramModel.selectedObjects.length == 0)
+				{
+					return;
+				}
+				
+				//get the settings for the currently selected line
+				if (diagramManager.diagramModel.selectedObjects.length==1 && (diagramManager.diagramModel.selectedObjects[0] is SDPencilDrawingModel))
+				{
+					sdPencilModel = SDPencilDrawingModel(diagramManager.diagramModel.selectedObjects[0])			
+					initControls()
+				}
+				else
+				{
+					//leave current settings
+					sdPencilModel = null;
+				}
+				
+			}
+			
+			protected function onCC():void
+			{
+				//_launchControlEvents = false
+				//cboLineWeight.selectedItem = 0
+				//_launchControlEvents = true			
+			}			
+			
+			
+			protected function initControls():void
+			{				
+				if (sdPencilModel)
+				{	
+					cboLineWeight.selectedItem = sdPencilModel.lineWeight
+				}					
+			}
+			
+			
+			
+			
+			protected function onLineWeightChange():void
+			{
+				
+				var event:PencilStyleEvent = new PencilStyleEvent(PencilStyleEvent.PENCIL_LINE_WEIGHT_CHANGE, true)
+				
+				event.lineWeight = cboLineWeight.selectedItem
+				
+				dispatchEvent(event)
+			}
+			
+		]]>
+	</fx:Script>
+	
+	
+	<s:Label text="weight:" paddingTop="7" paddingLeft="10" />
+	
+	<s:ComboBox id="cboLineWeight"
+					dataProvider="{_lineWeightsAL}"
+					change="onLineWeightChange()"
+					height="23"
+					width="55"
+					restrict="0-9"
+					/>
+	
+	
+	
+</s:Group>

@@ -3,9 +3,9 @@
         xmlns:fx="http://ns.adobe.com/mxml/2009"
 		xmlns:mx="library://ns.adobe.com/flex/mx"
         xmlns:s="library://ns.adobe.com/flex/spark"
-        minWidth="70" minHeight="70"
-        mouseChildren="{currentState=='selected'}"
+        minWidth="50" minHeight="50"
 		doubleClickEnabled="true"
+		doubleClick="{hostComponent.onDoubleClick()}"
        >
     
     <fx:Metadata>
@@ -41,31 +41,55 @@
     	]]>
     </fx:Script>
 
+	<!-- Index Card shape -->
+	<s:Group left="0" top="0" right="0" bottom="0" scaleGridBottom="29" scaleGridTop="1" scaleGridLeft="1" scaleGridRight="49"  >
+		<s:Path data="M50 7 50 10 50 13 50 15.95 50 19 50 21.95 50 25 50 28 50 30 0 30 0 28 0 25 0 21.95 0 19 0 15.95 0 13 0 10 0 7 0 4 0 0 50 0 50 4 50 7 0 7 50 7M0 4 50 4 0 4M0 21.95 50 21.95 0 21.95M0 19 50 19 0 19M0 13 50 13 0 13M0 10 50 10 0 10M0 15.95 50 15.95
+			  0 15.95M0 28 50 28 0 28M0 25 50 25 0 25">
+			<s:fill>
+				<s:SolidColor color="{hostComponent.backgroundColor}"/>
+			</s:fill>
+		</s:Path>
+		<s:Path data="M0 7 50 7M0 21.95 50 21.95M0 19 50 19M0 13 50 13M0 10 50 10M0 15.95 50 15.95M0 28 50 28M0 25 50 25">
+			<s:stroke>
+				<s:SolidColorStroke weight="0.1" color="#CFE1FF"/>
+			</s:stroke>
+		</s:Path>
+		<s:Path data="M0 4 50 4">
+			<s:stroke>
+				<s:SolidColorStroke weight="0.1" color="#CC5B4F"/>
+			</s:stroke>
+		</s:Path>
+	</s:Group>
 	
-    <mx:Image id="tapeGraphic"
+	
+	
+    <s:Image id="tapeGraphic"
     	x="{hostComponent.width/2}" y="-20"
     	source="{PieceOfTape}"
         enabled="false" 
         focusEnabled="false"
         mouseEnabled="false"
+		visible="{hostComponent.showTape}"
        />  	   
         
-   <mx:Image id="backgroundImage" source="{IndexCard}" width="{hostComponent.width}" height="{hostComponent.height}" doubleClickEnabled="true" />
-  	
-   <s:TextArea id="mainTextArea"
-        		  fontSize="{hostComponent.fontSize}"
-        		  contentBackgroundAlpha="0"
-        		  borderVisible="false"
-        		  x = "10"
-        		  y = "2"
-        		  text="{hostComponent.text}"
-        		  width="{hostComponent.width-25}"
-        		  height="{hostComponent.height-20}"  
-				  fontFamily="{hostComponent.fontFamily}"
-        		  verticalScrollPolicy="off"
-        		  horizontalScrollPolicy="off"
-                  heightInLines="10"
-                  widthInChars="15"/>
+	 	
+	
+	<s:RichEditableText id="mainText"
+			 color="{hostComponent.fontColor}"
+			 fontSize="{hostComponent.fontSize}"
+			 textAlign="{hostComponent.textAlign}"
+			 fontWeight="{hostComponent.fontWeight}"
+			 text="{hostComponent.text}"
+			 width="{hostComponent.width-25}"
+			 height="{hostComponent.height-20}"  
+			 fontFamily="{hostComponent.fontFamily}"
+			 enabled="{hostComponent.textAreaEnabled}"
+			 left = "10"
+			 top = "10"
+			 bottom="10" 
+			 right="10"
+			 />
+	
                   
   
    

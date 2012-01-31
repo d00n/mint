@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
+	<fx:Declarations>
+		[Event(name="cancel", type="flash.events.Event")] 
+		[Event(name="continue", type="flash.events.Event")] 
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			
+			
+			public function get doNotShowAgain():Boolean 
+			{
+				return cbxDoNotShowAgain.selected
+			}
+			
+			protected function onCancel():void
+			{
+				dispatchEvent(new Event("cancel", true))
+			}
+				
+			protected function onContinue():void
+			{
+				dispatchEvent(new Event("continue", true))
+			}
+			
+		]]>
+	</fx:Script>
+
+	<s:layout>
+		<s:VerticalLayout width="100%" height="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10"/>
+	</s:layout>
+	
+	<s:VGroup height="100%" width="100%">
+		
+		<s:Label text="Message about update"/>
+		
+	</s:VGroup>
+	
+		
+		
+	<s:HGroup width="100%">
+		<s:CheckBox label="Do not show this message again" id="cbxDoNotShowAgain" width="100%" />
+		<s:Button label="Cancel" click="onCancel()" styleName="blueButton"  width="90" height="30"/>
+		<s:Button label="Continue" click="onContinue()" styleName="blueButton" width="90" height="30"/>
+	</s:HGroup>
+
+	
+</s:Group>

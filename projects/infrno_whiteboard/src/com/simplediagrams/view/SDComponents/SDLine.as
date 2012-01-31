@@ -5,78 +5,47 @@ package com.simplediagrams.view.SDComponents
 	import com.simplediagrams.model.SDLineModel;
 	import com.simplediagrams.model.SDObjectModel;
 	import com.simplediagrams.util.Logger;
+	import com.simplediagrams.view.SDComponents.lineEndings.ArrowLine;
+	import com.simplediagrams.view.SDComponents.lineEndings.EmptyArrowLine;
+	import com.simplediagrams.view.SDComponents.lineEndings.EmptyCircle;
+	import com.simplediagrams.view.SDComponents.lineEndings.EmptyDiamond;
+	import com.simplediagrams.view.SDComponents.lineEndings.EmptyHalfCircleArc;
+	import com.simplediagrams.view.SDComponents.lineEndings.HalfCircleArc;
+	import com.simplediagrams.view.SDComponents.lineEndings.LineEnding;
+	import com.simplediagrams.view.SDComponents.lineEndings.SolidCircle;
+	import com.simplediagrams.view.SDComponents.lineEndings.SolidDiamond;
+	import com.simplediagrams.view.SDComponents.lineEndings.StopLine;
 	
+	import flash.display.BlendMode;
+	import flash.display.Shape;
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
+	
+	import flex.utils.GraphicsUtils;
 	
 	import mx.events.PropertyChangeEvent;
 	
 	import spark.components.Label;
+	import spark.core.SpriteVisualElement;
 	import spark.primitives.Graphic;
 
-	[SkinState("normal")]
-	[SkinState("selected")]
 	[Bindable]
 	public class SDLine extends SDBase implements ISDComponent
 	{				
-		
 		[SkinPart(required="true")]		
-		public var startDragCircle:DragCircle;
+		public var contentGraphic:Graphic	
 		
-		[SkinPart(required="true")]		
-		public var startLineShape:Graphic
+		private var _model:SDLineModel;
+
+		private var currentStartLineStyle:int = -1;
+		private var currentEndLineStyle:int = -1;
+		private var currentStartMask:Graphic;
+		private var currentStartShape:LineEnding;
+		private var currentEndMask:Graphic;
+		private var currentEndShape:LineEnding;
+		public var startAngle:Number;
+		public var endAngle:Number;
 		
-		[SkinPart(required="true")]		
-		public var startLineCircle:Graphic
-		
-		[SkinPart(required="true")]		
-		public var startLineHitArea:Graphic		
-		
-		[SkinPart(required="true")]
-		public var endDragCircle:DragCircle;
-		
-		[SkinPart(required="true")]		
-		public var endLineShape:Graphic
-		
-		[SkinPart(required="true")]		
-		public var endLineCircle:Graphic
-		
-		[SkinPart(required="true")]
-		public var endLineHitArea:Graphic
-		
-		[SkinPart(required="true")]
-		public var lblText:Label
-				
-		[SkinPart(required="true")]
-		public var arcDragCircle:DragCircle;
-		
-		private var _model:SDLineModel		
-		public var linePath:String		
-		public var lineColor:Number		
-		public var lineWeight:Number		
-		public var startX:Number = -1			
-		public var startY:Number = -1	
-		public var startAngle:Number = -1	
-		public var endX:Number = -1 
-		public var endY:Number = -1		
-		public var textX:Number = -1		
-		public var textY:Number = -1		
-		public var textRotation:Number = 0
-		public var endAngle:Number
-		public var startLineStylePath:String				
-		public var endLineStylePath:String		
-		public var startLineCircleVisible:Boolean = false;				
-		public var endLineCircleVisible:Boolean = false
-		public var startLineSolidCircleVisible:Boolean = false;				
-		public var endLineSolidCircleVisible:Boolean = false
-		public var text:String
-		public var fontColor:Number = 0xFFFFFF
-		
-		protected var origX:Number // used to track changes to startDragCircle
-		protected var origY:Number 
-		protected var origEndX:Number
-		protected var origEndY:Number
-		
-		protected var _draggingArcCircle:Boolean = false
 		
 		public function SDLine()
 		{
@@ -84,413 +53,260 @@ package com.simplediagrams.view.SDComponents
 			this.setStyle("skinClass",Class(SDLineSkin))
 			this.mouseChildren = true
 		}
-			
-			
+		
+		public function getLineEndingMask(style:int):Graphic
+		{
+			var result:Graphic;
+			switch (style)
+			{
+				case SDLineModel.LINE_ENDING_SOLID_ARROW:
+					var emptyArrow:EmptyArrowLine = new EmptyArrowLine();
+					emptyArrow.backgroundAlpha = 1;
+					result = emptyArrow;
+					break
+				
+				case SDLineModel.LINE_ENDING_EMPTY_DIAMOND:
+					var emptyDiamond:EmptyDiamond = new EmptyDiamond();
+					emptyDiamond.backgroundAlpha = 1;
+					result = emptyDiamond;
+					break
+				
+				case SDLineModel.LINE_ENDING_CIRCLE:
+					var emptyCircle:EmptyCircle = new EmptyCircle();
+					emptyCircle.backgroundAlpha = 1;
+					result = emptyCircle;
+					break
+				
+				case SDLineModel.LINE_ENDING_HALF_CIRCLE:
+					var emptyHanfCircle:EmptyHalfCircleArc = new EmptyHalfCircleArc();
+					emptyHanfCircle.backgroundAlpha = 1;
+					result = emptyHanfCircle;
+					break
+			}
+			if(result)
+				result.blendMode = BlendMode.ERASE;
+			return result;
+		}
+		
+		public function getLineEndingShape(style:int):LineEnding
+		{
+			var result:LineEnding;
+			switch (style)
+			{
+				case SDLineModel.LINE_ENDING_NONE:
+					result = new LineEnding;			
+					break
+				
+				case SDLineModel.LINE_ENDING_ARROW:
+					result = new ArrowLine();
+					break
+				
+				case SDLineModel.LINE_ENDING_STOP:					
+					result = new StopLine();
+					break
+				
+				case SDLineModel.LINE_ENDING_SOLID_ARROW:
+					result = new EmptyArrowLine();
+					break
+				
+				case SDLineModel.LINE_ENDING_SOLID_DIAMOND:
+					result = new SolidDiamond();
+					break
+				
+				case SDLineModel.LINE_ENDING_EMPTY_DIAMOND:
+					result = new EmptyDiamond();
+					break
+				
+				case SDLineModel.LINE_ENDING_CIRCLE:
+					result = new EmptyCircle();
+					break
+				
+				case SDLineModel.LINE_ENDING_SOLID_CIRCLE:
+					result = new SolidCircle();
+					break
+				
+				case SDLineModel.LINE_ENDING_HALF_CIRCLE:
+					result = new HalfCircleArc();
+					break
+			}
+
+			return result;
+		}
 			
 		public function set objectModel(objectModel:SDObjectModel):void
 		{     
-			_model = SDLineModel(objectModel)
-					
-			x = _model.x;
-			y = _model.y;         
-			
-			startX = _model.startX
-			startY = _model.startY
-			
-			endX = _model.endX			
-			endY = _model.endY
-			this.depth = _model.depth;
-			
-			lineColor=_model.color
-			lineWeight=_model.lineWeight
-				
-			text = _model.text
-							
-			_model.addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );
-						
-			textX = startX+ ((endX - startX) / 2)
-			textY = startY+ ((endY - startX) / 2)
-				
-			drawPath()		
-			setAngles()
-			drawStartLineStyle()
-			drawEndLineStyle()
-			
+			if(_model)
+				_model.removeEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );	
+			_model = SDLineModel(objectModel)		
+			if(_model)
+				_model.addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );	
+			this.invalidateProperties();
 		}
 		
 		public override function get objectModel():SDObjectModel
 		{
-			return _model
+			return _model;
 		}
 		
 		
 		override protected function onModelChange(event:PropertyChangeEvent):void
 		{
-			super.onModelChange(event)
-				
-				switch(event.property)
-				{
-					case "selected": 						
-						invalidateSkinState();						
-						break
-					
-					case "x": 
-						x = event.newValue as Number
-						break
-						
-					case "y":
-						y = event.newValue as Number
-						break
-					
-					
-					case "startX":
-						startX = event.newValue as Number
-						if (startDragCircle)
-							startDragCircle.x = startX
-						this.repositionText()
-						break
-						
-					case "startY":					
-						startY = event.newValue as Number
-						if (startDragCircle)
-							startDragCircle.y = startY
-						this.repositionText()
-						break
-						
-					case "endX":
-						endX = event.newValue as Number
-						if (endDragCircle)
-							endDragCircle.x = endX
-						this.repositionText()
-						break
-						
-					case "endY":
-						endY = event.newValue as Number
-						if (endDragCircle)
-							endDragCircle.y = endY
-						this.repositionText()
-						break
-					
-					case "bendX":
-						if (!_draggingArcCircle) this.positionArcCircle()
-						break
-					
-					case "bendY":
-						if (!_draggingArcCircle) this.positionArcCircle()
-						break
-											
-					case "color":
-						lineColor=_model.color
-						break
-						
-					case "lineWeight":
-						lineWeight=_model.lineWeight
-						break
-						
-					case "startLineStyle":
-						drawStartLineStyle()
-						break
-						
-					case "endLineStyle":
-						drawEndLineStyle()
-						break
-					
-					case "fontColor":
-						this.fontColor = event.newValue as Number
-						
-					case "text":
-						this.text = String(event.newValue)
-											
-				}
-				
-				this.invalidateProperties()
-				drawPath()
-				
-		}        
+			super.onModelChange(event);
+			this.invalidateProperties();
+		}     
 		
-		
-		protected function drawStartLineStyle():void
-		{
-			//clear out any old styles
-			startLineCircleVisible = false
-			startLineSolidCircleVisible = false
-				
-			switch (_model.startLineStyle)
-			{
-				case SDLineModel.NONE_STYLE:
-					var p:String = "M 0,0"			
-					break
-				
-				case SDLineModel.ARROW_STYLE:
-					p = "M 10,-10 L 0,0 L 10,10"			
-					break
-				
-				case SDLineModel.STOP_LINE_STYLE:					
-					p = "M 0,-10 L 0,10"
-					break
-					
-				case SDLineModel.SOLID_ARROW_STYLE:
-					p = "M 0,-10 L -10,0 L 0,10 z"					
-					break
-					
-				case SDLineModel.CIRCLE_LINE_STYLE:
-					p = "M 0 0"
-					startLineCircleVisible = true
-					break
-				
-				case SDLineModel.SOLID_CIRCLE_LINE_STYLE:
-					p = "M 0 0"
-					startLineSolidCircleVisible = true
-					break
-					
-			}
-			startLineStylePath = p		
-		}
-		
-		protected function drawEndLineStyle():void
-		{
-			
-			//clear out any old styles
-			endLineCircleVisible = false
-			endLineSolidCircleVisible = false
-				
-			switch (_model.endLineStyle)
-			{
-				
-				case SDLineModel.NONE_STYLE:
-					var p:String = "M 0,0"			
-					break
-				
-				case SDLineModel.ARROW_STYLE:				
-					p = "M -10,-10 L 0,0 L -10,10"
-					break
-				
-				case SDLineModel.STOP_LINE_STYLE:				
-					p = "M 0,-10 L 0,10"					
-					break
-					
-				case SDLineModel.SOLID_ARROW_STYLE:
-					p = "M 0,-10 L 10,0 L 0,10 z"					
-					break
-					
-				case SDLineModel.CIRCLE_LINE_STYLE:
-					p = "M 0 0"
-					endLineCircleVisible = true				
-					break
-				
-				case SDLineModel.SOLID_CIRCLE_LINE_STYLE:
-					p = "M 0 0"
-					endLineSolidCircleVisible = true				
-					break
-					
-			}
-			endLineStylePath = p		
-		}
-		
-		override protected function getCurrentSkinState():String
-    	{	
-    		if (_model && _model.selected) 
-    		{    			
-    			return "selected"
-    		}
-    		
-    		return super.getCurrentSkinState()
-    	}
 	
-		protected function positionArcCircle():void
-		{
-			if (arcDragCircle) {
-				arcDragCircle.x = _model.bendX
-				arcDragCircle.y = _model.bendY	
-			}
-		}	
 		
-		protected function setAngles():void
+		protected override function commitProperties():void
+		{
+			super.commitProperties();
+			if(_model)
+			{
+				depth = _model.depth;
+				calculateAngles();
+				if(currentStartLineStyle != _model.startLineStyle)
+				{
+					if(currentStartShape)
+					{
+						currentStartLineStyle = -1;
+						contentGraphic.removeElement(currentStartShape);
+						currentStartShape = null;
+						if(currentStartMask)
+						{
+							contentGraphic.removeElement(currentStartMask);
+							currentStartMask = null;
+						}
+					}
+					currentStartLineStyle = _model.startLineStyle;
+					currentStartShape = getLineEndingShape(currentStartLineStyle);
+					contentGraphic.addElement(currentStartShape);
+					currentStartMask = getLineEndingMask(currentStartLineStyle);
+					if(currentStartMask)
+						contentGraphic.addElementAt(currentStartMask, 0);
+				}
+				if(currentEndLineStyle != _model.endLineStyle)
+				{
+					if(currentEndShape)
+					{
+						currentEndLineStyle = -1;
+						contentGraphic.removeElement(currentEndShape);
+						currentEndShape = null;
+						if(currentEndMask)
+						{
+							contentGraphic.removeElement(currentEndMask);
+							currentEndMask = null;
+						}
+					}
+					currentEndLineStyle = _model.endLineStyle;
+					currentEndShape = getLineEndingShape(currentEndLineStyle);
+					contentGraphic.addElement(currentEndShape);
+					currentEndMask = getLineEndingMask(currentEndLineStyle);
+					if(currentEndMask)
+						contentGraphic.addElementAt(currentEndMask, 0);
+				}
+			}
+			else
+			{
+				if(currentStartShape)
+				{
+					currentStartLineStyle = -1;
+					contentGraphic.removeElement(currentStartShape);
+					currentStartShape = null;
+					if(currentStartMask)
+					{
+						contentGraphic.removeElement(currentStartMask);
+						currentStartMask = null;
+					}
+				}
+				if(currentEndShape)
+				{
+					currentEndLineStyle = -1;
+					contentGraphic.removeElement(currentEndShape);
+					currentEndShape = null;
+					if(currentEndMask)
+					{
+						contentGraphic.removeElement(currentEndMask);
+						currentEndMask = null;
+					}
+				}
+			}
+			invalidateDisplayList();
+		}
+		
+		protected override function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+		{
+			contentGraphic.graphics.clear();
+			if(contentGraphic && _model)
+			{				
+				if(currentStartShape)
+				{
+					currentStartShape.x = _model.startX;
+					currentStartShape.y = _model.startY;
+					currentStartShape.rotation = startAngle;
+					currentStartShape.lineWeight = _model.lineWeight;
+					currentStartShape.lineColor = _model.color;
+					if(currentStartMask)
+					{
+						currentStartMask.x = _model.startX;
+						currentStartMask.y = _model.startY;
+						currentStartMask.rotation = startAngle;
+					}
+				}
+				if(currentEndShape)
+				{
+					currentEndShape.x = _model.endX;
+					currentEndShape.y = _model.endY;
+					currentEndShape.rotation = endAngle;
+					currentEndShape.lineWeight = _model.lineWeight;
+					currentEndShape.lineColor = _model.color;
+					if(currentEndMask)
+					{
+						currentEndMask.x = _model.endX;
+						currentEndMask.y = _model.endY;
+						currentEndMask.rotation = endAngle;
+					}
+				}
+				contentGraphic.graphics.lineStyle(10, 0, 0.01);
+				contentGraphic.graphics.moveTo(_model.startX, _model.startY);
+				contentGraphic.graphics.curveTo(_model.bendX, _model.bendY, _model.endX, _model.endY);
+				
+				if(_model.lineStyle == SDLineModel.LINE_STYLE_DASHED)
+				{
+					contentGraphic.graphics.lineStyle(_model.lineWeight, _model.color);
+					GraphicsUtils.drawQuadCurve(contentGraphic.graphics, new Point(_model.startX,  _model.startY),  new Point(_model.bendX,  _model.bendY)
+						, new Point(_model.endX,  _model.endY), true, 10);					
+				}
+				else //it's a solid line
+				{
+					contentGraphic.graphics.lineStyle(_model.lineWeight, _model.color);
+					contentGraphic.graphics.moveTo(_model.startX, _model.startY);
+					contentGraphic.graphics.curveTo(_model.bendX, _model.bendY, _model.endX, _model.endY);	
+				}
+			}
+		}
+		
+		protected function calculateAngles():void
 		{	
-					
 			var a:Number = (Math.atan(  (_model.bendY - _model.startY) / (_model.bendX - _model.startX) )) * 180 / Math.PI 
 			if (_model.bendX < _model.startX) a = 180 + a 
 			startAngle = a
 			
 			a = (Math.atan(  (_model.endY - _model.bendY) / (_model.endX - _model.bendX) )) * 180 / Math.PI 
-			if (_model.bendX > _model.endX) a = 180 + a 
-			endAngle = a
-			
+			if (_model.bendX > _model.endX) a = 180 + a;
+			endAngle = a + 180
 		}
 				
 		override protected function partAdded(partName:String, instance:Object):void
 		{
 			super.partAdded(partName, instance);		 
-			if( instance == arcDragCircle)
-			{
-				arcDragCircle.addEventListener(MouseEvent.MOUSE_DOWN , onArcDragCircleDown);
-				arcDragCircle.addEventListener(MouseEvent.MOUSE_UP , onDragCircleUp);
-				positionArcCircle()
-			}
-			else if (instance == startDragCircle)
-			{				
-				startDragCircle.addEventListener(MouseEvent.MOUSE_DOWN , onStartDragCircleDown);
-				startDragCircle.addEventListener(MouseEvent.MOUSE_UP , onDragCircleUp);
-				startDragCircle.doubleClickEnabled = true
-			}
-			else if (instance == startLineShape)
-			{
-				startLineShape.rotation = startAngle
-			}
-			else if (instance == endDragCircle)
-			{
-				endDragCircle.addEventListener(MouseEvent.MOUSE_DOWN , onEndDragCircleDown);
-				endDragCircle.addEventListener(MouseEvent.MOUSE_UP , onDragCircleUp);	
-				endDragCircle.x = _model.endX
-				endDragCircle.y = _model.endY	
-			}			
-			else if (instance == startLineHitArea)
-			{				
-				startLineHitArea.addEventListener(MouseEvent.DOUBLE_CLICK , onStartLineHitAreaHit);	
-				startLineHitArea.rotation = startAngle
-			}
-			else if (instance == endLineHitArea)
-			{
-				endLineHitArea.addEventListener(MouseEvent.DOUBLE_CLICK , onEndLineHitAreaHit);	
-				endLineHitArea.rotation = endAngle				
-			}
-			else if (instance == endLineShape)
-			{				
-				endLineShape.rotation = endAngle		
-				this.invalidateProperties()						
-			}
+            if(instance == contentGraphic)
+				invalidateDisplayList();
 		}
 		
-		public function onStartDragCircleClick(event:MouseEvent):void
-		{
-			Logger.debug("onStartDragCircleClick()", this)
-		}
-		
-		
-		public function onStartLineHitAreaHit(event:MouseEvent):void
-		{
-			Logger.debug("onStartLineHitAreaHit()", this)
-			_model.nextStartLineStyle()
-		}
-		
-		public function onEndLineHitAreaHit(event:MouseEvent):void
-		{			
-			_model.nextEndLineStyle()
-		}
-						
-														
-		protected function onArcDragCircleDown(event:MouseEvent):void
-		{
-			_draggingArcCircle = true 
-				
-			arcDragCircle.addEventListener(MouseEvent.MOUSE_MOVE , onArcDragCircleMove);
-			arcDragCircle.startDrag()
-			event.stopImmediatePropagation()
-						
-			var evt:DragCircleEvent = new DragCircleEvent(DragCircleEvent.DRAG_CIRCLE_DOWN, true)
-			evt.sdLineModel = _model
-			dispatchEvent(evt)
-		}
-										
-		protected function onStartDragCircleDown(event:MouseEvent):void
-		{					
-			startDragCircle.addEventListener(MouseEvent.MOUSE_MOVE , onStartDragCircleMove);
-			startDragCircle.startDrag()
-			event.stopPropagation()
-			
-			var evt:DragCircleEvent = new DragCircleEvent(DragCircleEvent.DRAG_CIRCLE_DOWN, true)
-			evt.sdLineModel = _model
-			dispatchEvent(evt)
-		}		
-						
-		protected function onEndDragCircleDown(event:MouseEvent):void
-		{
-			endDragCircle.addEventListener(MouseEvent.MOUSE_MOVE , onEndDragCircleMove);
-			endDragCircle.startDrag()
-			event.stopImmediatePropagation()
-			
-			var evt:DragCircleEvent = new DragCircleEvent(DragCircleEvent.DRAG_CIRCLE_DOWN, true)
-			evt.sdLineModel = _model
-			dispatchEvent(evt)
-		}
-												
-		protected function onStartDragCircleMove(event:MouseEvent):void
-		{			
-			_model.startX = startDragCircle.x
-			_model.startY = startDragCircle.y
-			repositionText()
-			
-		}
-		
-		protected function onEndDragCircleMove(event:MouseEvent):void
-		{
-			_model.endX = endDragCircle.x
-			_model.endY = endDragCircle.y
-			repositionText()
-		}
-				
-		protected function onArcDragCircleMove(event:MouseEvent):void
-		{
-			_model.bendX = arcDragCircle.x
-			_model.bendY = arcDragCircle.y
-			repositionText()
-		}
-		
-		protected function repositionText():void
-		{
-			if (startDragCircle&&endDragCircle)
-			{
-				textX = startDragCircle.x + ((endDragCircle.x - startDragCircle.x) / 2)
-				textY = startDragCircle.y + ((endDragCircle.y - startDragCircle.y) / 2)
-			}	
-		}
-		
-		
-															
-		protected function onDragCircleUp(event:MouseEvent):void
-		{			
-			_draggingArcCircle = false
-			event.target.stopDrag()
-				
-			if (event.target==arcDragCircle)
-			{
-				arcDragCircle.removeEventListener(MouseEvent.MOUSE_MOVE , onArcDragCircleMove);
-			}
-			else if (event.target == startDragCircle)
-			{
-				startDragCircle.removeEventListener(MouseEvent.MOUSE_MOVE , onStartDragCircleMove);				
-			}
-			else if (event.target == endDragCircle)
-			{
-				endDragCircle.removeEventListener(MouseEvent.MOUSE_MOVE , onEndDragCircleMove);				
-			}
-						
-			_model.width = this.width
-			_model.height = this.height
-						
-			var evt:DragCircleEvent = new DragCircleEvent(DragCircleEvent.DRAG_CIRCLE_UP, true)
-			evt.sdLineModel = _model
-			dispatchEvent(evt)
-				
-		}		
-											
-		protected function drawPath():void
-		{
-			if (_model==null) return
-			var p:String = "M " +  _model.startX + "," + _model.startY
-			p+= "Q " + _model.bendX + "," + _model.bendY +" " + _model.endX + "," + _model.endY
-			//p+= "L " + _model.endX + "," + _model.endY
-			this.linePath = p
-			invalidateProperties()
-			setAngles()   
-			
-		}
-		
-																			
 		public override function destroy():void
 		{
-			super.destroy()
-			_model = null
+			super.destroy();
+			_model = null;
 		}
 																						
 																									

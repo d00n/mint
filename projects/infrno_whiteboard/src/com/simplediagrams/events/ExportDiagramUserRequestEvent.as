@@ -8,6 +8,7 @@ package com.simplediagrams.events
 		public static const DESTINATION_YAMMER:String ="exportToYammer"
 		public static const DESTINATION_BASECAMP:String = "exportToBasecamp"
 		public static const DESTINATION_FILE:String = "exportToFile"
+		public static const DESTINATION_CLIPBOARD:String = "exportToClipboard"
 			
 		public var destination:String
 				

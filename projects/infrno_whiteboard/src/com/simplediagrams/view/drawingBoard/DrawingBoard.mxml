@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				 xmlns:s="library://ns.adobe.com/flex/spark" 
+				 xmlns:mx="library://ns.adobe.com/flex/mx"
+				 xmlns:sdcomponents="com.simplediagrams.view.SDComponents.*" 
+				 xmlns:components="com.simplediagrams.view.components.*"
+				 xmlns:view="com.simplediagrams.view.*" 
+				 xmlns:properties="com.simplediagrams.view.properties.*"
+				 xmlns:tools="com.simplediagrams.view.tools.*"
+				 xmlns:myComps="*" 
+				 dragEnter="onDragEnter(event)"
+				 dragDrop="onDragDrop(event)"
+				 creationComplete="onCC()"
+				 mouseChildren="true" xmlns:drawingBoard="com.simplediagrams.view.drawingBoard.*" >
+	
+	<fx:Script>
+		<![CDATA[
+			import com.simplediagrams.events.*;
+			import com.simplediagrams.model.AnnotationToolModel;
+			import com.simplediagrams.model.CopyUtil;
+			import com.simplediagrams.model.DefaultToolsManager;
+			import com.simplediagrams.model.DiagramManager;
+			import com.simplediagrams.model.DiagramModel;
+			import com.simplediagrams.model.SDBackgroundModel;
+			import com.simplediagrams.model.SDSymbolModel;
+			import com.simplediagrams.model.TextEditorModel;
+			import com.simplediagrams.model.ToolsManager;
+			import com.simplediagrams.model.TransformData;
+			import com.simplediagrams.model.libraries.LibraryItem;
+			import com.simplediagrams.model.tools.ToolMouseInfo;
+			import com.simplediagrams.util.Logger;
+			import com.simplediagrams.view.SDComponents.*;
+			import com.simplediagrams.view.tools.LineTransformHandle;
+			import com.simplediagrams.view.tools.ObjectTransformHandle;
+			
+			import flash.events.KeyboardEvent;
+			
+			import mx.binding.utils.ChangeWatcher;
+			import mx.controls.Alert;
+			import mx.core.IVisualElement;
+			import mx.core.UIComponent;
+			import mx.events.DragEvent;
+			import mx.events.DynamicEvent;
+			import mx.events.SandboxMouseEvent;
+			import mx.managers.DragManager;
+			import mx.utils.DisplayUtil;
+			
+			import org.osmf.media.MediaPlayer;
+			
+			import spark.components.RichEditableText;
+			
+			[Bindable]
+			[Inject(source='diagramManager.diagramModel',bind='true')]
+			public var diagramModel:DiagramModel;
+			
+			[Bindable]
+			[Inject]
+			public var toolManager:ToolsManager;
+			
+			[Inject]
+			public var toolsManager:ToolsManager;
+			
+			
+			
+			private var dragging:Boolean = false;
+			
+			private function onDragEnter(event:DragEvent):void 
+			{
+				if (event.dragSource.hasFormat('libraryItem') || event.dragSource.hasFormat('annotationTool')|| event.dragSource.hasFormat('backgroundLibraryItem')) 
+				{
+					DragManager.acceptDragDrop(this);          
+				}
+			}            
+			
+			private function onCC():void
+			{
+				if (this.stage) //Adding check since this was null during one run and caused null object ref error
+				{
+					scrollingHolder.addEventListener(MouseEvent.MOUSE_WHEEL, scrollingHolder_mouseWheelHandler, true);
+					scrollingHolder.addEventListener(KeyboardEvent.KEY_DOWN, scrollingHolder_keyDownHandler, true);
+					this.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel)		
+				}
+			}
+			
+			public var scrollOffset:Number = 10;
+			
+			protected function onMouseWheel(event:MouseEvent):void
+			{
+				if (event.ctrlKey)
+				{				
+					if(event.delta>0)
+					{
+						var evt:ZoomEvent = new ZoomEvent(ZoomEvent.ZOOM_IN, true)
+						dispatchEvent(evt)
+					}
+					else if (event.delta<0)
+					{
+						evt = new ZoomEvent(ZoomEvent.ZOOM_OUT, true)
+						dispatchEvent(evt)
+					}
+				}
+				else if (event.shiftKey)
+				{
+					if(event.delta>0)
+					{
+						scrollingHolder.viewport.horizontalScrollPosition+=scrollOffset;
+					}
+					else if (event.delta<0)
+					{
+						scrollingHolder.viewport.horizontalScrollPosition-=scrollOffset;
+					}
+				}
+				else
+				{
+					if(event.delta>0)
+					{
+						scrollingHolder.viewport.verticalScrollPosition-=scrollOffset;
+					}
+					else if (event.delta<0)
+					{
+						scrollingHolder.viewport.verticalScrollPosition+=scrollOffset;
+					}
+				}
+			}
+
+			
+			private function onDragDrop(event:DragEvent):void
+			{            	
+				
+				
+				var p:Point = new Point(event.stageX, event.stageY);
+				p = this.contentGroup.globalToLocal(p);
+				p.x = p.x;
+				p.y = p.y;
+				if (event.dragSource.hasFormat("libraryItem"))
+				{										
+					var item:LibraryItem = event.dragSource.dataForFormat("libraryItem") as LibraryItem;
+					var libraryItemDroppedEvt:DrawingBoardItemDroppedEvent = new DrawingBoardItemDroppedEvent(DrawingBoardItemDroppedEvent.LIBRARY_ITEM_ADDED, true)                        
+					libraryItemDroppedEvt.libraryItem = item;                    
+					libraryItemDroppedEvt.dropX = p.x
+					libraryItemDroppedEvt.dropY = p.y
+					
+					dispatchEvent(libraryItemDroppedEvt)
+					
+				}
+				else if (event.dragSource.hasFormat("backgroundLibraryItem"))
+				{
+					var bgDroppedEvt:BackgroundItemDroppedEvent = new BackgroundItemDroppedEvent(BackgroundItemDroppedEvent.BACKGROUND_ITEM_DROPPED_EVENT, true)
+					bgDroppedEvt.libItem = event.dragSource.dataForFormat("backgroundLibraryItem") as LibraryItem;
+					dispatchEvent(bgDroppedEvt)
+				}
+				else if (event.dragSource.hasFormat("annotationTool"))
+				{
+					var toolObject:AnnotationToolModel =  event.dragSource.dataForFormat("annotationTool") as AnnotationToolModel
+					                    			
+					switch (toolObject.type)
+					{
+						case AnnotationToolModel.IMAGE_TOOL:
+							var defaultToolDroppedEvent:DrawingBoardItemDroppedEvent = new DrawingBoardItemDroppedEvent(DrawingBoardItemDroppedEvent.IMAGE_ITEM_ADDED, true)     
+							break
+						case  AnnotationToolModel.STICKY_NOTE_TOOL:
+							defaultToolDroppedEvent = new DrawingBoardItemDroppedEvent(DrawingBoardItemDroppedEvent.STICKY_NOTE_ADDED, true)      
+							break
+						case  AnnotationToolModel.INDEX_CARD:
+							defaultToolDroppedEvent = new DrawingBoardItemDroppedEvent(DrawingBoardItemDroppedEvent.INDEX_CARD_ADDED, true)      
+							break
+						default:
+							Logger.warn("Unrecognized tool type: " + toolObject.type, this)
+							return
+					}			
+					
+					defaultToolDroppedEvent.dropX = p.x 
+					defaultToolDroppedEvent.dropY = p.y     
+					
+					dispatchEvent(defaultToolDroppedEvent)		 
+				}
+				
+				
+			}
+			
+			private function findTarget(source:DisplayObject):Object
+			{
+				var target:Object = null;
+				var current:DisplayObject = source;
+				while(current != this)
+				{
+					if(current is SDBase)
+					{
+						return (current as SDBase).objectModel;
+					}
+					if(current is ObjectTransformHandle)
+					{
+						return (current as ObjectTransformHandle).role; 
+					}
+					if(current is LineTransformHandle)
+					{
+						return (current as LineTransformHandle).role; 
+					}
+					current = current.parent;
+				}
+				return null;
+			}
+			
+			protected function onDrawingBoardClick(event:MouseEvent):void
+			{
+				var point:Point = contentGroup.globalToLocal(new Point(event.stageX, event.stageY));
+				toolsManager.onMouseClick(new ToolMouseInfo(point.x, point.y, null, event.shiftKey));
+			}
+			
+			
+			protected function onDrawingBoardMouseDownHandler(event:MouseEvent):void
+			{
+				var point:Point = contentGroup.globalToLocal(new Point(event.stageX, event.stageY));
+				toolsManager.onMouseDown(new ToolMouseInfo(point.x, point.y, findTarget(event.target as DisplayObject), event.shiftKey));				
+				var sbRoot:DisplayObject = systemManager.getSandboxRoot();
+				sbRoot.addEventListener(MouseEvent.MOUSE_MOVE, onStageMouseMoveHandler, true);
+				sbRoot.addEventListener(MouseEvent.MOUSE_UP, onStageMouseUpHandler, true);
+				sbRoot.addEventListener(SandboxMouseEvent.MOUSE_UP_SOMEWHERE, onStageMouseUpSomewhere);
+				dragging = true;
+			}
+			
+			protected function onStageMouseMoveHandler(event:MouseEvent):void
+			{
+				var point:Point = contentGroup.globalToLocal(new Point(event.stageX, event.stageY));
+				toolsManager.onMouseMove(new ToolMouseInfo(point.x, point.y, null, event.shiftKey));				
+			}
+			
+			protected function onDrawingBoardMouseMoveHandler(event:MouseEvent):void
+			{
+				if(dragging)
+				{
+					return;
+				}
+				var point:Point = contentGroup.globalToLocal(new Point(event.stageX, event.stageY));
+				toolsManager.onMouseMove(new ToolMouseInfo(point.x, point.y, null, event.shiftKey));				
+			}
+			
+			protected function onStageMouseUpHandler(event:MouseEvent):void
+			{
+				var point:Point = contentGroup.globalToLocal(new Point(event.stageX, event.stageY));
+				toolsManager.onMouseUp(new ToolMouseInfo(point.x, point.y, null, event.shiftKey));	
+				
+				var sbRoot:DisplayObject = systemManager.getSandboxRoot();
+				
+				sbRoot.removeEventListener(MouseEvent.MOUSE_MOVE, onStageMouseMoveHandler, true);
+				sbRoot.removeEventListener(MouseEvent.MOUSE_UP, onStageMouseUpHandler, true);
+				sbRoot.removeEventListener(SandboxMouseEvent.MOUSE_UP_SOMEWHERE, onStageMouseUpSomewhere);
+				dragging = false;
+			}
+			
+			protected function onStageMouseUpSomewhere(event:SandboxMouseEvent):void
+			{
+				toolsManager.onMouseUp(null);		
+				var sbRoot:DisplayObject = systemManager.getSandboxRoot();
+				
+				sbRoot.removeEventListener(MouseEvent.MOUSE_MOVE, onStageMouseMoveHandler, true);
+				sbRoot.removeEventListener(MouseEvent.MOUSE_UP, onStageMouseUpHandler, true);
+				sbRoot.removeEventListener(SandboxMouseEvent.MOUSE_UP_SOMEWHERE, onStageMouseUpSomewhere);
+				dragging = false;
+			}
+			
+			protected function scrollingHolder_mouseWheelHandler(event:MouseEvent):void
+			{
+				event.preventDefault();
+			}
+			
+			protected function scrollingHolder_keyDownHandler(event:KeyboardEvent):void
+			{
+				if (event.target is RichEditableText)
+				{
+					return
+				}
+					
+				if (diagramModel.selectedObjects && diagramModel.selectedObjects.length>0)
+				{
+					event.preventDefault();
+					var moveOffset:Number = event.shiftKey?10:1;
+					var moveEvent:DiagramEvent = new DiagramEvent(DiagramEvent.MOVE_SELECTION);
+					switch(event.keyCode)
+					{
+						case Keyboard.LEFT:
+						{
+							moveEvent.x = -moveOffset;
+							break;
+						}
+						case Keyboard.RIGHT:
+						{
+							moveEvent.x = moveOffset;
+							break;
+						}
+						case Keyboard.UP:
+						{
+							moveEvent.y = -moveOffset;
+							break;
+						}
+						case Keyboard.DOWN:
+						{
+							moveEvent.y = moveOffset;
+							break;
+						}
+					}
+					if(moveEvent.x != 0 || moveEvent.y != 0)
+						dispatchEvent(moveEvent);
+				}
+				
+				
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	
+	<s:Scroller id="scrollingHolder" width="100%" height="100%" contentBackgroundAlpha="0"  >
+		
+		<s:Group id="holderGroup" contentBackgroundAlpha="0" width="100%" height="100%" 
+				 click="onDrawingBoardClick(event)" mouseMove="onDrawingBoardMouseMoveHandler(event)"
+				 mouseDown="onDrawingBoardMouseDownHandler(event)">
+			
+			
+			<s:layout>
+				<drawingBoard:DrawingBoardLayout />
+			</s:layout>
+		
+			<!--
+			<s:layout>
+				<s:BasicLayout />
+			</s:layout>
+			-->
+			<s:Group id="contentGroup"
+					 width="{diagramModel.width}" 
+					 height="{diagramModel.height}"
+					 scaleX="{diagramModel.scaleX}" 
+					 scaleY="{diagramModel.scaleY}" 
+					 >
+				<s:Rect top="0" left="0" right="0" bottom="0" visible="{diagramModel.backgroundVisible}">
+					<s:fill>
+						<s:SolidColor color="#000000" />
+					</s:fill>
+				</s:Rect>
+				
+				<drawingBoard:Background    
+					id="diagramBackground" 
+					top="0" left="0" right="0" bottom="0"
+					skinClass="com.simplediagrams.view.skins.BackgroundSkin" 
+					visible="{diagramModel.backgroundVisible}"
+					/>		
+				<drawingBoard:SDObjContainer id="objectsContainer" />
+			</s:Group>
+			<s:Group id="markersGroup" > 
+			</s:Group>
+		</s:Group>	
+	</s:Scroller>	
+	<properties:PropertiesPanel id="propPanel" x="0" y="0" height="32" width="100%"/>
+	<fx:Declarations>
+		<tools:ToolRepeater toolManager="{toolManager}" targetContainer="{markersGroup}"/>
+	</fx:Declarations>
+</s:Group>

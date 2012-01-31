@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:Group implements="mx.managers.IFocusManagerComponent" xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	xmlns:mx="library://ns.adobe.com/flex/mx"
 	xmlns:view="com.simplediagrams.view.*"
-	creationComplete="onCC()"  >
+	creationComplete="onCC()" xmlns:drawingBoard="com.simplediagrams.view.drawingBoard.*" xmlns:library="com.simplediagrams.view.library.*"  >
 	
 	<s:layout>
 		<s:BasicLayout/>
@@ -12,29 +12,25 @@
 	<fx:Script> 
 	
 		<![CDATA[
-			import com.simplediagrams.events.CopyEvent;
 			import com.simplediagrams.events.DeleteSDObjectModelEvent;
 			import com.simplediagrams.events.ExportDiagramEvent;
 			import com.simplediagrams.events.ExportDiagramUserRequestEvent;
-			import com.simplediagrams.events.PasteEvent;
 			import com.simplediagrams.events.SaveDiagramEvent;
 			import com.simplediagrams.events.SelectionEvent;
 			import com.simplediagrams.events.UndoRedoEvent;
 			import com.simplediagrams.model.ApplicationModel;
+			import com.simplediagrams.model.DiagramManager;
 			import com.simplediagrams.model.DiagramModel;
 			import com.simplediagrams.util.Logger;
 			
 			import flash.events.Event;
 			import flash.events.KeyboardEvent;
-			import flash.ui.Keyboard;
+//			import flash.filesystem.*;
 			
 			import mx.core.FlexGlobals;
 			import mx.core.UITextField;
 			
 			import spark.components.RichEditableText;
-			
-			[Dispatcher]
-			public var dispatcher:IEventDispatcher;
 		    
 			[Bindable]
 			[Inject]
@@ -42,13 +38,13 @@
 			
 			[Bindable]
 			[Inject]
-			public var diagramModel:DiagramModel;  	
-		
+			public var diagramManager:DiagramManager;  	
 			
 			/* This page catches all keyboard events not handled by menu controller. Later these should be moved to a special manager */			
 			public function onCC():void
 			{
 				FlexGlobals.topLevelApplication.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+				this.setFocus();
 			}
 			
 			
@@ -69,7 +65,11 @@
 						break
 					
 					case ExportDiagramUserRequestEvent.DESTINATION_FILE:							
-						evt = new ExportDiagramEvent(ExportDiagramEvent.EXPORT_TO_FILE, true)					
+						evt = new ExportDiagramEvent(ExportDiagramEvent.CREATE_IMAGE_FOR_EXPORT, true)		
+						break
+					
+					case ExportDiagramUserRequestEvent.DESTINATION_CLIPBOARD:							
+						evt = new ExportDiagramEvent(ExportDiagramEvent.EXPORT_TO_CLIPBOARD, true)					
 						break
 					
 					default:
@@ -79,25 +79,18 @@
 				}
 				
 				evt.format = ExportDiagramEvent.FORMAT_PNG //for now we're hard-coding to PNG
-				evt.view = this.drawingBoard.holderGroup						
+				evt.view = this.drawingBoard.contentGroup					
 				dispatchEvent(evt)
 				
 			}
 							
     		
-			public function onKeyDown(event:KeyboardEvent):void
-			{   			
-				Logger.debug("onKeyDown() event:" + event.toString(),this)
-				if (event.target is UITextField) {
-					Logger.debug("onKeyDown() user is typing in a text component",this)
-					return //user is typing in a text component
-				} 
-				if (event.target is RichEditableText){
-					Logger.debug("onKeyDown() user is typing in a text area",this)
-					return
-				}
-				
-				
+			/* Handle key combinations not covered via the native menu (native menu handles save, close, copy, cut, paste, select all, undo, redo) */			
+    		public function onKeyDown(event:KeyboardEvent):void
+            {   			
+            	if (event.target is UITextField) return //user is typing in a text component
+           		if (event.target is RichEditableText) return //user is typing in a text area
+           							
 				switch(event.keyCode)
 				{
 					case Keyboard.DELETE:
@@ -105,132 +98,8 @@
 						
 						var deleteEvent:DeleteSDObjectModelEvent = new DeleteSDObjectModelEvent(DeleteSDObjectModelEvent.DELETE_SELECTED_FROM_MODEL, true)
 						dispatchEvent(deleteEvent)
-						break
-					
-					case (event.ctrlKey):
-						Logger.debug("onKeyDown() caught a ctrl key press. event.charCode=" + event.charCode, this)
-						Logger.debug("onKeyDown() caught a ctrl key press. event.keyCode=" + event.keyCode, this)
-//						if (event.charCode == "S")
-//						{
-//							var evt:SaveDiagramEvent = new SaveDiagramEvent(SaveDiagramEvent.SAVE_DIAGRAM, true)
-//							Swiz.dispatchEvent(evt)
-//						}
-//						
-						break;
-					
-					case 65:  // a				
-						if (event.ctrlKey)
-						{
-							Logger.debug("dispatching select all event...",this)
-							var selectAllEvent:SelectionEvent = new SelectionEvent(SelectionEvent.SELECT_ALL, true)
-							dispatchEvent(selectAllEvent)	
-						}
-						break
-					
-//					case 66:  // b 	- trying to figure out how to load a web page			
-//						if (event.ctrlKey)
-//						{
-//							var loader:URLLoader = new URLLoader();
-//							dispatcher.addEventListener(Event.COMPLETE, completeHandler);
-//							dispatcher.addEventListener(Event.OPEN, openHandler);
-//							dispatcher.addEventListener(ProgressEvent.PROGRESS, progressHandler);
-//							dispatcher.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
-//							dispatcher.addEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
-//							dispatcher.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
-//							
-//							var request:URLRequest = new URLRequest("http://infrno.net/base/welcome");
-//							try {
-//								trace("about to call loader.load()");
-//								loader.load(request);
-//							} catch (error:Error) {
-//								trace("Unable to load requested document.");
-//							}	
-//						}
-//						break
-//					
-//					case 67:  // c				
-//						if (event.ctrlKey)
-//						{
-//							Logger.debug("dispatching CopyEvent...",this)
-//							var copyEvent:CopyEvent = new CopyEvent(CopyEvent.COPY, true)
-//							dispatcher.dispatchEvent(copyEvent)
-//						}
-//						break
-//					
-//					case 86:  // v		
-//						if (event.ctrlKey )
-//						{
-//							Logger.debug("dispatching Event.PASTE...",this);
-//							var e:Event = new Event(Event.PASTE);
-//							dispatchEvent(e)
-////							var pasteEvent:PasteEvent = new PasteEvent(PasteEvent.PASTE, true)
-////							dispatcher.dispatchEvent(e)
-//						}
-//						break
-//					
-//					case 89: // y			
-//						if (event.ctrlKey )
-//						{
-//							Logger.debug("dispatching redo event...",this)
-//							var redoEvent:UndoRedoEvent = new UndoRedoEvent(UndoRedoEvent.REDO, true)
-//							dispatcher.dispatchEvent(redoEvent)
-//						}
-//						break
-//
-//					case 90: // z		
-//						if (event.ctrlKey )
-//						{
-//							Logger.debug("dispatching undo event...",this)
-//							var undoEvent:UndoRedoEvent = new UndoRedoEvent(UndoRedoEvent.UNDO, true)
-//							dispatcher.dispatchEvent(undoEvent)
-//						}
-//						break
-					
-					
-					default:
-						//do nothing
-				}
-			}
-			private function completeHandler(event:Event):void {
-				var loader:URLLoader = URLLoader(event.target);
-				trace("completeHandler: " + loader.data);
-			}
-			
-			private function openHandler(event:Event):void {
-				trace("openHandler: " + event);
-			}
-			
-			private function progressHandler(event:ProgressEvent):void {
-				trace("progressHandler loaded:" + event.bytesLoaded + " total: " + event.bytesTotal);
-			}
-			
-			private function securityErrorHandler(event:SecurityErrorEvent):void {
-				trace("securityErrorHandler: " + event);
-			}
-			
-			private function httpStatusHandler(event:HTTPStatusEvent):void {
-				trace("httpStatusHandler: " + event);
-			}
-			
-			private function ioErrorHandler(event:IOErrorEvent):void {
-				trace("ioErrorHandler: " + event);
-			}
-			
-//			public function onSelectAll(event:Event):void
-//			{				
-//				Logger.debug("dispatching select all event...",this)
-//				var selectAllEvent:SelectionEvent = new SelectionEvent(SelectionEvent.SELECT_ALL, true)
-//				dispatchEvent(selectAllEvent)				
-//			}
-			
-			[Mediate(event='ShapesPanelEvent.TOGGLE_DISPLAY')]
-			public function onShapesPanelToggle(): void
-			{
-				if (shapesPanel.width > 0){
-					shapesPanel.width = 0;
-				}
-				else{
-					shapesPanel.width = 124;
+						FlexGlobals.topLevelApplication.appView.setFocus()
+						break					
 				}
 			}  
 			
@@ -244,11 +113,10 @@
 
 						
 	<mx:HDividedBox styleName="libraryDivider" height="100%" width="100%"  >
-					
-			<view:DrawingBoard id="drawingBoard" height="100%" width="100%" />
-			
-			<view:ShapesPanel id="shapesPanel" height="100%" width="0" />	
-		
+
+			<drawingBoard:DrawingBoard id="drawingBoard" height="100%" width="100%" />
+			<library:ShapesPanel id="shapesPanel" height="100%" width="250" />	
+
 	</mx:HDividedBox>
 	
 	

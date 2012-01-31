@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group added="init()" xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import avmplus.getQualifiedClassName;
+			
+			import com.simplediagrams.commands.ChangeDepthCommand;
+			import com.simplediagrams.events.ChangeDepthEvent;
+			import com.simplediagrams.model.DiagramModel;
+			import com.simplediagrams.model.LibraryManager;
+			import com.simplediagrams.model.SDImageModel;
+			import com.simplediagrams.model.SDLineModel;
+			import com.simplediagrams.model.SDObjectModel;
+			import com.simplediagrams.model.SDPencilDrawingModel;
+			import com.simplediagrams.model.SDSymbolModel;
+			import com.simplediagrams.model.SDTextAreaModel;
+			import com.simplediagrams.view.SDComponents.SDImage;
+			import com.simplediagrams.view.SDComponents.SDLine;
+			import com.simplediagrams.view.SDComponents.SDPencilDrawing;
+			import com.simplediagrams.view.SDComponents.SDSymbol;
+			import com.simplediagrams.view.SDComponents.SDTextArea;
+			
+			import mx.core.IUIComponent;
+			import mx.core.IVisualElement;
+			import mx.events.CollectionEvent;
+			import mx.events.CollectionEventKind;
+			
+			public function init():void
+			{
+				dictionary[getQualifiedClassName(SDSymbolModel)] = createSDSymbolView;
+				dictionary[getQualifiedClassName(SDTextAreaModel)] = createSDTextView;
+				dictionary[getQualifiedClassName(SDImageModel)] = createSDImageView;
+				dictionary[getQualifiedClassName(SDLineModel)] = createSDLineView;
+				dictionary[getQualifiedClassName(SDPencilDrawingModel)] = createSDPencilDrawing;
+
+			}
+			
+			
+			
+			[Inject]
+			public var libraryManager:LibraryManager;
+			
+			private function createSDLineView(symbol:SDLineModel):IVisualElement	
+			{
+				var sdSymbolView:SDLine = new SDLine();
+				sdSymbolView.objectModel = symbol;
+				return sdSymbolView;
+			}
+			
+			private function createSDSymbolView(symbol:SDSymbolModel):IVisualElement	
+			{
+				var sdSymbolView:SDSymbol = new SDSymbol();
+				sdSymbolView.libraryManager = libraryManager;
+				sdSymbolView.objectModel = symbol;
+				return sdSymbolView;
+			}
+			
+			private function createSDPencilDrawing(symbol:SDPencilDrawingModel):IVisualElement	
+			{
+				var sdSymbolView:SDPencilDrawing = new SDPencilDrawing();
+				sdSymbolView.objectModel = symbol;
+				return sdSymbolView;
+			}
+			
+			private function createSDTextView(symbol:SDTextAreaModel):IVisualElement	
+			{
+				var sdSymbolView:SDTextArea = new SDTextArea();
+				sdSymbolView.objectModel = symbol;
+				return sdSymbolView;
+			}
+			
+			private function createSDImageView(symbol:SDImageModel):IVisualElement	
+			{
+				var sdSymbolView:SDImage = new SDImage();
+				sdSymbolView.libraryManager = libraryManager;
+				sdSymbolView.objectModel = symbol;
+				return sdSymbolView;
+			}
+			
+			
+			
+			private var dictionary:Dictionary = new Dictionary();
+
+			public var target:Group;
+			
+			private var _diagramModel:DiagramModel;
+			private var _diagramModelProposed:DiagramModel;
+			
+			[Bindable]
+			[Inject(source='diagramManager.diagramModel',bind='true')]
+			public function get diagramModel():DiagramModel
+			{
+				return _diagramModelProposed;
+			}
+			
+			public function set diagramModel(value:DiagramModel):void
+			{
+				_diagramModelProposed = value;
+				invalidateProperties();
+			}
+			
+			protected override function commitProperties():void
+			{
+				
+				
+				super.commitProperties();
+				if(_diagramModelProposed != _diagramModel)
+				{
+					if(_diagramModel)
+					{
+						removeObjects(_diagramModel.sdObjects.source, 0);
+						_diagramModel.sdObjects.removeEventListener( CollectionEvent.COLLECTION_CHANGE, onCollectionChange );
+						_diagramModel.selectedObjects.removeEventListener(CollectionEvent.COLLECTION_CHANGE, onSelectionChange);
+					}
+					_diagramModel = _diagramModelProposed;
+					if(_diagramModel)
+					{
+						addObjects(_diagramModel.sdObjects.source, 0);
+						_diagramModel.sdObjects.addEventListener( CollectionEvent.COLLECTION_CHANGE, onCollectionChange );
+						_diagramModel.selectedObjects.addEventListener(CollectionEvent.COLLECTION_CHANGE, onSelectionChange);
+					}
+						
+					
+				}
+			}
+			
+			private function onSelectionChange(event:CollectionEvent):void
+			{
+				callLater(function():void{setFocus()});
+			}
+			
+			private function onCollectionChange(event:CollectionEvent):void
+			{
+				switch(event.kind)
+				{
+					case CollectionEventKind.ADD:
+						addObjects(event.items, event.location);
+						break;
+					
+					case CollectionEventKind.REMOVE:
+						removeObjects(event.items, event.location);					
+						break;
+					case CollectionEventKind.UPDATE:
+						break;
+					default:
+						throw new Error("Unhandled Collection Change Case.");
+						break;
+				}
+			}
+			
+			private function addObjects(objects:Array, index:int):void
+			{
+				var currentIndex:int = index;
+				for each(var object:SDObjectModel in objects)
+				{
+					var creator:Function = dictionary[getQualifiedClassName(object)];
+					var visualElement:IVisualElement = creator(object);
+					addElementAt(visualElement, currentIndex);
+					currentIndex++;
+				}
+			}
+			
+			private function removeObjects(objects:Array, index:int):void
+			{
+				var currentIndex:int = index;
+				for each(var object:SDObjectModel in objects)
+				{
+					removeElementAt(index);
+					currentIndex++;
+				}				
+			}
+		]]>
+	</fx:Script>
+</s:Group>

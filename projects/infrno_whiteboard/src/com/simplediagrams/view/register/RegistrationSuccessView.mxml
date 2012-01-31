@@ -48,7 +48,7 @@
 	    verticalAlign="middle"
 		 x="15" y="50">
 			
-		<mx:Image id="imgCake" source="@Embed('assets/img/cake.png')" />
+		<s:Image id="imgCake" source="@Embed('assets/img/cake.png')" />
 				
 		<s:Label 
 			color="#000000"

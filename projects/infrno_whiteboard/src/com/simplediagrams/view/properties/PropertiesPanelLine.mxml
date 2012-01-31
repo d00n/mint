@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
-	xmlns:s="library://ns.adobe.com/flex/spark" 
-	xmlns:mx="library://ns.adobe.com/flex/mx" 
-	xmlns:components="com.simplediagrams.view.components.*"
-	creationComplete="onCC()"
-	>
+				 xmlns:s="library://ns.adobe.com/flex/spark" 
+				 xmlns:mx="library://ns.adobe.com/flex/mx" 
+				 xmlns:components="com.simplediagrams.view.components.*"
+				 creationComplete="onCC()"
+				 >
 	
 	<s:layout>
 		<s:HorizontalLayout paddingTop="3" paddingLeft="20" />
@@ -12,30 +12,28 @@
 	
 	<fx:Script>
 		<![CDATA[
-		
-			import mx.collections.ArrayCollection
-			import com.simplediagrams.model.DiagramModel
-			import com.simplediagrams.model.SettingsModel
-			import com.simplediagrams.model.SDLineModel
-			import com.simplediagrams.events.LineStyleEvent
-			import com.simplediagrams.util.Logger
+			import com.simplediagrams.events.LineStyleEvent;
+			import com.simplediagrams.model.DiagramManager;
+			import com.simplediagrams.model.DiagramModel;
+			import com.simplediagrams.model.SDLineModel;
+			import com.simplediagrams.model.SettingsModel;
+			import com.simplediagrams.util.Logger;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			import mx.core.UIComponent;
+			import mx.events.CollectionEvent;
 			import mx.events.PropertyChangeEvent;
 			
+			
+			[Bindable]
+			[Embed(source='assets/img/lineStyles/lineStyleSolid.png')]
+			public var lineStyleSolid:Class	
+			
+			[Bindable]
+			[Embed(source='assets/img/lineStyles/lineStyleDashed.png')]
+			public var lineStyleDashed:Class	
 						
-			[Inject]
-			public var diagramModel:DiagramModel
-			
-			[Inject]
-			public var settingsModel:SettingsModel
-			
-			
-			[PostConstruct]
-			public function postConstruct():void
-			{	
-				resetProperties()	
-			}
-			
-			
 			[Bindable]
 			[Embed(source='assets/img/lineEndings/lineNone.png')]
 			public var lineNone:Class			
@@ -47,7 +45,7 @@
 			[Bindable]
 			[Embed(source='assets/img/lineEndings/lineStartArrow.png')]
 			public var lineStartArrow:Class
-						
+			
 			[Bindable]
 			[Embed(source='assets/img/lineEndings/lineStartClosedArrow.png')]
 			public var lineStartClosedArrow:Class
@@ -60,8 +58,10 @@
 			[Embed(source='assets/img/lineEndings/lineStartSolidCircle.png')]
 			public var lineStartSolidCircle:Class
 			
-			
-					
+			[Bindable]
+			[Embed(source='assets/img/lineEndings/lineStartHalfCircleLine.png')]
+			public var lineStartHalfCircleLine:Class
+									
 			[Bindable]
 			[Embed(source='assets/img/lineEndings/lineEndVLine.png')]
 			public var lineEndVLine:Class
@@ -69,7 +69,7 @@
 			[Bindable]
 			[Embed(source='assets/img/lineEndings/lineEndArrow.png')]
 			public var lineEndArrow:Class
-						
+			
 			[Bindable]
 			[Embed(source='assets/img/lineEndings/lineEndClosedArrow.png')]
 			public var lineEndClosedArrow:Class
@@ -81,73 +81,157 @@
 			[Bindable]
 			[Embed(source='assets/img/lineEndings/lineEndSolidCircle.png')]
 			public var lineEndSolidCircle:Class
-						
+			
+			[Bindable]
+			[Embed(source='assets/img/lineEndings/lineStartSolidDiamond.png')]
+			public var lineStartSolidDiamond:Class
+			
+			[Bindable]
+			[Embed(source='assets/img/lineEndings/lineEndSolidDiamond.png')]
+			public var lineEndSolidDiamond:Class
+			
+			[Bindable]
+			[Embed(source='assets/img/lineEndings/lineStartEmptyDiamond.png')]
+			public var lineStartEmptyDiamond:Class
+			
+			[Bindable]
+			[Embed(source='assets/img/lineEndings/lineEndEmptyDiamond.png')]
+			public var lineEndEmptyDiamond:Class
+			
+			[Bindable]
+			[Embed(source='assets/img/lineEndings/lineEndHalfCircleLine.png')]
+			public var lineEndHalfCircleLine:Class
+			
+		
+			
 			
 			[Bindable]			
-			protected var _lineBeginAC:ArrayCollection = new ArrayCollection( [ {source:lineNone, lineStyle: SDLineModel.NONE_STYLE},
-																				{source:lineStartVLine, lineStyle: SDLineModel.STOP_LINE_STYLE},
-																				{source:lineStartArrow, lineStyle: SDLineModel.ARROW_STYLE},
-																				{source:lineStartClosedArrow, lineStyle: SDLineModel.SOLID_ARROW_STYLE},
-																				{source:lineStartCircle, lineStyle: SDLineModel.CIRCLE_LINE_STYLE},
-																				{source:lineStartSolidCircle, lineStyle: SDLineModel.SOLID_CIRCLE_LINE_STYLE}
-																			 ]);
+			protected var _lineBeginAL:ArrayList = new ArrayList( [ {source:lineNone, lineStyle: SDLineModel.LINE_ENDING_NONE},
+				{source:lineStartVLine, lineStyle: SDLineModel.LINE_ENDING_STOP},
+				{source:lineStartArrow, lineStyle: SDLineModel.LINE_ENDING_ARROW},
+				{source:lineStartClosedArrow, lineStyle: SDLineModel.LINE_ENDING_SOLID_ARROW},
+				{source:lineStartCircle, lineStyle: SDLineModel.LINE_ENDING_CIRCLE},
+				{source:lineStartSolidCircle, lineStyle: SDLineModel.LINE_ENDING_SOLID_CIRCLE},
+				{source:lineStartSolidDiamond, lineStyle: SDLineModel.LINE_ENDING_SOLID_DIAMOND},
+				{source:lineStartEmptyDiamond, lineStyle: SDLineModel.LINE_ENDING_EMPTY_DIAMOND},
+				{source:lineStartHalfCircleLine, lineStyle: SDLineModel.LINE_ENDING_HALF_CIRCLE}
+			]);
 			
 			[Bindable]
-			protected var _lineEndAC:ArrayCollection = new ArrayCollection( [   {source:lineNone, lineStyle: SDLineModel.NONE_STYLE},
-																				{source:lineEndVLine, lineStyle: SDLineModel.STOP_LINE_STYLE},
-																				{source:lineEndArrow, lineStyle: SDLineModel.ARROW_STYLE},
-																				{source:lineEndClosedArrow, lineStyle: SDLineModel.SOLID_ARROW_STYLE},
-																				{source:lineEndCircle, lineStyle: SDLineModel.CIRCLE_LINE_STYLE},
-																				{source:lineEndSolidCircle, lineStyle: SDLineModel.SOLID_CIRCLE_LINE_STYLE}
-																			 ]);
-																			 
-			[Bindable]
-			protected var _lineWeightsAC:ArrayCollection = new ArrayCollection ( [ 	{label:"1", data:1 },
-																					{label:"2", data:2 },
-																					{label:"3", data:3 },
-																					{label:"4", data:4 },
-																					{label:"5", data:5 },
-																					{label:"6", data:6 },
-																					{label:"7", data:7 },
-																					{label:"8", data:8 },
-																					{label:"9", data:9 },
-																					{label:"10", data:10 } ] )
+			protected var _lineEndAL:ArrayList = new ArrayList( [   {source:lineNone, lineStyle: SDLineModel.LINE_ENDING_NONE},
+				{source:lineEndVLine, lineStyle: SDLineModel.LINE_ENDING_STOP},
+				{source:lineEndArrow, lineStyle: SDLineModel.LINE_ENDING_ARROW},
+				{source:lineEndClosedArrow, lineStyle: SDLineModel.LINE_ENDING_SOLID_ARROW},
+				{source:lineEndCircle, lineStyle: SDLineModel.LINE_ENDING_CIRCLE},
+				{source:lineEndSolidCircle, lineStyle: SDLineModel.LINE_ENDING_SOLID_CIRCLE},
+				{source:lineEndSolidDiamond, lineStyle: SDLineModel.LINE_ENDING_SOLID_DIAMOND},
+				{source:lineEndEmptyDiamond, lineStyle: SDLineModel.LINE_ENDING_EMPTY_DIAMOND},
+				{source:lineEndHalfCircleLine, lineStyle: SDLineModel.LINE_ENDING_HALF_CIRCLE}
+			]);
 			
+			[Bindable]
+			protected var _lineStyleAL:ArrayList = new ArrayList( [ {source:lineStyleSolid, lineStyle:SDLineModel.LINE_STYLE_SOLID},
+				{source:lineStyleDashed, lineStyle:SDLineModel.LINE_STYLE_DASHED} ]);
+			
+			
+			[Bindable]
+			protected var _lineWeightsAL:ArrayList = new ArrayList ( [ 	{label:"1", data:1 },
+				{label:"2", data:2 },
+				{label:"3", data:3 },
+				{label:"4", data:4 },
+				{label:"5", data:5 },
+				{label:"6", data:6 },
+				{label:"7", data:7 },
+				{label:"8", data:8 },
+				{label:"9", data:9 },
+				{label:"10", data:10 } ] );
 				
 				
-			// this flag is set to true when I set the properties of the pulldowns directly from the model 
+			[Inject]
+			public var diagramManager:DiagramManager
+			
+			[Inject]
+			public var settingsModel:SettingsModel
+			
+			
+			
+			
+			// this flag is set to false when I set the properties of the pulldowns directly from the model 
 			// (e.g. the model was changed due to something other than a control located here)
 			// When this happens, we don't want the controls to then throw events which change the model again (to the same value)
 			// because if this happens, it messes up undo/redo by adding extra commands
-				
+			
 			// this flag is also set when initing controls 
 			protected var _launchControlEvents:Boolean = false 
-							
+			
 			protected var sdLineModel:SDLineModel
-																			 
+						
+			[PostConstruct]
+			public function postConstruct():void
+			{	
+				resetProperties()	
+			}
+			
+			[PreDestroy]
+			public function preDestroy():void
+			{
+				
+			}
+			
+			private var _diagramModel:DiagramModel;
+			
+			
+			
+			
+			
+			
+			[Inject(source='diagramManager.diagramModel',bind='true')]
+			public function get diagramModel():DiagramModel
+			{
+				return _diagramModel;
+			}
+			
+			public function set diagramModel(value:DiagramModel):void
+			{
+				if(_diagramModel)
+				{
+					_diagramModel.selectedObjects.removeEventListener( CollectionEvent.COLLECTION_CHANGE, onCollectionChange );
+				}
+				_diagramModel = value;
+				if(_diagramModel)
+				{
+					_diagramModel.selectedObjects.addEventListener( CollectionEvent.COLLECTION_CHANGE, onCollectionChange );	
+				}
+			}
+
+			private function onCollectionChange(event:CollectionEvent):void
+			{
+				resetProperties();
+			}
+			
+		
+			
+			
+			
 			
 			public function resetProperties():void
 			{
 				
-				if (sdLineModel == diagramModel.selectedArray[0]) return
-				
-				Logger.debug("resetProperties()", this)
-				
-				if (sdLineModel)
+				if(diagramModel == null || diagramManager == null || diagramModel.selectedObjects.length == 0)
 				{
-					sdLineModel.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, onModelChange)
+					return;
 				}
-				
+					
 				//get the settings for the currently selected line
-				if (diagramModel.selectedArray.length==1 && (diagramModel.selectedArray[0] is SDLineModel))
+				if (diagramManager.diagramModel.selectedObjects.length==1 && (diagramManager.diagramModel.selectedObjects[0] is SDLineModel))
 				{
-					sdLineModel = SDLineModel(diagramModel.selectedArray[0])			
+					sdLineModel = SDLineModel(diagramManager.diagramModel.selectedObjects[0])			
 					initControls()
-					sdLineModel.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, onModelChange)	
 				}
 				else
 				{
 					//leave current settings
+					sdLineModel = null;
 				}
 				
 			}
@@ -156,48 +240,24 @@
 			{
 				_launchControlEvents = false
 				ddlLineWeight.selectedIndex = 0
-				_launchControlEvents = true
-			}
+				ddlLineStyle.selectedIndex = 0
+				_launchControlEvents = true			
+			}			
 			
-			
-			
-			protected function onModelChange(event:PropertyChangeEvent):void
-			{
-				_launchControlEvents = false
-				switch (event.property)
-				{
-				
-					case "startLineStyle":
-						ddlLineStart.selectedIndex = sdLineModel.startLineStyle 
-						//update preferences too so future lines are same
-						settingsModel.defaultStartLineStyle = sdLineModel.startLineStyle
-						break
-					
-					case "endLineStyle":
-						ddlLineEnd.selectedIndex = sdLineModel.endLineStyle
-						settingsModel.defaultEndLineStyle = sdLineModel.endLineStyle
-						break
-					
-					case "lineWeight":
-						ddlLineWeight.selectedIndex = sdLineModel.lineWeight - 1
-						settingsModel.defaultLineWeight = sdLineModel.lineWeight - 1
-						break
-				}
-				_launchControlEvents = true
-			}
 			
 			protected function initControls():void
 			{
 				if (sdLineModel)
 				{
+					ddlLineStyle.selectedIndex = sdLineModel.lineStyle
 					ddlLineWeight.selectedIndex = sdLineModel.lineWeight - 1
 					ddlLineStart.selectedIndex = sdLineModel.startLineStyle 
-					ddlLineEnd.selectedIndex = sdLineModel.endLineStyle					
+					ddlLineEnd.selectedIndex = sdLineModel.endLineStyle		
 				}	
 				
 			}
 			
-		
+			
 			
 			
 			protected function onLineStartChange():void
@@ -210,7 +270,7 @@
 				
 			}
 			
-																			 
+			
 			protected function onLineEndChange():void
 			{				
 				if (!_launchControlEvents) return 
@@ -228,46 +288,72 @@
 				event.lineWeight = ddlLineWeight.selectedItem.data
 				dispatchEvent(event)
 			}
-						
+			
+			protected function onLineStyleChange():void
+			{
+				if (!_launchControlEvents) return 
+				if (ddlLineStyle.selectedIndex==-1) return
+					
+				var event:LineStyleEvent = new LineStyleEvent(LineStyleEvent.LINE_STYLE_CHANGE, true)
+				event.lineStyle = ddlLineStyle.selectedItem.lineStyle
+				dispatchEvent(event)
+			}
+			
 		]]>
 	</fx:Script>
 	
 	<s:Label text="start:" paddingTop="7" paddingLeft="3" />
 	
 	<s:DropDownList id="ddlLineStart"
-            requireSelection="true"
-			dataProvider="{_lineBeginAC}"
-            skinClass="com.simplediagrams.view.skins.CustomDropDownListSkin"
-            itemRenderer="com.simplediagrams.view.itemRenderers.LineEndingItemRenderer"
-            horizontalCenter="0"
-            height="23"
-            width="60"
-            change="onLineStartChange()"
-            />
-
-			
+									requireSelection="true"
+									dataProvider="{_lineBeginAL}"
+									skinClass="com.simplediagrams.view.skins.CustomDropDownListSkin"
+									itemRenderer="com.simplediagrams.view.itemRenderers.LineEndingItemRenderer"
+									horizontalCenter="0"
+									height="23"
+									width="60"
+								  
+									change="onLineStartChange()"
+									>
+		</s:DropDownList>
+	
+	
 	<s:Label text="end:" paddingTop="7" paddingLeft="10" />
 	
 	<s:DropDownList id="ddlLineEnd"
-            requireSelection="true"
-			dataProvider="{_lineEndAC}"
-            skinClass="com.simplediagrams.view.skins.CustomDropDownListSkin"
-            itemRenderer="com.simplediagrams.view.itemRenderers.LineEndingItemRenderer"
-            horizontalCenter="0"
-            height="23"
-            width="60"
-            change="onLineEndChange()"
-            />
-            
-            
+									requireSelection="true"
+									dataProvider="{_lineEndAL}"
+									skinClass="com.simplediagrams.view.skins.CustomDropDownListSkin"
+									itemRenderer="com.simplediagrams.view.itemRenderers.LineEndingItemRenderer"
+									horizontalCenter="0"
+									height="23"
+									width="60"
+									change="onLineEndChange()"
+								   
+									/>
+	
+	
 	<s:Label text="weight:" paddingTop="7" paddingLeft="10" />
 	
 	<s:DropDownList id="ddlLineWeight"
-			dataProvider="{_lineWeightsAC}"
-			change="onLineWeightChange()"
-			height="23"
-			width="45"
-			/>
+									dataProvider="{_lineWeightsAL}"
+									change="onLineWeightChange()"
+									height="23"
+									width="55"
+									/>
+	
+	
+	<s:Label text="style:" paddingTop="7" paddingLeft="10" />
+	
+	<s:DropDownList id="ddlLineStyle"
+					dataProvider="{_lineStyleAL}"
+					skinClass="com.simplediagrams.view.skins.CustomDropDownListSkin"
+					itemRenderer="com.simplediagrams.view.itemRenderers.LineEndingItemRenderer"
+					horizontalCenter="0"
+					height="23"
+					width="60"
+					change="onLineStyleChange()"
+					/>
 	
 	
 </s:Group>

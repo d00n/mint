@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("com.simplediagrams.view.components.TextEditor")]
+	</fx:Metadata>
+	
+	
+	<s:TextArea id="textArea"
+				left="0" top="0" right="0" bottom="0"
+			    text="{hostComponent.currText}"
+				fontFamily="{hostComponent.fontFamily}"
+			    textAlign="{hostComponent.textAlign}"
+				color="#000000"
+				fontSize="12"
+			    contentBackgroundColor="#FFFFFF"
+			    contentBackgroundAlpha="1"
+				/>
+	
+	
+</s:Skin>

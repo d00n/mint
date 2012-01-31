@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.simplediagrams.model.tools.ConnectorPoint;
+			import com.simplediagrams.model.tools.LineTool;
+			import com.simplediagrams.model.tools.ToolBase;
+			private var _tool:LineTool;
+			
+			public function get tool():ToolBase
+			{
+				return _tool;
+			}
+			
+			public function set tool(value:ToolBase):void
+			{
+				if(_tool)
+					_tool.removeEventListener(Event.CHANGE, toolChange);
+				_tool = value as LineTool;
+				if(_tool)
+				{
+					draw();
+					_tool.addEventListener(Event.CHANGE, toolChange);
+				}
+				else
+					graphics.clear();
+			}
+			
+			public function toolChange(event:Event):void
+			{
+				connectorPoints.removeAllElements();
+				if(_tool.connectorPoints)
+				{
+					for each(var connectorPoint:ConnectorPoint in _tool.connectorPoints)
+					{
+						var connectorView:ConnectPointView = new ConnectPointView();
+						connectorView.connectionPoint = connectorPoint;
+						connectorPoints.addElement(connectorView);
+					}
+				}
+				draw();
+			}
+			
+			public function draw():void
+			{
+				graphics.clear();
+				graphics.lineStyle(1, _tool.color);
+				if(_tool.startPoint && _tool.endPoint)
+				{
+					graphics.moveTo(_tool.startPoint.x * _tool.scaleX, _tool.startPoint.y * _tool.scaleY);
+					graphics.lineTo(_tool.endPoint.x * _tool.scaleX, _tool.endPoint.y* _tool.scaleY);
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:Group id="connectorPoints">
+		
+	</s:Group>
+</s:Group>

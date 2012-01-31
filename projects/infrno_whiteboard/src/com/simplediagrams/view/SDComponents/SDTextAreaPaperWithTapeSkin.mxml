@@ -5,6 +5,8 @@
         xmlns:mx="library://ns.adobe.com/flex/mx"
         xmlns:s="library://ns.adobe.com/flex/spark"
         minWidth="36" minHeight="36"
+		doubleClickEnabled="true"
+		doubleClick="{hostComponent.onDoubleClick()}"
         blendMode="normal">
     
     <fx:Metadata>
@@ -42,23 +44,24 @@
     </fx:Script>
 
           
-  	<mx:Image id="backgroundImage" source="{StickyNote}" width="{hostComponent.width}" height="{hostComponent.height}" />
+  	<s:SWFLoader id="backgroundImage" source="{StickyNote}" width="{hostComponent.width}" height="{hostComponent.height}" />
   
-   
-   <s:TextArea id="mainTextArea"
-        		  fontSize="{hostComponent.fontSize}"
-        		  contentBackgroundAlpha="0"
-        		  borderVisible="false"
-        		  x = "10"
-        		  y = "2"
-        		  text="{hostComponent.text}"
-        		  width="{hostComponent.width-25}"
-        		  height="{hostComponent.height-20}"  
-				  fontFamily="{hostComponent.fontFamily}"
-        		  verticalScrollPolicy="off"
-        		  horizontalScrollPolicy="off"
-                  heightInLines="10"
-                  widthInChars="15"/>
-
+	
+	<s:RichEditableText id="mainText"
+			 color="{hostComponent.fontColor}"
+			 fontSize="{hostComponent.fontSize}"
+			 textAlign="{hostComponent.textAlign}"
+			 fontWeight="{hostComponent.fontWeight}"
+			 text="{hostComponent.text}"
+			 width="{hostComponent.width-25}"
+			 height="{hostComponent.height-20}"  
+			 fontFamily="{hostComponent.fontFamily}"
+			 enabled="{hostComponent.textAreaEnabled}"
+			 left = "10"
+			 top = "2"
+			 bottom="0" 
+			 right="0"
+			 />
+	
 
 </s:SparkSkin>

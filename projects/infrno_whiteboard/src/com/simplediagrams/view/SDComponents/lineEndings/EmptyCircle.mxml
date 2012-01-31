@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lineEndings:LineEnding xmlns:fx="http://ns.adobe.com/mxml/2009" 
+						xmlns:s="library://ns.adobe.com/flex/spark" 
+						xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:lineEndings="com.simplediagrams.view.SDComponents.lineEndings.*">
+	<s:Ellipse x="0" height="10" width="10"  y="-5"  >
+		<s:stroke>
+			<s:SolidColorStroke id="stroke"/>
+		</s:stroke>
+		<s:fill>
+			<s:SolidColor id="fill" alpha="0"/>
+		</s:fill>
+	</s:Ellipse>
+	<fx:Script>
+		<![CDATA[
+			protected override function commitProperties():void
+			{
+				super.commitProperties();
+				if(stroke)
+				{
+					stroke.color = lineColor;
+					stroke.weight = lineWeight;
+				}
+				if(fill)
+				{
+					fill.alpha = _backgroundAlpha;
+				}
+			}
+			
+			private var _backgroundAlpha:Number = 0;
+
+			public function get backgroundAlpha():Number
+			{
+				return _backgroundAlpha;
+			}
+
+			public function set backgroundAlpha(value:Number):void
+			{
+				_backgroundAlpha = value;
+				invalidateProperties();
+			}
+
+			
+		]]>
+	</fx:Script>
+</lineEndings:LineEnding>

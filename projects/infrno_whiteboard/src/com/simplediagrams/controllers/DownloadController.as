@@ -87,13 +87,7 @@ package com.simplediagrams.controllers
 		public function downloadAvailableLibariesList(event:DownloadLibraryEvent):void
 		{			
 			Logger.debug("downloading list of available libraries...", this)
-			
-			if (registrationManager.isLicensed==false)
-			{
-				Alert.show("This feature is only available to Full Version users. Visit simpledigrams.com and upgrade to Full Version today!", "Full Version Only")					
-				return
-			}
-			
+						
 			if (!userModel.loggedIn)
 			{
 				_loginDialog = dialogsController.showGetSimpleDiagramsLoginDialog()				

@@ -21,9 +21,16 @@
 			
 			import mx.controls.Alert;
 						
+			protected function onCC():void
+			{
+				var f:File = File.applicationDirectory.resolvePath("simpleDiagramsLicense/simplediagrams_license.txt")
+				var s:FileStream = new FileStream()
+				s.open(f, FileMode.READ)
+				_license = s.readUTFBytes(s.bytesAvailable)
+				s.close()
+				
+			}
 			
-			[Embed(source="simpleDiagramsLicense/simplediagrams_license.txt",mimeType="application/octet-stream")]
-			private var TextClass : Class;
 			
 			[Bindable]
 			[Embed(source='assets/img/registration_bg.png')]
@@ -31,7 +38,7 @@
 			
 			
 			[Bindable]
-			protected var _license:String = new TextClass();
+			protected var _license:String 
 			
 			public function onQuit():void
 			{		
@@ -45,24 +52,7 @@
 				dispatchEvent(evt)		
 			}
 						
-			protected function onCC():void
-			{		
-				/*
-				var licenseFile:File = File.applicationDirectory.resolvePath("license.txt");
-				if (licenseFile.exists==false)
-				{
-					Alert.show("The license.txt file is missing from the SimpleDiagrams installation directory. Please try downloading and installing SimpleDiagrams again.","License file missing")
-				}
-				else
-				{
-					var stream:FileStream = new FileStream()
-					stream.open(licenseFile, FileMode.READ)
-					_license = stream.readUTFBytes(stream.bytesAvailable)
-					stream.close()
-				}	
-				*/
-			}
-			
+		
 			
 		]]>
 	</fx:Script>
@@ -71,11 +61,11 @@
 		<s:BasicLayout/>
 	</s:layout>
 	
-	<mx:Image source="{Bkgd}" />
+	<s:Image source="{Bkgd}" />
 	
 	<s:Label 
 		color="#000000"
-		text="Welcome to SimpleDiagrams Free Version"
+		text="Welcome to SimpleDiagrams!"
 		fontSize="16"
 		x="15" y="13"
 		/>	

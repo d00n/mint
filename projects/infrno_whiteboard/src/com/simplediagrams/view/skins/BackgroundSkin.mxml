@@ -1,29 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- http://blog.flexexamples.com/2009/03/23/setting-a-repeating-background-image-on-an-fxapplication-in-flex-gumbo/ -->
-<s:Skin name="ChalkboardSkin"
+<s:Skin 
 		xmlns:fx="http://ns.adobe.com/mxml/2009"
 		xmlns:s="library://ns.adobe.com/flex/spark"
-		mouseEnabled="false"
+		mouseEnabled="false" xmlns:mx="library://ns.adobe.com/flex/mx"
 		>
-	
-	<s:states>
-		<s:State name="normal" />
-		<s:State name="blank" />
-	</s:states>
-	
 	<fx:Metadata>
 		<![CDATA[ 
-		[HostComponent("com.simplediagrams.view.Background")]
+		[HostComponent("com.simplediagrams.view.drawingBoard.Background")]
 		]]>
 	</fx:Metadata> 
 	
-	<!-- fill -->
-	<s:Rect id="backgroundRect" left="0" right="0" top="0" bottom="0" excludeFrom="blank"   >
-		<s:fill>
-			<s:BitmapFill source="{hostComponent.backgroundImageData}" 
-						  fillMode="{hostComponent.fillMode}" />
-		</s:fill>
-	</s:Rect>
+	<mx:Image id="imgForSWF" left="0" right="0" top="0" bottom="0" source="{hostComponent.backgroundSWF}"  scaleContent="true" maintainAspectRatio="false" mouseChildren="false" mouseEnabled="false"/>
+	
+	<s:BitmapImage left="0" right="0" top="0" bottom="0" source="{hostComponent.backgroundImage}" fillMode="{hostComponent.fillMode}" />
 	
 	<s:Rect id="tintRect" left="0" right="0" top="0" bottom="0"   >
 		<s:fill>

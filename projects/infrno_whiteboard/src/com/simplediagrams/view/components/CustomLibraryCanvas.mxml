@@ -6,6 +6,7 @@
 			xmlns:components="com.simplediagrams.view.components.*"
 			width="400" height="300"
 			creationComplete="onCC()"
+			nativeDragEnter="onNativeDragEnter(event)"
 			verticalScrollPolicy="off"
 			horizontalScrollPolicy="off">		 
 	   		<!--nativeDragDrop="onNativeDragDrop(event)"-->
@@ -125,8 +126,8 @@
 	</fx:Script>
 	
 	
-	<mx:VBox id="imgDropMsgHere" horizontalAlign="center" width="100%" paddingTop="30">
-		<mx:Image  source="{dragHereImg}"/>		
-	</mx:VBox>
+	<s:VGroup id="imgDropMsgHere" horizontalAlign="center" width="100%" paddingTop="30">
+		<s:Image  source="{dragHereImg}"/>		
+	</s:VGroup>
 	
 </components:BasicLibraryCanvas>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Script>
+		<![CDATA[
+			import com.simplediagrams.model.TransformData;
+			import com.simplediagrams.model.tools.MarqueeTool;
+			import com.simplediagrams.model.tools.ToolBase;
+			private var _tool:MarqueeTool;
+			
+			public function get tool():ToolBase
+			{
+				return _tool;
+			}
+			
+			public function set tool(value:ToolBase):void
+			{
+				if(_tool)
+					_tool.removeEventListener(Event.CHANGE, onToolChange);
+				_tool = value as MarqueeTool;
+				if(_tool)
+				{
+					onToolChange(null);
+					_tool.addEventListener(Event.CHANGE, onToolChange);
+				}
+				else
+					marqueeSurface.visible = false;
+			}
+			
+			public function onToolChange(event:Event):void
+			{
+				var marqueeTansform:TransformData = _tool.marqueeTansform;
+				if(marqueeTansform != null)
+				{
+					marqueeSurface.visible = true;
+					marqueeSurface.x = marqueeTansform.x;
+					marqueeSurface.y = marqueeTansform.y;
+					marqueeSurface.width = marqueeTansform.width;
+					marqueeSurface.height = marqueeTansform.height;
+				}
+				else
+				{
+					marqueeSurface.visible = false;
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:Rect visible="false" id="marqueeSurface">
+		<s:fill>
+			<s:SolidColor color="#999999" alpha="0.2"/>
+		</s:fill>
+		<s:stroke>
+			<s:SolidColorStroke color="#CCCCCC" alpha="0.8"/>
+		</s:stroke>
+	</s:Rect>
+</s:Group>

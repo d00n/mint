@@ -6,59 +6,39 @@
 	xmlns:view="com.simplediagrams.view.*" 
 	xmlns:dialogs="com.mcquilleninteractive.comfen.view.dialogs.*" 
 	contentBackgroundColor="0xFFFFFF"
-	title="Custom Library"
-	creationComplete="onCC()"
+	title="Custom Library" close="onCancel()"
+	creationComplete="onCC()" width="450" height="200"
 	>
-	
-	<fx:Metadata>
-		[Event(name="OK", type="flash.events.Event")]
-		[Event(name='cancel', event='flash.events.Event')]
-	</fx:Metadata>
-	
-	<s:states>
-		<s:State name="normal"/>
-		<s:State name="error"/>
-	</s:states>
-	
-	
 	<fx:Script>
 		<![CDATA[
+			import com.simplediagrams.events.ApplicationEvent;
+			import com.simplediagrams.events.LibraryEvent;
 			
 			import mx.controls.Alert;
 			
-			;
+			[Dispatcher]
+			public var dispatcher:IEventDispatcher;
 			
 			protected function onCC():void
 			{
-				this.closeButton.visible=false
 				this.focusManager.setFocus(txtDisplayName)
 			}
 						
 			protected function onOK():void
-			{					
-				var evt:Event = new Event("OK", true)
-				dispatchEvent(evt)				
+			{			
+				var libEvent:LibraryEvent = new LibraryEvent(LibraryEvent.ADD_LIBRARY);
+				libEvent.name = txtDisplayName.text;
+				libEvent.libType = libType.selectedItem.value;
+				dispatcher.dispatchEvent(libEvent);
+
+				dispatcher.dispatchEvent(new ApplicationEvent(ApplicationEvent.HIDE_CREATE_LIBRARY));
 			}
 			
 			
 			protected function onCancel():void
 			{			
-				var evt:Event = new Event(Event.CANCEL, true)
-				dispatchEvent(evt)				
+				dispatcher.dispatchEvent(new ApplicationEvent(ApplicationEvent.HIDE_CREATE_LIBRARY));
 			}
-			
-			public function get displayName():String
-			{
-				return txtDisplayName.text
-			}
-			
-			public function get description():String
-			{
-				//return txtDescription.text
-				return ""
-			}
-						
-			
 			
 		]]>
 	</fx:Script>
@@ -80,13 +60,18 @@
 			<s:Label text="Name:" width="100" paddingTop="8"/>
 			<s:TextInput id="txtDisplayName" width="100%" />
 		</s:HGroup>
-		<!--
-		<s:HGroup  width="100%">
-			<s:Label text="Description:" width="100"  paddingTop="8"/>
-			<s:TextArea id="txtDescription" height="70" width="100%" />
+		<s:HGroup width="100%">
+			<s:Label text="Type:" width="100" paddingTop="8"/>
+			<s:DropDownList id="libType" requireSelection="true" width="100%" selectedIndex="0">
+				<s:dataProvider>
+					<s:ArrayList>
+						<fx:Object label="Shapes" value="shapes"></fx:Object>
+						<fx:Object label="Backgrounds" value="backgrounds"></fx:Object>
+					</s:ArrayList>
+				</s:dataProvider>
+			</s:DropDownList>
+			
 		</s:HGroup>
-		-->
-	
 	</s:VGroup>
 	
 	<s:VGroup width="100%" horizontalAlign="right">

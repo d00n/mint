@@ -26,6 +26,8 @@
 	
 	<myComps:LoadingBar x="70" y="55" />
 	
+	<!--
 	<s:Button label="CANCEL" width="90" height="30" styleName="blueButton" x="110" y="220" click="onCancel()" right="5" bottom="5"/>
+	-->
 	
 </s:TitleWindow>

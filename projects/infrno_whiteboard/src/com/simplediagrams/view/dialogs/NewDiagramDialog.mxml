@@ -24,7 +24,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import com.simplediagrams.business.DBManager;
 			import com.simplediagrams.events.LoadDiagramEvent;
 			import com.simplediagrams.model.DiagramModel;
 			import com.simplediagrams.model.LibraryManager;

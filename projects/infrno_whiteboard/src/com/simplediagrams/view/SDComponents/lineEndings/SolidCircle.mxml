@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lineEndings:LineEnding xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:lineEndings="com.simplediagrams.view.SDComponents.lineEndings.*">
+	<s:Ellipse height="10" width="10" x="-2"  y="-5">
+		<s:fill>
+			<s:SolidColor id="fill" color="0"/>
+		</s:fill>
+	</s:Ellipse>
+	<fx:Script>
+		<![CDATA[
+			protected override function commitProperties():void
+			{
+				super.commitProperties();
+				if(fill)
+				{
+					fill.color = lineColor;
+				}
+			}
+		]]>
+	</fx:Script>
+</lineEndings:LineEnding>

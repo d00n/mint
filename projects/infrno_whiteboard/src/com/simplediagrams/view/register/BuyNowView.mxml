@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" >
+	
+	<fx:Metadata>
+		[Event(name="register", type="flash.events.Event")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.simplediagrams.events.LicenseStatusEvent;
+			import com.simplediagrams.events.RegistrationViewEvent;
+			import com.simplediagrams.model.RegistrationManager;
+			
+			import spark.utils.TextFlowUtil;
+			
+			import flash.net.navigateToURL;
+			
+			[Bindable]
+			[Inject]
+			public var registrationManager:RegistrationManager		
+			
+			
+			protected function onUseTrialVersion():void
+			{
+				var evt:RegistrationViewEvent = new RegistrationViewEvent(RegistrationViewEvent.USE_IN_TRIAL_MODE, true)
+				dispatchEvent(evt)
+			}
+			
+			protected function onRegister():void
+			{				
+				dispatchEvent(new Event("register", true))
+			}
+			
+			protected function onLaunchSite():void
+			{
+				navigateToURL(new URLRequest('https://sites.fastspring.com/mcquilleninteractive/instant/simplediagrams'))
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	
+	
+	
+	
+	
+	<s:Label 
+		color="#000000"
+		text="Buy SimpleDiagrams"
+		fontSize="16"
+		x="15" y="13"
+		/>	
+	
+	
+	<s:Rect x="15" y="60" width="385" height="240" radiusX="5">
+		
+		<s:fill>
+			<s:SolidColor color="#F9F9F9"/>
+		</s:fill>
+		
+		
+	</s:Rect>
+	
+	<s:VGroup x="25" y="70" width="365" height="220">
+		
+		<!-- TODO: Add trial over image -->
+		
+		<s:TextArea 
+			textFlow="{TextFlowUtil.importFromString(registrationManager.buyNowMessage)}"
+			editable="false"
+			width="100%" 
+			borderVisible="false"
+			contentBackgroundAlpha="0"	
+			height="45"
+			/>
+		
+		<s:VGroup horizontalAlign="center"  width="100%">
+			<s:Button id="btnLaunchSite"
+					  click="onLaunchSite()"
+					  styleName="blueButton"
+					  height="35"
+					  label="Launch Payment Site"
+					  width="140"/>
+			<mx:Label selectable="true" color="#777777" text="https://sites.fastspring.com/mcquilleninteractive/instant/simplediagrams" fontSize="10"/>
+		</s:VGroup>
+		
+		<s:TextArea 
+			paddingTop="30"
+			textFlow="{TextFlowUtil.importFromString(registrationManager.buyNowMessage2)}"
+			editable="false"
+			width="100%" 			
+			borderVisible="false"
+		    contentBackgroundAlpha="0"	
+			/>
+		
+	</s:VGroup>
+	
+	
+	
+	<s:HGroup x="15" y="315" >
+		
+		<mx:LinkButton label="Use trial version"
+					   click="onUseTrialVersion()"
+					   visible="{registrationManager.trialOver==false}"
+					   width="130"
+					   height="35"
+					   />
+		
+		<mx:Spacer width="70"/>			
+		
+		<mx:LinkButton id="btnRegister" 
+					   click="onRegister()"
+					   label="Register Application"
+					   width="170" height="35"
+					   />	
+		
+		
+	</s:HGroup>
+	
+	
+</s:Group>

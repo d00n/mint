@@ -1,38 +1,59 @@
 package com.simplediagrams.controllers
 {
 	  
-//	import com.simplediagrams.business.DBManager;
-	import com.simplediagrams.business.LibraryPluginsDelegate;
+	import air.update.ApplicationUpdaterUI;
+	import air.update.events.UpdateEvent;
+	
+	import com.simplediagrams.business.LibraryDelegate;
+	import com.simplediagrams.business.LibraryRegistryDelegate;
 	import com.simplediagrams.business.SettingsDelegate;
 	import com.simplediagrams.events.ApplicationEvent;
 	import com.simplediagrams.events.CloseDiagramEvent;
 	import com.simplediagrams.events.CreateNewDiagramEvent;
+	import com.simplediagrams.events.LibraryEvent;
 	import com.simplediagrams.events.LoadDiagramEvent;
-	import com.simplediagrams.events.LoadLibraryPluginEvent;
 	import com.simplediagrams.events.OpenDiagramEvent;
+	import com.simplediagrams.events.PluginEvent;
 	import com.simplediagrams.events.SaveDiagramEvent;
 	import com.simplediagrams.events.SelectionEvent;
+	import com.simplediagrams.events.SettingsEvent;
+	import com.simplediagrams.events.TestInvoke;
 	import com.simplediagrams.model.ApplicationModel;
 	import com.simplediagrams.model.BasecampModel;
+	import com.simplediagrams.model.DiagramManager;
 	import com.simplediagrams.model.DiagramModel;
-	import com.simplediagrams.model.DiagramStyleManager;
 	import com.simplediagrams.model.LibraryManager;
 	import com.simplediagrams.model.RegistrationManager;
 	import com.simplediagrams.model.SettingsModel;
+	import com.simplediagrams.model.UndoRedoManager;
 	import com.simplediagrams.model.YammerModel;
+	import com.simplediagrams.model.libraries.LibrariesRegistry;
+	import com.simplediagrams.model.libraries.Library;
+	import com.simplediagrams.model.libraries.LibraryInfo;
+	import com.simplediagrams.model.libraries.LibraryItem;
+	import com.simplediagrams.model.libraries.VectorShape;
 	import com.simplediagrams.util.AboutInfo;
 	import com.simplediagrams.util.Logger;
 	import com.simplediagrams.view.AboutWindow;
+	import com.simplediagrams.view.TrialBar;
 	import com.simplediagrams.view.dialogs.CustomAlert;
 	import com.simplediagrams.view.dialogs.LoadingLibraryPluginsDialog;
+	import com.simplediagrams.view.dialogs.UpdateToTrialModeDialog;
 	import com.simplediagrams.view.dialogs.VerifyQuitDialog;
 	
+	import flash.data.EncryptedLocalStore;
 	import flash.display.DisplayObject;
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
+	import flash.events.InvokeEvent;
+	import flash.events.NativeWindowDisplayStateEvent;
 	import flash.events.UncaughtErrorEvent;
+	import flash.filesystem.*;
+	import flash.system.ApplicationDomain;
 	
+	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
+	import mx.core.Application;
 	import mx.core.FlexGlobals;
 	import mx.events.DynamicEvent;
 	import mx.events.FlexEvent;
@@ -51,15 +72,15 @@ package com.simplediagrams.controllers
 		
 		[Inject]
 		public var settingsManager:SettingsDelegate
-		
+			
 		[Inject]
 		public var settingsModel:SettingsModel
 		
 		[Inject]
-		public var diagramModel:DiagramModel;
+		public var diagramManager:DiagramManager;
 		
 		[Inject]
-		public var libraryManager:LibraryManager;
+		public var undoRedoManager:UndoRedoManager;
 		
 		[Inject]
 		public var yammerModel:YammerModel;
@@ -67,30 +88,42 @@ package com.simplediagrams.controllers
 		[Inject]
 		public var basecampModel:BasecampModel;
 		
-		[Inject]
-		public var diagramStyleManager:DiagramStyleManager
 		
 		[Inject]
 		public var dialogsController:DialogsController;
-		
-//		[Inject]
-//		public var dbManager:DBManager;
 					
 		
 		protected var _verifyQuitDialog:VerifyQuitDialog
-		protected var _loadLibraryPluginsDialog:LoadingLibraryPluginsDialog
-		protected var _libraryPluginsDelegate:LibraryPluginsDelegate
 		protected var _aboutWindow:AboutWindow
 		
 				   
 		public function ApplicationController() 
 		{				
-			
-			Logger.debug("ApplicationController created.", this)
+			LibraryRegistryDelegate;
+			Logger.debug("ApplicationController created.", this);
 			
 			//add close listener to intercept application close event
-//			FlexGlobals.topLevelApplication.addEventListener(Event.CLOSING, onWindowClose, false,0,true);
+			FlexGlobals.topLevelApplication.addEventListener(Event.CLOSING, onWindowClose, false,0,true);
 			
+		}
+		
+		
+		
+		private function onUncaughtError(e:UncaughtErrorEvent):void
+		{
+			if (e.error is Error)
+			{
+				var error:Error = e.error as Error
+				var msg:String = error.errorID + " " + error.name +" " +error.message
+				Logger.error(msg, this);
+			}
+			else
+			{
+				var errorEvent:ErrorEvent = e.error as ErrorEvent;	
+				msg = "error ID " + errorEvent.errorID.toString()
+				Logger.error(errorEvent.errorID, this);
+			}
+			Alert.show(msg, "System Error")
 		}
 		
 		[Mediate(event="SelectionEvent.SELECTION_CLEARED")]
@@ -106,18 +139,18 @@ package com.simplediagrams.controllers
 			appModel.currFileName = "New SimpleDiagram"
 		}
 		
-		[Mediate(event="LoadDiagramEvent.DIAGRAM_LOADED")]
+		[Mediate(event="LoadDiagramEvent.DIAGRAM_READY")]
 		public function diagramLoaded(event:LoadDiagramEvent):void
 		{	
-			Logger.debug("diagramLoaded() ",this)
 			appModel.viewing = ApplicationModel.VIEW_DIAGRAM	
-			appModel.currFileName = "File: " + event.fileName
+			appModel.currFileName = event.fileName
 		}
 		
 		[Mediate(event="SaveDiagramEvent.DIAGRAM_SAVED")]
 		public function diagramSaved(event:SaveDiagramEvent):void
 		{
-			appModel.currFileName = "File: " + event.fileName
+			appModel.currFileName =  event.fileName
+			undoRedoManager.isDirty = false;
 		}
 		
 		[Mediate(event="CloseDiagramEvent.DIAGRAM_CLOSED")]
@@ -127,42 +160,40 @@ package com.simplediagrams.controllers
 		}
 		
 		[Mediate("mx.events.FlexEvent.APPLICATION_COMPLETE" )] 
-		public function onApplicationComplete():void
-		{ 
-			FlexGlobals.topLevelApplication.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onUncaughtError);
-		}
-		
-		private function onUncaughtError(e:UncaughtErrorEvent):void
-		{
-			var msg:String;
-			if (e.error is Error)
-			{
-				var error:Error = e.error as Error
-				msg = "Error: "+error.errorID + " " + error.name +" " +error.message
-				Logger.error(msg, this);
-			}
-			else
-			{
-				var errorEvent:ErrorEvent = e.error as ErrorEvent;  
-				msg = "ErrorEvent: " + errorEvent.errorID.toString()
-				Logger.error(msg, this);
-			}
-			Alert.show(msg, "Your table has become corrupted. A team of highly trained zombies has been dispatched to deal with this situation. Please reset your table.")
-		}		
-		
-		[Mediate("mx.events.FlexEvent.APPLICATION_COMPLETE" )] 
 		public function initApp(event:FlexEvent):void
 		{	
 			Logger.info("initApp()", this)
 				
+			
 			//UNCOMMENT FOR TESTING			
 			//registrationManager.deleteLicense()
 			//EncryptedLocalStore.removeItem("userAgreedToEULA")
+			//EncryptedLocalStore.removeItem("userAgreedToEULA1.2")
+			//EncryptedLocalStore.removeItem("userAgreedToEULA1.2")
+			//EncryptedLocalStore.removeItem("dateTrialStarted")
 			//basecampModel.clearFromEncryptedStore()
 			//yammerModel.clearFromEncryptedStore()
+										
+			FlexGlobals.topLevelApplication.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onUncaughtError);
 							
+			doUpdateCheck()	
+			
+			//If we want to do anything special immediately after an upgrade do it here
+			if (appModel.lastInstalledVersion != appModel.version)
+			{				
+				//stuff to do immediately after an upgrade goes here
+				
+				//set the first trial date if this is an upgrade and the date was never set
+				if (registrationManager.isLicensed==false && registrationManager.dateTrialStarted==null)
+				{
+					registrationManager.recordDateTrialStarted()
+				}
+								
+				appModel.lastInstalledVersion = appModel.version
+			}
+							
+				
 			Logger.info("checking EULA...",this)
-			//CHECK AGREED TO EULA				
 			var agreedToEULA:Boolean 
 			try
 			{
@@ -173,7 +204,6 @@ package com.simplediagrams.controllers
 				Logger.error("Couldn't read 'agreedToEULA' string from model", this)
 				agreedToEULA = false
 			}
-			Logger.info("agreedToEULA: " + agreedToEULA.toString(),this)
 			
 			if (agreedToEULA==false)
 			{
@@ -185,123 +215,127 @@ package com.simplediagrams.controllers
 			{
 				doStartupTasks()
 			}
+			
+			
 		}
 				
-//		[Mediate(event="EULAEvent.USER_AGREED_TO_EULA")]
+		[Mediate(event="EULAEvent.USER_AGREED_TO_EULA")]
 		public function onUserAgreedToEULA():void
 		{
-			appModel.userAgreedToEULA()
+			appModel.userAgreedToEULA()				
+			registrationManager.recordDateTrialStarted()		
 			doStartupTasks()
 		}
 		
 					
 		public function doStartupTasks():void
 		{
-					
-			Logger.info("loading settings...",this)						
+						
+			//make sure user folder exists
+			try
+			{
+				var userFolder:File = ApplicationModel.baseStorageDir
+				if (userFolder.exists==false)
+				{
+					userFolder.createDirectory()
+				}
+			}
+			catch(error:Error)
+			{
+				Alert.show("SimpleDiagrams can't create a storage directory here: " + userFolder.nativePath  + " Please create this folder manually and then restart SimpleDiagrams", "Error")
+				return
+			}
+			
 			//load in settings
 			try
 			{
 				settingsManager.loadSettings()
+				dispatcher.dispatchEvent(new SettingsEvent(SettingsEvent.SETTINGS_LOADED, true));
+				if(appModel.version != settingsModel.appVersion)
+				{
+					dispatcher.dispatchEvent(new LibraryEvent(LibraryEvent.COPY_LIBRARIES));
+					settingsModel.appVersion = appModel.version;
+					settingsManager.saveSettings();
+				}
+				if(settingsModel.promptDatabaseImport)
+				{
+					var oldDir:File = ApplicationModel.baseStorageDir;
+					var doPrompt:Boolean = oldDir.exists;
+					if(doPrompt)
+						doPrompt = oldDir.resolvePath(ApplicationModel.DB_PATH).exists;
+					if(doPrompt)
+					{
+						dispatcher.dispatchEvent(new ApplicationEvent(ApplicationEvent.SHOW_IMPORT_DATABASE_PROMPT))					
+					}
+				}
 			}
 			catch(error:Error)
 			{
 				Logger.error("Couldn't load settings", this)
 			}
 					
-			//setup log
-			Logger.info("initLogFile...",this)
-			try
-			{				
-				initLogFile()
-			}
-			catch(error:Error)
-			{
-				Logger.error("Couldn't init log. Error: " + error, this)
-			}
 						
+			//Load libraries
+			loadLibraries();			
 			
 			//CHECK LICENSE			
-//			Logger.debug("isLicensed: " + registrationManager.isLicensed,this)
-//			if (registrationManager.isLicensed)
-//			{	
-//				//show dialog that we're loading stored libraries
-//				_loadLibraryPluginsDialog = dialogsController.showLoadLibraryPluginsDialog()
-//				_loadLibraryPluginsDialog.addEventListener(Event.CANCEL, onLoadLibraryPluginsCancel)
-//				
-//				Logger.debug("LOADING LIBRARY PLUG-INS...", this)
-//				//load library plug-ins
-//				try
-//				{
-//					_libraryPluginsDelegate = new LibraryPluginsDelegate()
-//					_libraryPluginsDelegate.addEventListener(LibraryPluginsDelegate.LOADING_FINISHED, onLoadingLibraryPluginsFinished)
-//					_libraryPluginsDelegate.addEventListener(LibraryPluginsDelegate.LOADING_FAILED, onLoadingLibraryPluginsFailed)
-//					_libraryPluginsDelegate.loadLibraries(libraryManager)
-//				}
-//				catch(err:Error)
-//				{
-//					Logger.error("Error when loading library plug-ins. Error: " + err, this)	
-//						
-//					var msg:String = "An error occurred when loading library plug-ins. One of the library plug-ins may be corrupt. Please delete the library plug-ins and reload them to fix this problem. "
-//					Alert.show(msg, "Library Load Error")	
-//				}	
-//				
-//			}
-//			else
-//			{
-//				Logger.debug("showing view registration...",this)
-//				appModel.menuEnabled = false //will be turned on when user clicks continue
-//				appModel.viewing=ApplicationModel.VIEW_REGISTRATION
-//				libraryManager.hidePremiumLibraries()
-//			}			
+			if (registrationManager.isLicensed)
+			{					
+				var evt:PluginEvent = new PluginEvent(PluginEvent.COPY_DEFAULT_PLUGINS_TO_USER_DIR, true)
+				dispatcher.dispatchEvent(evt)							
+				appModel.viewing = ApplicationModel.VIEW_STARTUP					
+			}
+			else
+			{
+				appModel.menuEnabled = false //will be turned on when user clicks continue
+													
+				var trialDays:uint = registrationManager.trialDaysRemaining														
+				if (trialDays<1)
+				{
+					registrationManager.viewing = RegistrationManager.VIEW_TRIAL_MODE_FINISHED	
+				}
+				else
+				{
+					registrationManager.viewing = RegistrationManager.VIEW_TRIAL_MODE								
+				}					
+				appModel.viewing=ApplicationModel.VIEW_REGISTRATION
+			}			
 			
-			Logger.debug("settings styles to:" + settingsModel.defaultDiagramStyle,this)
-			//set initial styles -- this should be loaded from a settings folder later
-			diagramStyleManager.changeStyle(settingsModel.defaultDiagramStyle)	
-															
+				
+			//free/full to trial upgrade message
+			var d:Date = appModel.firstInstallDate
+			if (d.fullYear<=2011 && d.month<=8)
+			{
+				registrationManager.showTrialVsFreeExplanation = true
+			}
+			
+				
 		}
 		
-		protected function onLoadingLibraryPluginsFinished(event:LoadLibraryPluginEvent):void
-		{	
-//			if (_libraryPluginsDelegate.errorsEncountered)
-//			{
-//				var msg:String = "The following errors occurred when loading library plugins:\n\n<ul>"
-//				for (var i:uint=0;i<_libraryPluginsDelegate.errorsErr.length;i++)
-//				{	
-//					msg += "<li>" + _libraryPluginsDelegate.errorsErr[i] + "</li>"
-//				}
-//				msg += "</ul>\nPlease download the latest libraries from SimpleDiagrams.com"	
-//				var alert:CustomAlert = new CustomAlert()
-//				alert.width=400
-//				alert.height=250			
-//				alert.text=msg
-//				alert.title =  "Plugin Library Load Error"
-//				alert.invalidateSize()
-//				PopUpManager.addPopUp(alert, FlexGlobals.topLevelApplication as DisplayObject)
-//				PopUpManager.centerPopUp(alert)	
-//					
-//			}			
-//			dialogsController.removeDialog(_loadLibraryPluginsDialog)
-//			_loadLibraryPluginsDialog = null
-//			appModel.viewing = ApplicationModel.VIEW_STARTUP			
+		
+		/* ******** */
+		/* UPDATER  */
+		/* ******** */
+
+		
+		protected function doUpdateCheck():void
+		{			
+			var updater:ApplicationUpdaterUI = new ApplicationUpdaterUI();
+			updater.configurationFile = File.applicationDirectory.resolvePath("config/updaterConfig.xml");
+			updater.addEventListener(UpdateEvent.INITIALIZED, updaterInitialized);	
+			updater.initialize(); 
+			appModel.updater = updater
 		}
 		
-		protected function onLoadingLibraryPluginsFailed(event:LoadLibraryPluginEvent):void
-		{	
-			Alert.show("An error occurred when loading library plug-ins. Some library plug-ins may not have loaded correctly. Please see log for details.", "Library Load Error")			
-			dialogsController.removeDialog(_loadLibraryPluginsDialog)
-			_loadLibraryPluginsDialog = null
-			appModel.viewing = ApplicationModel.VIEW_STARTUP			
-		}
-		
-		protected function onLoadLibraryPluginsCancel(event:Event):void
+		protected function updaterInitialized(event:UpdateEvent):void
 		{
-			_loadLibraryPluginsDialog.removeEventListener(Event.CANCEL, onLoadLibraryPluginsCancel)
-			dialogsController.removeDialog(_loadLibraryPluginsDialog)			
-			_loadLibraryPluginsDialog = null
-			_libraryPluginsDelegate.cancelLoad()
-			appModel.viewing = ApplicationModel.VIEW_STARTUP	
+			appModel.updater.checkNow();
 		}
+		
+		
+		
+		
+		
 		
 		
 		public function onWindowClose(event:Event):void
@@ -317,7 +351,7 @@ package com.simplediagrams.controllers
 		public function quitApp(event:ApplicationEvent):void
 		{			
 			Logger.debug("quitApp()",this)
-			if (diagramModel.isDirty && ApplicationModel.testMode==false)
+			if (diagramManager.diagramModel && undoRedoManager.isDirty)
 			{
 				_verifyQuitDialog = dialogsController.showVerifyQuitDialog()
 				_verifyQuitDialog.addEventListener(VerifyQuitDialog.QUIT, onQuit)
@@ -349,51 +383,180 @@ package com.simplediagrams.controllers
 		
 	
 				
-		
-		protected function initLogFile():void
-		{
-//			Logger.debug("initLogFile()", this)
-//			
-//			//make sure directory exists
-//			var logFileDir:File = File.applicationStorageDirectory.resolvePath(ApplicationModel.logFileDir)
-//			if (!logFileDir.exists)
-//			{
-//				try
-//				{
-//					logFileDir.createDirectory()
-//				}
-//				catch(error:Error)
-//				{
-//					Logger.error("Couldn't create log file directory: " + logFileDir.nativePath,this)
-//				}
-//			}
-//				
-//			//Clear out any old files							
-//			var logFile:File = logFileDir.resolvePath(ApplicationModel.logFileName)
-//			if (logFile.exists)
-//			{
-//				logFile.deleteFile()
-//			}
-//			
-//			Logger.info("SimpleDiagrams version: " + AboutInfo.applicationVersion, this)
-//			Logger.info("Flash player version: " + AboutInfo.flashPlayerVersion, this)
-//			Logger.info("Writing log file to: " + File.applicationStorageDirectory.resolvePath(ApplicationModel.logFileDir).nativePath, this)
-//				
-				
-		}       
+		 
 					 
 		protected function initLibrary():void
         {
 			Logger.debug("initLibrary()", this)
-        	libraryManager.loadInitialData()
+        	settingsModel.loadInitialData()
         }
          
          
-      	
+		
+		[Mediate(event="com.simplediagrams.events.TestInvoke.INVOKE")]
+		public function testInvoke(event:TestInvoke):void
+		{
+			doInvoke(event.arguments)	
+		}
 		
 		
-        
-        
+      	/* ****** */
+		/* INVOKE */
+		/* ****** */
+				
+		/* Handle INVOKE arguments */
+		[Mediate(event="flash.events.InvokeEvent.INVOKE")]
+		public function onInvoke(event:InvokeEvent):void
+		{
+			doInvoke(event.arguments)
+		}
+		
+		protected function doInvoke(arguments:Array):void
+		{
+			
+			Logger.debug("doInvoke() event.arguments " + arguments,this)
+			if (arguments.length==0)
+			{
+				return
+			}
+			
+			var filePath:String = arguments[0]
+							
+			try
+			{
+				var f:File = new File(filePath)	
+				if (f.extension.toLocaleLowerCase()=="sdxml") //simplediagrams file
+				{
+					appModel.fileToOpenOnStart = f		
+					Logger.debug("appModel.fileToOpenOnStart.path " + appModel.fileToOpenOnStart.nativePath,this)
+					var oEvent:OpenDiagramEvent = new OpenDiagramEvent(OpenDiagramEvent.OPEN_DIAGRAM, true)
+					oEvent.openFile = f
+					dispatcher.dispatchEvent(oEvent)
+				}
+				else if (f.extension.toLocaleLowerCase()=="sdlp") //simplediagrams library plugin
+				{
+					var libEvent:LibraryEvent = new LibraryEvent(LibraryEvent.IMPORT_LIBRARY, true)
+					libEvent.libraryFile = f
+					dispatcher.dispatchEvent(libEvent)
+				}
+				else
+				{					
+					Logger.warn("unrecognized extension : " + f.extension, this)
+				}
+				FlexGlobals.topLevelApplication.activate()
+			}
+			catch(error:Error)
+			{
+				Logger.error("onInvoke() Couldn't create file from path: " + filePath, this)
+				return
+			}
+			
+		}
+		
+		[Mediate(event="flash.events.NativeWindowDisplayStateEvent.DISPLAY_STATE_CHANGING")]
+		public function onDisplayStateChanging(event:NativeWindowDisplayStateEvent):void
+		{
+			switch (event.afterDisplayState) // <-- our new state
+			{
+				case "minimized":					
+					appModel.isMinimized = true;
+					break;
+				
+				case "maximized":
+					appModel.isMinimized = false;
+					break;
+			}
+		}
+				
+       	[Inject]
+		public var librariesRegistryDelegate:LibraryRegistryDelegate;
+		
+		[Inject]
+		public var libraryDelegate:LibraryDelegate;
+		
+		[Inject]
+		public var libraryManager:LibraryManager;
+		
+		
+		/** Load libraries based on information stored in LibraryRegistry */	
+        public function loadLibraries():void
+		{
+			var errorLibrariesArr:Array = []
+			
+			var registry:LibrariesRegistry = librariesRegistryDelegate.loadRegistry();
+			var libraries:ArrayCollection = new ArrayCollection();
+			
+			var len:uint = registry.libraries.length;
+			for (var index:int=0;index < len;index++)
+			{
+				var libInfo:LibraryInfo = registry.libraries.getItemAt(index) as LibraryInfo			
+				try
+				{
+					var lib:Library = libraryDelegate.readLibrary(libInfo.name);
+					libraries.addItem(lib);					
+				}
+				catch(error:Error)
+				{
+					//If we can't load a library, we remove it from the registry to avoid problems later on (e.g. deleting via LibraryRegistry)
+					errorLibrariesArr.push(libInfo.displayName)
+					Logger.error("Couldn't load library " + libInfo.name + ". Error: " + error, this)
+					registry.libraries.removeItemAt(index);
+					index--;
+					len--;
+				}
+			}
+			libraryManager.loadLibraries( registry, libraries);
+			
+			if (errorLibrariesArr.length>0)
+			{
+				Alert.show("Couldn't load the following libraries :\n " + errorLibrariesArr.join("\n"), "Library Error")
+			}
+			
+			
+			
+			//TEMP
+			//FlexGlobals.topLevelApplication.styleManager.loadStyleDeclarations("assets/footballStyles.swf")
+			//why doesn't this work? Check comments on http://help.adobe.com/en_US/flex/using/WS2db454920e96a9e51e63e3d11c0bf69084-7f8c.html
+			
+		}
+		
+		[Mediate(event="ApplicationEvent.SHOW_MANAGE_LIBRARIES")]
+		public function onShowManageLibraries(event:ApplicationEvent):void
+		{
+			appModel.showManageLibraries = true;
+		}
+		
+		[Mediate(event="ApplicationEvent.HIDE_MANAGE_LIBRARIES")]
+		public function onHideManageLibraries(event:ApplicationEvent):void
+		{
+			appModel.showManageLibraries = false;
+		}
+		
+		[Mediate(event="ApplicationEvent.SHOW_CREATE_LIBRARY")]
+		public function onShowCreateLibrary(event:ApplicationEvent):void
+		{
+			appModel.showCreateCustomLibrary = true;
+		}
+		
+		[Mediate(event="ApplicationEvent.HIDE_CREATE_LIBRARY")]
+		public function onHideCreateLibrary(event:ApplicationEvent):void
+		{
+			appModel.showCreateCustomLibrary = false;
+		}
+		
+		[Mediate(event="ApplicationEvent.SHOW_IMPORT_DATABASE_PROMPT")]
+		public function onShowImportDatabasePrompt(event:ApplicationEvent):void
+		{
+			settingsModel.promptDatabaseImport = false;
+			appModel.showImportDatabasePrompt = true;
+		}
+		
+		[Mediate(event="ApplicationEvent.HIDE_IMPORT_DATABASE_PROMPT")]
+		public function onHideImportDatabasePrompt(event:ApplicationEvent):void
+		{
+			settingsModel.promptDatabaseImport = false;
+			appModel.showImportDatabasePrompt = false;
+		}
         
 	}
   

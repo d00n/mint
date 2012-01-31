@@ -1,31 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 title="Manage Libraries"		 
-		 contentBackgroundColor="0xFFFFFF"
-		 creationComplete="onCC()"
-		 xmlns:local="*" xmlns:components="com.simplediagrams.view.components.*">
-	
-	<fx:Metadata>
-		[Event(name="OK", type="flash.events.Event")]
-		[Event(name='cancel', event='flash.events.Event')]
-	</fx:Metadata>
-	
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   xmlns:components="com.simplediagrams.view.components.*"
+			   title="Manage Libraries"		 
+			   contentBackgroundColor="0xFFFFFF"
+			   close="onClose()" 
+			   width="800" height="500"
+			   xmlns:local="*" >
 	
 	<fx:Script>
 		<![CDATA[
-			import com.simplediagrams.events.DeleteLibraryEvent;
+			import com.simplediagrams.events.ApplicationEvent;
+			import com.simplediagrams.events.LibraryEvent;
 			import com.simplediagrams.model.LibraryManager;
-			import com.simplediagrams.model.libraries.ILibrary;
+			import com.simplediagrams.model.libraries.LibraryInfo;
 			
 			import mx.controls.Alert;
 			import mx.core.FlexGlobals;
 			import mx.events.CloseEvent;
-						
+			import mx.events.DataGridEvent;
+			
 			[Bindable]
 			[Inject]
 			public var libraryManager:LibraryManager
@@ -33,53 +28,81 @@
 			[Dispatcher]
 			public var dispatcher:IEventDispatcher
 			
-			protected var _libraryToDelete:ILibrary
-			
-			protected function onCC():void
-			{
-				this.closeButton.visible=false 
-				libraryManager.rememberShowInPanelSettings()
-			}
-			
-			protected function onDone():void
-			{
-				var evt:Event = new Event("OK", true)
-				dispatchEvent(evt)
-			}
-			
-			protected function onCancel():void
+			protected function onClose():void
 			{			
-				var evt:Event = new Event(Event.CANCEL, true)
-				dispatchEvent(evt)				
-								
-				libraryManager.revertShowInPanelSettings()
+				var evt:Event = new ApplicationEvent(ApplicationEvent.HIDE_MANAGE_LIBRARIES);
+				dispatcher.dispatchEvent(evt);												
 			}
+			
+			public function enableItem(item:Object, value:Boolean):void
+			{   
+				libInfo = item as LibraryInfo;
+				var libEvent:LibraryEvent;
+				if(value)
+					libEvent = new LibraryEvent(LibraryEvent.ENABLE_LIBRARY);
+				else
+					libEvent = new LibraryEvent(LibraryEvent.DISABLE_LIBRARY);
+				libEvent.libraryInfo = libInfo;
+				dispatcher.dispatchEvent(libEvent);
+			}
+			
+			private var libInfo:LibraryInfo;
 			
 			public function deleteItem(libraryObj:Object):void
 			{   
-				_libraryToDelete = libraryObj as ILibrary
-				if (_libraryToDelete.isPlugin)
-				{
-					Alert.show("Delete the " + _libraryToDelete.displayName + " library plugin?", "Delete Plugin", Alert.OK | Alert.CANCEL, FlexGlobals.topLevelApplication as Sprite, onDeleteItemConfirm) 						
-				}
-				else if(_libraryToDelete.isCustom)					
-				{					
-					Alert.show("Delete the" + _libraryToDelete.displayName + " custom library?", "Delete Custom Library", Alert.OK | Alert.CANCEL, FlexGlobals.topLevelApplication as Sprite, onDeleteItemConfirm) 
-				}
+				libInfo = libraryObj as LibraryInfo;
+				Alert.show("Delete the " + libraryObj.displayName + "  library?", "Delete Library", Alert.OK | Alert.CANCEL, FlexGlobals.topLevelApplication as Sprite, onDeleteItemConfirm) 
+			}
+			
+			public function export(libraryObj:Object):void
+			{   
+				libInfo = libraryObj as LibraryInfo;
+				var libEvent:LibraryEvent = new LibraryEvent(LibraryEvent.EXPORT_LIBRARY);
+				libEvent.libraryInfo = libInfo;
+				dispatcher.dispatchEvent(libEvent);
+				
 			}
 			
 			protected function onDeleteItemConfirm(event:CloseEvent):void
 			{
-				if (event.detail == Alert.OK)
+				if(event.detail == Alert.OK)
 				{
-					var evt:DeleteLibraryEvent = new DeleteLibraryEvent(DeleteLibraryEvent.DELETE_LIBRARY, true)
-					evt.library = _libraryToDelete
-					dispatcher.dispatchEvent(evt)
+					var libEvent:LibraryEvent = new LibraryEvent(LibraryEvent.REMOVE_LIBRARY);
+					libEvent.libraryInfo = libInfo;
+					dispatcher.dispatchEvent(libEvent);
 				}
-				_libraryToDelete = null
 			}
 			
 			
+			
+			protected function onItemEditBegin(event:DataGridEvent):void
+			{
+				if(event.itemRenderer == null || event.itemRenderer.data.custom == false)
+					event.preventDefault();
+			}
+			
+			protected function onItemEditEnd(event:DataGridEvent):void
+			{
+				if(event.itemRenderer != null )
+				{
+					var libInfo:LibraryInfo = event.itemRenderer.data as LibraryInfo;
+					var newValue:String = dgLibraries.itemEditorInstance[dgLibraries.columns[event.columnIndex].editorDataField];
+					var oldValue:String = libInfo.displayName;
+					
+					if(newValue != oldValue)
+					{
+						var libEvent:LibraryEvent = new LibraryEvent(LibraryEvent.RENAME_LIBRARY);
+						libEvent.libraryInfo = libInfo;
+						libEvent.name = newValue;
+						dispatcher.dispatchEvent(libEvent);
+					}
+				}
+			}
+			
+			protected function onDone():void
+			{
+				onClose()
+			}
 			
 		]]>
 	</fx:Script>
@@ -88,91 +111,94 @@
 		<s:VerticalLayout  paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="10"/>
 	</s:layout>
 	
-	<!--
-	<s:VGroup horizontalAlign="right">
-		<s:Button id="btnLoadFromServer" label="Load from Server" toolTip="Click this button if you've purchased libraries from the SimpleDiagrams site and are now ready to download them" />
-	</s:VGroup>
-	-->
-	
-	<components:CheckBoxDataGrid
-		id="dgLibraries" 
-		width="100%" 
-		height="100%"
-		dataProvider="{libraryManager.librariesAC}"
-		allowMultipleSelection="true"
-	>
+	<components:CheckBoxDataGrid editable="true"
+								 id="dgLibraries" 
+								 width="100%" 
+								 height="100%"
+								 dataProvider="{libraryManager.librariesRegistry.libraries}"
+								 itemEditBeginning="onItemEditBegin(event)" 
+								 itemEditEnd="onItemEditEnd(event)"	>
 		<components:columns>
 			
-			<mx:DataGridColumn dataField="showInPanel" headerText="Display" width="60" >
-					
+			<mx:DataGridColumn editable="false" dataField="enabled" headerText="Display" width="60" >
+				
 				<mx:itemRenderer>
 					<fx:Component>
 						<mx:Box width="100%" height="100%" 
 								horizontalAlign="center"
 								verticalAlign="middle">
-							<mx:CheckBox selected="{data.showInPanel}" change="onChange(event);" toolTip="Display the libray in the library panel">
-								<fx:Script>
-									<![CDATA[
-										private function onChange(evt:Event):void 
-										{
-											data.showInPanel = !data.showInPanel;
-										}
-
-									]]>
-								</fx:Script>
+							<mx:CheckBox id="cbEnabled" selected="{data.enabled}" change="outerDocument.enableItem(data, cbEnabled.selected)" toolTip="Display the library in the library panel">
 							</mx:CheckBox>
 						</mx:Box>
 					</fx:Component>
 				</mx:itemRenderer>
 			</mx:DataGridColumn>
 			
-			<mx:DataGridColumn dataField="isPlugin" headerText="Plugin" width="60" >
+			<mx:DataGridColumn editable="false" dataField="custom" headerText="Custom" width="60" >
 				<mx:itemRenderer>
 					<fx:Component>						
 						<mx:Box horizontalAlign="center"  >
-							<mx:Image visible="{data.isPlugin}" source="@Embed('assets/img/icons/tick.png')" toolTip="This library is a plugin."/>
+							<s:Image visible="{data.custom}" source="@Embed('assets/img/icons/tick.png')" toolTip="This is a custom library."/>
 						</mx:Box>						
 					</fx:Component>
 				</mx:itemRenderer>
 			</mx:DataGridColumn>
 			
 			
-			<mx:DataGridColumn dataField="isCustom" headerText="Custom" width="60" >
+			<mx:DataGridColumn editable="false" dataField="type" headerText="Background" width="60" >
 				<mx:itemRenderer>
 					<fx:Component>						
 						<mx:Box horizontalAlign="center"  >
-							<mx:Image visible="{data.isCustom}" source="@Embed('assets/img/icons/tick.png')" toolTip="This library is a plugin."/>
+							<s:Image visible="{data.type=='backgrounds'}" source="@Embed('assets/img/icons/tick.png')" toolTip="This is a background library."/>
 						</mx:Box>						
 					</fx:Component>
 				</mx:itemRenderer>
 			</mx:DataGridColumn>
 			
 			
-			<mx:DataGridColumn 
-				dataField="libraryName"
-				headerText="Library Name"
-				/>
+			<mx:DataGridColumn  editable="false"
+								dataField="name"
+								headerText="Library Name"
+								/>
 			
-			<mx:DataGridColumn 
-				dataField="displayName"
-			  	headerText="Display Name"
-			/>
+			<mx:DataGridColumn editable="true"
+							   dataField="displayName"
+							   headerText="Display Name"
+							   />
 			
 			
-			<mx:DataGridColumn headerText="Delete" width="60" >
+			<mx:DataGridColumn sortable="false"   editable="false" headerText="Delete" width="60" >
 				<mx:itemRenderer>
 					<fx:Component>						
 						<mx:Box horizontalAlign="center" >
 							<mx:Button click="outerDocument.deleteItem(data)" 
 									   useHandCursor="true"
 									   buttonMode="true"
-									   visible="{data.canBeDeleted}"
 									   width="16"
 									   height="16"
 									   upSkin="@Embed('assets/img/icons/delete.png')"
 									   downSkin="@Embed('assets/img/icons/delete.png')" 
 									   overSkin="@Embed('assets/img/icons/delete.png')"
-									   toolTip="Delete this plugin library."
+									   toolTip="Delete this library."
+									   />
+						</mx:Box>						
+					</fx:Component>
+				</mx:itemRenderer>
+			</mx:DataGridColumn>
+			
+			<mx:DataGridColumn sortable="false"  editable="false" headerText="Export" width="60" >
+				<mx:itemRenderer>
+					<fx:Component>						
+						<mx:Box horizontalAlign="center" >
+							<mx:Button click="outerDocument.export(data)" 
+									   useHandCursor="true"
+									   buttonMode="true"
+									   width="16"
+									   height="16"
+									   upSkin="@Embed('assets/img/icons/package_go.png')"
+									   downSkin="@Embed('assets/img/icons/package_go.png')" 
+									   overSkin="@Embed('assets/img/icons/package_go.png')"
+									   toolTip="Export this library."
 									   />
 						</mx:Box>						
 					</fx:Component>
@@ -182,25 +208,9 @@
 		</components:columns>
 		
 	</components:CheckBoxDataGrid>
-	
-	
-	<s:VGroup width="100%" horizontalAlign="right" paddingRight="10" paddingTop="5">
-		<s:HGroup>
-			<!--
-			<s:Button id="btnCancel" label="CANCEL" 
-					  click="onCancel()"  
-					  styleName="blueButton"
-					  width="90" height="30" />
-			-->
-			<s:Button id="btnDone" 
-					  label="DONE" 
-					  click="onDone()"  
-					  styleName="blueButton"
-					  width="90" height="30" />
-		</s:HGroup>	
-	</s:VGroup>
-	
-	
-	
+
+	<s:HGroup width="100%" paddingLeft="10" paddingRight="10" horizontalAlign="right">		
+		<s:Button label="Done" click="onDone()" width="90" height="30" styleName="blueButton"/>
+	</s:HGroup>
 	
 </s:TitleWindow>

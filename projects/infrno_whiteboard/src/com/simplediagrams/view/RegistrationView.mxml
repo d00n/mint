@@ -45,10 +45,12 @@
 									
 			}
 			
-			protected function onUpgrade():void
+			protected function onRegister():void
 			{
 				registrationManager.viewing = RegistrationManager.VIEW_REGISTER
 			}
+			
+			
 								
 		]]>
 	</fx:Script>
@@ -56,26 +58,36 @@
 	<s:layout>
 		<s:BasicLayout/>
 	</s:layout>
-		    
+	
 	<s:states>
-		<s:State name="freeModeView"/>
+		<s:State name="trialModeView"/>
+		<s:State name="trialModeFinishedView"/>
+		<s:State name="buyNowView"/>
 		<s:State name="registerView"/>
 		<s:State name="registrationSuccessView"/>
 		<s:State name="serverUnavailableView"/>
 	</s:states>	    
-		
-	<mx:Image source="{Bkgd}" />
-		    
-    <register:FreeModeView includeIn="freeModeView" 
-						   upgrade="onUpgrade()" />
 	
-    <register:RegisterView id="registerView" 
+	<s:Image source="{Bkgd}" />
+	
+	<register:TrialModeView includeIn="trialModeView" 
+							register="onRegister()" />
+	
+	<register:TrialModeFinishedView includeIn="trialModeFinishedView" 
+								register="onRegister()" />
+	
+	<register:RegisterView id="registerView" 
 						   includeIn="registerView" />
 	
-    <register:RegistrationSuccessView id="successView" 
+	<register:BuyNowView id="buyNowView" 
+						 includeIn="buyNowView"
+						 register="onRegister()"/>
+	
+	<register:RegistrationSuccessView id="successView" 
 									  includeIn="registrationSuccessView" />
 	
-    <register:ServerUnavailableView includeIn="serverUnavailableView"  />
+	<register:ServerUnavailableView includeIn="serverUnavailableView"  />
+	
         
 	<!-- stuff for blue info section on right side of screen ... doesn't change across sub-views -->
 	<mx:Label id="lblVersion"

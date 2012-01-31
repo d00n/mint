@@ -2,7 +2,6 @@ package com.simplediagrams.view.components
 {
     
     import mx.controls.ComboBox;
-    import mx.controls.Image;
 
     /**
     * Adapted from code by Greg Jastrab

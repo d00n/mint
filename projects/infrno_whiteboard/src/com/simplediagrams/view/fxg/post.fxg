@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Graphic version="2.0" viewHeight="400" viewWidth="550" ATE:version="1.0.0" flm:version="1.0.0" d:using="" xmlns="http://ns.adobe.com/fxg/2008" xmlns:ATE="http://ns.adobe.com/ate/2009" xmlns:d="http://ns.adobe.com/fxg/2008/dt" xmlns:flm="http://ns.adobe.com/flame/2008">
+  <Library>
+    <Definition name="StickyNote">
+      <Group>
+        <Group d:type="layer" d:userLabel="Layer 3">
+          <Path data="M0.35 27.15 0.35 0.75 29 0.75 29.8 27.1 0.35 27.15">
+            <fill>
+              <SolidColor alpha="0.2"/>
+            </fill>
+          </Path>
+        </Group>
+        <Group d:type="layer" d:userLabel="Layer 2">
+          <Path data="M28.4 27.9 -0.85 27.8Q0.4 17 0.1 6.7 0.05 6.3 0.05 5.9L0.05 0 29 0 29 5.9Q29 6.3 29 6.7 28.95 19.35 28.4 27.9">
+            <fill>
+              <LinearGradient x="14.125" y="-0.525" scaleX="27.652215" rotation="90.739536">
+                <GradientEntry ratio="0" color="#E7E67D"/>
+                <GradientEntry ratio="0.72941176" color="#EEEDA2"/>
+                <GradientEntry ratio="1" color="#EEEDA2"/>
+              </LinearGradient>
+            </fill>
+          </Path>
+        </Group>
+        <Group d:type="layer" d:userLabel="Layer 1">
+          <Path data="M1.85 4.2 27.8 4.2">
+            <stroke>
+              <SolidColorStroke weight="1" color="#E5E47C"/>
+            </stroke>
+          </Path>
+        </Group>
+      </Group>
+    </Definition>
+  </Library>
+  <Group d:type="layer" d:userLabel="Layer 1">
+    <StickyNote scaleX="6.5251465" scaleY="6.59552"/>
+  </Group>
+  <Private/>
+</Graphic>

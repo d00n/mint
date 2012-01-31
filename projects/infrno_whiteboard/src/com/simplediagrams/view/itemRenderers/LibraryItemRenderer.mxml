@@ -2,80 +2,69 @@
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
-				dataChange="dataChangeHandler(event);">
+			    xmlns:components="com.simplediagrams.view.components.*" width="40" height="40">
 	
 	<fx:Script> 
 		<![CDATA[    
-			import com.simplediagrams.events.DeleteItemFromCustomLibrary;
-			import com.simplediagrams.events.RenameItemInCustomLibrary;
-			import com.simplediagrams.model.SDCustomSymbolModel;
-			import com.simplediagrams.model.SDObjectModel;
-			import com.simplediagrams.model.SDSymbolModel;
-			import com.simplediagrams.util.Logger;
-			
-			import mx.core.ByteArrayAsset;
-				
-			[Bindable]
-			public var _imageSource:Object
-			
-			[Dispatcher]
-			public var dispatcher:IEventDispatcher
-			
+			import com.simplediagrams.model.LibraryManager;
+			import com.simplediagrams.model.libraries.ImageShape;
+			import com.simplediagrams.model.libraries.LibraryItem;
+			import com.simplediagrams.model.libraries.SWFShape;
+			import com.simplediagrams.model.libraries.VectorShape;
 			override public function set data(value:Object):void
 			{
-				super.data = value
-				var model:SDSymbolModel = SDSymbolModel(data)
+				if(data != value)
+				{
+					super.data = value;
+					invalidateProperties();
+				}
+			}
+			
+			protected override function commitProperties():void
+			{
+				super.commitProperties();
+				var model:LibraryItem = LibraryItem(data);
 				if (model)
 				{
 					this.toolTip = model.displayName
-					if (model.imageData)
-					{
-						_imageSource = model.imageData
-					}
-					else
-					{
-						_imageSource = new model.iconClass()
-					}
-				}
-				
-				
-			}
-			
-			
-			protected function dataChangeHandler(evt:Event):void 
-			{				
-				if (this.data is SDCustomSymbolModel)
-				{
-					// Create custom context menu. 
-					const cmi:ContextMenuItem = new ContextMenuItem("Rename Symbol");
-					cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onRenameSymbol);
-					const cmi2:ContextMenuItem = new ContextMenuItem("Delete Symbol from Library");
-					cmi2.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onDeleteFromLibrary);
+					shapePath.data = null;
 					
-					const cm:ContextMenu = new ContextMenu();
-					cm.hideBuiltInItems();
-					cm.customItems = [cmi, cmi2];
-					
-					contextMenu = cm;
-				}
+					if (model is SWFShape)
+					{
+						imgSWF.source = LibraryManager.getAssetPath(model, (model as SWFShape).path);
+						imgSWF.includeInLayout = true;
+						iconImage.visible = false
+						imgSWF.visible = true;
+					}
+					else if (model is ImageShape)
+					{
+						iconImage.source = LibraryManager.getAssetPath(model, (model as ImageShape).path);
+						iconImage.visible = true;
+						iconImage.includeInLayout = true;
+						imgSWF.visible = false
+					}
+					else if (model is VectorShape)
+					{					
+						var aspectRatio:Number = model.width/model.height;
+						if(aspectRatio >= 1)
+						{
+							shapePath.width = 40;
+							shapePath.height = 40 / aspectRatio;
+						}
+						else
+						{
+							shapePath.height = 40;
+							shapePath.width = 40 * aspectRatio;
+						}
+						shapePath.data = (model as VectorShape).path;
+						shapePath.visible = true;
+						shapePath.includeInLayout = true;
+						imgSWF.visible = false
+						iconImage.visible = false
+					}	
+					validateNow();
+				}			
 			}
-			
-			protected function onDeleteFromLibrary(event:ContextMenuEvent):void
-			{
-				var deleteEvt:DeleteItemFromCustomLibrary = new DeleteItemFromCustomLibrary(DeleteItemFromCustomLibrary.SHOW_DELETE_CUSTOM_SYMBOL_DIALOG, true)				
-				deleteEvt.libraryName = SDSymbolModel(data).libraryName
-				deleteEvt.symbolName = SDSymbolModel(data).symbolName
-				dispatcher.dispatchEvent(deleteEvt)
-			}
-			
-			protected function onRenameSymbol(event:ContextMenuEvent):void
-			{
-				var renameEvt:RenameItemInCustomLibrary = new RenameItemInCustomLibrary(RenameItemInCustomLibrary.SHOW_RENAME_CUSTOM_SYMBOL_DIALOG, true)
-				renameEvt.libraryName = SDSymbolModel(data).libraryName
-				renameEvt.oldSymbolName = SDSymbolModel(data).symbolName
-				dispatcher.dispatchEvent(renameEvt)
-			}
-			
 			
 		]]> 
 	</fx:Script>
@@ -83,10 +72,17 @@
 	<s:states>
 		<s:State name="normal" />
 	</s:states>
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
 	
-	<mx:Image id="iconImage" source="{_imageSource}" width="40" height="40" x="5" y="5" />
+	<mx:Image id="imgSWF" width="40" height="40" horizontalCenter="0" verticalCenter="0" includeInLayout="false" visible="false" mouseEnabled="false" mouseChildren="false" />
 	
-	<!--
-	<s:MovieClipSWFLoader id="iconImage" source="{_imageSource}" width="40" height="40" x="5" y="5" />
-	-->
+	<components:ShapePath id="shapePath" width="40" height="40" horizontalCenter="0" verticalCenter="0"  includeInLayout="false"  visible="false">
+		
+	</components:ShapePath>		
+	
+	<s:BitmapImage smooth="true" smoothingQuality="high" id="iconImage" scaleMode="letterbox" width="40" height="40" horizontalCenter="0" verticalCenter="0"  includeInLayout="false"  visible="false"/>
+	
+	
 </s:ItemRenderer>

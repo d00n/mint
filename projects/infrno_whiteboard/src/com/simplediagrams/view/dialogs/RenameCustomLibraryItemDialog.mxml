@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:TitleWindow 
+<s:TitleWindow defaultButton="{btnDone}"
 	xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	xmlns:mx="library://ns.adobe.com/flex/mx" 
@@ -7,17 +7,8 @@
 	xmlns:dialogs="com.mcquilleninteractive.comfen.view.dialogs.*" 
 	contentBackgroundColor="0xFFFFFF"
 	creationComplete="onCC()"
-	keyDown="onKeyDown(event)"
-    
-	title="Rename Custom Symbol"
-	
+	title="Rename Symbol" width="450" height="200"
 	>
-	
-	<fx:Metadata>
-		[Event(name='done', event='flash.events.Event')]
-		[Event(name='cancel', event='flash.events.Event')]
-	</fx:Metadata>
-	
 	<s:states>
 		<s:State name="normal"/>
 		<s:State name="warning"/>
@@ -25,45 +16,19 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import com.simplediagrams.business.DBManager;
-			import com.simplediagrams.controllers.DialogsController;
-			import com.simplediagrams.errors.SDObjectModelNotFoundError;
-			import com.simplediagrams.events.LoadDiagramEvent;
-			import com.simplediagrams.events.RenameItemInCustomLibrary;
-			import com.simplediagrams.model.DiagramModel;
-			import com.simplediagrams.model.LibraryManager;
-			import com.simplediagrams.model.SDObjectModel;
-			import com.simplediagrams.util.Logger;
-			
 			import flash.events.IEventDispatcher;
 			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
 			import mx.managers.FocusManager;
 			import mx.managers.PopUpManager;
 			import mx.utils.ObjectUtil;
+			
+			import spark.events.TextOperationEvent;
 						
 			[Bindable]
-			protected var _oldSymbolName:String
-			
-			[Bindable]
-			public var libraryName:String
-			
-			[Inject]
-			public var dialogsController:DialogsController
-			
-			[Dispatcher]
-			public var dispatcher:IEventDispatcher
-			
-			[Inject]
-			public var libraryManager:LibraryManager
-			
-			
-			public var warningMessage:String = ""
-										
-			public function set oldSymbolName(value:String):void
-			{
-				_oldSymbolName = value
-			}
-									
+			public var symbolName:String;
+
 			protected function onCC():void
 			{
 				focusManager.setFocus(txtName)
@@ -71,51 +36,33 @@
 			}
 			
 			public function onDone():void
-			{				
-				if (txtName.text=="")
+			{
+				if(txtName.text != symbolName)
 				{
-					currentState="warning"
-					return
-				}				
-				
-				var newName:String = txtName.text
-				try
-				{
-					var checkNewObj:SDObjectModel = libraryManager.getSDObjectModel(libraryName, newName)
-					if (checkNewObj)
-					{
-						currentState="warning"
-						warningMessage = "A symbol with that name already exists in this library."
-						return
-					}
+					symbolName = txtName.text;
+					dispatchEvent(new CloseEvent(CloseEvent.CLOSE, false, false, Alert.OK));
 				}
-				catch(error:SDObjectModelNotFoundError)
-				{
-					//no problem if symbol not found
-				}
-				
-				var evt:RenameItemInCustomLibrary = new RenameItemInCustomLibrary(RenameItemInCustomLibrary.RENAME_ITEM, true)
-				evt.libraryName = this.libraryName
-				evt.oldSymbolName = this._oldSymbolName
-				evt.newSymbolName = newName
-				dispatcher.dispatchEvent(evt)
-					
-				dialogsController.removeDialog(this)
+				else
+					onCancel();
 			}
 			
 			protected function onCancel():void
 			{
-				dialogsController.removeDialog(this)
+				dispatchEvent(new CloseEvent(CloseEvent.CLOSE, false, false, Alert.CANCEL));
 			}
 			
-			protected function onKeyDown(event:KeyboardEvent):void
+			
+			protected function txtName_changeHandler(event:TextOperationEvent):void
 			{
-				if (event.keyCode == Keyboard.ENTER)
+				if(txtName.text.length > 0)
 				{
-					onDone()
+					currentState = "normal";
+				}
+				else
+				{
+					currentState = "warning";
 				}
 			}
-			
 			
 		]]>
 	</fx:Script>
@@ -143,28 +90,19 @@
 	</s:layout>	
 	
 	<s:HGroup id="hbxWarning" includeIn="warning" width="100%"  paddingTop="10" paddingRight="10">
-		<s:Label text="{warningMessage}" color="#CC0000"   />
+		<s:Label text="Symbol name must be at least one character long." color="#CC0000"   />
 	</s:HGroup>
-	
-	<s:HGroup width="100%" paddingTop="10" paddingRight="10">		
-		<s:Label height="40" 
-				 width="420"
-				 text="IMPORTANT: If you change this custom symbol name, any saved files that use this symbol will not have access to it when loaded."  />
-	</s:HGroup>
-	
 	
 	<s:HGroup width="100%" paddingTop="10" paddingLeft="5" paddingRight="10" verticalAlign="top" height="100%"  >
 		<s:Label text="Symbol name:" verticalAlign="middle"/>
-		<s:TextInput id="txtName" width="100%" text="{_oldSymbolName}" restrict="0-9a-zA-Z" maxChars="100"/>
+		<s:TextInput id="txtName" width="100%" text="{symbolName}" change="txtName_changeHandler(event)" maxChars="100"/>
 	</s:HGroup>
 	
 	
 	<s:HGroup  width="100%" horizontalAlign="right" paddingRight="10" paddingTop="5" paddingBottom="10">
-		<s:Button id="btnDone" label="DONE" width="90" height="30" click="onDone()" styleName="blueButton"  />
+		<s:Button id="btnDone" enabled.warning="false" label="DONE" width="90" height="30" click="onDone()" styleName="blueButton"  />
 		<s:Button label="CANCEL" width="90" height="30" click="onCancel()" styleName="blueButton" />
 	</s:HGroup>
-	
-	
 	
 </s:TitleWindow>
 

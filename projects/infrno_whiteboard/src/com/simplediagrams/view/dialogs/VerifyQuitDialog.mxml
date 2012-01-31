@@ -18,7 +18,6 @@
 			import mx.events.ValidationResultEvent;
 			import com.simplediagrams.events.LoadDiagramEvent;
 			import com.simplediagrams.model.DiagramModel;
-			import com.simplediagrams.business.DBManager;
 			import com.simplediagrams.model.LibraryManager
 			
 			import mx.managers.PopUpManager

@@ -4,7 +4,7 @@
         xmlns:mx="library://ns.adobe.com/flex/mx"
         xmlns:s="library://ns.adobe.com/flex/spark"
         minWidth="36" minHeight="36"
-        mouseChildren="{currentState=='selected'}"
+		doubleClick="{hostComponent.onDoubleClick()}"
         blendMode="normal">
     
     <fx:Metadata>
@@ -20,23 +20,7 @@
        		import com.simplediagrams.model.SDTextAreaModel       		
        		import com.simplediagrams.util.Logger
        		
-			
-			protected function onTextAreaChange():void
-			{
-				if (mainTextArea.text=="")
-				{
-					mainTextArea.setStyle("borderVisible", true)
-				}
-				else
-				{					
-					mainTextArea.setStyle("borderVisible", false)
-				}
-			}
-			
-			protected function onDoubleClick():void
-			{
-				mainTextArea.focusEnabled = true
-			}
+									
        	
     	]]>
     </fx:Script>
@@ -56,29 +40,37 @@
              </s:stroke>
        </s:Rect>
     </s:Graphic>
+		
 	
-  <s:TextArea id="mainTextArea"
-        	  color="{hostComponent.fontColor}"
-    		  contentBackgroundAlpha="0"
-    		  fontSize="{hostComponent.fontSize}"
-			  textAlign="{hostComponent.textAlign}"
-			  fontWeight="{hostComponent.fontWeight}"
-			  text="{hostComponent.text}"
-			  doubleClickEnabled="true"
-			  doubleClick="onDoubleClick()"
-    		  selectable="true"
-    		  width="{hostComponent.width-10}"
-    		  height="{hostComponent.height-10}" 
-    		  contentBackgroundAlpha.selected=".5" 
-			  borderColor="#555555"
-			  change="onTextAreaChange()"
-			  horizontalScrollPolicy="off"
-			  verticalScrollPolicy="off"
-			  fontFamily="{hostComponent.fontFamily}"
-    		  x = "5"
-    		  y = "5"
-              heightInLines="10"
-              widthInChars="15"/>
-   
+	<s:RichEditableText id="mainText"
+				color="{hostComponent.fontColor}"
+				fontSize="{hostComponent.fontSize}"
+				textAlign="{hostComponent.textAlign}"
+				fontWeight="{hostComponent.fontWeight}"
+				text="{hostComponent.text}"
+				width="{hostComponent.width-10}"
+				height="{hostComponent.height-10}" 
+				fontFamily="{hostComponent.fontFamily}"
+				enabled="{hostComponent.textAreaEnabled}"
+				left = "5"
+				top = "5"
+				bottom="2" 
+				right="2"
+			    
+				/>
+
+	
+	<s:Group  visible="{mainText.text==''}" top="0" left="0" right="0" bottom="0" excludeFrom="selected" >
+		<s:Rect top="0" left="0" right="0" bottom="0" radiusX="5" radiusY="5" >
+			<s:fill>
+				<mx:SolidColor color="#000000" alpha=".3"/>
+			</s:fill>
+		</s:Rect>				
+		<s:Label text="(double-click to add text)" color="#FFFFFF" alpha=".7" verticalCenter="0" width="100%" textAlign="center"/>
+	</s:Group>
+	
+	
   
+	
+	
 </s:SparkSkin>

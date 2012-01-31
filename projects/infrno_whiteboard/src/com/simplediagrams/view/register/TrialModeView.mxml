@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:fxg="com.simplediagrams.view.fxg.*" >
+	
+	<fx:Metadata>
+		[Event(name="register", type="flash.events.Event")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.simplediagrams.events.LicenseStatusEvent;
+			import com.simplediagrams.events.RegistrationViewEvent;
+			import com.simplediagrams.model.RegistrationManager;
+			
+			import spark.utils.TextFlowUtil;
+			
+			[Bindable]
+			[Inject]
+			public var registrationManager:RegistrationManager		
+									
+			protected function onUseTrialVersion():void
+			{
+				var evt:RegistrationViewEvent = new RegistrationViewEvent(RegistrationViewEvent.USE_IN_TRIAL_MODE, true)
+				dispatchEvent(evt)				
+			}
+			
+			protected function onRegister():void
+			{
+				dispatchEvent(new Event("register", true))
+			}
+			
+			protected function onBuyNow():void
+			{
+				var regEvent:RegistrationViewEvent = new RegistrationViewEvent(RegistrationViewEvent.SHOW_BUY_NOW_SCREEN,true)
+				dispatchEvent(regEvent)
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+				
+		
+			
+	<s:Label 
+		color="#000000"
+		text="Welcome to SimpleDiagrams Trial Version"
+		fontSize="16"
+		x="15" y="13"
+	    />	
+	
+	<s:Group  x="20" y="50" width="200" height="184" >
+		
+		<fxg:post />
+		
+		<s:Label y="30" text="{registrationManager.trialDaysRemaining}"  
+				 textAlign="center"  
+				 width="100%"  
+				 styleName="trialDaysText"  
+				 paddingRight="5"/>
+		
+		<s:Label y="120" 
+				 text="TRIAL DAYS LEFT" 
+				 width="100%"
+				 textAlign="center" 
+				 fontFamily="abe"  
+				 styleName="trialDaysSubtitle"  
+				 paddingRight="5"/>
+		
+	</s:Group>
+		
+	
+	
+	
+	<s:VGroup x="230" y="60" width="175"  gap="0" paddingTop="30">
+	
+		<!-- TODO: Add trial days remaining image -->
+		
+		<s:TextArea 
+				textFlow="{TextFlowUtil.importFromString(registrationManager.trialVersionMsg)}"
+				 editable="false"
+				 width="100%" 
+				 borderVisible="false"	
+				 contentBackgroundAlpha="0"
+				 fontSize="14"
+				 height="140"
+				 />
+		
+			
+		
+	</s:VGroup>
+	
+	<s:VGroup x="430" y="65" visible="{registrationManager.showTrialVsFreeExplanation}">
+		
+		
+		<s:RichEditableText 
+			editable="false" focusEnabled="false"
+		    width="160"
+			color="#FFFFFF">
+			
+			<s:textFlow>
+				<s:TextFlow>
+					<s:p fontWeight="bold">Why a trial mode?<s:br/></s:p>
+					<s:p >SimpleDiagrams has moved from a free/full version format to a 30-day trial format. <s:a href="http://www.simplediagrams.com/help/trialVersionChange">You can read why here.</s:a></s:p>
+				</s:TextFlow>
+			</s:textFlow>
+			
+		</s:RichEditableText>
+		 
+		
+		
+	</s:VGroup>
+
+					
+	<s:HGroup x="15" y="315" >
+	
+		<s:Button id="btnStartTrialVersion" 
+				  styleName="greyButton"
+					click="onUseTrialVersion()"
+					label="Use Trial Version"
+					width="150" height="35"
+					/>	
+			
+		<mx:Spacer width="70"/>			
+		
+		<s:Button id="btnButNow" 					  
+				  styleName="blueButton"
+				  label="Buy Now"
+				  width="150" height="35"
+				  click="onBuyNow()"
+				  />
+		
+						
+	</s:HGroup>
+		
+	
+</s:Group>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:tools="com.simplediagrams.view.tools.*">
+	<fx:Script>
+		<![CDATA[
+			import com.simplediagrams.model.tools.SelectTool;
+			import com.simplediagrams.model.tools.ToolBase;
+			import com.simplediagrams.model.tools.Tools;
+			
+			private var _tool:SelectTool;
+			
+			public function get tool():ToolBase
+			{
+				return _tool;
+			}
+			
+			public function set tool(value:ToolBase):void
+			{
+				if(_tool)
+					_tool.removeEventListener(Event.CHANGE, onToolChange);
+				_tool = value as SelectTool;
+				if(_tool)
+				{
+					onToolChange(null);
+					_tool.addEventListener(Event.CHANGE, onToolChange);
+				}
+				else
+				{
+					marqueeView.tool = null;
+					transformView.tool = null;
+					lineTransformView.tool = null;
+					visible = false;
+				}
+			}
+			
+			public function onToolChange(event:Event):void
+			{
+				visible = true;
+				switch(_tool.currentTool)
+				{
+					case Tools.MARQUEE_TOOL: 
+							lineTransformView.tool = null;
+							transformView.tool = null;
+							marqueeView.tool = _tool.currentToolImpl;
+						break;
+					case Tools.TRANSFORM_TOOL: 
+							marqueeView.tool = null;
+							lineTransformView.tool = null;
+							transformView.tool = _tool.currentToolImpl;
+						break;
+					case Tools.LINE_TRANSFORM_TOOL: 
+							marqueeView.tool = null;
+							transformView.tool = null;
+							lineTransformView.tool = _tool.currentToolImpl;
+						break;
+				}
+			}
+		]]>
+	</fx:Script>
+	<tools:MarqueeToolView id="marqueeView" />
+	<tools:TransformToolView id="transformView"/>
+	<tools:LineTransformToolView id="lineTransformView"/>
+</s:Group>

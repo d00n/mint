@@ -1,214 +1,38 @@
 package com.simplediagrams.model
 {
-	import com.simplediagrams.model.mementos.ITransformMemento;
-	import com.simplediagrams.model.mementos.SDObjectMemento;
-	import com.simplediagrams.model.mementos.SDSymbolMemento;
-	import com.simplediagrams.util.Logger;
-	import com.simplediagrams.view.SDComponents.ISDComponent;
-	import com.simplediagrams.view.SDComponents.SDSymbol;
-	
-	import flash.text.engine.FontWeight;
-	import flash.utils.ByteArray;
-
 	[Bindable]
-	public class SDSymbolModel extends SDObjectModel implements ITransformMemento
+	[RemoteClass]
+	public class SDSymbolModel extends SDObjectModel implements IResourceLink
 	{	
+		public static const TEXT_POSITION_ABOVE:String = "above"
+		public static const TEXT_POSITION_TOP:String = "top"
+		public static const TEXT_POSITION_MIDDLE:String = "middle"
+		public static const TEXT_POSITION_BOTTOM:String = "bottom"
+		public static const TEXT_POSITION_BELOW:String = "below"
 			
-						
-		public var libraryName:String	
-		public var symbolName:String
-		public var isCustom:Boolean = false
-			
-		public var imageData:ByteArray //this will only be set if this is a custom symbol
-		
-		protected var _fontWeight:String  = "normal";
-		protected var _fontFamily:String  = ApplicationModel.DEFAULT_SYSTEM_FAULT
-		protected var _textAlign:String  = "left";
-		private var _fontSize:Number = 12
-		protected var _textPosition:String = TEXT_POSITION_TOP
+		public var libraryName:String;	
+		public var symbolName:String;
+		public var fontWeight:String  = "normal";
+		public var fontFamily:String  = "Arial";
+		public var textAlign:String  = "left";
+		public var fontSize:Number = 12;
+		public var textPosition:String = TEXT_POSITION_TOP;
 		public var text:String  = "";
+		public var displayName:String; 
+		public var lineWeight:Number = 1;
+		public var isBitmap:Boolean = false;
+		public var maintainAspectRatio:Boolean = true	//for swfs
+		public var startWithDefaultColor:Boolean = false //for swfs
 		
-		public var displayName:String //this is assigned by Library and used when symbol is placed in library for toolTip and such
-				
-		
-		public function SDSymbolModel(symName:String="", initialWidth:Number=50, initialHeight:Number=50, colorizable:Boolean=true)
+		public function SDSymbolModel(libraryName:String = "", symbolName:String="", displayName:String = "")
 		{
 			super();
-			symbolName = symName
-			displayName = symName //default behavior is display name is same as symbol name...can be changed in init function of library
-			_width = initialWidth
-			_height = initialHeight
-			this.colorizable = colorizable
+			this.libraryName = libraryName;
+			this.symbolName = symbolName;
+			if(displayName == "")
+				displayName = symbolName;
+			this.displayName = symbolName;
 		}
-		
-		public override function createSDComponent():ISDComponent
-		{			
-			var component:SDSymbol = new SDSymbol()
-			component.objectModel = this			
-			this.sdComponent = component				
-			return component
-		}
-		
-		public function get textAlign():String
-		{
-			
-			return _textAlign	
-		}
-		
-		public function set textAlign(value:String):void
-		{
-			if (value=="left" || value=="right" || value=="center" || value=="justify")
-			{
-				_textAlign=value
-			}
-			else
-			{
-				_textAlign = "left"
-				Logger.warn("unrecognized textAlign value: " + value, this)
-			}
-		}
-		
-		public function get textPosition():String
-		{
-			
-			return _textPosition	
-		}
-		
-		public function set textPosition(value:String):void
-		{
-			
-			if (value==TEXT_POSITION_ABOVE || value==TEXT_POSITION_TOP || value==TEXT_POSITION_MIDDLE || value==TEXT_POSITION_BOTTOM || value==TEXT_POSITION_BELOW)
-			{
-				_textPosition=value
-			}
-			else
-			{
-				_textPosition = TEXT_POSITION_TOP
-				Logger.warn("unrecognized textPosition value: " + value, this)
-			}
-		}
-		
-		
-		public function set fontWeight(weight:String):void
-		{
-			if (weight != FontWeight.BOLD && weight != FontWeight.NORMAL)
-			{
-				return
-			}			
-			_fontWeight = weight
-			
-		}
-		
-		public function get fontWeight():String
-		{			
-			return	_fontWeight 
-		}
-		
-		
-		
-		public function set fontFamily(family:String):void
-		{	
-			_fontFamily = family			
-		}
-		
-		public function get fontFamily():String
-		{			
-			return	_fontFamily 
-		}
-		
-		
-		
-		public function get fontSize():Number
-		{
-			return _fontSize	
-		}
-		
-		public function set fontSize(value:Number):void
-		{
-			if (fontSize<3) value = 3
-			_fontSize = value
-		}
-		
-		
-	
-		public function getTextYPosition():Number
-		{
-			var textYPos:Number = 5
-			switch (textPosition)
-			{
-				case TEXT_POSITION_ABOVE:
-					textYPos = -20
-					break
-				
-				case TEXT_POSITION_TOP:
-					textYPos = 5
-					break
-				
-				case TEXT_POSITION_MIDDLE:					
-					textYPos = uint(height/2) - uint(fontSize / 2)
-					break
-				
-				case TEXT_POSITION_BOTTOM:
-					textYPos = height - (fontSize + 10)
-					break
-				
-				case TEXT_POSITION_BELOW:
-					textYPos = height + 5 
-					break
-				
-				default:
-					Logger.error("unrecognized textPosition: " +textPosition, this)
-				
-			}
-			return textYPos
-		
-		}
-		
-		override public function getMemento():SDObjectMemento
-		{
-			var memento:SDSymbolMemento = new SDSymbolMemento()
-			captureBasePropertiesInMemento(memento)
-			
-			Logger.debug("color: " + memento.color, this)
-			
-			//now record SDSymbolModel's specific properties into memento
-			memento.symbolName = this.symbolName
-			memento.libraryName = this.libraryName
-			
-			var mem:SDSymbolMemento = SDSymbolMemento(memento)
-			mem.symbolName = symbolName
-			mem.libraryName = libraryName
-			mem.textAlign = textAlign
-			mem.text = text
-			mem.fontFamily = fontFamily
-			mem.fontSize = fontSize
-			mem.fontWeight = fontWeight
-			mem.textPosition = textPosition
-			mem.isCustom = isCustom
-				
-			return mem 
-		}
-		
-		
-		override public function setMemento(memento:SDObjectMemento):void
-		{
-			//set base properties from memento
-			this.setBasePropertiesFromMemento(memento)
-		
-			//Symbol specific properties
-			var mem:SDSymbolMemento = SDSymbolMemento(memento)
-			symbolName = mem.symbolName
-			libraryName = mem.libraryName
-			fontFamily = mem.fontFamily
-			textAlign = mem.textAlign
-			text = mem.text
-			textPosition = mem.textPosition
-			isCustom  = mem.isCustom 
-			fontSize = mem.fontSize 
-			fontWeight = mem.fontWeight
-			
-		}
-				
 		
 		
 	}

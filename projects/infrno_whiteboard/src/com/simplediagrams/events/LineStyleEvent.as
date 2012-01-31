@@ -4,10 +4,14 @@ package com.simplediagrams.events
 	
 	public class LineStyleEvent extends Event
 	{
+		public static const LINE_STYLE_CHANGE:String = "lineStyleChange"
+		
 		public static const LINE_START_STYLE_CHANGE:String = "lineStartStyleChange"
 		public static const LINE_END_STYLE_CHANGE:String = "lineEndStyleChange"
+			
 		public static const LINE_WEIGHT_CHANGE:String = "lineWeightChange"
-		
+		public static const SYMBOL_LINE_WEIGHT_CHANGE:String = "symbolLineWeightChange"
+			
 		public var lineStyle:int
 		public var lineWeight:int
 		

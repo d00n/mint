@@ -14,7 +14,8 @@ package com.simplediagrams.controllers
 	
 	import mx.controls.Alert;
 	import mx.core.FlexGlobals;
-//	import mx.events.FlexNativeMenuEvent;
+	import mx.events.CloseEvent;
+	import mx.events.FlexNativeMenuEvent;
 	
 	
 	public class MenuController
@@ -52,7 +53,7 @@ package com.simplediagrams.controllers
 		}
 					
 		
-		[Mediate(event="LoadDiagramEvent.DIAGRAM_LOADED")]
+		[Mediate(event="LoadDiagramEvent.DIAGRAM_LOADED_FROM_FILE")]
 		[Mediate(event="CreateNewDiagramEvent.NEW_DIAGRAM_CREATED")]
 		public function onEnableDiagramMenus(event:Event):void
 		{
@@ -109,7 +110,7 @@ package com.simplediagrams.controllers
 					}
 				}		
 			}
-//			FlexGlobals.topLevelApplication.appMenu.dataProvider = ApplicationModel.menuDataArr
+			FlexGlobals.topLevelApplication.appMenu.dataProvider = ApplicationModel.menuDataArr
 			
 		}		
 
@@ -141,32 +142,48 @@ package com.simplediagrams.controllers
 			
 			var cmd:String = event.command
 
+			if (cmd=="registerApp")
+			{				
+				if (registrationManager.isLicensed)
+				{
+					Alert.show("This SimpleDiagrams application is already registered", "Relax")
+					return
+				}
+				
+				var regEvent:RegistrationViewEvent = new RegistrationViewEvent(RegistrationViewEvent.SHOW_REGISTRATION_SCREEN,true)
+				dispatcher.dispatchEvent(regEvent)
+				return
+			}
+				
 			if (applicationModel.menuEnabled==false) return
 				
 						
 			switch(cmd)
 			{
 				
-				/* SimpleDiagrams */
+				
+				
 				case "preferences":						
 					var prefEvent:PreferencesEvent = new PreferencesEvent(PreferencesEvent.SHOW_PREFERENCES_WINDOW,true)
 					dispatcher.dispatchEvent(prefEvent)
 					break
 				
-				case "registration":
+				
+				
+				
+				case "unregister":
 					
-					if (registrationManager.isLicensed)
+					if (registrationManager.isLicensed==false)
 					{
-						Alert.show("This SimpleDiagrams application is already registered")
+						Alert.show("This SimpleDiagrams application is not registered")
 						return
 					}
+					Alert.show("Do you want to unregister your license key for this installation of SimpleDiagrams?","Unregister?",Alert.YES | Alert.CANCEL, null, onUnregisterResponse)
 					
-					var regEvent:RegistrationViewEvent = new RegistrationViewEvent(RegistrationViewEvent.SHOW_REGISTRATION_SCREEN,true)
-					dispatcher.dispatchEvent(regEvent)
 					break
 				
 				case "about":
-					var aboutEvent:Registration = new AboutEvent(AboutEvent.SHOW_ABOUT_WINDOW,true)
+					var aboutEvent:AboutEvent = new AboutEvent(AboutEvent.SHOW_ABOUT_WINDOW,true)
 					dispatcher.dispatchEvent(aboutEvent)
 					break
 				
@@ -193,7 +210,7 @@ package com.simplediagrams.controllers
 					dispatcher.dispatchEvent(new CloseDiagramEvent(CloseDiagramEvent.CLOSE_DIAGRAM, true))
 					break
 				
-				
+
 				
 				/* Diagram */
 				
@@ -224,6 +241,16 @@ package com.simplediagrams.controllers
 				
 				case "quit_application":	
 					dispatcher.dispatchEvent(new ApplicationEvent(ApplicationEvent.QUIT, true))
+					break
+				
+				case "fit_to_bg":
+					dispatcher.dispatchEvent(new DiagramEvent(DiagramEvent.FIT_DIAGRAM_SIZE_TO_DEFAULT_BG_SIZE, true))
+					break
+				
+				case "copy_diagram_to_clipboard":
+					exportEvent = new ExportDiagramUserRequestEvent(ExportDiagramUserRequestEvent.EXPORT_DIAGRAM, true)							
+					exportEvent.destination = ExportDiagramUserRequestEvent.DESTINATION_CLIPBOARD
+					dispatcher.dispatchEvent(exportEvent)
 					break
 				
 				/* EDIT */
@@ -299,48 +326,40 @@ package com.simplediagrams.controllers
 					break
 				
 				
-				/* STYLE */
-				case "chalkboard_style":	
-					var styleEvent:StyleEvent = new StyleEvent(StyleEvent.CHANGE_STYLE, true)
-					styleEvent.styleName = DiagramStyleManager.CHALKBOARD_STYLE
-					dispatcher.dispatchEvent(styleEvent)
-					break
-				
-				case "whiteboard_style":	
-					styleEvent = new StyleEvent(StyleEvent.CHANGE_STYLE, true)
-					styleEvent.styleName = DiagramStyleManager.WHITEBOARD_STYLE
-					dispatcher.dispatchEvent(styleEvent)
-					break
-				
-				case "napkin_style":	
-					styleEvent = new StyleEvent(StyleEvent.CHANGE_STYLE, true)
-					styleEvent.styleName = DiagramStyleManager.NAPKIN_STYLE
-					dispatcher.dispatchEvent(styleEvent)
-					break
-				
-				case "basic_style":	
-					styleEvent = new StyleEvent(StyleEvent.CHANGE_STYLE, true)
-					styleEvent.styleName = DiagramStyleManager.BASIC_STYLE
-					dispatcher.dispatchEvent(styleEvent)
-					break
 				
 				
 				/* LIBRARIES */
 				
 				case "manage_local_libraries":
-					dispatcher.dispatchEvent(new LibraryEvent(LibraryEvent.MANAGE_LIBRARIES, true))
+					dispatcher.dispatchEvent(new ApplicationEvent(ApplicationEvent.SHOW_MANAGE_LIBRARIES));
 					break
 				
 				case "download_libraries":
 					dispatcher.dispatchEvent(new DownloadLibraryEvent(DownloadLibraryEvent.DOWNLOAD_AVAILABLE_LIBARIES_LIST, true))
 					break
-				
+				case "load_libraries_database":
+					dispatcher.dispatchEvent(new LibraryEvent(LibraryEvent.IMPORT_LIBRARIES_DATABASE));
+					break;
 				case "load_library_plugin_from_file":
-					dispatcher.dispatchEvent(new LoadLibraryPluginEvent(LoadLibraryPluginEvent.LOAD_LIBRARY_PLUGIN_FROM_FILE, true))
+					dispatcher.dispatchEvent(new LibraryEvent(LibraryEvent.IMPORT_LIBRARY));
 					break
 				
 				case "new_custom_library":
-					dispatcher.dispatchEvent(new CreateCustomLibraryEvent(CreateCustomLibraryEvent.SHOW_CREATE_CUSTOM_LIBRARY_DIALOG, true))
+					dispatcher.dispatchEvent(new ApplicationEvent(ApplicationEvent.SHOW_CREATE_LIBRARY));
+					break
+				
+				/* ANNOTATIONS */
+				
+				case "edit_index_card_default_properties":
+					var annotEvent:AnnotationToolEvent  = new AnnotationToolEvent(AnnotationToolEvent.EDIT_DEFAULT_PROPERTIES, true)
+					annotEvent.annotationType = AnnotationToolModel.INDEX_CARD
+					dispatcher.dispatchEvent(annotEvent)
+					break
+				
+				case "edit_sticky_note_default_properties":					
+					annotEvent  = new AnnotationToolEvent(AnnotationToolEvent.EDIT_DEFAULT_PROPERTIES, true)
+					annotEvent.annotationType = AnnotationToolModel.STICKY_NOTE_TOOL
+					dispatcher.dispatchEvent(annotEvent)
 					break
 				
 				/* VIEW MENU */
@@ -351,6 +370,13 @@ package com.simplediagrams.controllers
 				
 				case "zoom_in":
 					dispatcher.dispatchEvent(new ZoomEvent(ZoomEvent.ZOOM_IN, true))
+					break
+				
+				
+				/* WINDOW MENU */
+				
+				case "window_minimize":		
+					FlexGlobals.topLevelApplication.minimize()					
 					break
 				
 				
@@ -385,6 +411,14 @@ package com.simplediagrams.controllers
 			
 		}
 		
+		protected function onUnregisterResponse(event:CloseEvent):void
+		{
+			if (event.detail==Alert.YES)
+			{
+				var regEvent:RegisterLicenseEvent = new RegisterLicenseEvent(RegisterLicenseEvent.UNREGISTER_LICENSE,true)
+				dispatcher.dispatchEvent(regEvent)
+			}
+		}
 		
 		
 		

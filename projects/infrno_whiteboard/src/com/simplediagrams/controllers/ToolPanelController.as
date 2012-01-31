@@ -4,18 +4,24 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.events.ChangeDepthEvent;
 	import com.simplediagrams.events.CloseDiagramEvent;
 	import com.simplediagrams.events.DrawingBoardEvent;
-	import com.simplediagrams.events.PositionEvent;
 	import com.simplediagrams.events.ToolPanelEvent;
 	import com.simplediagrams.model.*;
+	import com.simplediagrams.model.tools.ToolBase;
+	import com.simplediagrams.model.tools.Tools;
 	import com.simplediagrams.util.Logger;
 	import com.simplediagrams.view.SDComponents.SDBase;
 	
+	import flash.events.Event;
+	import flash.events.IEventDispatcher;
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
 	
+	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
 	import mx.core.FlexGlobals;
 	import mx.managers.CursorManager;
+	
+	import org.swizframework.events.BeanEvent;
 	
 
 	public class ToolPanelController
@@ -24,7 +30,10 @@ package com.simplediagrams.controllers
 		public var dispatcher:IEventDispatcher;
 		
 		[Inject]
-		public var diagramModel:DiagramModel;
+		public var diagramManager:DiagramManager;
+		
+		[Inject]
+		public var toolsManager:ToolsManager;
 		
 		[Bindable]
 		[Embed(source="assets/img/icons/zoom_out.png")]
@@ -40,22 +49,44 @@ package com.simplediagrams.controllers
 		
 		
 		[Bindable]
+		[Embed(source="assets/img/icons/line_cursor.png")]
+		public var LineToolIcon:Class
+		
+		
+		[Bindable]
 		[Embed(source="assets/img/icons/pencil.png")]
 		public var PencilIcon:Class
 		
-		protected var _suspendedToolType:String = DiagramModel.POINTER_TOOL
+		protected var _suspendedToolType:String = Tools.POINTER_TOOL;
 		
 		public function ToolPanelController()
-		{
-			
+		{	
 			FlexGlobals.topLevelApplication.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown)
 			FlexGlobals.topLevelApplication.addEventListener(KeyboardEvent.KEY_UP, onKeyUp)
+		}
+		
+		[PostConstruct]
+		public function onPostConstruct():void	
+		{
+			toolsManager.addEventListener(Event.CHANGE, onToolChange);
+			onToolChange(null);
+		}
+		
+		private var _oldTool:ToolBase;
+		
+		private function onToolChange(event:Event):void
+		{
+			if(_oldTool)
+				dispatcher.dispatchEvent(new BeanEvent(BeanEvent.TEAR_DOWN_BEAN, _oldTool,"currentTool"));
+			_oldTool = toolsManager.selectedToolImpl;
+			if(_oldTool)
+				dispatcher.dispatchEvent(new BeanEvent(BeanEvent.SET_UP_BEAN, _oldTool,"currentTool"));
 		}
 		
 		protected function onKeyDown(event:KeyboardEvent):void
 		{
 			//If using zoom control, shift toggles between + and -
-			if (diagramModel.currToolType==DiagramModel.ZOOM_TOOL)
+			if (toolsManager.selectedTool==Tools.ZOOM_TOOL)
 			{
 				if (event.keyCode == Keyboard.SHIFT)
 				{
@@ -68,7 +99,7 @@ package com.simplediagrams.controllers
 		
 		protected function onKeyUp(event:KeyboardEvent):void
 		{
-			if (diagramModel.currToolType==DiagramModel.ZOOM_TOOL)
+			if (toolsManager.selectedTool==Tools.ZOOM_TOOL)
 			{
 				Logger.debug("setting cursor to in...", this)
 				CursorManager.removeAllCursors()
@@ -139,10 +170,10 @@ package com.simplediagrams.controllers
 		public function suspendCurrentTool(event:ToolPanelEvent):void
 		{
 			
-			if (diagramModel.currToolType == DiagramModel.POINTER_TOOL) return
+			if (toolsManager.selectedTool == Tools.POINTER_TOOL) return
 			CursorManager.removeAllCursors()
-			this._suspendedToolType = diagramModel.currToolType
-			changeToolAction(DiagramModel.POINTER_TOOL)
+			this._suspendedToolType = toolsManager.selectedTool;
+			changeToolAction(Tools.POINTER_TOOL)
 		}
 		
 		[Mediate(event="DrawingBoardEvent.MOUSE_OVER")]
@@ -158,31 +189,30 @@ package com.simplediagrams.controllers
 		{
 			switch (toolType)
 			{
-				case DiagramModel.POINTER_TOOL:
-					diagramModel.currToolType = DiagramModel.POINTER_TOOL
+				case Tools.POINTER_TOOL:
+					toolsManager.selectedTool = Tools.POINTER_TOOL
 					break
 				
-				case DiagramModel.PENCIL_TOOL:
-					diagramModel.currToolType = DiagramModel.PENCIL_TOOL
-					//make sure nothing is selected
-					diagramModel.clearSelection()
+				case Tools.PENCIL_TOOL:
+					toolsManager.selectedTool = Tools.PENCIL_TOOL
 					CursorManager.setCursor(PencilIcon,2, 0, -15)	
-					diagramModel.clearSelection()	
+					diagramManager.diagramModel.selectedObjects.removeAll();	
 					break
 				
-				case DiagramModel.TEXT_TOOL:
-					diagramModel.currToolType = DiagramModel.TEXT_TOOL
+				case Tools.TEXT_TOOL:
+					toolsManager.selectedTool = Tools.TEXT_TOOL
 					CursorManager.setCursor(TextCursorIcon, 2, 0, 0)
-					diagramModel.clearSelection()
+					diagramManager.diagramModel.selectedObjects.removeAll();	
 					break
 				
-				case DiagramModel.LINE_TOOL:
-					diagramModel.currToolType = DiagramModel.LINE_TOOL	
-					diagramModel.clearSelection()
+				case Tools.LINE_TOOL:
+					toolsManager.selectedTool = Tools.LINE_TOOL	
+					CursorManager.setCursor(LineToolIcon, 2, -8, -8)
+					diagramManager.diagramModel.selectedObjects.removeAll();	
 					break
 				
-				case DiagramModel.ZOOM_TOOL:
-					diagramModel.currToolType = DiagramModel.ZOOM_TOOL	
+				case Tools.ZOOM_TOOL:
+					toolsManager.selectedTool = Tools.ZOOM_TOOL	
 					CursorManager.setCursor(ZoomInIcon)
 					break
 				

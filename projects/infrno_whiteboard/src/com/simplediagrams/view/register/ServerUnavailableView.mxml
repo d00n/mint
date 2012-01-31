@@ -23,9 +23,9 @@
 										"Please make sure you have an Internet connection and try again or <a href='http://www.simplediagrams.com/contact/'>contact us</a> for help."
 						
 			
-			public function onStartFreeVersion():void
+			public function onStartTrialVersion():void
 			{
-				var evt:RegistrationViewEvent = new RegistrationViewEvent(RegistrationViewEvent.USE_IN_FREE_MODE, true)
+				var evt:RegistrationViewEvent = new RegistrationViewEvent(RegistrationViewEvent.USE_IN_TRIAL_MODE, true)
 				dispatchEvent(evt)				
 			}
 			
@@ -57,7 +57,7 @@
 	    verticalAlign="middle"
 		 x="15" y="50">
 			
-		<mx:Image id="imgCake" source="@Embed('assets/img/cake.png')" />
+		<s:Image id="imgCake" source="@Embed('assets/img/cake.png')" />
 				
 		<s:Label 
 			color="#000000"
@@ -76,10 +76,10 @@
 	
 	<mx:HBox x="15" y="315" >
 		
-		<s:Button id="btnStartFreeVersion" 
-				  click="onStartFreeVersion()"
+		<s:Button id="btnStartTrialVersion" 
+				  click="onStartTrialVersion()"
 				  styleName="blueButton"
-				  label="Start Free Version"
+				  label="Use Trial Version"
 				  width="170" height="30"
 				  />	
 		

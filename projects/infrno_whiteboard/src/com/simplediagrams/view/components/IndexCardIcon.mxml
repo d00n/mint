@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			[Bindable]
+			public var backgroundColor:uint = 0xFFFFFF
+			
+		]]>
+	</fx:Script>
+	
+	<!-- Index Card shape -->
+	<s:Group left="0" top="0" right="0" bottom="0" scaleGridBottom="29" scaleGridTop="1" scaleGridLeft="1" scaleGridRight="49"  >
+		<s:Path data="M50 7 50 10 50 13 50 15.95 50 19 50 21.95 50 25 50 28 50 30 0 30 0 28 0 25 0 21.95 0 19 0 15.95 0 13 0 10 0 7 0 4 0 0 50 0 50 4 50 7 0 7 50 7M0 4 50 4 0 4M0 21.95 50 21.95 0 21.95M0 19 50 19 0 19M0 13 50 13 0 13M0 10 50 10 0 10M0 15.95 50 15.95
+				0 15.95M0 28 50 28 0 28M0 25 50 25 0 25">
+			<s:fill>
+				<s:SolidColor color="{backgroundColor}"/>
+			</s:fill>
+		</s:Path>
+		<s:Path data="M0 7 50 7M0 21.95 50 21.95M0 19 50 19M0 13 50 13M0 10 50 10M0 15.95 50 15.95M0 28 50 28M0 25 50 25">
+			<s:stroke>
+				<s:SolidColorStroke weight="0.1" color="#CFE1FF"/>
+			</s:stroke>
+		</s:Path>
+		<s:Path data="M0 4 50 4">
+			<s:stroke>
+				<s:SolidColorStroke weight="0.1" color="#CC5B4F"/>
+			</s:stroke>
+		</s:Path>
+	</s:Group>
+	
+</s:Group>

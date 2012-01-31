@@ -96,7 +96,6 @@ package com.simplediagrams.commands
 		/**
 		 * Returns the undo type associated with the command.
 		 */
-		[Bindable]
 		public function get undoType() : String
 		{
 			return _undoType;

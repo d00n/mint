@@ -3,7 +3,7 @@
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	xmlns:mx="library://ns.adobe.com/flex/mx" 
 	xmlns:properties="com.simplediagrams.view.properties.*"
-	currentState="{_propertiesPanelModel.viewing}"
+	currentState="{propertiesPanelModel.viewing}"
 	>
 	
 	<s:layout>
@@ -16,7 +16,6 @@
 			import com.simplediagrams.events.PropertiesEvent;
 			import com.simplediagrams.events.StyleEvent;
 			import com.simplediagrams.model.DiagramModel;
-			import com.simplediagrams.model.DiagramStyleManager;
 			import com.simplediagrams.model.PropertiesPanelModel;
 			import com.simplediagrams.util.Logger;
 			
@@ -26,42 +25,21 @@
 			[Bindable]
 			protected var _backgroundColor:Number = 0xFFFFFF;
 			
-			[Bindable]
-			protected var _diagramStyleManager:DiagramStyleManager
+		
 			
-			[Bindable]
-			[Inject]
-			public var diagramModel:DiagramModel
-			
-			[Inject]
-			public function set diagramStyleManager(model:DiagramStyleManager):void
-			{
-				if (_diagramStyleManager==null)
-				{
-					_diagramStyleManager = model
-					_backgroundColor = _diagramStyleManager.toolBarBackgroundColor
-				}
-			}
-			
-			
-			[Bindable]			
 			protected var _propertiesPanelModel:PropertiesPanelModel
 			
+			[Bindable]
 			[Inject]
+			public function get propertiesPanelModel():PropertiesPanelModel
+			{
+				return _propertiesPanelModel;
+			}
+
 			public function set propertiesPanelModel( model : PropertiesPanelModel) : void 
 			{
 				_propertiesPanelModel = model
 			} 
-			
-			
-			[Mediate(event="StyleEvent.STYLE_CHANGED")]
-			public function onStyleChanged(event:StyleEvent):void
-			{
-				_backgroundColor = _diagramStyleManager.toolBarBackgroundColor				
-			}
-			
-			
-			
 			
 			
 		]]>
@@ -73,6 +51,7 @@
 		<s:State name="propertiesLine" />
 		<s:State name="propertiesSymbol" />
 		<s:State name="propertiesImage" />
+		<s:State name="propertiesPencil" />
 	</s:states>
 	
 	<s:Rect left="20" right="30" top="-4" bottom="0" excludeFrom="none" radiusX="4" radiusY="4" >
@@ -112,6 +91,14 @@
 									itemCreationPolicy="immediate"
 									left="20"
 									/>
+	
+	<properties:PropertiesPanelPencil id="propPencil"									  
+									  width="100%" 
+									  height="100%" 
+									  includeIn="propertiesPencil" 
+									  itemCreationPolicy="immediate"
+									  left="20"
+									  />
 	
 	
 </s:Group>

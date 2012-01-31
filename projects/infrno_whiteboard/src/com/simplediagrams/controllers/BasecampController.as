@@ -7,6 +7,7 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.events.ExportDiagramEvent;
 	import com.simplediagrams.model.ApplicationModel;
 	import com.simplediagrams.model.BasecampModel;
+	import com.simplediagrams.model.DiagramManager;
 	import com.simplediagrams.model.DiagramModel;
 	import com.simplediagrams.model.RegistrationManager;
 	import com.simplediagrams.model.vo.PersonVO;
@@ -30,7 +31,7 @@ package com.simplediagrams.controllers
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	
-	import org.swizframework.controller.AbstractController
+	import org.swizframework.controller.AbstractController;
 	
 	import spark.components.Group;
 
@@ -47,7 +48,7 @@ package com.simplediagrams.controllers
 		public var registrationManager:RegistrationManager
 		
 		[Inject]
-		public var diagramModel:DiagramModel
+		public var diagramManager:DiagramManager;
 		
 		[Inject]
 		public var basecampDelegate:BasecampDelegate;
@@ -82,14 +83,7 @@ package com.simplediagrams.controllers
 		public function exportDiagram(event:ExportDiagramEvent):void
 		{
 			Logger.debug("exportDiagram()", this)
-			
-			//make sure user is licensed
-			if (registrationManager.isLicensed==false)
-			{
-				Alert.show("This feature is only available to Full Version users. Visit www.simpledigrams.com and upgrade to Full Version today!", "Full Version Only")
-				return
-			}
-				
+									
 			_view = event.view as Group
 			
 			dialogsController.removeDialog()	
@@ -243,7 +237,7 @@ package com.simplediagrams.controllers
 		protected function getExportInfoFromUser():void
 		{		
 			_view.clipAndEnableScrolling = false
-			var bd:BitmapData = new BitmapData(diagramModel.width, diagramModel.height)
+			var bd:BitmapData = new BitmapData(diagramManager.diagramModel.width, diagramManager.diagramModel.height)
 			bd.draw(_view)			
 			_imageByteArray = new PNGEncoder().encode(bd)
 			_messageBody = ""

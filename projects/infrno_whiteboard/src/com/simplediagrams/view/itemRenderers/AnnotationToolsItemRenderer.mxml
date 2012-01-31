@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				
+				>
+	
+	<fx:Script> 
+		<![CDATA[    
+			import com.simplediagrams.events.AnnotationToolEvent;
+			import com.simplediagrams.model.AnnotationToolModel;
+			import com.simplediagrams.model.SDObjectModel;
+			import com.simplediagrams.model.SettingsModel;
+			import com.simplediagrams.util.Logger;
+			import com.simplediagrams.view.components.IndexCardIcon;
+			import com.simplediagrams.view.components.StickyNoteIcon;
+			
+			import mx.controls.Image;
+			import mx.core.ByteArrayAsset;
+				
+			[Autowire]
+			public var settingsModel:SettingsModel
+			
+			protected var stickyNoteIcon:StickyNoteIcon
+			protected var indexCardIcon:IndexCardIcon
+			
+			
+			
+			
+			[Mediate(event="AnnotationToolEvent.DEFAULT_PROPERTIES_EDITED")]
+			public function onChange(event:AnnotationToolEvent):void
+			{
+				
+				
+				if (data==null)
+				{
+					return
+				}
+				
+				if(event.annotationType==AnnotationToolModel.STICKY_NOTE_TOOL && AnnotationToolModel(data).type==AnnotationToolModel.STICKY_NOTE_TOOL && stickyNoteIcon)
+				{
+					stickyNoteIcon.backgroundColor = settingsModel.defaultStickyNoteBGColor
+				}
+				if(event.annotationType==AnnotationToolModel.INDEX_CARD && AnnotationToolModel(data).type==AnnotationToolModel.INDEX_CARD && indexCardIcon)
+				{
+					indexCardIcon.backgroundColor = settingsModel.defaultIndexCardBGColor
+				}
+				
+			}
+		
+		
+			override public function set data(value:Object):void
+			{
+				super.data = value
+				
+				var m:AnnotationToolModel = AnnotationToolModel(value)
+				
+				holder.removeAllElements()
+				switch (m.type)
+				{
+					case AnnotationToolModel.STICKY_NOTE_TOOL:
+						
+						
+						var cm:ContextMenu = new ContextMenu()										
+						cm.hideBuiltInItems();
+						
+						var cmi:ContextMenuItem = new ContextMenuItem("Edit default properties");
+						cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onEditDefaultProperties, false, 0, true);		
+						cm.customItems = [cmi];						
+						
+						this.contextMenu = cm
+						
+						stickyNoteIcon = new StickyNoteIcon()
+						stickyNoteIcon.width=35
+						stickyNoteIcon.height=28
+						stickyNoteIcon.backgroundColor = settingsModel.defaultStickyNoteBGColor
+						holder.addElement(stickyNoteIcon)
+						
+						break
+						
+					case AnnotationToolModel.INDEX_CARD:
+						
+						cm = new ContextMenu()										
+						cm.hideBuiltInItems();
+						
+						cmi = new ContextMenuItem("Edit default properties");
+						cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onEditDefaultProperties, false, 0, true);		
+						cm.customItems = [cmi];						
+						
+						this.contextMenu = cm
+						
+						indexCardIcon = new IndexCardIcon()
+						indexCardIcon.width=60
+						indexCardIcon.height=35
+						indexCardIcon.backgroundColor = settingsModel.defaultIndexCardBGColor
+						holder.addElement(indexCardIcon)
+						
+						break
+					
+					case AnnotationToolModel.IMAGE_TOOL:
+						var img:Image = new Image()
+						var c:Class = m.iconClass
+						img.source = new c()	
+						holder.addElement(img)
+						break
+				}
+				
+				
+				invalidateProperties();
+				
+				
+			}
+			
+			protected function onEditDefaultProperties(event:ContextMenuEvent):void
+			{
+				if (this.data)
+				{
+					var evt:AnnotationToolEvent = new AnnotationToolEvent(AnnotationToolEvent.EDIT_DEFAULT_PROPERTIES, true)
+					evt.annotationType = AnnotationToolModel(this.data).type
+					dispatchEvent(evt)
+				}				
+			}
+				
+		]]> 
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="normal" />
+	</s:states>
+	
+	<s:HGroup paddingLeft="5" id="holder" toolTip="{data.toolTip}">
+	</s:HGroup>
+	
+</s:ItemRenderer>
+

@@ -1,6 +1,5 @@
 package com.simplediagrams.view.SDComponents
 {
-	import com.simplediagrams.controllers.RemoteSharedObjectController;
 	import com.simplediagrams.events.ChangeDepthEvent;
 	import com.simplediagrams.events.ConnectionEvent;
 	import com.simplediagrams.model.SDObjectModel;
@@ -15,6 +14,7 @@ package com.simplediagrams.view.SDComponents
 	import flash.ui.ContextMenu;
 	import flash.ui.ContextMenuItem;
 	
+	import mx.controls.Alert;
 	import mx.core.UIComponent;
 	import mx.events.DragEvent;
 	import mx.events.PropertyChangeEvent;
@@ -117,20 +117,10 @@ package com.simplediagrams.view.SDComponents
 		}
 
 		
-		/*	
-		protected function onCopy(event:Event):void
-		{
-			Logger.debug("onCopy() ", this)
-			var evt:CopyEvent = new CopyEvent(CopyEvent.COPY, true)
-			evt.objectModel = this.objectModel
-			Logger.debug("model: " + objectModel, this)
-			Swiz.dispatchEvent(evt)
-		}		
-		*/		
 		protected function mouseEventHandler(event:Event):void
 		{	
 			Logger.debug("mouseEventHandler() event: " + event, this)
-			
+							
 			//stop the click event to prevent the drawingboard from thinking the background was clicked and therefore it should remove all selections
 			var mouseEvent:MouseEvent = event as MouseEvent;
        	    if(mouseEvent.type == MouseEvent.CLICK) 
@@ -186,72 +176,7 @@ package com.simplediagrams.view.SDComponents
 		{
 			throw new Error("Abstract method")
 		}
-				
-		
-		/* ****************** */
-		/* Drag handling code */
-		/* ****************** */
-
-		
-		/* Commenting this code out for now b/c it's somehow causing this shape to turn color 
-		   when somebody drags a shape from the library over top of this one when it's on the drawingboard.
-			        
-        public function onDragEnter(event:DragEvent):void 
-        {
-        	var dropTarget:UIComponent = event.currentTarget as UIComponent;        	
-            if (event.dragSource.hasFormat('dragConnection') && this!=event.dragInitiator.parent)
-            {   
-            	//show visual feedback
-            	setGlowFilter()
-            	this.invalidateProperties()      	         
-                DragManager.acceptDragDrop(dropTarget);
-            }
-        }
-        
-        private function setGlowFilter():void
-        {
-        	if (this.filters.length==0)
-			{				
-				this.filters = [this.getDropHoverFilter()]
-			}
-        }
-        
-        public function onDragDrop(event:DragEvent):void
-        {
-        	Logger.debug("onDragDrop()", this)
-        	var evt:ConnectionEvent = new ConnectionEvent(ConnectionEvent.FINISH_CONNECTION_DRAG, true)
-        	evt.endingComponent = this
-        	dispatchEvent(evt)
-        	this.filters = []
-        	
-        }
-        
-        public function onDragExit(event:DragEvent):void
-        {
-        	//this.filters = []
-        }
-		*/
-		
-		
-        /*
-        public function drawDragLine(event:MouseEvent):void
-        {
-        	var g:Graphics = this.graphics
-        	g.clear()
-        	g.lineStyle(3, 0x00CC00)
-        	g.moveTo(_dragCircle.x, _dragCircle.y)
-        	g.lineTo(this.mouseX, this.mouseY)
-        }
-        
-        public function stopDrawDragLine(event:MouseEvent):void
-        {
-        	_dragProxy.removeEventListener(MouseEvent.MOUSE_MOVE, drawDragLine)
-            _dragProxy.removeEventListener(MouseEvent.MOUSE_UP, stopDrawDragLine)
-        	_dragProxy = null
-        	this.graphics.clear()
-        }
-        */
-        
+				        
   		protected function positionDragCircle():void
 		{
 			//throw new Error("Abstract method")			
@@ -280,21 +205,12 @@ package com.simplediagrams.view.SDComponents
         }
 
 		public function destroy():void
-		{
-			
-			//this.removeEventListener(DragEvent.DRAG_ENTER, onDragEnter)
-			//this.removeEventListener(DragEvent.DRAG_DROP, onDragDrop)
-			//this.removeEventListener(DragEvent.DRAG_EXIT, onDragExit)
-				
-			
-			//add all operations available to SDComponents' right click menu here
+		{						
 			moveToBackCMI.removeEventListener(ContextMenuEvent.MENU_ITEM_SELECT, moveToBackSelected);		
 			moveBackwardCMI.removeEventListener(ContextMenuEvent.MENU_ITEM_SELECT, moveBackwardSelected);
 			moveForwardCMI.removeEventListener(ContextMenuEvent.MENU_ITEM_SELECT, moveForwardSelected);
 			moveToFrontCMI.removeEventListener(ContextMenuEvent.MENU_ITEM_SELECT, moveToFrontSelected);	
-			contextMenu = null
-				
-			//this.removeEventListener(Event.COPY, onCopy)
+			contextMenu = null				
 		}
 	
 		

@@ -11,8 +11,8 @@
 		<s:State name="disabled" />
 	</s:states>
 	
-	<mx:Image source="@Embed('assets/img/btn_manage_library_off.png')" includeIn="up, disabled" />
-	<mx:Image source="@Embed('assets/img/btn_manage_library_on.png')" includeIn="over, down" />
+	<s:Image source="@Embed('assets/img/btn_manage_library_off.png')" includeIn="up, disabled" />
+	<s:Image source="@Embed('assets/img/btn_manage_library_on.png')" includeIn="over, down" />
 	
 	
 </s:Skin>

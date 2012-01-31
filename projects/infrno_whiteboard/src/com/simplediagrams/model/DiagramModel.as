@@ -5,7 +5,7 @@ package com.simplediagrams.model
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import flash.net.dns.AAAARecord;
+//	import flash.net.dns.AAAARecord;
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.ArrayList;

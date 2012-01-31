@@ -144,22 +144,23 @@ package com.simplediagrams.model
 		
 		public function get defaultMessageToPrivate():Boolean
 		{			
-			var defaultMessageToPrivateBA:ByteArray = EncryptedLocalStore.getItem("defaultMessageToPrivate")
-			if (defaultMessageToPrivateBA) 
-			{
-				return (defaultMessageToPrivateBA.readUTFBytes(defaultMessageToPrivateBA.length) == "true")
-			}
-			else
-			{
-				return true
-			}
+//			var defaultMessageToPrivateBA:ByteArray = EncryptedLocalStore.getItem("defaultMessageToPrivate")
+//			if (defaultMessageToPrivateBA) 
+//			{
+//				return (defaultMessageToPrivateBA.readUTFBytes(defaultMessageToPrivateBA.length) == "true")
+//			}
+//			else
+//			{
+//				return true
+//			}
+			return true;
 		}
 		
 		public function set defaultMessageToPrivate(value:Boolean):void
 		{					
-			var ba:ByteArray = new ByteArray()
-			ba.writeUTFBytes(value.toString())
-			EncryptedLocalStore.setItem("defaultMessageToPrivate", ba )		
+//			var ba:ByteArray = new ByteArray()
+//			ba.writeUTFBytes(value.toString())
+//			EncryptedLocalStore.setItem("defaultMessageToPrivate", ba )		
 		}
 		
 		

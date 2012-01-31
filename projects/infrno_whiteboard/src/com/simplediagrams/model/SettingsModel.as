@@ -6,7 +6,7 @@ package com.simplediagrams.model
 	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
-	import flash.filesystem.File;
+//	import flash.filesystem.File;
 	import flash.text.engine.FontWeight;
 	
 	import mx.collections.ArrayCollection;
@@ -38,8 +38,8 @@ package com.simplediagrams.model
 			
 		protected var _defaultPencilLineWeight:uint = 1	
 			
-		protected var _defaultDirectory:File = File.userDirectory.resolvePath("SimpleDiagrams");
-		protected var _defaultExportDirectory:File = File.userDirectory.resolvePath("SimpleDiagrams");
+//		protected var _defaultDirectory:File = File.userDirectory.resolvePath("SimpleDiagrams");
+//		protected var _defaultExportDirectory:File = File.userDirectory.resolvePath("SimpleDiagrams");
 		
 		protected var _defaultDiagramWidth:Number = 1800
 		protected var _defaultDiagramHeight:Number = 1200
@@ -62,10 +62,10 @@ package com.simplediagrams.model
 		
 		public function SettingsModel()
 		{
-			if (!_defaultDirectory.exists)
-			{
-				_defaultDirectory.createDirectory()
-			}		
+//			if (!_defaultDirectory.exists)
+//			{
+//				_defaultDirectory.createDirectory()
+//			}		
 		}
 		
 		public function get selectedColor():uint
@@ -124,56 +124,58 @@ package com.simplediagrams.model
 		
 		public function set defaultDirectoryPath(s:String):void
 		{
-			try
-			{
-				//if path doesn't exist setting the file object with throw an error
-				var f:File = File.userDirectory
-				f.nativePath = s
-				_defaultDirectory.nativePath = s
-			}
-			catch(err:Error)
-			{
-				
-			}			
+//			try
+//			{
+//				//if path doesn't exist setting the file object with throw an error
+//				var f:File = File.userDirectory
+//				f.nativePath = s
+//				_defaultDirectory.nativePath = s
+//			}
+//			catch(err:Error)
+//			{
+//				
+//			}			
 		}
 		
 		public function get defaultDirectoryPath():String
 		{
-			return _defaultDirectory.nativePath
+//			return _defaultDirectory.nativePath
+			return '';
 		}
 		
-		public function get defaultDirectory():File
-		{
-			return _defaultDirectory
-		}
+//		public function get defaultDirectory():File
+//		{
+//			return _defaultDirectory
+//		}
 		
 		
 		
 		
 		public function set defaultExportDirectoryPath(s:String):void
 		{
-			try
-			{
-				//if path doesn't exist setting the file object with throw an error
-				var f:File = File.userDirectory
-				f.nativePath = s
-				_defaultExportDirectory.nativePath = s
-			}
-			catch(err:Error)
-			{
-				
-			}			
+//			try
+//			{
+//				//if path doesn't exist setting the file object with throw an error
+//				var f:File = File.userDirectory
+//				f.nativePath = s
+//				_defaultExportDirectory.nativePath = s
+//			}
+//			catch(err:Error)
+//			{
+//				
+//			}			
 		}
 		
 		public function get defaultExportDirectoryPath():String
 		{
-			return _defaultExportDirectory.nativePath
+//			return _defaultExportDirectory.nativePath
+			return '';
 		}
 		
-		public function get defaultExportDirectory():File
-		{
-			return _defaultExportDirectory
-		}
+//		public function get defaultExportDirectory():File
+//		{
+//			return _defaultExportDirectory
+//		}
 		
 		
 				

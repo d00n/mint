@@ -17,7 +17,7 @@
 			import com.simplediagrams.model.RegistrationManager;
 			import com.simplediagrams.util.Logger;
 			
-			import flash.filesystem.*;
+//			import flash.filesystem.*;
 			
 			import mx.controls.Alert;
 						

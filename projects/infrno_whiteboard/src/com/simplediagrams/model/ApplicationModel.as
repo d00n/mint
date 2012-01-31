@@ -77,9 +77,9 @@ package com.simplediagrams.model
 		public var fontsAC:ArrayCollection 
 		
 		public var isMinimized:Boolean = false
-		public var fileToOpenOnStart:File
+//		public var fileToOpenOnStart:File
 		
-		public var updater:ApplicationUpdaterUI
+//		public var updater:ApplicationUpdaterUI
 		
 		protected var _viewing:String = VIEW_STARTUP
 		
@@ -88,7 +88,7 @@ package com.simplediagrams.model
 		public var showImportDatabasePrompt:Boolean = false;
 		
 		
-		protected static var _baseStorageDir:File	
+//		protected static var _baseStorageDir:File	
 		
 		public static function get isWin():Boolean
 		{
@@ -324,6 +324,7 @@ package com.simplediagrams.model
 		public function get currFileName():String
 		{
 //			return FlexGlobals.topLevelApplication.title
+			return '';
 		}
 		
 		public function userAgreedToEULA():void

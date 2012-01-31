@@ -135,40 +135,42 @@ package com.simplediagrams.model
 		
 		public function get licenseKey():String
 		{
-			try
-			{
-				var licenseKeyBA:ByteArray = EncryptedLocalStore.getItem("com.simplediagrams.licenseKey")
-			}
-			catch(error:Error)
-			{
-				Logger.error("Can't get licenseKey", this)
-				return null
-			}						
-			if (licenseKeyBA==null) return null
-			return licenseKeyBA.readUTFBytes(licenseKeyBA.length)
+//			try
+//			{
+//				var licenseKeyBA:ByteArray = EncryptedLocalStore.getItem("com.simplediagrams.licenseKey")
+//			}
+//			catch(error:Error)
+//			{
+//				Logger.error("Can't get licenseKey", this)
+//				return null
+//			}						
+//			if (licenseKeyBA==null) return null
+//			return licenseKeyBA.readUTFBytes(licenseKeyBA.length)			
+			return null;
 		}
 		
 		public function set licenseKey(key:String):void
 		{
-			var licenseKeyBA:ByteArray = new ByteArray()
-			licenseKeyBA.writeUTFBytes(key)
-			EncryptedLocalStore.setItem("com.simplediagrams.licenseKey", licenseKeyBA)
+//			var licenseKeyBA:ByteArray = new ByteArray()
+//			licenseKeyBA.writeUTFBytes(key)
+//			EncryptedLocalStore.setItem("com.simplediagrams.licenseKey", licenseKeyBA)
 		}
 				
 		
 		public function get licenseEmail():String
 		{
-			try
-			{
-				var licenseEmailBA:ByteArray = EncryptedLocalStore.getItem("com.simplediagrams.licenseEmail")
-			}
-			catch(error:Error)
-			{
-				Logger.error("Can't get licenseEmail", this)
-				return null
-			}						
+//			try
+//			{
+//				var licenseEmailBA:ByteArray = EncryptedLocalStore.getItem("com.simplediagrams.licenseEmail")
+//			}
+//			catch(error:Error)
+//			{
+//				Logger.error("Can't get licenseEmail", this)
+//				return null
+//			}						
 //			if (licenseEmailBA==null) return null
 //			return licenseEmailBA.readUTFBytes(licenseEmailBA.length)
+			return null;
 		}
 		
 		public function set licenseEmail(email:String):void
@@ -228,24 +230,25 @@ package com.simplediagrams.model
 		 
 		public function set dateTrialStarted(installDate:Date):void
 		{			
-			var dateBA:ByteArray = new ByteArray()
-			var timeInMilli:String = installDate.time.toString()
-			dateBA.writeUTFBytes(timeInMilli)
-			EncryptedLocalStore.setItem("dateTrialStarted", dateBA)	
-				
-			this.dispatchEvent(new Event("trialDaysRemainingChanged", true))	
+//			var dateBA:ByteArray = new ByteArray()
+//			var timeInMilli:String = installDate.time.toString()
+//			dateBA.writeUTFBytes(timeInMilli)
+//			EncryptedLocalStore.setItem("dateTrialStarted", dateBA)	
+//				
+//			this.dispatchEvent(new Event("trialDaysRemainingChanged", true))	
 		}
 		
 		public function get dateTrialStarted():Date
 		{
-			var dateBA:ByteArray = EncryptedLocalStore.getItem("dateTrialStarted")
-			if (dateBA==null) 
-			{
-				return null	
-			}			
-			var timeInMilli:Number = Number(dateBA.readUTFBytes(dateBA.length))
-			var d:Date = new Date(timeInMilli) 
-			return d
+//			var dateBA:ByteArray = EncryptedLocalStore.getItem("dateTrialStarted")
+//			if (dateBA==null) 
+//			{
+//				return null	
+//			}			
+//			var timeInMilli:Number = Number(dateBA.readUTFBytes(dateBA.length))
+//			var d:Date = new Date(timeInMilli) 
+//			return d
+			return null
 		}
 		
 		public function recordDateTrialStarted():void

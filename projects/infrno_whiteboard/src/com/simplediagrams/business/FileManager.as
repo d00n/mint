@@ -107,9 +107,9 @@ package com.simplediagrams.business
 		
 		protected function onBrowseToLoadDiagramCancel(event:Event):void
 		{
-			var loadFile:File = event.target as File
-			loadFile.removeEventListener(Event.SELECT, onBrowseToLoadDiagramResponse)
-			loadFile.removeEventListener(Event.CANCEL, onBrowseToLoadDiagramCancel)
+//			var loadFile:File = event.target as File
+//			loadFile.removeEventListener(Event.SELECT, onBrowseToLoadDiagramResponse)
+//			loadFile.removeEventListener(Event.CANCEL, onBrowseToLoadDiagramCancel)
 		}
 		
 		
@@ -117,15 +117,15 @@ package com.simplediagrams.business
 		
 		public function loadDiagramFromFile(nativePath:String):void
 		{
-			if (nativePath==null)
-			{
-				throw new Error("native path is null")
-			}
-			_diagramFile.nativePath = nativePath
-			_currFilePath = nativePath
-			settingsModel.defaultDirectoryPath = _diagramFile.nativePath.slice(0,_diagramFile.nativePath.lastIndexOf(File.separator))
-			
-			loadDiagram()
+//			if (nativePath==null)
+//			{
+//				throw new Error("native path is null")
+//			}
+//			_diagramFile.nativePath = nativePath
+//			_currFilePath = nativePath
+//			settingsModel.defaultDirectoryPath = _diagramFile.nativePath.slice(0,_diagramFile.nativePath.lastIndexOf(File.separator))
+//			
+//			loadDiagram()
 		}
 		
 		
@@ -165,31 +165,31 @@ package com.simplediagrams.business
 				}
 			}
 			
-			var parsedEvt:LoadDiagramEvent = new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_PARSED, true)
-			parsedEvt.missingSymbolsArr = missingSymbolsArr
-			parsedEvt.nativePath = _currFilePath;
-			parsedEvt.fileName = new File(_currFilePath).name;
-			dispatcher.dispatchEvent(parsedEvt)
+//			var parsedEvt:LoadDiagramEvent = new LoadDiagramEvent(LoadDiagramEvent.DIAGRAM_PARSED, true)
+//			parsedEvt.missingSymbolsArr = missingSymbolsArr
+//			parsedEvt.nativePath = _currFilePath;
+//			parsedEvt.fileName = new File(_currFilePath).name;
+//			dispatcher.dispatchEvent(parsedEvt)
 		}
 		
 		
 		private function loadOldXmlFormat():void
 		{
-			var fileStream:FileStream = new FileStream()
-			fileStream.open(_diagramFile, FileMode.READ)
-			var diagramText:String = fileStream.readUTFBytes(fileStream.bytesAvailable)
-			fileStream.close()
-			try
-			{
-				_diagramFileXML = XML(diagramText)
-			}
-			catch(error:Error)
-			{
-				Logger.error("Error parsing XML in file: " + _diagramFile.nativePath,this)
-				throw new Error("There was an error loading this diagram file. The XML in the file appears corrupted.")
-			}
-			loadSDXMLIntoDiagramModel(_diagramFileXML)					
-			
+//			var fileStream:FileStream = new FileStream()
+//			fileStream.open(_diagramFile, FileMode.READ)
+//			var diagramText:String = fileStream.readUTFBytes(fileStream.bytesAvailable)
+//			fileStream.close()
+//			try
+//			{
+//				_diagramFileXML = XML(diagramText)
+//			}
+//			catch(error:Error)
+//			{
+//				Logger.error("Error parsing XML in file: " + _diagramFile.nativePath,this)
+//				throw new Error("There was an error loading this diagram file. The XML in the file appears corrupted.")
+//			}
+//			loadSDXMLIntoDiagramModel(_diagramFileXML)					
+//			
 		}
 		
 		
@@ -222,23 +222,23 @@ package com.simplediagrams.business
 		
 		protected function saveDiagramToFile():void
 		{
-			
-			if(_diagramFile.extension=="xml")
-			{
-				//for now lets leave it as such
-			}
-			else if(!_diagramFile.extension || _diagramFile.extension != "sdxml")
-			{
-				_diagramFile.url = _diagramFile.url + ".sdxml";
-			}
-			
-			diagramDelegate.exportDiagram(_diagramFile, diagramManager.diagramModel);
-			
-			Logger.debug("sending DIAGRAM_SAVED event for file path: " + _diagramFile.nativePath,this)
-			var savedEvent:SaveDiagramEvent = new SaveDiagramEvent(SaveDiagramEvent.DIAGRAM_SAVED, true)
-			savedEvent.nativePath = _diagramFile.nativePath
-			savedEvent.fileName = _diagramFile.name
-			dispatcher.dispatchEvent(savedEvent)	
+//			
+//			if(_diagramFile.extension=="xml")
+//			{
+//				//for now lets leave it as such
+//			}
+//			else if(!_diagramFile.extension || _diagramFile.extension != "sdxml")
+//			{
+//				_diagramFile.url = _diagramFile.url + ".sdxml";
+//			}
+//			
+//			diagramDelegate.exportDiagram(_diagramFile, diagramManager.diagramModel);
+//			
+//			Logger.debug("sending DIAGRAM_SAVED event for file path: " + _diagramFile.nativePath,this)
+//			var savedEvent:SaveDiagramEvent = new SaveDiagramEvent(SaveDiagramEvent.DIAGRAM_SAVED, true)
+//			savedEvent.nativePath = _diagramFile.nativePath
+//			savedEvent.fileName = _diagramFile.name
+//			dispatcher.dispatchEvent(savedEvent)	
 		}
 		
 		
@@ -737,69 +737,69 @@ package com.simplediagrams.business
 		
 		public function saveDiagramImageToFile(ba:ByteArray):void
 		{
-			_currDiagramImageBA = ba
-			
-			if (appModel.currFileName=="New SimpleDiagram" || appModel.currFileName=="SimpleDiagrams")
-			{
-				var fileName:String = "my_simplediagram.png"
-			}
-			else
-			{
-				try
-				{
-					fileName = appModel.currFileName.split(".")[0] + ".png"
-				}
-				catch(error:Error)
-				{
-					fileName = "my_simplediagram.png"
-				}
-			}			
-			
-			var f:File = File.desktopDirectory
-			
-			if (settingsModel.defaultExportDirectoryPath!=null && settingsModel.defaultExportDirectoryPath!="")
-			{
-				f.nativePath = settingsModel.defaultExportDirectoryPath
-			}
-			
-			f.resolvePath(fileName)
-			
-			f.addEventListener(Event.SELECT,  onSaveDiagramImageAsSelected);
-			f.addEventListener(Event.CANCEL,  onCancelSaveDiagramImageAsSelected);
-			f.browseForSave("Save as .PNG")
+//			_currDiagramImageBA = ba
+//			
+//			if (appModel.currFileName=="New SimpleDiagram" || appModel.currFileName=="SimpleDiagrams")
+//			{
+//				var fileName:String = "my_simplediagram.png"
+//			}
+//			else
+//			{
+//				try
+//				{
+//					fileName = appModel.currFileName.split(".")[0] + ".png"
+//				}
+//				catch(error:Error)
+//				{
+//					fileName = "my_simplediagram.png"
+//				}
+//			}			
+//			
+//			var f:File = File.desktopDirectory
+//			
+//			if (settingsModel.defaultExportDirectoryPath!=null && settingsModel.defaultExportDirectoryPath!="")
+//			{
+//				f.nativePath = settingsModel.defaultExportDirectoryPath
+//			}
+//			
+//			f.resolvePath(fileName)
+//			
+//			f.addEventListener(Event.SELECT,  onSaveDiagramImageAsSelected);
+//			f.addEventListener(Event.CANCEL,  onCancelSaveDiagramImageAsSelected);
+//			f.browseForSave("Save as .PNG")
 		}		
 		
 		private function onCancelSaveDiagramImageAsSelected(e:Event):void
 		{			
-			var saveFileRef:File =  e.target as File  
-			saveFileRef.removeEventListener(Event.SELECT,  onSaveDiagramImageAsSelected);
-			saveFileRef.removeEventListener(Event.CANCEL,  onCancelSaveDiagramImageAsSelected);
-			_currDiagramImageBA = null
+//			var saveFileRef:File =  e.target as File  
+//			saveFileRef.removeEventListener(Event.SELECT,  onSaveDiagramImageAsSelected);
+//			saveFileRef.removeEventListener(Event.CANCEL,  onCancelSaveDiagramImageAsSelected);
+//			_currDiagramImageBA = null
 		}
 		
 		
 		private function onSaveDiagramImageAsSelected(e:Event):void
 		{
-			var saveFileRef:File =  e.target as File    			
-			var stream:FileStream  = new FileStream()
-			
-			//make sure extension is .png...this is important b/c we get an error if user tries to save "test" image (no extension) where a "test" folder exists
-			var extension:String = saveFileRef.extension
-			if (extension != "png")
-			{
-				saveFileRef.nativePath = saveFileRef.nativePath + ".png"
-			}
-			
-			stream.open(saveFileRef,  FileMode.WRITE)
-			stream.writeBytes(_currDiagramImageBA, 0, _currDiagramImageBA.length)
-			stream.close()	
-			
-			saveFileRef.removeEventListener(Event.SELECT,  onSaveDiagramImageAsSelected);
-			saveFileRef.removeEventListener(Event.CANCEL,  onCancelSaveDiagramImageAsSelected);
-			
-			settingsModel.defaultExportDirectoryPath = saveFileRef.nativePath.slice(0,saveFileRef.nativePath.lastIndexOf(File.separator))	
-			
-			_currDiagramImageBA = null
+//			var saveFileRef:File =  e.target as File    			
+//			var stream:FileStream  = new FileStream()
+//			
+//			//make sure extension is .png...this is important b/c we get an error if user tries to save "test" image (no extension) where a "test" folder exists
+//			var extension:String = saveFileRef.extension
+//			if (extension != "png")
+//			{
+//				saveFileRef.nativePath = saveFileRef.nativePath + ".png"
+//			}
+//			
+//			stream.open(saveFileRef,  FileMode.WRITE)
+//			stream.writeBytes(_currDiagramImageBA, 0, _currDiagramImageBA.length)
+//			stream.close()	
+//			
+//			saveFileRef.removeEventListener(Event.SELECT,  onSaveDiagramImageAsSelected);
+//			saveFileRef.removeEventListener(Event.CANCEL,  onCancelSaveDiagramImageAsSelected);
+//			
+//			settingsModel.defaultExportDirectoryPath = saveFileRef.nativePath.slice(0,saveFileRef.nativePath.lastIndexOf(File.separator))	
+//			
+//			_currDiagramImageBA = null
 		}
 		
 		

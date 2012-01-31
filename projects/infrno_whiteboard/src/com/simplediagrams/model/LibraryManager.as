@@ -14,9 +14,9 @@ package com.simplediagrams.model
 	import com.simplediagrams.vo.RecentFileVO;
 	
 	import flash.events.EventDispatcher;
-	import flash.filesystem.File;
-	import flash.filesystem.FileMode;
-	import flash.filesystem.FileStream;
+//	import flash.filesystem.File;
+//	import flash.filesystem.FileMode;
+//	import flash.filesystem.FileStream;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import flash.utils.getDefinitionByName;
@@ -439,23 +439,26 @@ package com.simplediagrams.model
 			if(libItem.libraryName =="default")
 				return chalkboard;
 			else
-				return ApplicationModel.baseStorageDir.resolvePath("libraries/" + libItem.libraryName + "/" + path).url;
+//				return ApplicationModel.baseStorageDir.resolvePath("libraries/" + libItem.libraryName + "/" + path).url;
+				return null;
 		}
 		
 		public static function getAssetPath(libItem:LibraryItem, path:String):String
 		{
-			return ApplicationModel.baseStorageDir.resolvePath("libraries/" + libItem.libraryName + "/" + path).url;
+//			return ApplicationModel.baseStorageDir.resolvePath("libraries/" + libItem.libraryName + "/" + path).url;
+			return '';
 		}
 		
 		private function getByteContent(libName:String, path:String):ByteArray
 		{
-			var file:File = ApplicationModel.baseStorageDir.resolvePath("libraries/" + libName + "/" + path);
-			var readStream:FileStream = new FileStream();
-			readStream.open(file, FileMode.READ);
-			var content:ByteArray = new ByteArray();
-			readStream.readBytes(content, 0, readStream.bytesAvailable);
-			readStream.close();
-			return content;
+//			var file:File = ApplicationModel.baseStorageDir.resolvePath("libraries/" + libName + "/" + path);
+//			var readStream:FileStream = new FileStream();
+//			readStream.open(file, FileMode.READ);
+//			var content:ByteArray = new ByteArray();
+//			readStream.readBytes(content, 0, readStream.bytesAvailable);
+//			readStream.close();
+//			return content;
+			return null;
 		}
 		
 		private function getExt(path:String):String

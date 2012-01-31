@@ -2,8 +2,6 @@ package com.simplediagrams.events
 {
 	import com.simplediagrams.commands.*;
 	import com.simplediagrams.model.SDImageModel;
-	import com.simplediagrams.model.SDObjectModel;
-	import com.simplediagrams.model.mementos.TransformMemento;
 	
 	import flash.events.Event;
 	import flash.utils.ByteArray;
@@ -43,8 +41,6 @@ package com.simplediagrams.events
 		public var sdImageModel:SDImageModel;
 		public var sdID:String;
 		public var sdObjectModel:SDObjectModel;
-		public var addLibraryItemCommand:AddLibraryItemCommand;
-		public var cutCommand:CutCommand;
 		public var sdIDArray:Array;
 		public var changedSDObjectModelArray:Array;
 		

@@ -264,7 +264,7 @@
 		-->
 		
 		<components:MyColorPicker
-			id="cp" 
+			id="my_cp" 
 			width="30" 
 			height="30" 
 			close="onColorChange()" 

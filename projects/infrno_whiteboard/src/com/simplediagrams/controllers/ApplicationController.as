@@ -1,8 +1,8 @@
 package com.simplediagrams.controllers
 {
 	  
-	import air.update.ApplicationUpdaterUI;
-	import air.update.events.UpdateEvent;
+//	import air.update.ApplicationUpdaterUI;
+//	import air.update.events.UpdateEvent;
 	
 	import com.simplediagrams.business.LibraryDelegate;
 	import com.simplediagrams.business.LibraryRegistryDelegate;
@@ -320,11 +320,11 @@ package com.simplediagrams.controllers
 		
 		protected function doUpdateCheck():void
 		{			
-			var updater:ApplicationUpdaterUI = new ApplicationUpdaterUI();
-			updater.configurationFile = File.applicationDirectory.resolvePath("config/updaterConfig.xml");
-			updater.addEventListener(UpdateEvent.INITIALIZED, updaterInitialized);	
-			updater.initialize(); 
-			appModel.updater = updater
+//			var updater:ApplicationUpdaterUI = new ApplicationUpdaterUI();
+//			updater.configurationFile = File.applicationDirectory.resolvePath("config/updaterConfig.xml");
+//			updater.addEventListener(UpdateEvent.INITIALIZED, updaterInitialized);	
+//			updater.initialize(); 
+//			appModel.updater = updater
 		}
 		
 		protected function updaterInitialized(event:UpdateEvent):void

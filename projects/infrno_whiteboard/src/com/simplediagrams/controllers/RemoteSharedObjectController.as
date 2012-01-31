@@ -443,6 +443,8 @@ package com.simplediagrams.controllers
 			
 			for each (var sdObjectModel:SDObjectModel in event.changedSDObjectModelArray)
 			{			
+				isCorrupt("dispatchUpdate_ObjectChanged", sdObjectModel);
+				
 				var sd_obj:Object = {};
 				sd_obj.commandName 	= "ObjectChanged";
 				sd_obj.sdID 				= sdObjectModel.sdID;							
@@ -522,11 +524,6 @@ package com.simplediagrams.controllers
 					Logger.info("dispatchUpdate_ObjectChanged() sdTextAreaModel.text=" + sdTextAreaModel.text + ", depth=" + sdTextAreaModel.depth.toString() + ", depth=" + sdTextAreaModel.depth.toString(), this);
 				}
 				
-				if (sd_obj.sdID == '1295068066312')
-				{
-					Logger.info("whaszzzup!!!")
-				}
-				
 				_remoteSharedObject.setProperty(sd_obj.sdID.toString(), sd_obj);
 			}
 		}
@@ -535,11 +532,6 @@ package com.simplediagrams.controllers
 		{
 			Logger.info("processUpdate_ObjectChanged()",this);
 			var isCorruptObject:Boolean = false;
-			
-			if (changeObject.sdID == '1295068066312')
-			{
-				Logger.info("whaszzzup!!!")
-			}
 			
 			var sdID:String = changeObject.sdID;
 			var sdObjectModel:SDObjectModel;			
@@ -649,119 +641,206 @@ package com.simplediagrams.controllers
 			sdObjectModel.rotation	= changeObject.rotation;
 			sdObjectModel.depth 		= changeObject.depth;
 			
-			if (sdObjectModel.width < 0) {
-				Logger.error("processUpdate_ObjectChanged() sdObjectModel.width is negative: " + sdObjectModel.width, this);
-				sdObjectModel.width *= -1;
+			var placementDetails:String = ">>" + changeObject.sdObjectModelType + stateString(changeObject);
+			
+			var reportPrefix:String = "processUpdate_ObjectChanged"
+			reportPrefix += " :"+ changeObject.commandName;
+			reportPrefix += " :"+ changeObject.sdObjectModelType ;
+			isCorruptObject =  isCorrupt(reportPrefix, changeObject);
+			
+			if (isCorruptObject){
+				if (isNaN(sdObjectModel.x) || isNaN(sdObjectModel.y) || isNaN(sdObjectModel.height) || isNaN(sdObjectModel.width) || isNaN(sdObjectModel.rotation) ) {
+					sdObjectModel.x = 50;
+					sdObjectModel.y = 50;
+					sdObjectModel.height = 50;
+					sdObjectModel.width = 50;
+					sdObjectModel.rotation = 0;
+				}
+				
+				if (sdObjectModel.height <= 0)
+					sdObjectModel.height = 50;
+				if (sdObjectModel.width <= 0)
+					sdObjectModel.width = 50;
+				
+				if (sdObjectModel.x <= 0 && ((sdObjectModel.width + sdObjectModel.x) < 0) )
+					sdObjectModel.x = 200;
+				if (sdObjectModel.y <= 0 && ((sdObjectModel.height + sdObjectModel.y) < 0) )
+					sdObjectModel.y = 50;
+				
+				isCorruptObject = false;
+				placementDetails += ' <--> ' + stateString(sdObjectModel);
 			}
 			
-			if (sdObjectModel.height < 0){
-				Logger.error("processUpdate_ObjectChanged() sdObjectModel.height is negative: " + sdObjectModel.height, this);
-				sdObjectModel.height *= -1;
+			var isBlank:Boolean = false;
+
+			
+			if (!isCorruptObject && diagramModel.sdObjectModelsAC.contains(sdObjectModel) == false) {
+				Logger.info("processUpdate_ObjectChanged() about to add sdObjectModel=" +placementDetails,	this);
+				
+				// TODO Clean this up. The coupling is too tight.
+				// To prevent throwing an RSOEvent from within diagramModel.addSDObjectModel()
+				// we perform it's responsibilities here:	
+				diagramModel.sdObjectModelsAC.addItem(sdObjectModel);
+				diagramModel.addComponentForModel(sdObjectModel, false);
+			} else {
+				Logger.error(placementDetails);
 			}
+		}		
+		
+		private function stateString(o:Object):String{
+			var d:String = " x=" +o.x;
+			d += " width=" +o.width;
+			d += " y=" +o.y;
+			d += " height=" +o.height;
+			d += " rotation=" +o.rotation;
+			d += " depth=" +o.depth;		
+			
+			return d;
+		}
+		
+
+		private function isBlank(changeObject:Object):Boolean{
+			var blank:Boolean = false;
+			
+			switch ( changeObject.sdObjectModelType) {
+				case "SDSymbolModel": {
+					if ( changeObject.libraryName == null || changeObject.symbolName == null)
+						blank = true;					
+					break;
+				}
+				case "SDImageModel": {					
+					if (changeObject.imageURL == undefined ) 
+						blank = true;					
+					break;
+				}
+				case "SDLineModel": {
+					if((changeObject.startX == changeObject.endX) &&
+						(changeObject.startY ==changeObject.endY) &&
+						(changeObject.bendX == 0) &&
+						(changeObject.bendY == 0) )
+						blank = true;
+					break;
+				}
+				case "SDPencilDrawingModel": {
+					if (changeObject.linePath == null)
+						blank = true;
+					break;
+				}
+				case "SDTextAreaModel": {
+					if (changeObject.text == null)
+						blank = true;
+					break;
+				}
+			}
+			return blank;
+		}
+		
+		private function isCorrupt(reportPrefix:String, changeObject:Object):Boolean{
+			
+			var isCorruptObject:Boolean = false;
+			var reportString:String = reportPrefix;
 			
 			if (changeObject.x == null) {
-				Logger.error("processUpdate_ObjectChanged() null param: sdObjectModel.x", this);
+				reportString += " #null:x";
 				isCorruptObject = true;
 			}
 			if (changeObject.color == null) {
-				Logger.error("processUpdate_ObjectChanged() null param: sdObjectModel.color", this);
+				reportString += " #null:color";
 				isCorruptObject = true;
 			}
 			if (changeObject.y == null) {
-				Logger.error("processUpdate_ObjectChanged() null param: sdObjectModel.y", this);
+				reportString += " #null:y";
 				isCorruptObject = true;
 			}
 			if (changeObject.width == null) {
-				Logger.error("processUpdate_ObjectChanged() null param: sdObjectModel.width", this);
+				reportString += " #null:width";
 				isCorruptObject = true;
 			}
 			if (changeObject.height == null) {
-				Logger.error("processUpdate_ObjectChanged() null param: sdObjectModel.height", this);
+				reportString += " #null:height";
 				isCorruptObject = true;
 			}
 			if (changeObject.rotation == null) {
-				Logger.error("processUpdate_ObjectChanged() null param: sdObjectModel.rotation", this);
+				reportString += " #null:rotation";
 				isCorruptObject = true;
 			}
 			if (changeObject.depth == null) {
-				Logger.error("processUpdate_ObjectChanged() null param: sdObjectModel.depth", this);
+				reportString += " #null:depth";
 				isCorruptObject = true;
 			}
 			if (changeObject.sdID == null) {
-				Logger.error("processUpdate_ObjectChanged() null param: sdObjectModel.sdID", this);
+				reportString += " #null:sdID";
 				isCorruptObject = true;
 			}
 			
 			if (isNaN(changeObject.x) ) {
-				Logger.error("processUpdate_ObjectChanged() NaN param: sdObjectModel.x", this);
+				reportString += " #NaN:x";
 				isCorruptObject = true;
 			}
 			if (isNaN(changeObject.color)) {
-				Logger.error("processUpdate_ObjectChanged() NaN param: sdObjectModel.color", this);
+				reportString += " #NaN:color";
 				isCorruptObject = true;
 			}
 			if (isNaN(changeObject.y)) {
-				Logger.error("processUpdate_ObjectChanged() NaN param: sdObjectModel.y", this);
+				reportString += " #NaN:y";
 				isCorruptObject = true;
 			}
-			if (isNaN(changeObject.width)) {
-				Logger.error("processUpdate_ObjectChanged() NaN param: sdObjectModel.width", this);
-				isCorruptObject = true;
-			}
-			if (isNaN(changeObject.height)) {
-				Logger.error("processUpdate_ObjectChanged() NaN param: sdObjectModel.height", this);
-				isCorruptObject = true;
-			}
+			
+			// width and height are NaN for SDLineModel
+//			if (isNaN(changeObject.width)) {
+//				reportString += " #NaN:width";
+//				isCorruptObject = true;
+//			}
+//			if (isNaN(changeObject.height)) {
+//				reportString += " #NaN:height";
+//				isCorruptObject = true;
+//			}
 			if (isNaN(changeObject.rotation)) {
-				Logger.error("processUpdate_ObjectChanged() NaN param: sdObjectModel.rotation", this);
+				reportString += " #NaN:rotation";
 				isCorruptObject = true;
 			}
 			if (isNaN(changeObject.depth)) {
-				Logger.error("processUpdate_ObjectChanged() NaN param: sdObjectModel.depth", this);
+				reportString += " #NaN:depth";
 				isCorruptObject = true;
 			}
 			
-			if (changeObject.x < 0) {
-				Logger.error("processUpdate_ObjectChanged() negative param: sdObjectModel.x", this);
+			if (changeObject.x <= 0) {
+				reportString += " #negative:x("+ changeObject.x.toString() +")";
+				isCorruptObject = true;
+			}
+			if (changeObject.y <= 0) {
+				reportString += " #negative:y("+ changeObject.y.toString() +")";
+				isCorruptObject = true;
+			}
+			if (changeObject.width <= 0) {
+				reportString += " #negative:width("+ changeObject.width.toString() +")";
+				isCorruptObject = true;
+			}
+			if (changeObject.height <= 0) {
+				reportString += " #negative:height("+ changeObject.height.toString() +")";
+				isCorruptObject = true;
+			}
+			if (changeObject.depth <= 0) {
+				reportString += " #negative:depth("+ changeObject.depth.toString() +")";
 				isCorruptObject = true;
 			}
 			if (changeObject.color < 0) {
-				Logger.error("processUpdate_ObjectChanged() negative param: sdObjectModel.color", this);
+				reportString += " #negative:color("+ changeObject.color.toString() +")";
 				isCorruptObject = true;
 			}
-			if (changeObject.y < 0) {
-				Logger.error("processUpdate_ObjectChanged() negative param: sdObjectModel.y", this);
-				isCorruptObject = true;
-			}
-			if (changeObject.width < 0) {
-				Logger.error("processUpdate_ObjectChanged() negative param: sdObjectModel.width", this);
-				isCorruptObject = true;
-			}
-			if (changeObject.height < 0) {
-				Logger.error("processUpdate_ObjectChanged() negative param: sdObjectModel.height", this);
-				isCorruptObject = true;
-			}
-			if (changeObject.depth< 0) {
-				Logger.error("processUpdate_ObjectChanged() negative param: sdObjectModel.depth", this);
-				isCorruptObject = true;
-			}
+			
+			if (changeObject.hasOwnProperty('text'))
+				reportString += " #text=" + changeObject.text.toString();
 
 			
-			// TODO Clean this up. The coupling is too tight.
-			// To prevent throwing an RSOEvent from within diagramModel.addSDObjectModel()
-			// we perform it's responsibilities here:	
-			if (!isCorruptObject && diagramModel.sdObjectModelsAC.contains(sdObjectModel) == false) {
-				Logger.info("processUpdate_ObjectChanged() about to add sdObjectModel=" +sdObjectModel+" "+sdObjectModel.sdID+" x,y,width,height,depth="+
-					sdObjectModel.x+","+
-					sdObjectModel.y+","+
-					sdObjectModel.width+","+
-					sdObjectModel.height+","+
-					sdObjectModel.depth,
-					this);
-				diagramModel.sdObjectModelsAC.addItem(sdObjectModel);
-				diagramModel.addComponentForModel(sdObjectModel, false);
+			if (isCorruptObject) {				
+				Logger.error(reportString, this);
+			} else {
+				Logger.info(reportString, this);
 			}
-		}		
+			
+			return isCorruptObject;
+		}
 	
 //		private function setupGoogleAnalyticsTracker():void{
 //			_tracker = new GATracker( drawingBoard, "UA-19974708-1", "AS3", true );

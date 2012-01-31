@@ -231,7 +231,7 @@
 
 		<mx:Button icon="{arrowIcon}" click="onPointerTool()" width="20" height="20"  toolTip="Pointer tool"/>
 		
-		<mx:Button icon="{pencilIcon}" click="onPencilTool()" width="20" height="20" toolTip="Pencil tool"/>
+		<mx:Button icon="{pencilIcon}" click="onPencilTool()" width="20" height="20" toolTip="Pencil tool" />
 	
 		<mx:Button icon="{lineIcon}" click="onLineTool()" width="20" height="20" toolTip="Line tool"/>		
 								

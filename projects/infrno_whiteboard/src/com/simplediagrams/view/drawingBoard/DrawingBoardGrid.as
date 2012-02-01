@@ -1,4 +1,4 @@
-package com.simplediagrams.view.components
+package com.simplediagrams.view.drawingBoard
 {	
 	
 	import com.simplediagrams.model.DrawingBoardGridModel;

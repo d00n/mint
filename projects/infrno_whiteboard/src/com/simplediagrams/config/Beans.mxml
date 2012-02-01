@@ -5,7 +5,7 @@
 	xmlns:swiz="http://swiz.swizframework.org"
 	xmlns:business="com.simplediagrams.business.*"
 	xmlns:controllers="com.simplediagrams.controllers.*"
-	xmlns:model="com.simplediagrams.model.*" xmlns:objecthandles="com.roguedevelopment.objecthandles.*">
+	xmlns:model="com.simplediagrams.model.*" xmlns:objecthandles="com.roguedevelopment.objecthandles.*" xmlns:components="com.simplediagrams.view.components.*" xmlns:drawingBoard="com.simplediagrams.view.drawingBoard.*">
 		
  
 	<fx:Declarations>
@@ -67,7 +67,7 @@
 										resultFormat="flashvars"
 										/>   
 		
-		<!-- components:DrawingBoardGrid id="drawingBoardGrid" / --> 
+		<drawingBoard:DrawingBoardGrid id="drawingBoardGrid" /> 
 		<model:DrawingBoardGridModel id="drawingBoardGridModel" /> 
 		<controllers:RemoteSharedObjectController id="remoteSharedObjectController" /> 
 		

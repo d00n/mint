@@ -8,7 +8,7 @@
 				 xmlns:myComps="*" 
 				 dragEnter="onDragEnter(event)"
 				 dragDrop="onDragDrop(event)"
-				 mouseChildren="true" xmlns:components1="com.simplediagrams.view.components.*">
+				 mouseChildren="true" xmlns:components1="com.simplediagrams.view.components.*" xmlns:drawingBoard="com.simplediagrams.view.drawingBoard.*">
 	
 	<fx:Script>
 		<![CDATA[
@@ -804,7 +804,7 @@
 										/>
 			</s:Group>
 			
-			<components1:DrawingBoardGrid id="drawingBoardGrid" 
+			<drawingBoard:DrawingBoardGrid id="drawingBoardGrid" 
 																	 width="{diagramModel.width}"
 																	 height="{diagramModel.height}"
 																	 visible="{drawingBoardGridModel.showGrid}"

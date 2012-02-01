@@ -5,7 +5,6 @@ package com.simplediagrams.view.components
 	import com.simplediagrams.events.GridEvent;
 	import com.simplediagrams.events.RemoteSharedObjectEvent;
 	import com.simplediagrams.model.DrawingBoardGridModel;
-//	import com.simplediagrams.view.DrawingBoard;
 	
 	import flash.display.DisplayObject;
 	import flash.events.Event;
@@ -32,6 +31,7 @@ package com.simplediagrams.view.components
 	import spark.events.DropDownEvent;
 	import spark.primitives.Rect;
 	import spark.primitives.supportClasses.FilledElement;
+	import com.simplediagrams.view.drawingBoard.DrawingBoardGrid;
 	
 	
 	[SkinState("open")]
@@ -45,8 +45,8 @@ package com.simplediagrams.view.components
 		[Inject]
 		public var drawingBoardGridModel:DrawingBoardGridModel;
 		
-//		[Inject]
-//		public var drawingBoardGrid:DrawingBoardGrid;
+		[Inject]
+		public var drawingBoardGrid:DrawingBoardGrid;
 		
 		[SkinPart(required="true")]
 		public var dropDown:Group;
@@ -150,7 +150,7 @@ package com.simplediagrams.view.components
 			event.show_grid = showGridCheckBox.selected;
 			event.alpha = alphaSlider.value;
 			event.cell_width = cellWidthSlider.value;
-			dispatcher.dispatchEvent(event);				
+			this.dispatcher.dispatchEvent(event);				
 		}
 		
 		public function onAlphaSliderChange(evt:Event):void {
@@ -158,7 +158,7 @@ package com.simplediagrams.view.components
 			event.show_grid = showGridCheckBox.selected;
 			event.alpha = alphaSlider.value;
 			event.cell_width = cellWidthSlider.value;
-			dispatcher.dispatchEvent(event);				
+			this.dispatcher.dispatchEvent(event);				
 		}
 				
 		public function showGridCheckBox_onValueCommit(evt:FlexEvent):void
@@ -167,7 +167,7 @@ package com.simplediagrams.view.components
 			event.show_grid = showGridCheckBox.selected;
 			event.alpha = alphaSlider.value;
 			event.cell_width = cellWidthSlider.value;
-			dispatcher.dispatchEvent(event);	
+			this.dispatcher.dispatchEvent(event);	
 		}	
 
 		

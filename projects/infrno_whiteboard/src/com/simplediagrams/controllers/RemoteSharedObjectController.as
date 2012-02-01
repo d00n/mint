@@ -55,7 +55,7 @@ package com.simplediagrams.controllers
 	
 	import spark.components.Group;
 		
-	public class RemoteSharedObjectController extends AbstractController 
+	public class RemoteSharedObjectController extends AbstractController
 	{
 		/** SUCCESS means the client changed the shared object */
 		private static const SUCCESS : String = "success";
@@ -350,7 +350,6 @@ package com.simplediagrams.controllers
 //				dispatcher.dispatchEvent(evt)
 //			}
 		}
-		
 		
 //		[Mediate(event="GridEvent.SHOW_GRID")]    
 //		[Mediate(event="GridEvent.CELL_WIDTH")]    

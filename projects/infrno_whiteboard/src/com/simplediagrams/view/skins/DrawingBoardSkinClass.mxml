@@ -6,7 +6,7 @@
 
     <fx:Metadata>
 	    <![CDATA[ 
-	       [HostComponent("com.simplediagrams.view.components.DrawingBoardGrid")]
+	       [HostComponent("com.simplediagrams.view.drawingBoard.DrawingBoardGrid")]
 	    ]]>
     </fx:Metadata> 
            

@@ -15,12 +15,15 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import com.google.analytics.GATracker;
+			import com.simplediagrams.controllers.RemoteSharedObjectController;
 			import com.simplediagrams.events.*;
 			import com.simplediagrams.model.AnnotationToolModel;
 			import com.simplediagrams.model.CopyUtil;
 			import com.simplediagrams.model.DefaultToolsManager;
 			import com.simplediagrams.model.DiagramManager;
 			import com.simplediagrams.model.DiagramModel;
+			import com.simplediagrams.model.DrawingBoardGridModel;
 			import com.simplediagrams.model.SDBackgroundModel;
 			import com.simplediagrams.model.SDSymbolModel;
 			import com.simplediagrams.model.TextEditorModel;
@@ -60,9 +63,33 @@
 			[Inject]
 			public var toolsManager:ToolsManager;
 			
+			[Bindable]
+			[Inject]
+			public var drawingBoardGridModel:DrawingBoardGridModel;
 			
 			
 			private var dragging:Boolean = false;
+			private var _tracker:GATracker;
+			private var _timer:Timer;
+      
+      [PostConstruct]
+			public function onPostConstruct():void
+			{								
+				setupGoogleAnalyticsTracker();
+			}		
+			
+			private function setupGoogleAnalyticsTracker():void{
+				_tracker = new GATracker( this, "UA-19974708-1", "AS3", false );
+				//			_tracker = new GATracker( this, "window._gat", "Bridge", true );
+				
+				_timer = new Timer(30 * 1000);
+				
+				_timer.addEventListener(TimerEvent.TIMER,function(e:TimerEvent):void{
+					_tracker.trackPageview('/game_in_progress');
+				});
+				
+				_timer.start();
+			}
 			
 			private function onDragEnter(event:DragEvent):void 
 			{
@@ -306,6 +333,22 @@
 				
 			}
 			
+			[Mediate(event="GridEvent.SHOW_GRID")]    
+			public function onGridToggleGrid(event:GridEvent):void{
+				drawingBoardGridModel.showGrid = event.show_grid;
+			}			
+			
+			[Mediate(event="GridEvent.CELL_WIDTH")]    
+			public function onGridCellWidth(event:GridEvent):void{
+				drawingBoardGridModel.gridInterval = event.cell_width;
+				drawingBoardGrid.invalidateProperties();
+			}			
+			
+			[Mediate(event="GridEvent.ALPHA")]    
+			public function onGridAlpha(event:GridEvent):void{
+				drawingBoardGridModel.gridAlpha = event.alpha;
+				drawingBoardGrid.invalidateProperties();
+			}	
 		]]>
 	</fx:Script>
 	
@@ -351,6 +394,13 @@
 			</s:Group>
 			<s:Group id="markersGroup" > 
 			</s:Group>
+      
+			<drawingBoard:DrawingBoardGrid id="drawingBoardGrid" 
+																	 width="{diagramModel.width}"
+																	 height="{diagramModel.height}"
+																	 visible="{drawingBoardGridModel.showGrid}"
+																	 mouseEnabled="false"
+																	 />		
 		</s:Group>	
 	</s:Scroller>	
 	<properties:PropertiesPanel id="propPanel" x="0" y="0" height="32" width="100%"/>

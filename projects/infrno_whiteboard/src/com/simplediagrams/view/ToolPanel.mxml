@@ -246,7 +246,7 @@
 		
 		<mx:Button icon="{moveBackward}" click="onMoveBackward()" width="20" height="20" toolTip="Move selected object backward"/>	
 
-		<mx:ColorPicker id="cp" width="20" height="20"  close="onColorChange()" doubleClickEnabled="true" doubleClick="onColorChange()" color="0xFFFFFF"/>
+		<mx:ColorPicker id="cp" width="20" height="20"  close="onColorChange()" doubleClickEnabled="true" doubleClick="onColorChange()" color="0xFFFFFF" toolTip="Color picker"/>
 		
 		<components:GridButtonPopUp id="gridButtonPopUp" skinClass="com.simplediagrams.view.skins.GridButtonPopUpSkin" />		
 
@@ -254,27 +254,6 @@
 					id="alignButtonPopUp"
 					skinClass="com.simplediagrams.view.skins.AlignButtonPopUpSkin"
 					/>
-		
-		
-		<!--
-		<components:SparkColorPicker id="cp" 
-									 width="30" 
-									 height="30" 
-									 close="onColorChange()" 
-									 doubleClickEnabled="true" 
-									 doubleClick="onColorChange()" 
-									 skinClass="com.simplediagrams.view.components.ColorPickerListSkin"
-									 color="0x000000"/>
-		-->
-		
-		<components:MyColorPicker
-			id="my_cp" 
-			width="30" 
-			height="30" 
-			close="onColorChange()" 
-			doubleClickEnabled="true" 
-			doubleClick="onColorChange()" 
-			color="0xFFFFFF"/>		
 
 	</s:VGroup>
 		

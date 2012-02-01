@@ -13,15 +13,13 @@
 		<controllers:UndoRedoController id="undoRedoController" /> 
 		<controllers:DownloadController id="downloadController" /> 
 		<controllers:DialogsController id="dialogsController" /> 
-        <controllers:ApplicationController id="applicationController"/> 
-        <controllers:LoginController id="loginController"/> 
-        <controllers:DiagramController id="diagramController"/> 
-        <controllers:ToolPanelController id="toolPanelController"/>  
-        <controllers:FileController id="fileController" /> 
-        <controllers:ClipboardController id="clipboardController" /> 
-        <controllers:RegistrationController id="registrationController" /> 
-        <controllers:PropertiesPanelController id="propertiesPanelController" /> 
-		<controllers:LibraryController id="libraryController" /> 
+		<controllers:ApplicationController id="applicationController"/> 
+		<controllers:LoginController id="loginController"/> 
+		<controllers:DiagramController id="diagramController"/> 
+		<controllers:FileController id="fileController" /> 
+		<controllers:ClipboardController id="clipboardController" /> 
+		<controllers:RegistrationController id="registrationController" /> 
+		<controllers:PropertiesPanelController id="propertiesPanelController" /> 
 		<controllers:MenuController id="menuController" /> 
 		<controllers:BasecampController id="basecampController" /> 
 		<controllers:SymbolEditController id="symbolEditController" /> 
@@ -29,6 +27,7 @@
 		<controllers:TextEditorController id="textEditorController" /> 
 		<controllers:KeyboardController id="keyboardController" /> 
 		<controllers:ToolPanelController id="toolsController"/>
+		<controllers:LibraryController id="libraryController"/>
 		<controllers:AnnotationController id="annotationController"/>
 		
 		<model:UndoRedoManager id="undoRedoManager" />    
@@ -46,13 +45,13 @@
 		<model:DiagramManager id="diagramManager"/>
 		<model:ToolsManager id="toolsManager"/>
 		
-		<!-- components:DrawingBoardGrid id="drawingBoardGrid" / --> 
-    <model:DrawingBoardGridModel id="drawingBoardGridModel" /> 
-  	<controllers:RemoteSharedObjectController id="remoteSharedObjectController" /> 
-        
-        <business:FileManager id="fileManager" />                                    
-        <business:SettingsDelegate id="settingsManager" />                         
-		<business:BasecampDelegate id="basecampDelegate" />                  
+		<business:FileManager id="fileManager" />                                    
+		<business:SettingsDelegate id="settingsManager" />                         
+		<business:BasecampDelegate id="basecampDelegate" />     
+		<business:LibraryDelegate id="libDelegate"/>
+		<business:LibraryRegistryDelegate id="libRegistryDelegate"/>
+		<business:DiagramDelegate id="diagramDelegate"/>
+		
 		<business:SimpleDiagramsDelegate id="simpleDiagramsDelegate" />     
 		<business:YammerDelegate id="yammerDelegate" />
 		
@@ -67,6 +66,10 @@
 										useProxy="false" 
 										resultFormat="flashvars"
 										/>   
+		
+		<!-- components:DrawingBoardGrid id="drawingBoardGrid" / --> 
+		<!-- model:DrawingBoardGridModel id="drawingBoardGridModel" / --> 
+		<controllers:RemoteSharedObjectController id="remoteSharedObjectController" /> 
 		
 		
 		

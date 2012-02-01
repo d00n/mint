@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:view="com.simplediagrams.view.*" xmlns:library="com.simplediagrams.view.library.*" >
+	
+	<fx:Script>
+		<![CDATA[
+			import com.simplediagrams.events.CreateCustomLibraryEvent;
+			import com.simplediagrams.events.LibraryEvent;
+			import com.simplediagrams.model.LibraryManager;
+			
+			[Inject]
+			[Bindable]
+			public var libraryManager:LibraryManager;
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout  gap="0" />
+	</s:layout>
+	
+	
+	<library:DefaultObjectsPanel id="defaultToolsPanel" height="100" width="100%" />
+	
+	<s:VGroup height="100%" width="100%" gap="0">
+		
+		
+		<!-- library tab-->
+		<s:Group height="22" width="100%">
+			
+			<s:layout>
+				<s:BasicLayout/>
+			</s:layout>
+			
+			<s:Rect  width="100%" height="100%">
+				<s:fill>
+					<s:BitmapFill source="@Embed('assets/img/backgrounds/default_objects_bg.png')" fillMode="repeat"/>
+				</s:fill>					
+			</s:Rect>			
+			
+			<s:TabBar id="tbrLibrary" 
+					  selectedIndex="@{libraryManager.selectedLibraryTypeIndex}" 
+					  dataProvider="{vstLibrary}" 
+					  styleName="libraryTabBar"
+					  x="10">
+				<s:layout>
+					<s:ButtonBarHorizontalLayout gap="2" />
+				</s:layout>
+			</s:TabBar>
+			
+		</s:Group>
+		
+		
+		<mx:ViewStack id="vstLibrary" selectedIndex="{tbrLibrary.selectedIndex}" width="100%" height="100%" creationPolicy="all">
+			
+			<!-- library accordian -->
+			<s:NavigatorContent id="search" label="Symbols" width="100%" height="100%">			
+				<s:Rect  width="100%" height="100%">
+					<s:fill>
+						<s:BitmapFill source="@Embed('assets/img/backgrounds/shape_library_bg.png')" fillMode="repeat"/>
+					</s:fill>					
+				</s:Rect>			
+				<library:LibraryPanel id="libraryPanel" height="100%" width="100%" contentBackgroundAlpha="0" backgroundAlpha="0" />		
+			</s:NavigatorContent>
+			
+			<!-- background panel -->
+			<s:NavigatorContent label="Backgrounds" width="100%" height="100%">			
+				<s:Rect  width="100%" height="100%">
+					<s:fill>
+						<s:BitmapFill source="@Embed('assets/img/backgrounds/shape_library_bg.png')" fillMode="repeat"/>
+					</s:fill>					
+				</s:Rect>			
+				<library:BackgroundsPanel id="backgroundsPanel" height="100%" width="100%" contentBackgroundAlpha="0"/>
+			</s:NavigatorContent>
+		</mx:ViewStack>
+		
+		
+	</s:VGroup>
+	
+	
+</s:Group>

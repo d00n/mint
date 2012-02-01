@@ -79,8 +79,8 @@ package com.simplediagrams.controllers
 		private var _wowza_whiteboard_app:String;
 		private var _wowza_whiteboard_port:String;
 		
-		[Autowire(bean='diagramModel')]
-		public var diagramModel:DiagramModel
+//		[Autowire(bean='diagramModel')]
+//		public var diagramModel:DiagramModel
 
 		[Autowire(bean='libraryManager')]
 		public var libraryManager:LibraryManager;

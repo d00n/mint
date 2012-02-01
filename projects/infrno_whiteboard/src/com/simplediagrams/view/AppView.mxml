@@ -38,22 +38,22 @@
 			[PostConstruct]
 			public function onPostConstruct():void
 			{
-				if (registrationManager && registrationManager.isLicensed==true)
-				{
-					removeTrialBar()
-				}	
-				else
-				{
-					trialBar.height=150				
-				}
+//				if (registrationManager && registrationManager.isLicensed==true)
+//				{
+//					removeTrialBar()
+//				}	
+//				else
+//				{
+//					trialBar.height=150				
+//				}
 			}
 					
 			protected function removeTrialBar():void
 			{
-				if (this.trialBar)
-				{
-					this.removeElement(trialBar)
-				}
+//				if (this.trialBar)
+//				{
+//					this.removeElement(trialBar)
+//				}
 			}
 			
 			

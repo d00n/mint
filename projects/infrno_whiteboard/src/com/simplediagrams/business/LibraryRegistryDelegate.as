@@ -5,9 +5,9 @@ package com.simplediagrams.business
 	import com.simplediagrams.model.libraries.LibraryInfo;
 	import com.simplediagrams.util.Logger;
 	
-	import flash.filesystem.File;
-	import flash.filesystem.FileMode;
-	import flash.filesystem.FileStream;
+//	import flash.filesystem.File;
+//	import flash.filesystem.FileMode;
+//	import flash.filesystem.FileStream;
 	
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
@@ -23,50 +23,50 @@ package com.simplediagrams.business
 		 *  If it can't be copied, create empty registry
 		 */
 		
-		public function loadRegistry(sourceFile:File = null):LibrariesRegistry
-		{
-			if (sourceFile==null)
-			{
-				sourceFile=ApplicationModel.baseStorageDir.resolvePath(ApplicationModel.LIBRARY_PATH + "libraries.xml")
-			}
-			
-			if (sourceFile.exists==false)
-			{
-				Logger.error("Can't find sourcefile " + sourceFile.nativePath, this)
-				copyDefaultLibrariesAndRegistry()					
-			}
-			
-			//if still false, create an empty Registry
-			if (sourceFile.exists==false)
-			{
-				return new LibrariesRegistry()
-			}
-			
-			var s:FileStream = new FileStream();
-			s.open(sourceFile, FileMode.READ);
-			var content:String = s.readUTFBytes(s.bytesAvailable);
-			s.close();
-			var contentXML:XML = XML(content);
-					
-			
-			return readRegistry(contentXML);
-		}
+//		public function loadRegistry(sourceFile:File = null):LibrariesRegistry
+//		{
+//			if (sourceFile==null)
+//			{
+//				sourceFile=ApplicationModel.baseStorageDir.resolvePath(ApplicationModel.LIBRARY_PATH + "libraries.xml")
+//			}
+//			
+//			if (sourceFile.exists==false)
+//			{
+//				Logger.error("Can't find sourcefile " + sourceFile.nativePath, this)
+//				copyDefaultLibrariesAndRegistry()					
+//			}
+//			
+//			//if still false, create an empty Registry
+//			if (sourceFile.exists==false)
+//			{
+//				return new LibrariesRegistry()
+//			}
+//			
+//			var s:FileStream = new FileStream();
+//			s.open(sourceFile, FileMode.READ);
+//			var content:String = s.readUTFBytes(s.bytesAvailable);
+//			s.close();
+//			var contentXML:XML = XML(content);
+//					
+//			
+//			return readRegistry(contentXML);
+//		}
 		
 		/* If we're missing the registry, copy default libraries and registry from install directory */		
 		protected function copyDefaultLibrariesAndRegistry():void
 		{
-			var origDir:File = File.applicationDirectory.resolvePath(ApplicationModel.LIBRARY_PATH)				
-			var libDir:File = ApplicationModel.baseStorageDir.resolvePath(ApplicationModel.LIBRARY_PATH)
-			if (libDir.exists==false)
-			{
-				libDir.createDirectory()
-			}
-			var filesToCopyArr:Array = origDir.getDirectoryListing()
-			for each (var file:File in filesToCopyArr)
-			{
-				var targetFile:File = libDir.resolvePath(file.name)
-				file.copyTo(targetFile, true)
-			}
+//			var origDir:File = File.applicationDirectory.resolvePath(ApplicationModel.LIBRARY_PATH)				
+//			var libDir:File = ApplicationModel.baseStorageDir.resolvePath(ApplicationModel.LIBRARY_PATH)
+//			if (libDir.exists==false)
+//			{
+//				libDir.createDirectory()
+//			}
+//			var filesToCopyArr:Array = origDir.getDirectoryListing()
+//			for each (var file:File in filesToCopyArr)
+//			{
+//				var targetFile:File = libDir.resolvePath(file.name)
+//				file.copyTo(targetFile, true)
+//			}
 			
 		}
 		
@@ -89,25 +89,25 @@ package com.simplediagrams.business
 		
 		public function saveRegistry(value:LibrariesRegistry):void
 		{
-			var xml:XML = <registry></registry>;
-			var librariesXML:XML = <libraries></libraries>;
-			for each(var item:LibraryInfo in value.libraries)
-			{
-				var libraryXML:XML = <library name={item.name} displayName={item.displayName}>
-										<custom>{item.custom}</custom>
-										<type>{item.type}</type>
-										<enabled>{item.enabled}</enabled>
-									</library>;
-				librariesXML.appendChild(libraryXML);
-
-			}
-			xml.appendChild(librariesXML);
-			
-			var file:File = ApplicationModel.baseStorageDir.resolvePath(ApplicationModel.LIBRARY_PATH + "libraries.xml");
-			var s:FileStream = new FileStream();
-			s.open(file, FileMode.WRITE);
-			s.writeUTFBytes(xml);
-			s.close();
+//			var xml:XML = <registry></registry>;
+//			var librariesXML:XML = <libraries></libraries>;
+//			for each(var item:LibraryInfo in value.libraries)
+//			{
+//				var libraryXML:XML = <library name={item.name} displayName={item.displayName}>
+//										<custom>{item.custom}</custom>
+//										<type>{item.type}</type>
+//										<enabled>{item.enabled}</enabled>
+//									</library>;
+//				librariesXML.appendChild(libraryXML);
+//
+//			}
+//			xml.appendChild(librariesXML);
+//			
+//			var file:File = ApplicationModel.baseStorageDir.resolvePath(ApplicationModel.LIBRARY_PATH + "libraries.xml");
+//			var s:FileStream = new FileStream();
+//			s.open(file, FileMode.WRITE);
+//			s.writeUTFBytes(xml);
+//			s.close();
 		}
 	}
 }

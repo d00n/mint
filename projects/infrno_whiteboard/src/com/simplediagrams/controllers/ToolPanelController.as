@@ -127,45 +127,6 @@ package com.simplediagrams.controllers
 					
 		}
 		
-		
-		[Mediate(event="PositionEvent.MOVE_BACKWARD")]
-		[Mediate(event="PositionEvent.MOVE_FORWARD")]
-		public function changePosition(event:PositionEvent):void
-		{			
-			//get current selection
-			var selectedArr:Array = diagramModel.selectedArray;
-			
-			if (selectedArr.length==0)
-			{
-				Alert.show("No object selected.")
-				return
-			}
-			
-			if (selectedArr.length>1)
-			{
-				Alert.show("You must select exactly one object.")
-				return
-			}
-						
-			var sdObjectModel:SDObjectModel = selectedArr[0]
-			var eventChangeDepth:ChangeDepthEvent
-			switch(event.type)
-			{
-				case PositionEvent.MOVE_BACKWARD:
-					eventChangeDepth = new ChangeDepthEvent(ChangeDepthEvent.MOVE_BACKWARD);
-					eventChangeDepth.sdID = sdObjectModel.sdID;
-					dispatcher.dispatchEvent(eventChangeDepth);
-					break
-				
-				case PositionEvent.MOVE_FORWARD:
-					eventChangeDepth = new ChangeDepthEvent(ChangeDepthEvent.MOVE_FORWARD);
-					eventChangeDepth.sdID = sdObjectModel.sdID;
-					dispatcher.dispatchEvent(eventChangeDepth);
-					break
-				
-			}
-		}
-		
 		[Mediate(event="ToolPanelEvent.SUSPEND_CURRENT_TOOL")]
 		public function suspendCurrentTool(event:ToolPanelEvent):void
 		{

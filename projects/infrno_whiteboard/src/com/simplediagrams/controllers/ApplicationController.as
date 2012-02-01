@@ -41,12 +41,12 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.view.dialogs.UpdateToTrialModeDialog;
 	import com.simplediagrams.view.dialogs.VerifyQuitDialog;
 	
-	import flash.data.EncryptedLocalStore;
+//	import flash.data.EncryptedLocalStore;
 	import flash.display.DisplayObject;
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
-	import flash.events.InvokeEvent;
-	import flash.events.NativeWindowDisplayStateEvent;
+//	import flash.events.InvokeEvent;
+//	import flash.events.NativeWindowDisplayStateEvent;
 	import flash.events.UncaughtErrorEvent;
 	import flash.filesystem.*;
 	import flash.system.ApplicationDomain;
@@ -58,6 +58,7 @@ package com.simplediagrams.controllers
 	import mx.events.DynamicEvent;
 	import mx.events.FlexEvent;
 	import mx.managers.PopUpManager;
+	import mx.rpc.events.InvokeEvent;
 	
 	import org.swizframework.controller.AbstractController;
 
@@ -103,7 +104,7 @@ package com.simplediagrams.controllers
 			Logger.debug("ApplicationController created.", this);
 			
 			//add close listener to intercept application close event
-			FlexGlobals.topLevelApplication.addEventListener(Event.CLOSING, onWindowClose, false,0,true);
+//			FlexGlobals.topLevelApplication.addEventListener(Event.CLOSING, onWindowClose, false,0,true);
 			
 		}
 		
@@ -178,20 +179,20 @@ package com.simplediagrams.controllers
 							
 			doUpdateCheck()	
 			
-			//If we want to do anything special immediately after an upgrade do it here
-			if (appModel.lastInstalledVersion != appModel.version)
-			{				
-				//stuff to do immediately after an upgrade goes here
-				
-				//set the first trial date if this is an upgrade and the date was never set
-				if (registrationManager.isLicensed==false && registrationManager.dateTrialStarted==null)
-				{
-					registrationManager.recordDateTrialStarted()
-				}
-								
-				appModel.lastInstalledVersion = appModel.version
-			}
-							
+//			//If we want to do anything special immediately after an upgrade do it here
+//			if (appModel.lastInstalledVersion != appModel.version)
+//			{				
+//				//stuff to do immediately after an upgrade goes here
+//				
+//				//set the first trial date if this is an upgrade and the date was never set
+//				if (registrationManager.isLicensed==false && registrationManager.dateTrialStarted==null)
+//				{
+//					registrationManager.recordDateTrialStarted()
+//				}
+//								
+//				appModel.lastInstalledVersion = appModel.version
+//			}
+//							
 				
 			Logger.info("checking EULA...",this)
 			var agreedToEULA:Boolean 
@@ -232,47 +233,47 @@ package com.simplediagrams.controllers
 		{
 						
 			//make sure user folder exists
-			try
-			{
-				var userFolder:File = ApplicationModel.baseStorageDir
-				if (userFolder.exists==false)
-				{
-					userFolder.createDirectory()
-				}
-			}
-			catch(error:Error)
-			{
-				Alert.show("SimpleDiagrams can't create a storage directory here: " + userFolder.nativePath  + " Please create this folder manually and then restart SimpleDiagrams", "Error")
-				return
-			}
-			
-			//load in settings
-			try
-			{
-				settingsManager.loadSettings()
-				dispatcher.dispatchEvent(new SettingsEvent(SettingsEvent.SETTINGS_LOADED, true));
-				if(appModel.version != settingsModel.appVersion)
-				{
-					dispatcher.dispatchEvent(new LibraryEvent(LibraryEvent.COPY_LIBRARIES));
-					settingsModel.appVersion = appModel.version;
-					settingsManager.saveSettings();
-				}
-				if(settingsModel.promptDatabaseImport)
-				{
-					var oldDir:File = ApplicationModel.baseStorageDir;
-					var doPrompt:Boolean = oldDir.exists;
-					if(doPrompt)
-						doPrompt = oldDir.resolvePath(ApplicationModel.DB_PATH).exists;
-					if(doPrompt)
-					{
-						dispatcher.dispatchEvent(new ApplicationEvent(ApplicationEvent.SHOW_IMPORT_DATABASE_PROMPT))					
-					}
-				}
-			}
-			catch(error:Error)
-			{
-				Logger.error("Couldn't load settings", this)
-			}
+//			try
+//			{
+//				var userFolder:File = ApplicationModel.baseStorageDir
+//				if (userFolder.exists==false)
+//				{
+//					userFolder.createDirectory()
+//				}
+//			}
+//			catch(error:Error)
+//			{
+//				Alert.show("SimpleDiagrams can't create a storage directory here: " + userFolder.nativePath  + " Please create this folder manually and then restart SimpleDiagrams", "Error")
+//				return
+//			}
+//			
+//			//load in settings
+//			try
+//			{
+//				settingsManager.loadSettings()
+//				dispatcher.dispatchEvent(new SettingsEvent(SettingsEvent.SETTINGS_LOADED, true));
+//				if(appModel.version != settingsModel.appVersion)
+//				{
+//					dispatcher.dispatchEvent(new LibraryEvent(LibraryEvent.COPY_LIBRARIES));
+//					settingsModel.appVersion = appModel.version;
+//					settingsManager.saveSettings();
+//				}
+//				if(settingsModel.promptDatabaseImport)
+//				{
+//					var oldDir:File = ApplicationModel.baseStorageDir;
+//					var doPrompt:Boolean = oldDir.exists;
+//					if(doPrompt)
+//						doPrompt = oldDir.resolvePath(ApplicationModel.DB_PATH).exists;
+//					if(doPrompt)
+//					{
+//						dispatcher.dispatchEvent(new ApplicationEvent(ApplicationEvent.SHOW_IMPORT_DATABASE_PROMPT))					
+//					}
+//				}
+//			}
+//			catch(error:Error)
+//			{
+//				Logger.error("Couldn't load settings", this)
+//			}
 					
 						
 			//Load libraries
@@ -327,10 +328,10 @@ package com.simplediagrams.controllers
 //			appModel.updater = updater
 		}
 		
-		protected function updaterInitialized(event:UpdateEvent):void
-		{
-			appModel.updater.checkNow();
-		}
+//		protected function updaterInitialized(event:UpdateEvent):void
+//		{
+//			appModel.updater.checkNow();
+//		}
 		
 		
 		
@@ -393,11 +394,11 @@ package com.simplediagrams.controllers
          
          
 		
-		[Mediate(event="com.simplediagrams.events.TestInvoke.INVOKE")]
-		public function testInvoke(event:TestInvoke):void
-		{
-			doInvoke(event.arguments)	
-		}
+//		[Mediate(event="com.simplediagrams.events.TestInvoke.INVOKE")]
+//		public function testInvoke(event:TestInvoke):void
+//		{
+//			doInvoke(event.arguments)	
+//		}
 		
 		
       	/* ****** */
@@ -405,68 +406,68 @@ package com.simplediagrams.controllers
 		/* ****** */
 				
 		/* Handle INVOKE arguments */
-		[Mediate(event="flash.events.InvokeEvent.INVOKE")]
-		public function onInvoke(event:InvokeEvent):void
-		{
-			doInvoke(event.arguments)
-		}
+//		[Mediate(event="flash.events.InvokeEvent.INVOKE")]
+//		public function onInvoke(event:flash.events.InvokeEvent):void
+//		{
+//			doInvoke(event.arguments)
+//		}
 		
-		protected function doInvoke(arguments:Array):void
-		{
-			
-			Logger.debug("doInvoke() event.arguments " + arguments,this)
-			if (arguments.length==0)
-			{
-				return
-			}
-			
-			var filePath:String = arguments[0]
-							
-			try
-			{
-				var f:File = new File(filePath)	
-				if (f.extension.toLocaleLowerCase()=="sdxml") //simplediagrams file
-				{
-					appModel.fileToOpenOnStart = f		
-					Logger.debug("appModel.fileToOpenOnStart.path " + appModel.fileToOpenOnStart.nativePath,this)
-					var oEvent:OpenDiagramEvent = new OpenDiagramEvent(OpenDiagramEvent.OPEN_DIAGRAM, true)
-					oEvent.openFile = f
-					dispatcher.dispatchEvent(oEvent)
-				}
-				else if (f.extension.toLocaleLowerCase()=="sdlp") //simplediagrams library plugin
-				{
-					var libEvent:LibraryEvent = new LibraryEvent(LibraryEvent.IMPORT_LIBRARY, true)
-					libEvent.libraryFile = f
-					dispatcher.dispatchEvent(libEvent)
-				}
-				else
-				{					
-					Logger.warn("unrecognized extension : " + f.extension, this)
-				}
-				FlexGlobals.topLevelApplication.activate()
-			}
-			catch(error:Error)
-			{
-				Logger.error("onInvoke() Couldn't create file from path: " + filePath, this)
-				return
-			}
-			
-		}
+//		protected function doInvoke(arguments:Array):void
+//		{
+//			
+//			Logger.debug("doInvoke() event.arguments " + arguments,this)
+//			if (arguments.length==0)
+//			{
+//				return
+//			}
+//			
+//			var filePath:String = arguments[0]
+//							
+//			try
+//			{
+//				var f:File = new File(filePath)	
+//				if (f.extension.toLocaleLowerCase()=="sdxml") //simplediagrams file
+//				{
+//					appModel.fileToOpenOnStart = f		
+//					Logger.debug("appModel.fileToOpenOnStart.path " + appModel.fileToOpenOnStart.nativePath,this)
+//					var oEvent:OpenDiagramEvent = new OpenDiagramEvent(OpenDiagramEvent.OPEN_DIAGRAM, true)
+//					oEvent.openFile = f
+//					dispatcher.dispatchEvent(oEvent)
+//				}
+//				else if (f.extension.toLocaleLowerCase()=="sdlp") //simplediagrams library plugin
+//				{
+//					var libEvent:LibraryEvent = new LibraryEvent(LibraryEvent.IMPORT_LIBRARY, true)
+//					libEvent.libraryFile = f
+//					dispatcher.dispatchEvent(libEvent)
+//				}
+//				else
+//				{					
+//					Logger.warn("unrecognized extension : " + f.extension, this)
+//				}
+//				FlexGlobals.topLevelApplication.activate()
+//			}
+//			catch(error:Error)
+//			{
+//				Logger.error("onInvoke() Couldn't create file from path: " + filePath, this)
+//				return
+//			}
+//			
+//		}
 		
-		[Mediate(event="flash.events.NativeWindowDisplayStateEvent.DISPLAY_STATE_CHANGING")]
-		public function onDisplayStateChanging(event:NativeWindowDisplayStateEvent):void
-		{
-			switch (event.afterDisplayState) // <-- our new state
-			{
-				case "minimized":					
-					appModel.isMinimized = true;
-					break;
-				
-				case "maximized":
-					appModel.isMinimized = false;
-					break;
-			}
-		}
+//		[Mediate(event="flash.events.NativeWindowDisplayStateEvent.DISPLAY_STATE_CHANGING")]
+//		public function onDisplayStateChanging(event:NativeWindowDisplayStateEvent):void
+//		{
+//			switch (event.afterDisplayState) // <-- our new state
+//			{
+//				case "minimized":					
+//					appModel.isMinimized = true;
+//					break;
+//				
+//				case "maximized":
+//					appModel.isMinimized = false;
+//					break;
+//			}
+//		}
 				
        	[Inject]
 		public var librariesRegistryDelegate:LibraryRegistryDelegate;
@@ -479,38 +480,38 @@ package com.simplediagrams.controllers
 		
 		
 		/** Load libraries based on information stored in LibraryRegistry */	
-        public function loadLibraries():void
+    public function loadLibraries():void
 		{
-			var errorLibrariesArr:Array = []
-			
-			var registry:LibrariesRegistry = librariesRegistryDelegate.loadRegistry();
-			var libraries:ArrayCollection = new ArrayCollection();
-			
-			var len:uint = registry.libraries.length;
-			for (var index:int=0;index < len;index++)
-			{
-				var libInfo:LibraryInfo = registry.libraries.getItemAt(index) as LibraryInfo			
-				try
-				{
-					var lib:Library = libraryDelegate.readLibrary(libInfo.name);
-					libraries.addItem(lib);					
-				}
-				catch(error:Error)
-				{
-					//If we can't load a library, we remove it from the registry to avoid problems later on (e.g. deleting via LibraryRegistry)
-					errorLibrariesArr.push(libInfo.displayName)
-					Logger.error("Couldn't load library " + libInfo.name + ". Error: " + error, this)
-					registry.libraries.removeItemAt(index);
-					index--;
-					len--;
-				}
-			}
-			libraryManager.loadLibraries( registry, libraries);
-			
-			if (errorLibrariesArr.length>0)
-			{
-				Alert.show("Couldn't load the following libraries :\n " + errorLibrariesArr.join("\n"), "Library Error")
-			}
+//			var errorLibrariesArr:Array = []
+//			
+//			var registry:LibrariesRegistry = librariesRegistryDelegate.loadRegistry();
+//			var libraries:ArrayCollection = new ArrayCollection();
+//			
+//			var len:uint = registry.libraries.length;
+//			for (var index:int=0;index < len;index++)
+//			{
+//				var libInfo:LibraryInfo = registry.libraries.getItemAt(index) as LibraryInfo			
+//				try
+//				{
+//					var lib:Library = libraryDelegate.readLibrary(libInfo.name);
+//					libraries.addItem(lib);					
+//				}
+//				catch(error:Error)
+//				{
+//					//If we can't load a library, we remove it from the registry to avoid problems later on (e.g. deleting via LibraryRegistry)
+//					errorLibrariesArr.push(libInfo.displayName)
+//					Logger.error("Couldn't load library " + libInfo.name + ". Error: " + error, this)
+//					registry.libraries.removeItemAt(index);
+//					index--;
+//					len--;
+//				}
+//			}
+//			libraryManager.loadLibraries( registry, libraries);
+//			
+//			if (errorLibrariesArr.length>0)
+//			{
+//				Alert.show("Couldn't load the following libraries :\n " + errorLibrariesArr.join("\n"), "Library Error")
+//			}
 			
 			
 			

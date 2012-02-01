@@ -23,11 +23,11 @@
 						
 			protected function onCC():void
 			{
-				var f:File = File.applicationDirectory.resolvePath("simpleDiagramsLicense/simplediagrams_license.txt")
-				var s:FileStream = new FileStream()
-				s.open(f, FileMode.READ)
-				_license = s.readUTFBytes(s.bytesAvailable)
-				s.close()
+//				var f:File = File.applicationDirectory.resolvePath("simpleDiagramsLicense/simplediagrams_license.txt")
+//				var s:FileStream = new FileStream()
+//				s.open(f, FileMode.READ)
+//				_license = s.readUTFBytes(s.bytesAvailable)
+//				s.close()
 				
 			}
 			

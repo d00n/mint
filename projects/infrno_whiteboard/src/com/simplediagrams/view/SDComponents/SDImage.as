@@ -46,7 +46,7 @@ package com.simplediagrams.view.SDComponents
 				
 			changeImageCMI = new ContextMenuItem("Change image", false, true)
 			changeImageCMI.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onChangeImage);
-			contextMenu.items.unshift(changeImageCMI)
+//			contextMenu.items.unshift(changeImageCMI)
 		}
 		
 		public var libraryManager:LibraryManager;
@@ -128,7 +128,12 @@ package com.simplediagrams.view.SDComponents
 					imageStyle = _model.styleName
 					this.invalidateSkinState()
 					break
-				
+//				case "imageURL":
+//					Logger.debug("imageURL changed", this)
+//					if (imageSource == null){
+//						imageSource = _model.imageURL
+//						this.invalidateProperties()
+//					}								
 			}
 			
 		}        
@@ -146,38 +151,6 @@ package com.simplediagrams.view.SDComponents
 				this.imageData = null
 			}
 		}
-		
-		/*			
-		
-        override protected function onModelChange(event:PropertyChangeEvent):void
-		{
-			super.onModelChange(event)
-				
-			switch(event.property)
-			{    
-				case "symbolName":
-					if( _model.symbolName)
-					{
-						var libItem:ImageShape = libraryManager.getLibraryItem(_model.libraryName, _model.symbolName) as ImageShape;
-						this.imageData = libraryManager.getAssetData(libItem, libItem.path) as ByteArray;
-					}
-					break
-				case "styleName":
-					Logger.debug("imageData changed", this)
-					imageStyle = _model.styleName
-					this.invalidateSkinState()
-					break
-				case "imageURL":
-					Logger.debug("imageURL changed", this)
-					if (imageSource == null){
-						imageSource = _model.imageURL
-						this.invalidateProperties()
-					}				
-			}
-			
-			
-		}        
-		
 		
 		
 		

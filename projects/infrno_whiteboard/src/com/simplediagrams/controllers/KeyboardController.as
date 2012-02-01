@@ -29,7 +29,7 @@ package com.simplediagrams.controllers
 		{				
 			if (event.target is TextArea || event.target is TextInput) return
 				
-			if ((ApplicationModel.isMac && event.commandKey) || (ApplicationModel.isWin && event.controlKey) || (ApplicationModel.isLinux && event.controlKey))
+			if ((ApplicationModel.isMac && event.ctrlKey) || (ApplicationModel.isWin && event.ctrlKey) || (ApplicationModel.isLinux && event.ctrlKey))
 			{ 
 				
 				if (event.keyCode==Keyboard.P ) 

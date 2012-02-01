@@ -17,8 +17,12 @@
 		<![CDATA[
 			import com.simplediagrams.events.ChangeDepthEvent;
 			import com.simplediagrams.events.ColorEvent;
+			import com.simplediagrams.events.DeleteSDObjectModelEvent;
+			import com.simplediagrams.events.LoadImageEvent;
+			import com.simplediagrams.events.ShapesPanelEvent;
 			import com.simplediagrams.events.StyleEvent;
 			import com.simplediagrams.events.ToolPanelEvent;
+			import com.simplediagrams.events.UndoRedoEvent;
 			import com.simplediagrams.model.DiagramModel;
 			import com.simplediagrams.model.ToolsManager;
 			import com.simplediagrams.model.tools.Tools;

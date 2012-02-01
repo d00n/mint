@@ -51,9 +51,9 @@ package com.simplediagrams.controllers
 	import flash.display.Loader;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
-	import flash.filesystem.File;
-	import flash.filesystem.FileMode;
-	import flash.filesystem.FileStream;
+//	import flash.filesystem.File;
+//	import flash.filesystem.FileMode;
+//	import flash.filesystem.FileStream;
 	import flash.geom.Point;
 	import flash.net.FileFilter;
 	import flash.utils.ByteArray;
@@ -67,7 +67,7 @@ package com.simplediagrams.controllers
 	import mx.core.FlexGlobals;
 	import mx.core.UIComponent;
 	import mx.events.CloseEvent;
-	import mx.events.FileEvent;
+//	import mx.events.FileEvent;
 	import mx.graphics.BitmapFillMode;
 	import mx.graphics.codec.PNGEncoder;
 	import mx.utils.ObjectUtil;
@@ -268,10 +268,11 @@ package com.simplediagrams.controllers
 			undoRedoManager.push(cmd)		
 			diagramManager.diagramModel.select([sdTextAreaModel]);
       
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_WIDGET_ADDED);	
-			rsoEvent.changedSDObjectModelArray = new Array;
-			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
-			dispatcher.dispatchEvent(rsoEvent);			      
+// RSO TODO
+//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_WIDGET_ADDED);	
+//			rsoEvent.changedSDObjectModelArray = new Array;
+//			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
+//			dispatcher.dispatchEvent(rsoEvent);			      
 		}
 		
 		
@@ -295,11 +296,11 @@ package com.simplediagrams.controllers
 			undoRedoManager.push(cmd);
 			diagramManager.diagramModel.select([textArea]);
 			
-			//			remoteSharedObjectController.dispatchUpdate_TextAreaCreated(cmd);
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_WIDGET_CREATED);	
-			rsoEvent.changedSDObjectModelArray = new Array;
-			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
-			dispatcher.dispatchEvent(rsoEvent);				
+			// RSO TODO
+//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_WIDGET_CREATED);	
+//			rsoEvent.changedSDObjectModelArray = new Array;
+//			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
+//			dispatcher.dispatchEvent(rsoEvent);				
 		}
 		
 		[Mediate(event='TransformEvent.TRANSFORM')]
@@ -325,11 +326,11 @@ package com.simplediagrams.controllers
 			cmd.execute()		
 			undoRedoManager.push(cmd)	
 			
-			//			remoteSharedObjectController.dispatchUpdate_PencilDrawingCreated(cmd);
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.PENCIL_DRAWING_CREATED);	
-			rsoEvent.changedSDObjectModelArray = new Array;
-			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
-			dispatcher.dispatchEvent(rsoEvent);				
+				// RSO TODO
+//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.PENCIL_DRAWING_CREATED);	
+//			rsoEvent.changedSDObjectModelArray = new Array;
+//			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
+//			dispatcher.dispatchEvent(rsoEvent);				
 		}
 		
 		
@@ -352,32 +353,32 @@ package com.simplediagrams.controllers
 		[Mediate(event="LoadImageEvent.LOAD_IMAGE_FILE")]
 		public function loadImageFromFile(event:LoadImageEvent):void 
 		{
-			Logger.debug("loadImageFromFile()", this)			
-			
-			var file:File = event.file
-			
-			var stream:FileStream = new FileStream()
-			stream.open(file, FileMode.READ)
-			
-			var ba:ByteArray = new ByteArray()
-			stream.readBytes(ba,0, stream.bytesAvailable)
-			stream.close();
-			
-			var objModel:SDImageModel = new SDImageModel()
-			objModel.x = event.dropX
-			objModel.y = event.dropY
-				
-
-			objModel.symbolName = UIDUtil.createUID();
-			objModel.libraryName = "local";
-			var byteItem:ImageShape = new ImageShape();
-			byteItem.libraryName = "local";
-			byteItem.name = objModel.symbolName;
-			byteItem.path = byteItem.name+ "." + file.extension;
-			libraryManager.addToLocalLibrary( byteItem, ba);
-			
-			diagramManager.diagramModel.sdObjects.addItem(objModel)
-			
+//			Logger.debug("loadImageFromFile()", this)			
+//			
+//			var file:File = event.file
+//			
+//			var stream:FileStream = new FileStream()
+//			stream.open(file, FileMode.READ)
+//			
+//			var ba:ByteArray = new ByteArray()
+//			stream.readBytes(ba,0, stream.bytesAvailable)
+//			stream.close();
+//			
+//			var objModel:SDImageModel = new SDImageModel()
+//			objModel.x = event.dropX
+//			objModel.y = event.dropY
+//				
+//
+//			objModel.symbolName = UIDUtil.createUID();
+//			objModel.libraryName = "local";
+//			var byteItem:ImageShape = new ImageShape();
+//			byteItem.libraryName = "local";
+//			byteItem.name = objModel.symbolName;
+//			byteItem.path = byteItem.name+ "." + file.extension;
+//			libraryManager.addToLocalLibrary( byteItem, ba);
+//			
+//			diagramManager.diagramModel.sdObjects.addItem(objModel)
+//			
 		}
 		
 		
@@ -416,10 +417,10 @@ package com.simplediagrams.controllers
 			}
 			execCommands(commands);
       
-			// doon: should this go in DiagramModel.deleteSDObjectModel ?
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.DELETE_SELECTED_SD_OBJECT_MODEL);	
-			rsoEvent.sdIDArray = sdIDArray;
-			dispatcher.dispatchEvent(rsoEvent);      
+			// RSO TODO
+//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.DELETE_SELECTED_SD_OBJECT_MODEL);	
+//			rsoEvent.sdIDArray = sdIDArray;
+//			dispatcher.dispatchEvent(rsoEvent);      
 		}
 		
 	// Deletes get handled by processing the RSO event for broadcasting it	
@@ -496,9 +497,9 @@ package com.simplediagrams.controllers
 //			_viewToExport.clipAndEnableScrolling = true
 //			diagramManager.diagramModel.scaleX = currScaleX
 //			diagramManager.diagramModel.scaleY = currScaleY
-			
-			_viewToExport = null
-			t = null
+//			
+//			_viewToExport = null
+//			t = null
 		}	
 	
 		
@@ -598,60 +599,62 @@ package com.simplediagrams.controllers
 		[Mediate(event='LoadImageEvent.BROWSE_FOR_IMAGE')]
 		public function onBrowseForImage(event:LoadImageEvent):void
 		{
-			_currModelForImageLoad = event.model  		
-			
-			_imageFile = new File()			
-			_imageFile.addEventListener(Event.SELECT, onLoadImage)
-			_imageFile.addEventListener(Event.CANCEL, onCancelLoadImage)
-			//var imagesFilter:FileFilter = new FileFilter("Images", "*.jpg;*.jpeg;*.gif;*.png;*.swf;");
-			var imagesFilter:FileFilter = new FileFilter("Images", "*.jpg;*.jpeg;*.gif;*.png;");
-			try
-			{
-				_imageFile.browseForOpen("Select an image to import.", [imagesFilter])
-			}
-			catch(error:Error)
-			{
-				Logger.error("onBrowseForImage() error:" + error,this)
-			}
+//			_currModelForImageLoad = event.model  		
+//			
+//			_imageFile = new File()			
+//			_imageFile.addEventListener(Event.SELECT, onLoadImage)
+//			_imageFile.addEventListener(Event.CANCEL, onCancelLoadImage)
+//			//var imagesFilter:FileFilter = new FileFilter("Images", "*.jpg;*.jpeg;*.gif;*.png;*.swf;");
+//			var imagesFilter:FileFilter = new FileFilter("Images", "*.jpg;*.jpeg;*.gif;*.png;");
+//			try
+//			{
+//				_imageFile.browseForOpen("Select an image to import.", [imagesFilter])
+//			}
+//			catch(error:Error)
+//			{
+//				Logger.error("onBrowseForImage() error:" + error,this)
+//			}
 		}
 		
 		public function onLoadImage(event:Event):void
 		{	
-			
-			var stream:FileStream = new FileStream()
-			var ba:ByteArray = new ByteArray()
-			stream.open(_imageFile, FileMode.READ)
-			stream.readBytes(ba,0, stream.bytesAvailable)
-			stream.close();
-			
-			var id:String = UIDUtil.createUID();
-			var byteItem:ImageShape = new ImageShape();
-			byteItem.libraryName = "local";
-			byteItem.name = id;
-			byteItem.path = id + "." + _imageFile.extension;
-			libraryManager.addToLocalLibrary(byteItem, ba);
-						
-			var copyImage:SDImageModel = CopyUtil.clone(_currModelForImageLoad) as SDImageModel;
-			copyImage.libraryName = "local";
-			copyImage.symbolName = id;
-			var cmd:ChangeCommand = new ChangeCommand(_currModelForImageLoad, copyImage);
-			cmd.execute();
-			undoRedoManager.push(cmd);
+//			
+//			var stream:FileStream = new FileStream()
+//			var ba:ByteArray = new ByteArray()
+//			stream.open(_imageFile, FileMode.READ)
+//			stream.readBytes(ba,0, stream.bytesAvailable)
+//			stream.close();
+//			
+//			var id:String = UIDUtil.createUID();
+//			var byteItem:ImageShape = new ImageShape();
+//			byteItem.libraryName = "local";
+//			byteItem.name = id;
+//			byteItem.path = id + "." + _imageFile.extension;
+//			libraryManager.addToLocalLibrary(byteItem, ba);
+//						
+//			var copyImage:SDImageModel = CopyUtil.clone(_currModelForImageLoad) as SDImageModel;
+//			copyImage.libraryName = "local";
+//			copyImage.symbolName = id;
+//			var cmd:ChangeCommand = new ChangeCommand(_currModelForImageLoad, copyImage);
+//			cmd.execute();
+//			undoRedoManager.push(cmd);
 			
 			// Load the image locally for the uploading user
 			// ..and fire the rsoEvent from DiagramModel.addSDObjectModel when imageURL is valid
 			// TODO: Throw a SimpleDiagramsImageLoadCompleteEvent instead 	
-			var remoteSharedObjectEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LOAD_IMAGE, true, true);
-			remoteSharedObjectEvent.imageData = _fileReference.data;
-			remoteSharedObjectEvent.imageName = _fileReference.name;
-			remoteSharedObjectEvent.sdImageModel = _currModelForImageLoad;
-			dispatcher.dispatchEvent(remoteSharedObjectEvent);	
+			
+			// RSO TODO
+//			var remoteSharedObjectEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LOAD_IMAGE, true, true);
+//			remoteSharedObjectEvent.imageData = _fileReference.data;
+//			remoteSharedObjectEvent.imageName = _fileReference.name;
+//			remoteSharedObjectEvent.sdImageModel = _currModelForImageLoad;
+//			dispatcher.dispatchEvent(remoteSharedObjectEvent);	
 		}
 		
 		protected function onCancelLoadImage(event:Event):void
 		{			
-			_imageFile.removeEventListener(Event.SELECT, onLoadImage)
-			_imageFile.removeEventListener(Event.CANCEL, onCancelLoadImage)
+//			_imageFile.removeEventListener(Event.SELECT, onLoadImage)
+//			_imageFile.removeEventListener(Event.CANCEL, onCancelLoadImage)
 		}
 		
 		protected function returnToPointerTool():void
@@ -896,11 +899,10 @@ package com.simplediagrams.controllers
 			}
 			
 			
-			//remoteSharedObjectController.dispatchUpdate_ObjectChanged(cmd);	
-			
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-			rsoEvent.changedSDObjectModelArray = sdObjectsArr;
-			dispatcher.dispatchEvent(rsoEvent);
+			// RSO TODO
+//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+//			rsoEvent.changedSDObjectModelArray = sdObjectsArr;
+//			dispatcher.dispatchEvent(rsoEvent);
 		}
 		
 		
@@ -922,9 +924,10 @@ package com.simplediagrams.controllers
 			var evt:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.OBJECT_MOVED, true)
       dispatcher.dispatchEvent(evt)
 			
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
-			rsoEvent.changedSDObjectModelArray = diagramModel.sdObjectModelsAC.toArray();
-			dispatcher.dispatchEvent(rsoEvent);
+				// RSO TODO
+//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
+//			rsoEvent.changedSDObjectModelArray = diagramModel.sdObjectModelsAC.toArray();
+//			dispatcher.dispatchEvent(rsoEvent);
 		}
 		
 		[Mediate(event='ChangeDepthEvent.MOVE_TO_FRONT')]
@@ -945,10 +948,10 @@ package com.simplediagrams.controllers
 			var evt:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.OBJECT_MOVED, true)
 			dispatcher.dispatchEvent(evt)
       
-      var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
-			rsoEvent.changedSDObjectModelArray = diagramModel.sdObjectModelsAC.toArray();
-			dispatcher.dispatchEvent(rsoEvent);
-			
+				// RSO TODO
+//      var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
+//			rsoEvent.changedSDObjectModelArray = diagramModel.sdObjectModelsAC.toArray();
+//			dispatcher.dispatchEvent(rsoEvent);			
 		}
 		
 		
@@ -969,9 +972,10 @@ package com.simplediagrams.controllers
 			var evt:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.OBJECT_MOVED, true)
 			dispatcher.dispatchEvent(evt)
       
-      var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
-			rsoEvent.changedSDObjectModelArray = diagramModel.sdObjectModelsAC.toArray();
-			dispatcher.dispatchEvent(rsoEvent);	
+				// RSO TODO
+//      var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
+//			rsoEvent.changedSDObjectModelArray = diagramModel.sdObjectModelsAC.toArray();
+//			dispatcher.dispatchEvent(rsoEvent);	
 		}
 		
 		[Mediate(event='ChangeDepthEvent.MOVE_FORWARD')]
@@ -991,9 +995,10 @@ package com.simplediagrams.controllers
 			var evt:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.OBJECT_MOVED, true)
 			dispatcher.dispatchEvent(evt)
       
-      var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
-			rsoEvent.changedSDObjectModelArray = diagramModel.sdObjectModelsAC.toArray();
-			dispatcher.dispatchEvent(rsoEvent);
+				// RSO TODO
+//      var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
+//			rsoEvent.changedSDObjectModelArray = diagramModel.sdObjectModelsAC.toArray();
+//			dispatcher.dispatchEvent(rsoEvent);
 		}
 		
 		[Mediate(event="ChangeDepthEvent.OBJECT_MOVED")]

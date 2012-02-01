@@ -17,7 +17,7 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.vo.RecentFileVO;
 	
 	import flash.events.Event;
-	import flash.filesystem.File;
+//	import flash.filesystem.File;
 	
 	import mx.containers.TitleWindow;
 	import mx.controls.Alert;
@@ -63,32 +63,32 @@ package com.simplediagrams.controllers
 		public function loadDiagram(event:LoadDiagramEvent):void
 		{
 										
-			if(event.nativePath=="")
-			{			
-				Logger.error("loadDiagram() event didn't have nativePath defined",this)
-				return
-			}
-			
-			var f:File = new File()
-			f.nativePath = event.nativePath
-			if (f.exists)
-			{		
-				//dialogsController.showLoadingFileDialog()	
-				fileManager.loadDiagramFromFile(event.nativePath)	
-			}
-			else
-			{					
-				Alert.show("A file no longer exists at " + event.nativePath)
-				//remove file from recent list
-				for (var i:uint=0;i<settingsModel.recentDiagramsAC.length; i++)
-				{
-					if (RecentFileVO(settingsModel.recentDiagramsAC.getItemAt(i)).data==event.nativePath)
-					{
-						settingsModel.recentDiagramsAC.removeItemAt(i)							
-					}
-				}
-				settingsModel.recentDiagramsAC.refresh()
-			}			
+//			if(event.nativePath=="")
+//			{			
+//				Logger.error("loadDiagram() event didn't have nativePath defined",this)
+//				return
+//			}
+//			
+//			var f:File = new File()
+//			f.nativePath = event.nativePath
+//			if (f.exists)
+//			{		
+//				//dialogsController.showLoadingFileDialog()	
+//				fileManager.loadDiagramFromFile(event.nativePath)	
+//			}
+//			else
+//			{					
+//				Alert.show("A file no longer exists at " + event.nativePath)
+//				//remove file from recent list
+//				for (var i:uint=0;i<settingsModel.recentDiagramsAC.length; i++)
+//				{
+//					if (RecentFileVO(settingsModel.recentDiagramsAC.getItemAt(i)).data==event.nativePath)
+//					{
+//						settingsModel.recentDiagramsAC.removeItemAt(i)							
+//					}
+//				}
+//				settingsModel.recentDiagramsAC.refresh()
+//			}			
 											
 		}	
 		
@@ -156,21 +156,21 @@ package com.simplediagrams.controllers
 		[Mediate(event="PluginEvent.COPY_DEFAULT_PLUGINS_TO_USER_DIR")]
 		public function copyPlugsToUserDir():void
 		{
-			//copy default libraries to lib folder if it doesn't exist (will happen on first install of 1.3 and above)
-			try
-			{
-				var libFiles:File = File.applicationDirectory.resolvePath("lib")
-				var dest:File = ApplicationModel.baseStorageDir.resolvePath(ApplicationModel.LIBRARY_PLUGIN_PATH)
-				if (dest.exists==false)
-				{
-					dest.createDirectory()
-					libFiles.copyTo(dest, true)					
-				}					
-			}				
-			catch(error:Error)
-			{
-				Logger.error("copyPlugsToUserDir() Couldn't copy lib file. Error: " + error, this)
-			}
+//			//copy default libraries to lib folder if it doesn't exist (will happen on first install of 1.3 and above)
+//			try
+//			{
+//				var libFiles:File = File.applicationDirectory.resolvePath("lib")
+//				var dest:File = ApplicationModel.baseStorageDir.resolvePath(ApplicationModel.LIBRARY_PLUGIN_PATH)
+//				if (dest.exists==false)
+//				{
+//					dest.createDirectory()
+//					libFiles.copyTo(dest, true)					
+//				}					
+//			}				
+//			catch(error:Error)
+//			{
+//				Logger.error("copyPlugsToUserDir() Couldn't copy lib file. Error: " + error, this)
+//			}
 		}
 		
 				
@@ -243,24 +243,24 @@ package com.simplediagrams.controllers
 		[Mediate(event="OpenDiagramEvent.OPEN_DIAGRAM")]
 		public function openDiagram(event:OpenDiagramEvent):void
 		{							
-			fileManager.filePathToOpen = null
-								
-			if (undoRedoManager.isDirty)
-			{
-				checkSaveBeforeOpen()
-			}
-			else
-			{
-				if (event.openFile)
-				{
-					fileManager.loadDiagramFromFile(event.openFile.nativePath)
-				}
-				else
-				{
-					fileManager.browseToLoadDiagram()	
-				}
-				
-			}			
+//			fileManager.filePathToOpen = null
+//								
+//			if (undoRedoManager.isDirty)
+//			{
+//				checkSaveBeforeOpen()
+//			}
+//			else
+//			{
+//				if (event.openFile)
+//				{
+//					fileManager.loadDiagramFromFile(event.openFile.nativePath)
+//				}
+//				else
+//				{
+//					fileManager.browseToLoadDiagram()	
+//				}
+//				
+//			}			
 		}
 				
 		

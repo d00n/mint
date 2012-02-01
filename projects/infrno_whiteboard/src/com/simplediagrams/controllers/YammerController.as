@@ -5,6 +5,7 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.events.ExportDiagramEvent;
 	import com.simplediagrams.events.YammerEvent;
 	import com.simplediagrams.model.ApplicationModel;
+	import com.simplediagrams.model.DiagramManager;
 	import com.simplediagrams.model.DiagramModel;
 	import com.simplediagrams.model.RegistrationManager;
 	import com.simplediagrams.model.YammerModel;
@@ -14,7 +15,6 @@ package com.simplediagrams.controllers
 	
 	import flash.display.BitmapData;
 	import flash.events.Event;
-//	import flash.filesystem.*;
 	import flash.net.FileReference;
 	import flash.utils.ByteArray;
 	

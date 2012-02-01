@@ -40,7 +40,6 @@ package com.simplediagrams.events
 		public static const STYLE_PHOTO:String = "photoStyle";
 		public var sdImageModel:SDImageModel;
 		public var sdID:String;
-		public var sdObjectModel:SDObjectModel;
 		public var sdIDArray:Array;
 		public var changedSDObjectModelArray:Array;
 		

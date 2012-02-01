@@ -18,7 +18,6 @@
         <controllers:DiagramController id="diagramController"/> 
         <controllers:ToolPanelController id="toolPanelController"/>  
         <controllers:FileController id="fileController" /> 
-        <controllers:DiagramStyleController id="diagramStyleController" /> 
         <controllers:ClipboardController id="clipboardController" /> 
         <controllers:RegistrationController id="registrationController" /> 
         <controllers:PropertiesPanelController id="propertiesPanelController" /> 
@@ -30,7 +29,6 @@
 		<controllers:TextEditorController id="textEditorController" /> 
 		<controllers:KeyboardController id="keyboardController" /> 
 		<controllers:ToolPanelController id="toolsController"/>
-		<controllers:LibraryController id="libraryController"/>
 		<controllers:AnnotationController id="annotationController"/>
 		
 		<model:UndoRedoManager id="undoRedoManager" />    
@@ -48,7 +46,7 @@
 		<model:DiagramManager id="diagramManager"/>
 		<model:ToolsManager id="toolsManager"/>
 		
-		<components:DrawingBoardGrid id="drawingBoardGrid" /> 
+		<!-- components:DrawingBoardGrid id="drawingBoardGrid" / --> 
     <model:DrawingBoardGridModel id="drawingBoardGridModel" /> 
   	<controllers:RemoteSharedObjectController id="remoteSharedObjectController" /> 
         
@@ -57,7 +55,6 @@
 		<business:BasecampDelegate id="basecampDelegate" />                  
 		<business:SimpleDiagramsDelegate id="simpleDiagramsDelegate" />     
 		<business:YammerDelegate id="yammerDelegate" />
-		<business:DBManager id="dbManager" /> 
 		
 		<mx:HTTPService id="basecampService"
 										contentType="application/xml"

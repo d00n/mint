@@ -15,7 +15,7 @@ package com.simplediagrams.controllers
 	import mx.controls.Alert;
 	import mx.core.FlexGlobals;
 	import mx.events.CloseEvent;
-	import mx.events.FlexNativeMenuEvent;
+//	import mx.events.FlexNativeMenuEvent;
 	
 	
 	public class MenuController

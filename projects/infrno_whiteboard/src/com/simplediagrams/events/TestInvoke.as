@@ -1,7 +1,7 @@
 package com.simplediagrams.events
 {
 	import flash.events.Event;
-	import flash.filesystem.File;
+//	import flash.filesystem.File;
 	
 	public class TestInvoke extends Event
 	{

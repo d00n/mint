@@ -8,11 +8,6 @@
  		<![CDATA[
 			import com.simplediagrams.events.LibraryEvent;
  			
-			protected function onManageLibraries():void
-			{
-				var evt:LibraryEvent = new LibraryEvent(LibraryEvent.MANAGE_LIBRARIES, true)
-				dispatchEvent(evt)
-			}
 			
  		]]>
  	</fx:Script>
@@ -99,7 +94,7 @@
 					<s:BitmapFill source="@Embed('assets/img/backgrounds/shape_library_bg.png')" fillMode="repeat"/>
 				</s:fill>					
 			</s:Rect>
-			<view:LibraryPanel id="libraryPanel" height="100%" width="100%" contentBackgroundAlpha="0" backgroundAlpha="0" />
+			<!-- view:LibraryPanel id="libraryPanel" height="100%" width="100%" contentBackgroundAlpha="0" backgroundAlpha="0" / -->
 		</s:Group>
 	</s:VGroup>		
 

@@ -88,29 +88,29 @@ package com.simplediagrams.controllers
 		protected function toggleMenuItems(state:Boolean):void
 		{	
 			
-			var itemsToToggleArr:Array = ["save_diagram", "save_diagram_as", "close_diagram", "edit_properties", "diagram", "edit", "style","view"]
-						
-			var numToggleItems:Number = itemsToToggleArr.length	
-			var numMenuDataItems:Number = ApplicationModel.menuDataArr.length
-			for (var i:uint = 0; i<numMenuDataItems;i++)
-			{		
-				if (itemsToToggleArr.indexOf(ApplicationModel.menuDataArr[i].id)>-1 )
-				{
-					ApplicationModel.menuDataArr[i].enabled = state
-				}		
-				var subItemsArr:Array = ApplicationModel.menuDataArr[i].children	
-				if (subItemsArr && subItemsArr.length>0)
-				{
-					for (var j:uint=0;j<subItemsArr.length;j++)
-					{
-						if (itemsToToggleArr.indexOf(subItemsArr[j].id)>-1 )
-						{
-							subItemsArr[j].enabled = state
-						}					
-					}
-				}		
-			}
-			FlexGlobals.topLevelApplication.appMenu.dataProvider = ApplicationModel.menuDataArr
+//			var itemsToToggleArr:Array = ["save_diagram", "save_diagram_as", "close_diagram", "edit_properties", "diagram", "edit", "style","view"]
+//						
+//			var numToggleItems:Number = itemsToToggleArr.length	
+//			var numMenuDataItems:Number = ApplicationModel.menuDataArr.length
+//			for (var i:uint = 0; i<numMenuDataItems;i++)
+//			{		
+//				if (itemsToToggleArr.indexOf(ApplicationModel.menuDataArr[i].id)>-1 )
+//				{
+//					ApplicationModel.menuDataArr[i].enabled = state
+//				}		
+//				var subItemsArr:Array = ApplicationModel.menuDataArr[i].children	
+//				if (subItemsArr && subItemsArr.length>0)
+//				{
+//					for (var j:uint=0;j<subItemsArr.length;j++)
+//					{
+//						if (itemsToToggleArr.indexOf(subItemsArr[j].id)>-1 )
+//						{
+//							subItemsArr[j].enabled = state
+//						}					
+//					}
+//				}		
+//			}
+//			FlexGlobals.topLevelApplication.appMenu.dataProvider = ApplicationModel.menuDataArr
 			
 		}		
 

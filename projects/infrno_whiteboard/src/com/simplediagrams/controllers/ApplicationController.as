@@ -280,35 +280,35 @@ package com.simplediagrams.controllers
 			loadLibraries();			
 			
 			//CHECK LICENSE			
-			if (registrationManager.isLicensed)
-			{					
-				var evt:PluginEvent = new PluginEvent(PluginEvent.COPY_DEFAULT_PLUGINS_TO_USER_DIR, true)
-				dispatcher.dispatchEvent(evt)							
+//			if (registrationManager.isLicensed)
+//			{					
+//				var evt:PluginEvent = new PluginEvent(PluginEvent.COPY_DEFAULT_PLUGINS_TO_USER_DIR, true)
+//				dispatcher.dispatchEvent(evt)							
 				appModel.viewing = ApplicationModel.VIEW_STARTUP					
-			}
-			else
-			{
-				appModel.menuEnabled = false //will be turned on when user clicks continue
-													
-				var trialDays:uint = registrationManager.trialDaysRemaining														
-				if (trialDays<1)
-				{
-					registrationManager.viewing = RegistrationManager.VIEW_TRIAL_MODE_FINISHED	
-				}
-				else
-				{
-					registrationManager.viewing = RegistrationManager.VIEW_TRIAL_MODE								
-				}					
-				appModel.viewing=ApplicationModel.VIEW_REGISTRATION
-			}			
-			
-				
-			//free/full to trial upgrade message
-			var d:Date = appModel.firstInstallDate
-			if (d.fullYear<=2011 && d.month<=8)
-			{
-				registrationManager.showTrialVsFreeExplanation = true
-			}
+//			}
+//			else
+//			{
+//				appModel.menuEnabled = false //will be turned on when user clicks continue
+//													
+//				var trialDays:uint = registrationManager.trialDaysRemaining														
+//				if (trialDays<1)
+//				{
+//					registrationManager.viewing = RegistrationManager.VIEW_TRIAL_MODE_FINISHED	
+//				}
+//				else
+//				{
+//					registrationManager.viewing = RegistrationManager.VIEW_TRIAL_MODE								
+//				}					
+//				appModel.viewing=ApplicationModel.VIEW_REGISTRATION
+//			}			
+//			
+//				
+//			//free/full to trial upgrade message
+//			var d:Date = appModel.firstInstallDate
+//			if (d.fullYear<=2011 && d.month<=8)
+//			{
+//				registrationManager.showTrialVsFreeExplanation = true
+//			}
 			
 				
 		}

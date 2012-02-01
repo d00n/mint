@@ -153,7 +153,7 @@ package com.simplediagrams.controllers
 		}
 		
 				
-		[Mediate(event="PluginEvent.COPY_DEFAULT_PLUGINS_TO_USER_DIR")]
+//		[Mediate(event="PluginEvent.COPY_DEFAULT_PLUGINS_TO_USER_DIR")]
 		public function copyPlugsToUserDir():void
 		{
 //			//copy default libraries to lib folder if it doesn't exist (will happen on first install of 1.3 and above)

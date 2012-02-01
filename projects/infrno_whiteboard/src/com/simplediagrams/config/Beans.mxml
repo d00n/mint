@@ -68,7 +68,7 @@
 										/>   
 		
 		<!-- components:DrawingBoardGrid id="drawingBoardGrid" / --> 
-		<!-- model:DrawingBoardGridModel id="drawingBoardGridModel" / --> 
+		<model:DrawingBoardGridModel id="drawingBoardGridModel" /> 
 		<controllers:RemoteSharedObjectController id="remoteSharedObjectController" /> 
 		
 		

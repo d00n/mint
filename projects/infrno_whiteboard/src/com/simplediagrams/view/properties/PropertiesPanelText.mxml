@@ -3,7 +3,7 @@
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	xmlns:mx="library://ns.adobe.com/flex/mx" 
 	xmlns:properties="com.simplediagrams.view.properties.*"
-	creationComplete="onCreationComplete()"
+	creationComplete="onCreationComplete()" xmlns:components="com.simplediagrams.view.components.*"
 	>
 	
 	
@@ -238,6 +238,7 @@
 				evt.backgroundColor = colorPicker.selectedColor
 				dispatchEvent(evt)
 			}
+			
 
 		]]>
 	</fx:Script>
@@ -282,7 +283,7 @@
 					width="30"
 					/>
 	
-	<s:ComboBox
+	<components:FontStyleList
 		id="cbxFontFamily" 
 		dataProvider="{fontFamiliesAC}"
 		labelField="fontName"	
@@ -293,7 +294,7 @@
 		maxWidth="250"
 		>
 		
-	</s:ComboBox>
+	</components:FontStyleList>
 
 	<s:Spacer width="5"/>
 	<s:Label text="Bg:" toolTip="Background color" paddingTop="7" />

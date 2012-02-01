@@ -3,7 +3,7 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 xmlns:properties="com.simplediagrams.view.properties.*"
-		 creationComplete="onCreationComplete()"
+		 creationComplete="onCreationComplete()" xmlns:components="com.simplediagrams.view.components.*"
 		 >
 	
 	
@@ -435,7 +435,7 @@
 					width="30"
 					/>
 	
-	<s:ComboBox
+	<components:FontStyleList
 		id="cbxFontFamily" 
 		dataProvider="{_fontFamiliesAC}"
 		labelField="fontName"	

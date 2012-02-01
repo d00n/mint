@@ -51,11 +51,9 @@ package com.simplediagrams.controllers
 	import flash.display.Loader;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
-//	import flash.filesystem.File;
-//	import flash.filesystem.FileMode;
-//	import flash.filesystem.FileStream;
 	import flash.geom.Point;
 	import flash.net.FileFilter;
+	import flash.net.FileReference;
 	import flash.utils.ByteArray;
 	import flash.utils.Timer;
 	
@@ -67,7 +65,6 @@ package com.simplediagrams.controllers
 	import mx.core.FlexGlobals;
 	import mx.core.UIComponent;
 	import mx.events.CloseEvent;
-//	import mx.events.FileEvent;
 	import mx.graphics.BitmapFillMode;
 	import mx.graphics.codec.PNGEncoder;
 	import mx.utils.ObjectUtil;
@@ -594,13 +591,44 @@ package com.simplediagrams.controllers
 		
 		protected var _currModelForImageLoad:SDImageModel
 //		protected var _imageFile:File
+		protected var _fileReference:FileReference;	
 		
 		
+		[Mediate(event='LoadImageEvent.ADD_IMAGE_FROM_MENU')]
+		public function onAddImageFromMenu(event:LoadImageEvent):void
+		{			
+			var imageModel:SDImageModel = new SDImageModel();
+			imageModel.x = 20;
+			imageModel.y = 20;
+			var cmd:AddCommand = new AddCommand(diagramManager.diagramModel, imageModel)
+			cmd.execute()
+			undoRedoManager.push(cmd)				
+				
+			var evt:LoadImageEvent = new LoadImageEvent(LoadImageEvent.BROWSE_FOR_IMAGE, true)
+			evt.model = imageModel
+			dispatcher.dispatchEvent(evt)
+		}
+			
 		[Mediate(event='LoadImageEvent.BROWSE_FOR_IMAGE')]
 		public function onBrowseForImage(event:LoadImageEvent):void
 		{
-//			_currModelForImageLoad = event.model  		
-//			
+			_currModelForImageLoad = event.model  	
+				
+			_fileReference = new FileReference();
+			_fileReference.addEventListener(Event.SELECT, onFileReferenceSelect);
+			_fileReference.addEventListener(Event.CANCEL, onFileReferenceCancel);
+			var imagesFilter:FileFilter = new FileFilter("Images", "*.jpeg;*.jpg;*.gif;*.png;");
+			//			setTimeout( function():void{_fileReference.load();}, 1);
+
+			try
+			{
+				_fileReference.browse([imagesFilter]);				
+			}
+			catch(error:Error)
+			{
+				Logger.error("onBrowseForImage() error:" + error,this)
+			}			
+			
 //			_imageFile = new File()			
 //			_imageFile.addEventListener(Event.SELECT, onLoadImage)
 //			_imageFile.addEventListener(Event.CANCEL, onCancelLoadImage)
@@ -616,8 +644,55 @@ package com.simplediagrams.controllers
 //			}
 		}
 		
-		public function onLoadImage(event:Event):void
-		{	
+		protected function onFileReferenceCancel(event:Event):void
+		{			
+			_fileReference.removeEventListener(Event.SELECT, onFileReferenceSelect)
+			_fileReference.removeEventListener(Event.CANCEL, onFileReferenceCancel)
+		}		
+
+		private function onFileReferenceSelect(event:Event):void
+		{
+			_fileReference.addEventListener(Event.COMPLETE, onFileReferenceLoadComplete);
+			_fileReference.load()
+		}
+		
+		public function onFileReferenceLoadComplete(event:Event):void
+		{							
+			_fileReference.removeEventListener(Event.SELECT, onFileReferenceSelect);
+			_fileReference.removeEventListener(Event.CANCEL, onFileReferenceCancel);
+			_fileReference.removeEventListener(Event.COMPLETE, onFileReferenceLoadComplete);
+			
+			var id:String = UIDUtil.createUID();
+			var byteItem:ImageShape = new ImageShape();
+			byteItem.libraryName = "local";
+			byteItem.name = id;
+			byteItem.path = id + "." + _fileReference.name; // _imageFile.extension;
+			libraryManager.addToLocalLibrary(byteItem, _fileReference.data);
+			
+			var copyImage:SDImageModel = CopyUtil.clone(_currModelForImageLoad) as SDImageModel;
+			copyImage.libraryName = "local";
+			copyImage.symbolName = id;
+			var cmd:ChangeCommand = new ChangeCommand(_currModelForImageLoad, copyImage);
+			cmd.execute();
+			undoRedoManager.push(cmd);
+			
+//			Logger.debug("onLoadComplete() about to dispatch RemoteSharedObjectEvent.LOAD_IMAGE, _currModelForImageLoad.sdID=" + _currModelForImageLoad.sdID,this)
+			
+			// Load the image locally for the uploading user
+			// ..and fire the rsoEvent from DiagramModel.addSDObjectModel when imageURL is valid
+			// TODO: Throw a SimpleDiagramsImageLoadCompleteEvent instead 	
+			
+			// RSO TODO
+//			var remoteSharedObjectEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LOAD_IMAGE, true, true);
+//			remoteSharedObjectEvent.imageData = _fileReference.data;
+//			remoteSharedObjectEvent.imageName = _fileReference.name;
+//			remoteSharedObjectEvent.sdImageModel = _currModelForImageLoad;
+//			dispatcher.dispatchEvent(remoteSharedObjectEvent);	
+		}
+		
+		
+//		public function onLoadImage(event:Event):void
+//		{	
 //			
 //			var stream:FileStream = new FileStream()
 //			var ba:ByteArray = new ByteArray()
@@ -638,24 +713,13 @@ package com.simplediagrams.controllers
 //			var cmd:ChangeCommand = new ChangeCommand(_currModelForImageLoad, copyImage);
 //			cmd.execute();
 //			undoRedoManager.push(cmd);
-			
-			// Load the image locally for the uploading user
-			// ..and fire the rsoEvent from DiagramModel.addSDObjectModel when imageURL is valid
-			// TODO: Throw a SimpleDiagramsImageLoadCompleteEvent instead 	
-			
-			// RSO TODO
-//			var remoteSharedObjectEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LOAD_IMAGE, true, true);
-//			remoteSharedObjectEvent.imageData = _fileReference.data;
-//			remoteSharedObjectEvent.imageName = _fileReference.name;
-//			remoteSharedObjectEvent.sdImageModel = _currModelForImageLoad;
-//			dispatcher.dispatchEvent(remoteSharedObjectEvent);	
-		}
+//		}
 		
-		protected function onCancelLoadImage(event:Event):void
-		{			
+//		protected function onCancelLoadImage(event:Event):void
+//		{			
 //			_imageFile.removeEventListener(Event.SELECT, onLoadImage)
 //			_imageFile.removeEventListener(Event.CANCEL, onCancelLoadImage)
-		}
+//		}
 		
 		protected function returnToPointerTool():void
 		{

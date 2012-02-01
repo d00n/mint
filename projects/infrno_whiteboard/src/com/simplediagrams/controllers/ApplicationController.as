@@ -48,7 +48,7 @@ package com.simplediagrams.controllers
 //	import flash.events.InvokeEvent;
 //	import flash.events.NativeWindowDisplayStateEvent;
 	import flash.events.UncaughtErrorEvent;
-	import flash.filesystem.*;
+//	import flash.filesystem.*;
 	import flash.system.ApplicationDomain;
 	
 	import mx.collections.ArrayCollection;

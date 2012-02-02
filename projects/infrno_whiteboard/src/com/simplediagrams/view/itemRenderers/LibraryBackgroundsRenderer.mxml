@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas contextMenu="onContextMenu(event)"  nativeDragEnter="onNativeDragEnter(event)" label="{library.displayName}" 
-		   nativeDragDrop="onNativeDragDrop(event)"
+<mx:Canvas contextMenu="onContextMenu(event)"  label="{library.displayName}" 
 		   xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300" xmlns:components="com.simplediagrams.view.components.*">
@@ -166,48 +165,48 @@
 					contextMenu = null;
 			}
 
-			private function onNativeDragEnter(event:NativeDragEvent):void
-			{            	
-				if (event.clipboard.hasFormat(ClipboardFormats.FILE_LIST_FORMAT))
-				{    				
-					NativeDragManager.acceptDragDrop(this)
-				}
-			}
-			
-			private function onNativeDragDrop(event:NativeDragEvent):void
-			{
-				NativeDragManager.dropAction = NativeDragActions.COPY;
-				var dropFiles:Array = NativeDragEvent(event).clipboard.getData(ClipboardFormats.FILE_LIST_FORMAT) as Array;		
-				if (dropFiles==null) return
-				
-				var file:File = dropFiles[0]
-				
-				if (file.extension.toLowerCase() != "png" && file.extension.toLowerCase()!= "jpg")
-				{
-					//Alert.show("The image file must be a .png, .jpg or .swf file","Wrong format")
-					Alert.show("The image file must be a .png or .jpg file","Wrong format")
-					return;
-				}
-				
-				var libraryEvent:LibraryItemEvent = new LibraryItemEvent(LibraryItemEvent.ADD_LIBRARY_ITEM);
-				libraryEvent.library = library;
-				libraryEvent.path = file.nativePath;
-				var filename:String = file.name;
-				var extensionIndex:Number = filename.lastIndexOf( '.' );
-				var name:String = filename.substr( 0, extensionIndex );
-				libraryEvent.name = name;
-				
-				if (file.extension=="swf")
-				{
-					libraryEvent.importType = LibraryItemEvent.IMPORT_TYPE_SWF
-				}
-				else 
-				{						
-					libraryEvent.importType = LibraryItemEvent.IMPORT_TYPE_IMAGE
-				}
-				
-				dispatchEvent(libraryEvent);
-			}
+//			private function onNativeDragEnter(event:NativeDragEvent):void
+//			{            	
+//				if (event.clipboard.hasFormat(ClipboardFormats.FILE_LIST_FORMAT))
+//				{    				
+//					NativeDragManager.acceptDragDrop(this)
+//				}
+//			}
+//			
+//			private function onNativeDragDrop(event:NativeDragEvent):void
+//			{
+//				NativeDragManager.dropAction = NativeDragActions.COPY;
+//				var dropFiles:Array = NativeDragEvent(event).clipboard.getData(ClipboardFormats.FILE_LIST_FORMAT) as Array;		
+//				if (dropFiles==null) return
+//				
+//				var file:File = dropFiles[0]
+//				
+//				if (file.extension.toLowerCase() != "png" && file.extension.toLowerCase()!= "jpg")
+//				{
+//					//Alert.show("The image file must be a .png, .jpg or .swf file","Wrong format")
+//					Alert.show("The image file must be a .png or .jpg file","Wrong format")
+//					return;
+//				}
+//				
+//				var libraryEvent:LibraryItemEvent = new LibraryItemEvent(LibraryItemEvent.ADD_LIBRARY_ITEM);
+//				libraryEvent.library = library;
+//				libraryEvent.path = file.nativePath;
+//				var filename:String = file.name;
+//				var extensionIndex:Number = filename.lastIndexOf( '.' );
+//				var name:String = filename.substr( 0, extensionIndex );
+//				libraryEvent.name = name;
+//				
+//				if (file.extension=="swf")
+//				{
+//					libraryEvent.importType = LibraryItemEvent.IMPORT_TYPE_SWF
+//				}
+//				else 
+//				{						
+//					libraryEvent.importType = LibraryItemEvent.IMPORT_TYPE_IMAGE
+//				}
+//				
+//				dispatchEvent(libraryEvent);
+//			}
 		]]>
 	</fx:Script>
 	<fx:Declarations>

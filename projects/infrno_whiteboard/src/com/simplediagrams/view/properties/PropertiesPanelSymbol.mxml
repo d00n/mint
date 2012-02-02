@@ -435,7 +435,8 @@
 					width="30"
 					/>
 	
-	<components:FontStyleList
+	<!-- components:FontStyleList -->
+	<s:ComboBox
 		id="cbxFontFamily" 
 		dataProvider="{_fontFamiliesAC}"
 		labelField="fontName"	

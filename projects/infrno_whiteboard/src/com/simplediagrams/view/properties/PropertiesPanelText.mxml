@@ -283,7 +283,8 @@
 					width="30"
 					/>
 	
-	<components:FontStyleList
+	<!-- components:FontStyleList -->
+	<s:ComboBox
 		id="cbxFontFamily" 
 		dataProvider="{fontFamiliesAC}"
 		labelField="fontName"	
@@ -292,9 +293,9 @@
 		change="onFontFamilyCBXChange()"
 		width="100%"
 		maxWidth="250"
-		>
+		/>
 		
-	</components:FontStyleList>
+
 
 	<s:Spacer width="5"/>
 	<s:Label text="Bg:" toolTip="Background color" paddingTop="7" />

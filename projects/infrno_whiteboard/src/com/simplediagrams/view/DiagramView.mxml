@@ -115,7 +115,8 @@
 	<mx:HDividedBox styleName="libraryDivider" height="100%" width="100%"  >
 
 			<drawingBoard:DrawingBoard id="drawingBoard" height="100%" width="100%" />
-			<view:ShapesPanel id="shapesPanel" height="100%" width="250" />	
+			<library:ShapesPanel id="shapesPanel" height="100%" width="250" />
+			<!--view:ShapesPanel id="shapesPanel" height="100%" width="250" /-->	
 
 	</mx:HDividedBox>
 	

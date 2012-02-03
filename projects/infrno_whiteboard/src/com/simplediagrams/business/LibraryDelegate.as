@@ -2,6 +2,7 @@ package com.simplediagrams.business
 {
 	import avmplus.getQualifiedClassName;
 	
+	import com.simplediagrams.controllers.ILibraryStorageController;
 	import com.simplediagrams.model.ApplicationModel;
 	import com.simplediagrams.model.CopyUtil;
 	import com.simplediagrams.model.libraries.ImageBackground;
@@ -16,9 +17,6 @@ package com.simplediagrams.business
 	import deng.fzip.FZip;
 	import deng.fzip.FZipFile;
 	
-//	import flash.filesystem.File;
-//	import flash.filesystem.FileMode;
-//	import flash.filesystem.FileStream;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	
@@ -29,8 +27,6 @@ package com.simplediagrams.business
 
 	public class LibraryDelegate
 	{
-		
-		
 		protected var dictionaryReaders:Dictionary = new Dictionary();
 		protected var dictionaryWriters:Dictionary = new Dictionary();
 		

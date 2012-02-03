@@ -6,6 +6,7 @@ package com.simplediagrams.controllers
 	
 	import com.simplediagrams.business.LibraryDelegate;
 	import com.simplediagrams.business.LibraryRegistryDelegate;
+	import com.simplediagrams.business.RemoteLibraryRegistryDelegate;
 	import com.simplediagrams.business.SettingsDelegate;
 	import com.simplediagrams.events.ApplicationEvent;
 	import com.simplediagrams.events.CloseDiagramEvent;
@@ -14,6 +15,7 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.events.LoadDiagramEvent;
 	import com.simplediagrams.events.OpenDiagramEvent;
 	import com.simplediagrams.events.PluginEvent;
+	import com.simplediagrams.events.RemoteLibraryEvent;
 	import com.simplediagrams.events.SaveDiagramEvent;
 	import com.simplediagrams.events.SelectionEvent;
 	import com.simplediagrams.events.SettingsEvent;
@@ -41,14 +43,10 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.view.dialogs.UpdateToTrialModeDialog;
 	import com.simplediagrams.view.dialogs.VerifyQuitDialog;
 	
-//	import flash.data.EncryptedLocalStore;
 	import flash.display.DisplayObject;
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
-//	import flash.events.InvokeEvent;
-//	import flash.events.NativeWindowDisplayStateEvent;
 	import flash.events.UncaughtErrorEvent;
-//	import flash.filesystem.*;
 	import flash.system.ApplicationDomain;
 	
 	import mx.collections.ArrayCollection;
@@ -469,8 +467,9 @@ package com.simplediagrams.controllers
 //			}
 //		}
 				
-       	[Inject]
-		public var librariesRegistryDelegate:LibraryRegistryDelegate;
+    [Inject]
+		public var librariesRegistryDelegate:RemoteLibraryRegistryDelegate;
+//		public var librariesRegistryDelegate:LibraryRegistryDelegate;
 		
 		[Inject]
 		public var libraryDelegate:LibraryDelegate;
@@ -478,40 +477,44 @@ package com.simplediagrams.controllers
 		[Inject]
 		public var libraryManager:LibraryManager;
 		
-		
-		/** Load libraries based on information stored in LibraryRegistry */	
     public function loadLibraries():void
 		{
-//			var errorLibrariesArr:Array = []
-//			
-//			var registry:LibrariesRegistry = librariesRegistryDelegate.loadRegistry();
-//			var libraries:ArrayCollection = new ArrayCollection();
-//			
-//			var len:uint = registry.libraries.length;
-//			for (var index:int=0;index < len;index++)
-//			{
-//				var libInfo:LibraryInfo = registry.libraries.getItemAt(index) as LibraryInfo			
-//				try
-//				{
-//					var lib:Library = libraryDelegate.readLibrary(libInfo.name);
-//					libraries.addItem(lib);					
-//				}
-//				catch(error:Error)
-//				{
-//					//If we can't load a library, we remove it from the registry to avoid problems later on (e.g. deleting via LibraryRegistry)
-//					errorLibrariesArr.push(libInfo.displayName)
-//					Logger.error("Couldn't load library " + libInfo.name + ". Error: " + error, this)
-//					registry.libraries.removeItemAt(index);
-//					index--;
-//					len--;
-//				}
-//			}
-//			libraryManager.loadLibraries( registry, libraries);
-//			
-//			if (errorLibrariesArr.length>0)
-//			{
-//				Alert.show("Couldn't load the following libraries :\n " + errorLibrariesArr.join("\n"), "Library Error")
-//			}
+			librariesRegistryDelegate.loadRegistry();
+		}
+		
+		[Mediate(event="RemoteLibraryEvent.PROCESS_LIBRARY_REGISTRY")]
+    public function processLibraryRegistry(remoteLibraryEvent:RemoteLibraryEvent):void
+		{
+			var errorLibrariesArr:Array = []
+			
+			var registry:LibrariesRegistry = remoteLibraryEvent.librariesRegistry;
+			var libraries:ArrayCollection = new ArrayCollection();
+			
+			var len:uint = registry.libraries.length;
+			for (var index:int=0;index < len;index++)
+			{
+				var libInfo:LibraryInfo = registry.libraries.getItemAt(index) as LibraryInfo			
+				try
+				{
+					var lib:Library = libraryDelegate.readLibrary(libInfo.name);
+					libraries.addItem(lib);					
+				}
+				catch(error:Error)
+				{
+					//If we can't load a library, we remove it from the registry to avoid problems later on (e.g. deleting via LibraryRegistry)
+					errorLibrariesArr.push(libInfo.displayName)
+					Logger.error("Couldn't load library " + libInfo.name + ". Error: " + error, this)
+					registry.libraries.removeItemAt(index);
+					index--;
+					len--;
+				}
+			}
+			libraryManager.loadLibraries( registry, libraries);
+			
+			if (errorLibrariesArr.length>0)
+			{
+				Alert.show("Couldn't load the following libraries :\n " + errorLibrariesArr.join("\n"), "Library Error")
+			}
 			
 			
 			

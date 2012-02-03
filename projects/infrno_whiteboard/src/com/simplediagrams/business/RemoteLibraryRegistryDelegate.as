@@ -45,7 +45,7 @@ package com.simplediagrams.business
 			cleanup();
 		}
 		
-		protected function onFault(e:SecurityErrorEvent):void{
+		protected function onFault(e:Event):void{
 			// RSO TODO mediate this
 			var remoteLibraryEvent:RemoteLibraryEvent = new RemoteLibraryEvent(RemoteLibraryEvent.ON_FAULT);		
 			remoteLibraryEvent.error = e.toString();

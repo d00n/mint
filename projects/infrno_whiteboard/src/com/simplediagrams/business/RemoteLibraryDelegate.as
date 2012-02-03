@@ -8,6 +8,7 @@ package com.simplediagrams.business
 	import com.simplediagrams.model.libraries.ImageBackground;
 	import com.simplediagrams.model.libraries.ImageShape;
 	import com.simplediagrams.model.libraries.Library;
+	import com.simplediagrams.model.libraries.LibraryInfo;
 	import com.simplediagrams.model.libraries.LibraryItem;
 	import com.simplediagrams.model.libraries.SWFBackground;
 	import com.simplediagrams.model.libraries.SWFShape;
@@ -18,6 +19,7 @@ package com.simplediagrams.business
 	import deng.fzip.FZipFile;
 	
 	import flash.events.Event;
+	import flash.events.IEventDispatcher;
 	import flash.events.IOErrorEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.net.URLLoader;
@@ -33,15 +35,19 @@ package com.simplediagrams.business
 
 	public class RemoteLibraryDelegate extends AbstractController
 	{
+
+		
 		protected var dictionaryReaders:Dictionary = new Dictionary();
 		protected var dictionaryWriters:Dictionary = new Dictionary();
 		
 		private var HOST:String = "http://localhost";
-		private var PATH:String = "/libraries/libraries.xml";
+		private var PATH:String = "/libraries/";
 		
 		private var _urlLoader:URLLoader;
+		public var libInfo:LibraryInfo;
+		public var remoteLibraryDelegateId:int;
 		
-		public function LibraryDelegate()
+		public function RemoteLibraryDelegate()
 		{
 			dictionaryReaders["imageBackground"] = readImageBackgroundItem;
 			dictionaryReaders["swfBackground"] = readSWFBackgroundItem;
@@ -149,11 +155,13 @@ package com.simplediagrams.business
 			return library;
 		}
 		
-		public function  readLibrary(name:String):void
+		public function  readLibrary():void
 		{
 //			var file:File = ApplicationModel.baseStorageDir.resolvePath("libraries/" + name + "/library.xml");
 
-			var urlRequest:URLRequest = new URLRequest(HOST + PATH + name +"/library.xml");
+			var url:String = HOST + PATH + libInfo.name +"/library.xml";
+			trace("RemoteLibraryDelegate.readLibrary url: "+ url);
+			var urlRequest:URLRequest = new URLRequest(url);
 			
 			_urlLoader = new URLLoader(urlRequest);
 			_urlLoader.addEventListener(Event.COMPLETE, onComplete);			
@@ -165,11 +173,13 @@ package com.simplediagrams.business
 			var remoteLibraryEvent:RemoteLibraryEvent = new RemoteLibraryEvent(RemoteLibraryEvent.PROCESS_LIBRARY);		
 			var contentXML:XML = XML(_urlLoader.data);
 			remoteLibraryEvent.library = parseLibrary(contentXML);
+			remoteLibraryEvent.libInfo = libInfo;
+			remoteLibraryEvent.remoteLibraryDelegateId = remoteLibraryDelegateId;
 			dispatcher.dispatchEvent(remoteLibraryEvent);
 			cleanup();
 		}
 		
-		protected function onFault(e:SecurityErrorEvent):void{
+		protected function onFault(e:Event):void{
 			// RSO TODO mediate this
 			var remoteLibraryEvent:RemoteLibraryEvent = new RemoteLibraryEvent(RemoteLibraryEvent.ON_FAULT);		
 			remoteLibraryEvent.error = e.toString();

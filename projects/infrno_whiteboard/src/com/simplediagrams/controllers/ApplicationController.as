@@ -7,6 +7,7 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.business.LibraryDelegate;
 	import com.simplediagrams.business.LibraryRegistryDelegate;
 	import com.simplediagrams.business.RemoteLibraryDelegate;
+	import com.simplediagrams.business.RemoteLibraryDelegateManager;
 	import com.simplediagrams.business.RemoteLibraryRegistryDelegate;
 	import com.simplediagrams.business.SettingsDelegate;
 	import com.simplediagrams.events.ApplicationEvent;
@@ -473,7 +474,7 @@ package com.simplediagrams.controllers
 //		public var librariesRegistryDelegate:LibraryRegistryDelegate;
 		
 		[Inject]
-		public var libraryDelegate:RemoteLibraryDelegate;
+		public var remoteLibraryDelegateManager:RemoteLibraryDelegateManager;
 //		public var libraryDelegate:LibraryDelegate;
 		
 		[Inject]
@@ -485,45 +486,25 @@ package com.simplediagrams.controllers
 		}
 		
 		[Mediate(event="RemoteLibraryEvent.PROCESS_LIBRARY_REGISTRY")]
-    public function processLibraryRegistry(remoteLibraryEvent:RemoteLibraryEvent):void
+		public function processLibraryRegistry(remoteLibraryEvent:RemoteLibraryEvent):void
 		{
-			var errorLibrariesArr:Array = []
-			
 			var registry:LibrariesRegistry = remoteLibraryEvent.librariesRegistry;
-			var libraries:ArrayCollection = new ArrayCollection();
 			
 			var len:uint = registry.libraries.length;
 			for (var index:int=0;index < len;index++)
 			{
 				var libInfo:LibraryInfo = registry.libraries.getItemAt(index) as LibraryInfo			
-				try
-				{
-					var lib:Library = libraryDelegate.readLibrary(libInfo.name);
-					libraries.addItem(lib);					
-				}
-				catch(error:Error)
-				{
-					//If we can't load a library, we remove it from the registry to avoid problems later on (e.g. deleting via LibraryRegistry)
-					errorLibrariesArr.push(libInfo.displayName)
-					Logger.error("Couldn't load library " + libInfo.name + ". Error: " + error, this)
-					registry.libraries.removeItemAt(index);
-					index--;
-					len--;
-				}
+				remoteLibraryDelegateManager.readLibrary(libInfo);
 			}
-			libraryManager.loadLibraries( registry, libraries);
+		}
+				
+		[Mediate(event="RemoteLibraryEvent.PROCESS_LIBRARY")]
+    public function processLibrary(remoteLibraryEvent:RemoteLibraryEvent):void
+		{
+			var library:Library = remoteLibraryEvent.library;
+			var libInfo:LibraryInfo = remoteLibraryEvent.libInfo;
 			
-			if (errorLibrariesArr.length>0)
-			{
-				Alert.show("Couldn't load the following libraries :\n " + errorLibrariesArr.join("\n"), "Library Error")
-			}
-			
-			
-			
-			//TEMP
-			//FlexGlobals.topLevelApplication.styleManager.loadStyleDeclarations("assets/footballStyles.swf")
-			//why doesn't this work? Check comments on http://help.adobe.com/en_US/flex/using/WS2db454920e96a9e51e63e3d11c0bf69084-7f8c.html
-			
+			libraryManager.loadLibrary(libInfo, library);
 		}
 		
 		[Mediate(event="ApplicationEvent.SHOW_MANAGE_LIBRARIES")]

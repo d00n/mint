@@ -47,7 +47,8 @@ package com.simplediagrams.business
 		}
 		
 		protected function onFault(e:Event):void{
-//			dispatch(new DisplayEvent(DisplayEvent.SHOW_LOGIN_STATE));			
+			// TODO
+//			dispatch(new DisplayEvent(RemoteLibraryEvent.ON_FAULT));			
 			cleanup();
 		}
 		
@@ -59,35 +60,6 @@ package com.simplediagrams.business
 			_urlLoader = null;
 		}
 				
-//		public function loadRegistry(sourceFile:File = null):LibrariesRegistry
-//		{
-//			if (sourceFile==null)
-//			{
-//				sourceFile=ApplicationModel.baseStorageDir.resolvePath(ApplicationModel.LIBRARY_PATH + "libraries.xml")
-//			}
-//			
-//			if (sourceFile.exists==false)
-//			{
-//				Logger.error("Can't find sourcefile " + sourceFile.nativePath, this)
-//				copyDefaultLibrariesAndRegistry()					
-//			}
-//			
-//			//if still false, create an empty Registry
-//			if (sourceFile.exists==false)
-//			{
-//				return new LibrariesRegistry()
-//			}
-//			
-//			var s:FileStream = new FileStream();
-//			s.open(sourceFile, FileMode.READ);
-//			var content:String = s.readUTFBytes(s.bytesAvailable);
-//			s.close();
-//			var contentXML:XML = XML(content);
-//					
-//			
-//			return readRegistry(contentXML);
-//		}
-		
 		/* If we're missing the registry, copy default libraries and registry from install directory */		
 		protected function copyDefaultLibrariesAndRegistry():void
 		{

@@ -4,6 +4,7 @@ package com.simplediagrams.business
 	import com.simplediagrams.model.ApplicationModel;
 	import com.simplediagrams.model.libraries.LibrariesRegistry;
 	import com.simplediagrams.model.libraries.LibraryInfo;
+	import com.simplediagrams.model.libraries.LibraryItem;
 	import com.simplediagrams.util.Logger;
 	
 	import flash.events.Event;
@@ -26,6 +27,10 @@ package com.simplediagrams.business
 		
 		public function RemoteLibraryRegistryDelegate()
 		{
+		}
+		
+		public function assetPath(libItem:LibraryItem):void{
+			return = HOST + PATH + libItem.libraryName '/' + libItem.path;
 		}
 		
 		public function loadRegistry():void

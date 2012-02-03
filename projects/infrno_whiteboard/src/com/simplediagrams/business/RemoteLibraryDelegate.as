@@ -35,18 +35,14 @@ package com.simplediagrams.business
 
 	public class RemoteLibraryDelegate extends AbstractController
 	{
-
-		
 		protected var dictionaryReaders:Dictionary = new Dictionary();
 		protected var dictionaryWriters:Dictionary = new Dictionary();
 		
-		private var HOST:String = "http://localhost";
-		private var PATH:String = "/libraries/";
-		var url:String;
-		
 		private var _urlLoader:URLLoader;
-		private var _libInfo:LibraryInfo;
+		
+		public var libInfo:LibraryInfo;
 		public var remoteLibraryDelegateId:int;
+		public var url:String;
 		
 		public function RemoteLibraryDelegate()
 		{
@@ -62,12 +58,6 @@ package com.simplediagrams.business
 			dictionaryWriters[getQualifiedClassName(SWFShape)] = writeSWFShapeItem;
 		}
 		
-		public function set libInfo(value:LibraryInfo):void{
-			_libInfo = value;
-			url = HOST + PATH + _libInfo.name + '/';
-		}
-		
-
 		protected function readLibraryItem(xml:XML, libraryItem:LibraryItem):void
 		{
 			libraryItem.displayName = xml.@displayName;
@@ -91,8 +81,8 @@ package com.simplediagrams.business
 
 			var imageBackground:ImageBackground = new ImageBackground();
 			readLibraryItem(xml, imageBackground);
-			imageBackground.path = url + xml.path;
-			imageBackground.thumbnailPath = url + xml.thumbnailPath;				
+			imageBackground.path = xml.path;
+			imageBackground.thumbnailPath = xml.thumbnailPath;				
 			if (imageBackground.thumbnailPath=="")
 			{				
 				imageBackground.thumbnailPath = imageBackground.path
@@ -181,7 +171,7 @@ package com.simplediagrams.business
 			var remoteLibraryEvent:RemoteLibraryEvent = new RemoteLibraryEvent(RemoteLibraryEvent.PROCESS_LIBRARY);		
 			var contentXML:XML = XML(_urlLoader.data);
 			remoteLibraryEvent.library = parseLibrary(contentXML);
-			remoteLibraryEvent.libInfo = _libInfo;
+			remoteLibraryEvent.libInfo = libInfo;
 			remoteLibraryEvent.remoteLibraryDelegateId = remoteLibraryDelegateId;
 			dispatcher.dispatchEvent(remoteLibraryEvent);
 			cleanup();

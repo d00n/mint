@@ -12,6 +12,10 @@ package com.simplediagrams.business
 	{
 		private var _remoteLibraryDelegateAC:ArrayCollection = new ArrayCollection();
 		
+		private var HOST:String = "http://localhost";
+		private var PATH:String = "/libraries/";
+		private var url:String;
+		
 		public function RemoteLibraryDelegateManager()
 		{
 		}
@@ -21,6 +25,7 @@ package com.simplediagrams.business
 		  var remoteLibraryDelegate:RemoteLibraryDelegate = new RemoteLibraryDelegate();
 		  _remoteLibraryDelegateAC.addItem(remoteLibraryDelegate);
 		  remoteLibraryDelegate.libInfo = libInfo;
+		  remoteLibraryDelegate.url = HOST + PATH + libInfo + "/";
 			remoteLibraryDelegate.remoteLibraryDelegateId = _remoteLibraryDelegateAC.length - 1;
 		  remoteLibraryDelegate.readLibrary();
 			

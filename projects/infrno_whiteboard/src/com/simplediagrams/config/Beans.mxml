@@ -71,6 +71,7 @@
 		<model:DrawingBoardGridModel id="drawingBoardGridModel" /> 
 		<controllers:RemoteSharedObjectController id="remoteSharedObjectController" /> 
 		<business:RemoteLibraryRegistryDelegate id="remoteLibraryRegistryDelegate"/>
+		<business:RemoteLibraryDelegate id="remoteLibraryDelegate"/>
 		
 		
 		

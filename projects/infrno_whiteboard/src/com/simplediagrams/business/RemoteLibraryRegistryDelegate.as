@@ -23,7 +23,6 @@ package com.simplediagrams.business
 		private var PATH:String = "/libraries/libraries.xml";
 		
 		private var _urlLoader:URLLoader;
-		public var d:String;
 		
 		public function RemoteLibraryRegistryDelegate()
 		{
@@ -46,9 +45,11 @@ package com.simplediagrams.business
 			cleanup();
 		}
 		
-		protected function onFault(e:Event):void{
-			// TODO
-//			dispatch(new DisplayEvent(RemoteLibraryEvent.ON_FAULT));			
+		protected function onFault(e:SecurityErrorEvent):void{
+			// RSO TODO mediate this
+			var remoteLibraryEvent:RemoteLibraryEvent = new RemoteLibraryEvent(RemoteLibraryEvent.ON_FAULT);		
+			remoteLibraryEvent.error = e.toString();
+			dispatcher.dispatchEvent(remoteLibraryEvent);			
 			cleanup();
 		}
 		

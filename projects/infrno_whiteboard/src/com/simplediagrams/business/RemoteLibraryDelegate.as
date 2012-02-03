@@ -2,6 +2,7 @@ package com.simplediagrams.business
 {
 	import avmplus.getQualifiedClassName;
 	
+	import com.simplediagrams.events.RemoteLibraryEvent;
 	import com.simplediagrams.model.ApplicationModel;
 	import com.simplediagrams.model.CopyUtil;
 	import com.simplediagrams.model.libraries.ImageBackground;
@@ -16,6 +17,11 @@ package com.simplediagrams.business
 	import deng.fzip.FZip;
 	import deng.fzip.FZipFile;
 	
+	import flash.events.Event;
+	import flash.events.IOErrorEvent;
+	import flash.events.SecurityErrorEvent;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	
@@ -23,11 +29,17 @@ package com.simplediagrams.business
 	import mx.utils.UIDUtil;
 	
 	import org.osmf.media.MediaPlayer;
+	import org.swizframework.controller.AbstractController;
 
-	public class LibraryDelegate
+	public class RemoteLibraryDelegate extends AbstractController
 	{
 		protected var dictionaryReaders:Dictionary = new Dictionary();
 		protected var dictionaryWriters:Dictionary = new Dictionary();
+		
+		private var HOST:String = "http://localhost";
+		private var PATH:String = "/libraries/libraries.xml";
+		
+		private var _urlLoader:URLLoader;
 		
 		public function LibraryDelegate()
 		{
@@ -137,19 +149,41 @@ package com.simplediagrams.business
 			return library;
 		}
 		
-		public function  readLibrary(name:String):Library
+		public function  readLibrary(name:String):void
 		{
 //			var file:File = ApplicationModel.baseStorageDir.resolvePath("libraries/" + name + "/library.xml");
-//			var s:FileStream = new FileStream();
-//			s.open(file, FileMode.READ);
-//			var content:String = s.readUTFBytes(s.bytesAvailable);
-//			s.close();
-//			var contentXML:XML = XML(content);
-//			return parseLibrary(contentXML);
-			// XXX
-			return null;
+
+			var urlRequest:URLRequest = new URLRequest(HOST + PATH + name +"/library.xml");
+			
+			_urlLoader = new URLLoader(urlRequest);
+			_urlLoader.addEventListener(Event.COMPLETE, onComplete);			
+			_urlLoader.addEventListener(IOErrorEvent.IO_ERROR, onFault);			
+			_urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onFault);			
 		}
 		
+		protected function onComplete(e:Event):void{
+			var remoteLibraryEvent:RemoteLibraryEvent = new RemoteLibraryEvent(RemoteLibraryEvent.PROCESS_LIBRARY);		
+			var contentXML:XML = XML(_urlLoader.data);
+			remoteLibraryEvent.library = parseLibrary(contentXML);
+			dispatcher.dispatchEvent(remoteLibraryEvent);
+			cleanup();
+		}
+		
+		protected function onFault(e:SecurityErrorEvent):void{
+			// RSO TODO mediate this
+			var remoteLibraryEvent:RemoteLibraryEvent = new RemoteLibraryEvent(RemoteLibraryEvent.ON_FAULT);		
+			remoteLibraryEvent.error = e.toString();
+			dispatcher.dispatchEvent(remoteLibraryEvent);			
+			cleanup();
+		}
+		
+		protected function cleanup():void{
+			_urlLoader.removeEventListener(Event.COMPLETE, onComplete);			
+			_urlLoader.removeEventListener(IOErrorEvent.IO_ERROR, onFault);			
+			_urlLoader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onFault);	
+			_urlLoader.close();
+			_urlLoader = null;
+		}		
 		
 		protected function writeLibraryItem(xml:XML, libraryItem:LibraryItem):void
 		{

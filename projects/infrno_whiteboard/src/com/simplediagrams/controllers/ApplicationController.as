@@ -6,6 +6,7 @@ package com.simplediagrams.controllers
 	
 	import com.simplediagrams.business.LibraryDelegate;
 	import com.simplediagrams.business.LibraryRegistryDelegate;
+	import com.simplediagrams.business.RemoteLibraryDelegate;
 	import com.simplediagrams.business.RemoteLibraryRegistryDelegate;
 	import com.simplediagrams.business.SettingsDelegate;
 	import com.simplediagrams.events.ApplicationEvent;
@@ -472,7 +473,8 @@ package com.simplediagrams.controllers
 //		public var librariesRegistryDelegate:LibraryRegistryDelegate;
 		
 		[Inject]
-		public var libraryDelegate:LibraryDelegate;
+		public var libraryDelegate:RemoteLibraryDelegate;
+//		public var libraryDelegate:LibraryDelegate;
 		
 		[Inject]
 		public var libraryManager:LibraryManager;

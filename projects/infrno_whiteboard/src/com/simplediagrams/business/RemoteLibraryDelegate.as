@@ -42,9 +42,10 @@ package com.simplediagrams.business
 		
 		private var HOST:String = "http://localhost";
 		private var PATH:String = "/libraries/";
+		var url:String;
 		
 		private var _urlLoader:URLLoader;
-		public var libInfo:LibraryInfo;
+		private var _libInfo:LibraryInfo;
 		public var remoteLibraryDelegateId:int;
 		
 		public function RemoteLibraryDelegate()
@@ -59,6 +60,11 @@ package com.simplediagrams.business
 			dictionaryWriters[getQualifiedClassName(ImageShape)] = writeImageShapeItem;
 			dictionaryWriters[getQualifiedClassName(VectorShape)] = writeVectorShapeItem;
 			dictionaryWriters[getQualifiedClassName(SWFShape)] = writeSWFShapeItem;
+		}
+		
+		public function set libInfo(value:LibraryInfo):void{
+			_libInfo = value;
+			url = HOST + PATH + _libInfo.name + '/';
 		}
 		
 
@@ -81,10 +87,12 @@ package com.simplediagrams.business
 		
 		protected function readImageBackgroundItem(xml:XML):ImageBackground
 		{
+			trace("RemoteLibraryDelegate.readImageBackgroundItem path: "+ url + xml.path);
+
 			var imageBackground:ImageBackground = new ImageBackground();
 			readLibraryItem(xml, imageBackground);
-			imageBackground.path = xml.path;
-			imageBackground.thumbnailPath = xml.thumbnailPath;				
+			imageBackground.path = url + xml.path;
+			imageBackground.thumbnailPath = url + xml.thumbnailPath;				
 			if (imageBackground.thumbnailPath=="")
 			{				
 				imageBackground.thumbnailPath = imageBackground.path
@@ -159,9 +167,9 @@ package com.simplediagrams.business
 		{
 //			var file:File = ApplicationModel.baseStorageDir.resolvePath("libraries/" + name + "/library.xml");
 
-			var url:String = HOST + PATH + libInfo.name +"/library.xml";
-			trace("RemoteLibraryDelegate.readLibrary url: "+ url);
-			var urlRequest:URLRequest = new URLRequest(url);
+			var lib_url:String = url +"library.xml";
+			trace("RemoteLibraryDelegate.readLibrary url: "+ lib_url);
+			var urlRequest:URLRequest = new URLRequest(lib_url);
 			
 			_urlLoader = new URLLoader(urlRequest);
 			_urlLoader.addEventListener(Event.COMPLETE, onComplete);			
@@ -173,7 +181,7 @@ package com.simplediagrams.business
 			var remoteLibraryEvent:RemoteLibraryEvent = new RemoteLibraryEvent(RemoteLibraryEvent.PROCESS_LIBRARY);		
 			var contentXML:XML = XML(_urlLoader.data);
 			remoteLibraryEvent.library = parseLibrary(contentXML);
-			remoteLibraryEvent.libInfo = libInfo;
+			remoteLibraryEvent.libInfo = _libInfo;
 			remoteLibraryEvent.remoteLibraryDelegateId = remoteLibraryDelegateId;
 			dispatcher.dispatchEvent(remoteLibraryEvent);
 			cleanup();

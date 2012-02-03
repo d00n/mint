@@ -440,7 +440,7 @@ package com.simplediagrams.model
 				return chalkboard;
 			else
 //				return ApplicationModel.baseStorageDir.resolvePath("libraries/" + libItem.libraryName + "/" + path).url;
-				return null;
+   			return path;
 		}
 		
 		public static function getAssetPath(libItem:LibraryItem, path:String):String

@@ -38,14 +38,16 @@
 					if (data is ImageBackground)
 					{
 						var model:ImageBackground = data as ImageBackground;
-						iconImage.source = LibraryManager.getAssetPath(model, model.thumbnailPath);
+//						iconImage.source = LibraryManager.getAssetPath(model, model.thumbnailPath);
+						iconImage.source = model.thumbnailPath;
 						iconImage.visible = true
 						swfImage.visible = false
 					}
 					else if (data is SWFBackground)
 					{
 						var swfModel:SWFBackground = data as SWFBackground;
-						swfImage.source = LibraryManager.getAssetPath(swfModel, swfModel.thumbnailPath);
+//						swfImage.source = LibraryManager.getAssetPath(swfModel, swfModel.thumbnailPath);
+						swfImage.source = swfModel.thumbnailPath;
 						swfImage.visible = true
 						iconImage.visible = false
 					}

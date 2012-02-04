@@ -29,10 +29,6 @@ package com.simplediagrams.business
 		{
 		}
 		
-		public function assetPath(libItem:LibraryItem):void{
-			return = HOST + PATH + libItem.libraryName '/' + libItem.path;
-		}
-		
 		public function loadRegistry():void
 		{
 			var urlRequest:URLRequest = new URLRequest(HOST + PATH);

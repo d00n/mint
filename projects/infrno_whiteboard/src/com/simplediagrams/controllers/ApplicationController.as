@@ -7,7 +7,6 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.business.LibraryDelegate;
 	import com.simplediagrams.business.LibraryRegistryDelegate;
 	import com.simplediagrams.business.RemoteLibraryDelegate;
-	import com.simplediagrams.business.RemoteLibraryDelegateManager;
 	import com.simplediagrams.business.RemoteLibraryRegistryDelegate;
 	import com.simplediagrams.business.SettingsDelegate;
 	import com.simplediagrams.events.ApplicationEvent;
@@ -474,7 +473,7 @@ package com.simplediagrams.controllers
 //		public var librariesRegistryDelegate:LibraryRegistryDelegate;
 		
 		[Inject]
-		public var remoteLibraryDelegateManager:RemoteLibraryDelegateManager;
+		public var remoteLibraryController:RemoteLibraryController;
 //		public var libraryDelegate:LibraryDelegate;
 		
 		[Inject]
@@ -494,7 +493,7 @@ package com.simplediagrams.controllers
 			for (var index:int=0;index < len;index++)
 			{
 				var libInfo:LibraryInfo = registry.libraries.getItemAt(index) as LibraryInfo			
-				remoteLibraryDelegateManager.readLibrary(libInfo);
+				remoteLibraryController.readLibrary(libInfo);
 			}
 		}
 				

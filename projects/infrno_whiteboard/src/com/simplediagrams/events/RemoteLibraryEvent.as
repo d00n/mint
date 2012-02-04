@@ -1,5 +1,6 @@
 package com.simplediagrams.events
 {
+	import com.simplediagrams.business.RemoteLibraryDelegate;
 	import com.simplediagrams.model.libraries.LibrariesRegistry;
 	import com.simplediagrams.model.libraries.Library;
 	import com.simplediagrams.model.libraries.LibraryInfo;
@@ -15,7 +16,7 @@ package com.simplediagrams.events
 		public var librariesRegistry:LibrariesRegistry;
 		public var library:Library;
 		public var libInfo:LibraryInfo;
-		public var remoteLibraryDelegateId:int;
+		public var remoteLibraryDelegate:RemoteLibraryDelegate;
 		public var error:String;
 		
 		public function RemoteLibraryEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)

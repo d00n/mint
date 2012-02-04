@@ -1,7 +1,7 @@
 package com.simplediagrams.model
 {
 	import com.simplediagrams.business.RemoteLibraryDelegate;
-	import com.simplediagrams.business.RemoteLibraryDelegateManager;
+	import com.simplediagrams.controllers.RemoteLibraryController;
 	import com.simplediagrams.events.LibraryItemEvent;
 	import com.simplediagrams.model.libraries.ImageBackground;
 	import com.simplediagrams.model.libraries.ImageShape;
@@ -35,7 +35,7 @@ package com.simplediagrams.model
 	public class LibraryManager extends EventDispatcher 
 	{		
 		[Inject]
-		public var remoteLibraryDelegateManager:RemoteLibraryDelegateManager;
+		public var remoteLibraryController:RemoteLibraryController;
 		
 		public var librariesRegistry:LibrariesRegistry = new LibrariesRegistry();
 		public var libraries:ArrayCollection = new ArrayCollection();
@@ -442,13 +442,14 @@ package com.simplediagrams.model
 				return chalkboard;
 			else
 //				return ApplicationModel.baseStorageDir.resolvePath("libraries/" + libItem.libraryName + "/" + path).url;
-   			return remoteLibraryDelegateManager.assetPath(libItem);
+   			return RemoteLibraryController.assetPath(libItem);
+			
 		}
 		
 		public static function getAssetPath(libItem:LibraryItem, path:String):String
 		{
 //			return ApplicationModel.baseStorageDir.resolvePath("libraries/" + libItem.libraryName + "/" + path).url;
-			return remoteLibraryDelegateManager.assetPath(libItem);
+			return RemoteLibraryController.assetPath(libItem);
 		}
 		
 		private function getByteContent(libName:String, path:String):ByteArray

@@ -41,7 +41,6 @@ package com.simplediagrams.business
 		private var _urlLoader:URLLoader;
 		
 		public var libInfo:LibraryInfo;
-		public var remoteLibraryDelegateId:int;
 		public var url:String;
 		
 		public function RemoteLibraryDelegate()
@@ -172,7 +171,7 @@ package com.simplediagrams.business
 			var contentXML:XML = XML(_urlLoader.data);
 			remoteLibraryEvent.library = parseLibrary(contentXML);
 			remoteLibraryEvent.libInfo = libInfo;
-			remoteLibraryEvent.remoteLibraryDelegateId = remoteLibraryDelegateId;
+			remoteLibraryEvent.remoteLibraryDelegate = this;
 			dispatcher.dispatchEvent(remoteLibraryEvent);
 			cleanup();
 		}

@@ -468,8 +468,7 @@ package com.simplediagrams.controllers
 //			}
 //		}
 				
-    [Inject]
-		public var librariesRegistryDelegate:RemoteLibraryRegistryDelegate;
+//    [Inject]
 //		public var librariesRegistryDelegate:LibraryRegistryDelegate;
 		
 		[Inject]
@@ -481,7 +480,7 @@ package com.simplediagrams.controllers
 		
     public function loadLibraries():void
 		{
-			librariesRegistryDelegate.loadRegistry();
+			remoteLibraryController.loadRegistry();
 		}
 		
 		[Mediate(event="RemoteLibraryEvent.PROCESS_LIBRARY_REGISTRY")]

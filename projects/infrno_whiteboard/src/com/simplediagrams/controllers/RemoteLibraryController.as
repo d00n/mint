@@ -1,6 +1,7 @@
 package com.simplediagrams.controllers
 {
 	import com.simplediagrams.business.RemoteLibraryDelegate;
+	import com.simplediagrams.business.RemoteLibraryRegistryDelegate;
 	import com.simplediagrams.events.RemoteLibraryEvent;
 	import com.simplediagrams.model.libraries.ImageBackground;
 	import com.simplediagrams.model.libraries.ImageShape;
@@ -18,6 +19,9 @@ package com.simplediagrams.controllers
 
 	public class RemoteLibraryController extends AbstractController
 	{
+		[Inject]
+		public var remoteLibraryRegistryDelegate:RemoteLibraryRegistryDelegate;
+		
 		private var _remoteLibraryDelegateAC:ArrayCollection = new ArrayCollection();
 		
 		private static var HOST:String = "http://localhost";
@@ -28,6 +32,9 @@ package com.simplediagrams.controllers
 		{
 		}
 		
+		public function loadRegistry():void{
+			remoteLibraryRegistryDelegate.loadRegistry();
+		}
 
 		public function readLibrary(libInfo:LibraryInfo):void
 		{

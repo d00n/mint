@@ -2,9 +2,11 @@ package com.simplediagrams.controllers
 {
 	import com.simplediagrams.business.RemoteLibraryDelegate;
 	import com.simplediagrams.events.RemoteLibraryEvent;
+	import com.simplediagrams.model.libraries.ImageBackground;
 	import com.simplediagrams.model.libraries.ImageShape;
 	import com.simplediagrams.model.libraries.LibraryInfo;
 	import com.simplediagrams.model.libraries.LibraryItem;
+	import com.simplediagrams.model.libraries.SWFBackground;
 	import com.simplediagrams.model.libraries.SWFShape;
 	import com.simplediagrams.util.Logger;
 	
@@ -57,13 +59,20 @@ package com.simplediagrams.controllers
 			}
 			
 			var path:String = HOST + PATH + libItem.libraryName +'/';	
-			if ( (libItem is ImageShape) || (libItem is SWFShape) ) {
+			if  (libItem is ImageShape)  {
+				path = path + (libItem as ImageShape).path;
+			}else if (libItem is SWFShape)  {
 				path = path + (libItem as SWFShape).path;
+			}else if (libItem is SWFBackground)  {
+				path = path + (libItem as SWFBackground).path;
+			}else if (libItem is ImageBackground)  {
+				path = path + (libItem as ImageBackground).path;
 			}else{
 				Logger.error("RemoteLibraryController.assetPath was passed a non-image and non-swf libItem: " + libItem.name);
 				return '';
 			}
 			
+   		Logger.info("RemoteLibraryController.assetPath path: " + path);
 			return path;
 		}
 	}

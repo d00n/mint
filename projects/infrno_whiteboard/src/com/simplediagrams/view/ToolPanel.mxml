@@ -225,7 +225,10 @@
 	
 		<mx:Button icon="{lineIcon}" click="onLineTool()" width="20" height="20" toolTip="Line tool (CTRL-L)"/>		
 								
+		<!--
 		<mx:Button icon="{textIcon}" click="onTextTool()" width="20" height="20" toolTip="Text tool (CTRL-T)"/>	
+		-->
+		<components:AnnotationButtonPopUp id="annotationButtonPopUp" skinClass="com.simplediagrams.view.skins.AnnotationButtonPopUpSkin" />
 		
 		<mx:Button icon="{addPictureIcon}" click="onAddPictureIcon()" width="20" height="20" toolTip="Add picture"/>
 		
@@ -254,6 +257,7 @@
 					id="alignButtonPopUp"
 					skinClass="com.simplediagrams.view.skins.AlignButtonPopUpSkin"
 					/>
+
 
 	</s:VGroup>
 		

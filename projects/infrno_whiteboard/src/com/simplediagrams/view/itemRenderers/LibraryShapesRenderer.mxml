@@ -24,6 +24,8 @@
 			[Bindable]
 			public var library:Library;
 			
+			[Embed(source='assets/img/InfrnoBug_50x50.png')]
+			public var dragImage:Class;
 			
 			private function isAddItemVisible(custom:Boolean, length:Number):Boolean
 			{
@@ -38,11 +40,18 @@
 				
 				dragSource.addData(dragInitiator.selectedItem, 'libraryItem');
 				
-				var dragProxy:IFlexDisplayObject; 
-				var dragItemRenderer:IFlexDisplayObject = IFlexDisplayObject(dragInitiator.dataGroup.getElementAt(dragInitiator.selectedIndex));
+//				var dragProxy:IFlexDisplayObject; 
+//				var dragItemRenderer:IFlexDisplayObject = IFlexDisplayObject(dragInitiator.dataGroup.getElementAt(dragInitiator.selectedIndex));
 				var xOffset:Number=mouseX ;
 				var yOffset:Number=mouseY;
-				DragManager.doDrag(this, dragSource, event, dragItemRenderer, xOffset, yOffset);
+				
+				var imageProxy:Image = new Image();
+				imageProxy.source = dragImage;
+				imageProxy.height = 50;
+				imageProxy.width = 50;
+				
+				DragManager.doDrag(this, dragSource, event, imageProxy, -xOffset, -yOffset );
+//				DragManager.doDrag(this, dragSource, event, dragItemRenderer, xOffset, yOffset);
 			}
 			
 			protected var renameMenuItem:ContextMenuItem;

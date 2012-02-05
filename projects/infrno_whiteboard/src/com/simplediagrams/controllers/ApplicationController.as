@@ -471,12 +471,14 @@ package com.simplediagrams.controllers
 //    [Inject]
 //		public var librariesRegistryDelegate:LibraryRegistryDelegate;
 		
-		[Inject]
-		public var remoteLibraryController:RemoteLibraryController;
+//		[Inject]
 //		public var libraryDelegate:LibraryDelegate;
 		
 		[Inject]
 		public var libraryManager:LibraryManager;
+		
+		[Inject]
+		public var remoteLibraryController:RemoteLibraryController;
 		
     public function loadLibraries():void
 		{

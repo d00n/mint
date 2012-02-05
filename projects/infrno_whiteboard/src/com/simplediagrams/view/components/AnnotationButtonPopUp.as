@@ -9,6 +9,7 @@ package com.simplediagrams.view.components
 {
 	
 	import com.simplediagrams.events.AlignEvent;
+	import com.simplediagrams.events.DrawingBoardItemDroppedEvent;
 	import com.simplediagrams.events.ToolPanelEvent;
 	import com.simplediagrams.model.tools.Tools;
 	
@@ -212,17 +213,24 @@ package com.simplediagrams.view.components
 			
 			if (event.target==btnTextArea)
 			{
-				var evt:ToolPanelEvent = new ToolPanelEvent(ToolPanelEvent.TOOL_SELECTED, true)
-				evt.toolTypeSelected = Tools.TEXT_TOOL;
-  			dispatcher.dispatchEvent(evt)	
+				var toolPanelEvent:ToolPanelEvent = new ToolPanelEvent(ToolPanelEvent.TOOL_SELECTED, true);
+				toolPanelEvent.toolTypeSelected = Tools.TEXT_TOOL;
+  			dispatcher.dispatchEvent(toolPanelEvent)	;
 			}
 			else if (event.target==btnStickyNote)
 			{
+				var dbidEvent:DrawingBoardItemDroppedEvent = new DrawingBoardItemDroppedEvent(DrawingBoardItemDroppedEvent.STICKY_NOTE_ADDED, true)      
+				dbidEvent.dropX = 20;
+				dbidEvent.dropY = 20;
+  			dispatcher.dispatchEvent(dbidEvent)	;
 			}
 			else if (event.target==btnIndexCard)
 			{
+				var dbidEvent:DrawingBoardItemDroppedEvent = new DrawingBoardItemDroppedEvent(DrawingBoardItemDroppedEvent.INDEX_CARD_ADDED, true)      
+				dbidEvent.dropX = 20;
+				dbidEvent.dropY = 20;
+  			dispatcher.dispatchEvent(dbidEvent)	;
 			}
-
 			
 		}
 		

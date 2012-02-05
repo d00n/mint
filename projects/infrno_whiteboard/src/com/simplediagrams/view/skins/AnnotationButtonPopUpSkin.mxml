@@ -58,6 +58,7 @@
 						<components:IconButton id="btnTextArea" icon="@Embed('assets/img/icons/text_cursor.png')" width="30" height="30" toolTip="Text area"/>	
 						<components:IconButton id="btnStickyNote" icon="@Embed('assets/img/icons/sticky_note.png')"  width="30" height="30" toolTip="Sticky note"/>	
 						<components:IconButton id="btnIndexCard" icon="@Embed('assets/img/icons/index_card.png')"  width="30" height="30" toolTip="Index card"/>
+						<!--components:IconButton id="btnIndexCard" icon="{IndexCard}"  width="30" height="30" toolTip="Index card"/-->
 					</s:HGroup>
 				</s:VGroup>	
 			</s:Group>

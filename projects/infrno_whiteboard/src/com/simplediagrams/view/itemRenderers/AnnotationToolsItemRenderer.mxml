@@ -24,7 +24,9 @@
 			protected var stickyNoteIcon:StickyNoteIcon
 			protected var indexCardIcon:IndexCardIcon
 			
-			
+//			[Bindable]
+//			[Embed(source='assets/tool_shapes/default_tools.swf', symbol='IndexCard')]
+//			public var IndexCard:Class			
 			
 			
 			[Mediate(event="AnnotationToolEvent.DEFAULT_PROPERTIES_EDITED")]

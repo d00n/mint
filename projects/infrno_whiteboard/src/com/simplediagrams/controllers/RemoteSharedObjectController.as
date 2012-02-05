@@ -15,7 +15,6 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.model.SettingsModel;
 	import com.simplediagrams.model.UndoRedoManager;
 	import com.simplediagrams.util.Logger;
-	import com.simplediagrams.view.DrawingBoard;
 	import com.simplediagrams.view.SDComponents.SDBase;
 	import com.simplediagrams.view.SDComponents.SDLine;
 	import com.simplediagrams.view.SDComponents.SDTextArea;

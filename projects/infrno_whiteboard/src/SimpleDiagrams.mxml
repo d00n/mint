@@ -57,7 +57,7 @@
 			beanProviders="{[Beans]}">
 			<swiz:config>
 				<swiz:SwizConfig 
-					eventPackages="com.simplediagrams.events"
+					eventPackages="com.simplediagrams.events, flash.events"
 					viewPackages="com.simplediagrams.view"	 />
 			</swiz:config>
 		</swiz:Swiz>

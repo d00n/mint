@@ -182,8 +182,9 @@ package com.simplediagrams.controllers
 			
 		}	
 		
-		[Mediate(event="PasteEvent.PASTE")]
-		public function onPaste(event:PasteEvent):void
+//		[Mediate(event="PasteEvent.PASTE")]
+		[Mediate(event="Event.PASTE")]
+		public function onPaste(event:Event):void
 		{
 		
 			if (textEditorModel.showEditField)

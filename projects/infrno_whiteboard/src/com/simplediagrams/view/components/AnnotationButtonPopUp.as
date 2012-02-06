@@ -220,15 +220,15 @@ package com.simplediagrams.view.components
 			else if (event.target==btnStickyNote)
 			{
 				var dbidEvent:DrawingBoardItemDroppedEvent = new DrawingBoardItemDroppedEvent(DrawingBoardItemDroppedEvent.STICKY_NOTE_ADDED, true)      
-				dbidEvent.dropX = 20;
-				dbidEvent.dropY = 20;
+				dbidEvent.dropX = 40;
+				dbidEvent.dropY = 40;
   			dispatcher.dispatchEvent(dbidEvent)	;
 			}
 			else if (event.target==btnIndexCard)
 			{
-				var dbidEvent:DrawingBoardItemDroppedEvent = new DrawingBoardItemDroppedEvent(DrawingBoardItemDroppedEvent.INDEX_CARD_ADDED, true)      
-				dbidEvent.dropX = 20;
-				dbidEvent.dropY = 20;
+				dbidEvent = new DrawingBoardItemDroppedEvent(DrawingBoardItemDroppedEvent.INDEX_CARD_ADDED, true)      
+				dbidEvent.dropX = 40;
+				dbidEvent.dropY = 40;
   			dispatcher.dispatchEvent(dbidEvent)	;
 			}
 			

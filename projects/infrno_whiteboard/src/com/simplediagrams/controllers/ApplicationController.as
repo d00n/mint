@@ -283,7 +283,7 @@ package com.simplediagrams.controllers
 //			{					
 //				var evt:PluginEvent = new PluginEvent(PluginEvent.COPY_DEFAULT_PLUGINS_TO_USER_DIR, true)
 //				dispatcher.dispatchEvent(evt)							
-				appModel.viewing = ApplicationModel.VIEW_STARTUP					
+//				appModel.viewing = ApplicationModel.VIEW_STARTUP					
 //			}
 //			else
 //			{
@@ -308,6 +308,10 @@ package com.simplediagrams.controllers
 //			{
 //				registrationManager.showTrialVsFreeExplanation = true
 //			}
+					
+        //This is how we'll do an intro dialog					
+//				appModel.viewing = ApplicationModel.VIEW_STARTUP					
+				dispatcher.dispatchEvent( new CreateNewDiagramEvent(CreateNewDiagramEvent.CREATE_NEW_DIAGRAM, true));
 			
 				
 		}

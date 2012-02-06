@@ -389,93 +389,93 @@ package com.simplediagrams.controllers
 		[Mediate(event="RemoteSharedObjectEvent.UPDATE_DEPTHS")]
 		public function dispatchUpdate_ObjectChanged(event:RemoteSharedObjectEvent) : void
 		{
-//			Logger.info("dispatchUpdate_ObjectChanged() event:"+event.type,this);
-//			
-//			for each (var sdObjectModel:SDObjectModel in event.changedSDObjectModelArray)
-//			{			
-//				isCorrupt("dispatchUpdate_ObjectChanged", sdObjectModel);
-//				
-//				var sd_obj:Object = {};
-//				sd_obj.commandName 	= "ObjectChanged";
-//				sd_obj.sdID 				= sdObjectModel.sdID;							
-//				sd_obj.x 						= sdObjectModel.x;
-//				sd_obj.y 						= sdObjectModel.y;		
-//				sd_obj.height 			= sdObjectModel.height;		
-//				sd_obj.width 				= sdObjectModel.width;		
-//				sd_obj.rotation			= sdObjectModel.rotation;		
-//				sd_obj.color 				= sdObjectModel.color;	
-//				sd_obj.depth 				= sdObjectModel.depth;	
-//				
-//				if (sdObjectModel.width < 0) {
-//					Logger.error("dispatchUpdate_ObjectChanged() sdObjectModel.width is negative: " + sdObjectModel.width, this);
-//				}
-//				
-//				if (sdObjectModel.height < 0){
-//					Logger.error("dispatchUpdate_ObjectChanged() sdObjectModel.height is negative: " + sdObjectModel.height, this);
-//				}
-//				
-//				if (sdObjectModel is SDSymbolModel){
-//					var sdSymbolModel:SDSymbolModel = sdObjectModel as SDSymbolModel;
-//					
-//					sd_obj.sdObjectModelType 	= "SDSymbolModel";
-//					sd_obj.libraryName 				= sdSymbolModel.libraryName;				
-//					sd_obj.symbolName 				= sdSymbolModel.symbolName;		
-//					sd_obj.fontSize 					= sdSymbolModel.fontSize;
-//					sd_obj.fontWeight 				= sdSymbolModel.fontWeight;
-//					sd_obj.fontFamily 				= sdSymbolModel.fontFamily;
-//					sd_obj.textAlign 					= sdSymbolModel.textAlign;
-//					sd_obj.textPosition				= sdSymbolModel.textPosition;	
-//					sd_obj.text								= sdSymbolModel.text;	
-//				}
-//				else if (sdObjectModel is SDImageModel){
-//					var sdImageModel:SDImageModel = sdObjectModel as SDImageModel;
-//					
-//					sd_obj.sdObjectModelType 	= "SDImageModel";	
-//					if (sdImageModel.imageURL.length > 0) {
-//						Logger.info("dispatchUpdate_ObjectChanged() sdImageModel.imageURL="+sdImageModel.imageURL,this);
-//						sd_obj.imageURL				= sdImageModel.imageURL;
-//					}
-//					
-//					sd_obj.styleName =  sdImageModel.styleName;
-//				}
-//				else if (sdObjectModel is SDLineModel){
-//					var sdLineModel:SDLineModel = sdObjectModel as SDLineModel;
-//					
-//					sd_obj.sdObjectModelType 	= "SDLineModel";
-//					sd_obj.startX							= sdLineModel.startX;
-//					sd_obj.startY							= sdLineModel.startY;	
-//					sd_obj.endX 							= sdLineModel.endX;
-//					sd_obj.endY 							= sdLineModel.endY;	
-//					sd_obj.bendX 							= sdLineModel.bendX;
-//					sd_obj.bendY 							= sdLineModel.bendY;
-//					sd_obj.startLineStyle 		= sdLineModel.startLineStyle;
-//					sd_obj.endLineStyle 			= sdLineModel.endLineStyle;
-//					sd_obj.lineWeight 				= sdLineModel.lineWeight;
-//				}
-//				else if (sdObjectModel is SDPencilDrawingModel){
-//					var sdPencilDrawingModel:SDPencilDrawingModel = sdObjectModel as SDPencilDrawingModel;
-//					
-//					sd_obj.sdObjectModelType 	= "SDPencilDrawingModel";
-//					sd_obj.linePath 					= sdPencilDrawingModel.linePath;
-//					sd_obj.lineWeight 				= sdPencilDrawingModel.lineWeight;
-//				}
-//				else if (sdObjectModel is SDTextAreaModel){
-//					var sdTextAreaModel:SDTextAreaModel = sdObjectModel as SDTextAreaModel;
-//					
-//					sd_obj.sdObjectModelType 		= "SDTextAreaModel";
-//					sd_obj.styleName 						= sdTextAreaModel.styleName;
-//					sd_obj.maintainProportion 	= sdTextAreaModel.maintainProportion;		
-//					sd_obj.textAlign 						= sdTextAreaModel.textAlign;
-//					sd_obj.fontSize 						= sdTextAreaModel.fontSize;
-//					sd_obj.fontWeight 					= sdTextAreaModel.fontWeight;				
-//					sd_obj.fontFamily 					= sdTextAreaModel.fontFamily;				
-//					sd_obj.text									= sdTextAreaModel.text;	
-//					
-//					Logger.info("dispatchUpdate_ObjectChanged() sdTextAreaModel.text=" + sdTextAreaModel.text + ", depth=" + sdTextAreaModel.depth.toString() + ", depth=" + sdTextAreaModel.depth.toString(), this);
-//				}
-//				
-//				_remoteSharedObject.setProperty(sd_obj.sdID.toString(), sd_obj);
-//			}
+			Logger.info("dispatchUpdate_ObjectChanged() event:"+event.type,this);
+			
+			for each (var sdObjectModel:SDObjectModel in event.changedSDObjectModelArray)
+			{			
+				isCorrupt("dispatchUpdate_ObjectChanged", sdObjectModel);
+				
+				var sd_obj:Object = {};
+				sd_obj.commandName 	= "ObjectChanged";
+				sd_obj.sdID 				= sdObjectModel.sdID;							
+				sd_obj.x 						= sdObjectModel.x;
+				sd_obj.y 						= sdObjectModel.y;		
+				sd_obj.height 			= sdObjectModel.height;		
+				sd_obj.width 				= sdObjectModel.width;		
+				sd_obj.rotation			= sdObjectModel.rotation;		
+				sd_obj.color 				= sdObjectModel.color;	
+				sd_obj.depth 				= sdObjectModel.depth;	
+				
+				if (sdObjectModel.width < 0) {
+					Logger.error("dispatchUpdate_ObjectChanged() sdObjectModel.width is negative: " + sdObjectModel.width, this);
+				}
+				
+				if (sdObjectModel.height < 0){
+					Logger.error("dispatchUpdate_ObjectChanged() sdObjectModel.height is negative: " + sdObjectModel.height, this);
+				}
+				
+				if (sdObjectModel is SDSymbolModel){
+					var sdSymbolModel:SDSymbolModel = sdObjectModel as SDSymbolModel;
+					
+					sd_obj.sdObjectModelType 	= "SDSymbolModel";
+					sd_obj.libraryName 				= sdSymbolModel.libraryName;				
+					sd_obj.symbolName 				= sdSymbolModel.symbolName;		
+					sd_obj.fontSize 					= sdSymbolModel.fontSize;
+					sd_obj.fontWeight 				= sdSymbolModel.fontWeight;
+					sd_obj.fontFamily 				= sdSymbolModel.fontFamily;
+					sd_obj.textAlign 					= sdSymbolModel.textAlign;
+					sd_obj.textPosition				= sdSymbolModel.textPosition;	
+					sd_obj.text								= sdSymbolModel.text;	
+				}
+				else if (sdObjectModel is SDImageModel){
+					var sdImageModel:SDImageModel = sdObjectModel as SDImageModel;
+					
+					sd_obj.sdObjectModelType 	= "SDImageModel";	
+					if (sdImageModel.imageURL.length > 0) {
+						Logger.info("dispatchUpdate_ObjectChanged() sdImageModel.imageURL="+sdImageModel.imageURL,this);
+						sd_obj.imageURL				= sdImageModel.imageURL;
+					}
+					
+					sd_obj.styleName =  sdImageModel.styleName;
+				}
+				else if (sdObjectModel is SDLineModel){
+					var sdLineModel:SDLineModel = sdObjectModel as SDLineModel;
+					
+					sd_obj.sdObjectModelType 	= "SDLineModel";
+					sd_obj.startX							= sdLineModel.startX;
+					sd_obj.startY							= sdLineModel.startY;	
+					sd_obj.endX 							= sdLineModel.endX;
+					sd_obj.endY 							= sdLineModel.endY;	
+					sd_obj.bendX 							= sdLineModel.bendX;
+					sd_obj.bendY 							= sdLineModel.bendY;
+					sd_obj.startLineStyle 		= sdLineModel.startLineStyle;
+					sd_obj.endLineStyle 			= sdLineModel.endLineStyle;
+					sd_obj.lineWeight 				= sdLineModel.lineWeight;
+				}
+				else if (sdObjectModel is SDPencilDrawingModel){
+					var sdPencilDrawingModel:SDPencilDrawingModel = sdObjectModel as SDPencilDrawingModel;
+					
+					sd_obj.sdObjectModelType 	= "SDPencilDrawingModel";
+					sd_obj.linePath 					= sdPencilDrawingModel.linePath;
+					sd_obj.lineWeight 				= sdPencilDrawingModel.lineWeight;
+				}
+				else if (sdObjectModel is SDTextAreaModel){
+					var sdTextAreaModel:SDTextAreaModel = sdObjectModel as SDTextAreaModel;
+					
+					sd_obj.sdObjectModelType 		= "SDTextAreaModel";
+					sd_obj.styleName 						= sdTextAreaModel.styleName;
+					sd_obj.maintainProportion 	= sdTextAreaModel.maintainProportion;		
+					sd_obj.textAlign 						= sdTextAreaModel.textAlign;
+					sd_obj.fontSize 						= sdTextAreaModel.fontSize;
+					sd_obj.fontWeight 					= sdTextAreaModel.fontWeight;				
+					sd_obj.fontFamily 					= sdTextAreaModel.fontFamily;				
+					sd_obj.text									= sdTextAreaModel.text;	
+					
+					Logger.info("dispatchUpdate_ObjectChanged() sdTextAreaModel.text=" + sdTextAreaModel.text + ", depth=" + sdTextAreaModel.depth.toString() + ", depth=" + sdTextAreaModel.depth.toString(), this);
+				}
+				
+				_remoteSharedObject.setProperty(sd_obj.sdID.toString(), sd_obj);
+			}
 		}
 		
 		public function processUpdate_ObjectChanged(changeObject:Object) : void 

@@ -521,7 +521,7 @@ package com.simplediagrams.controllers
 			Logger.info("processLibrary libraries_to_load= " + _libraries_to_load, this);
 			
 			if (_libraries_to_load == 0) {
-				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.RSO_START, true);
+				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.START, true);
 				Logger.info("processLibrary about to dispatch event: " + rsoEvent, this);
 				dispatcher.dispatchEvent(rsoEvent);
 			}

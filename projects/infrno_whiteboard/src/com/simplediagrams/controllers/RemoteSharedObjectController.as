@@ -245,6 +245,38 @@ package com.simplediagrams.controllers
 					
 			}
 		}				
+		[Mediate(event="RemoteSharedObjectEvent.RESET")]
+		public function reset():void
+		{
+			stop();			
+			connect();
+		}
+		
+		[Mediate(event="RemoteSharedObjectEvent.STOP")]
+		public function stop():void
+		{
+			_remoteSharedObject.close();
+			_remoteSharedObject = null;
+			_netConnection.close();
+			_netConnection = null;
+			_netStream.close();
+			_netStream = null;
+		}
+		
+		[Mediate(event="RemoteSharedObjectEvent.LOAD_FLASHVARS")]
+		public function loadFlashvars(event:RemoteSharedObjectEvent):void
+		{
+			Logger.info("loadFlashVars", this);
+			_auth_key 				= event.auth_key;
+			_room_id 				= event.room_id;			
+			_room_name 				= event.room_name;			
+			_user_name 				= event.user_name;
+			_user_id 				= event.user_id;
+			_image_server 			= event.image_server;
+			_wowza_server 			= event.wowza_server;
+			_wowza_whiteboard_app 	= event.wowza_whiteboard_app;
+			_wowza_whiteboard_port 	= event.wowza_whiteboard_port;
+		}		
 		
 		private function routeChange(changeObject:Object) : void 
 		{
@@ -294,40 +326,6 @@ package com.simplediagrams.controllers
 //				rsoEvent.sdImageModel.id.toString(),
 //				_image_server);
 		}		
-
-		[Mediate(event="RemoteSharedObjectEvent.RESET")]
-		public function reset():void
-		{
-			stop();			
-			connect();
-		}
-
-		[Mediate(event="RemoteSharedObjectEvent.STOP")]
-		public function stop():void
-		{
-			_remoteSharedObject.close();
-			_remoteSharedObject = null;
-			_netConnection.close();
-			_netConnection = null;
-			_netStream.close();
-			_netStream = null;
-		}
-		
-		[Mediate(event="RemoteSharedObjectEvent.LOAD_FLASHVARS")]
-		public function loadFlashvars(event:RemoteSharedObjectEvent):void
-		{
-			Logger.info("loadFlashVars", this);
-			_auth_key 				= event.auth_key;
-			_room_id 				= event.room_id;			
-			_room_name 				= event.room_name;			
-			_user_name 				= event.user_name;
-			_user_id 				= event.user_id;
-			_image_server 			= event.image_server;
-			_wowza_server 			= event.wowza_server;
-			_wowza_whiteboard_app 	= event.wowza_whiteboard_app;
-			_wowza_whiteboard_port 	= event.wowza_whiteboard_port;
-		}
-		
 
 		[Mediate(event="RemoteSharedObjectEvent.DELETE_SELECTED_SD_OBJECT_MODEL")]
 		public function dispatchUpdate_DeleteSelectedSDObjectModel(event:RemoteSharedObjectEvent) : void 
@@ -629,39 +627,39 @@ package com.simplediagrams.controllers
 			sdObjectModel.depth 		= changeObject.depth;
 			
 			var placementDetails:String = ">>" + changeObject.sdObjectModelType + stateString(changeObject);
-			
-			var reportPrefix:String = "processUpdate_ObjectChanged"
-			reportPrefix += " :"+ changeObject.commandName;
-			reportPrefix += " :"+ changeObject.sdObjectModelType ;
-			isCorruptObject =  isCorrupt(reportPrefix, changeObject);
-			
-			if (isCorruptObject){
-				if (isNaN(sdObjectModel.x) || isNaN(sdObjectModel.y) || isNaN(sdObjectModel.height) || isNaN(sdObjectModel.width) || isNaN(sdObjectModel.rotation) ) {
-					sdObjectModel.x = 50;
-					sdObjectModel.y = 50;
-					sdObjectModel.height = 50;
-					sdObjectModel.width = 50;
-					sdObjectModel.rotation = 0;
-				}
-				
-				if (sdObjectModel.height <= 0)
-					sdObjectModel.height = 50;
-				if (sdObjectModel.width <= 0)
-					sdObjectModel.width = 50;
-				
-				if (sdObjectModel.x <= 0 && ((sdObjectModel.width + sdObjectModel.x) < 0) )
-					sdObjectModel.x = 200;
-				if (sdObjectModel.y <= 0 && ((sdObjectModel.height + sdObjectModel.y) < 0) )
-					sdObjectModel.y = 50;
-				
-				isCorruptObject = false;
-				placementDetails += ' <--> ' + stateString(sdObjectModel);
-			}
-			
-			var isBlank:Boolean = false;
+//			
+//			var reportPrefix:String = "processUpdate_ObjectChanged"
+//			reportPrefix += " :"+ changeObject.commandName;
+//			reportPrefix += " :"+ changeObject.sdObjectModelType ;
+//			isCorruptObject =  isCorrupt(reportPrefix, changeObject);
+//			
+//			if (isCorruptObject){
+//				if (isNaN(sdObjectModel.x) || isNaN(sdObjectModel.y) || isNaN(sdObjectModel.height) || isNaN(sdObjectModel.width) || isNaN(sdObjectModel.rotation) ) {
+//					sdObjectModel.x = 50;
+//					sdObjectModel.y = 50;
+//					sdObjectModel.height = 50;
+//					sdObjectModel.width = 50;
+//					sdObjectModel.rotation = 0;
+//				}
+//				
+//				if (sdObjectModel.height <= 0)
+//					sdObjectModel.height = 50;
+//				if (sdObjectModel.width <= 0)
+//					sdObjectModel.width = 50;
+//				
+//				if (sdObjectModel.x <= 0 && ((sdObjectModel.width + sdObjectModel.x) < 0) )
+//					sdObjectModel.x = 200;
+//				if (sdObjectModel.y <= 0 && ((sdObjectModel.height + sdObjectModel.y) < 0) )
+//					sdObjectModel.y = 50;
+//				
+//				isCorruptObject = false;
+//				placementDetails += ' <--> ' + stateString(sdObjectModel);
+//			}
+//			
+//			var isBlank:Boolean = false;
 
 			
-			if (!isCorruptObject && diagramManager.diagramModel.sdObjects.contains(sdObjectModel) == false) {
+			if (diagramManager.diagramModel.sdObjects.contains(sdObjectModel) == false) {
 				Logger.info("processUpdate_ObjectChanged() about to add sdObjectModel=" +placementDetails,	this);
 				
 				// TODO Clean this up. The coupling is too tight.
@@ -669,8 +667,6 @@ package com.simplediagrams.controllers
 				// we perform it's responsibilities here:	
 				diagramManager.diagramModel.sdObjects.addItem(sdObjectModel);
 //				diagramManager.diagramModel.addComponentForModel(sdObjectModel, false);
-			} else {
-				Logger.error(placementDetails);
 			}
 		}		
 		

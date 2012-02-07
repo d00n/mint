@@ -252,14 +252,12 @@ package com.simplediagrams.view.SDComponents
 		
 		protected function onTextAreaChange(event:Event):void
 		{
-			// RSO TODO
-//			Logger.info("onTextAreaChange",this);
-//			_model.text = mainTextArea.text;		
-//			
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-//			rsoEvent.changedSDObjectModelArray = new Array;				
-//			rsoEvent.changedSDObjectModelArray.push(_model);
-//			dispatcher.dispatchEvent(rsoEvent);				
+			Logger.info("onTextAreaChange",this);
+			_model.text = mainText.text;		
+			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.sdObjects.addItem(_model);
+			dispatchEvent(rsoEvent);				
 		}
 		
 		public function onMouseDown(event:MouseEvent):void

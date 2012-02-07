@@ -48,8 +48,8 @@ package com.simplediagrams.controllers
 		{
 		}
  		
-  		[Mediate(event="TextPropertyChangeEvent.CHANGE_FONT_SIZE")]
-  		public function onFontSizeChange(event:TextPropertyChangeEvent):void
+  	[Mediate(event="TextPropertyChangeEvent.CHANGE_FONT_SIZE")]
+  	public function onFontSizeChange(event:TextPropertyChangeEvent):void
   		{
 			
 			if (event.fontSize==0)
@@ -85,10 +85,9 @@ package com.simplediagrams.controllers
 			settingsModel.defaultFontSize = event.fontSize
 			
 				
-				// RSO TODO
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-//			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
-//			dispatcher.dispatchEvent(rsoEvent);				
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.sdObjects = diagramManager.diagramModel.selectedObjects;			
+			dispatcher.dispatchEvent(rsoEvent);				
 		}
 		
 		[Mediate(event="TextPropertyChangeEvent.CHANGE_FONT_FAMILY")]
@@ -119,10 +118,9 @@ package com.simplediagrams.controllers
 
 			settingsModel.defaultFontFamily = event.fontFamily
 				
-				// RSO TODO
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-//			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
-//			dispatcher.dispatchEvent(rsoEvent);			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.sdObjects = diagramManager.diagramModel.selectedObjects;			
+			dispatcher.dispatchEvent(rsoEvent);			
 		}
 		
 		[Mediate(event="TextPropertyChangeEvent.CHANGE_FONT_WEIGHT")]
@@ -152,10 +150,10 @@ package com.simplediagrams.controllers
 			execCommands(commands);
 			
 			settingsModel.defaultFontWeight = event.fontWeight
-				// RSO TODO
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-//			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
-//			dispatcher.dispatchEvent(rsoEvent);				
+				
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.sdObjects = diagramManager.diagramModel.selectedObjects;			
+			dispatcher.dispatchEvent(rsoEvent);			
 		}
 		
 		[Mediate(event="TextPropertyChangeEvent.CHANGE_TEXT_ALIGN")]
@@ -185,10 +183,9 @@ package com.simplediagrams.controllers
 			execCommands(commands);		
 			settingsModel.defaultTextAlign=event.textAlign
 				
-				// RSO TODO
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-//			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
-//			dispatcher.dispatchEvent(rsoEvent);				
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.sdObjects = diagramManager.diagramModel.selectedObjects;			
+			dispatcher.dispatchEvent(rsoEvent);		
 		}
 		
 		[Mediate(event="TextPropertyChangeEvent.CHANGE_TEXT_POSITION")]
@@ -211,10 +208,9 @@ package com.simplediagrams.controllers
 			settingsModel.defaultTextPosition=event.textPosition;		
       
 			
-			// RSO TODO
-//      var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-//			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
-//			dispatcher.dispatchEvent(rsoEvent);		
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.sdObjects = diagramManager.diagramModel.selectedObjects;			
+			dispatcher.dispatchEvent(rsoEvent);	
 		}
 		
 		
@@ -297,10 +293,9 @@ package com.simplediagrams.controllers
 			settingsModel.defaultLineStyle = event.lineStyle  
 			
 				
-				// RSO TODO
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-//			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
-//			dispatcher.dispatchEvent(rsoEvent);								
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.sdObjects = diagramManager.diagramModel.selectedObjects;			
+			dispatcher.dispatchEvent(rsoEvent);							
 		}
 		
 		
@@ -324,10 +319,9 @@ package com.simplediagrams.controllers
 		  			
 			settingsModel.defaultStartLineStyle = event.lineStyle  		
 				
-				// RSO TODO
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-//			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
-//			dispatcher.dispatchEvent(rsoEvent);				
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.sdObjects = diagramManager.diagramModel.selectedObjects;			
+			dispatcher.dispatchEvent(rsoEvent);				
 		}
   		
   		[Mediate(event="LineStyleEvent.LINE_END_STYLE_CHANGE")]
@@ -350,10 +344,9 @@ package com.simplediagrams.controllers
   			  			
 			settingsModel.defaultEndLineStyle = event.lineStyle  		
 				
-				// RSO TODO
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-//			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
-//			dispatcher.dispatchEvent(rsoEvent);				
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.sdObjects = diagramManager.diagramModel.selectedObjects;			
+			dispatcher.dispatchEvent(rsoEvent);				
 		}
 		
 		
@@ -394,10 +387,9 @@ package com.simplediagrams.controllers
 			}
 
 			
-			// RSO TODO
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-//			rsoEvent.changedSDObjectModelArray = diagramModel.selectedArray;			
-//			dispatcher.dispatchEvent(rsoEvent);				
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.sdObjects = diagramManager.diagramModel.selectedObjects;			
+			dispatcher.dispatchEvent(rsoEvent);			
 		}
 				[Mediate(event="PencilStyleEvent.PENCIL_LINE_WEIGHT_CHANGE")]
 		public function onPencilLineWeightChange(event:PencilStyleEvent):void

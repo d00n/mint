@@ -44,7 +44,7 @@ package com.simplediagrams.events
 		public var sdImageModel:SDImageModel;
 		public var id:String;
 		public var idAC:ArrayCollection = new ArrayCollection;
-		public var changedSDObjectModelArray:Array;
+		public var sdObjects:ArrayCollection = new ArrayCollection;
 		
 		// Wowza will accept these values for specified hosts.
 		public var auth_key:String = "sample_auth_key";

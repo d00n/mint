@@ -396,7 +396,7 @@ package com.simplediagrams.controllers
 		{
 			Logger.info("dispatchUpdate_ObjectChanged() event:"+event.type,this);
 			
-			for each (var sdObjectModel:SDObjectModel in event.changedSDObjectModelArray)
+			for each (var sdObjectModel:SDObjectModel in event.sdObjects)
 			{			
 //				isCorrupt("dispatchUpdate_ObjectChanged", sdObjectModel);
 				
@@ -431,6 +431,7 @@ package com.simplediagrams.controllers
 					sd_obj.textAlign 					= sdSymbolModel.textAlign;
 					sd_obj.textPosition				= sdSymbolModel.textPosition;	
 					sd_obj.text								= sdSymbolModel.text;	
+					sd_obj.lineWeight 				= sdSymbolModel.lineWeight;
 				}
 //				else if (sdObjectModel is SDImageModel){
 //					var sdImageModel:SDImageModel = sdObjectModel as SDImageModel;
@@ -610,7 +611,7 @@ package com.simplediagrams.controllers
 			}
 			
 			
-			sdObjectModel.id			= changeObject.id;
+			sdObjectModel.id			  = changeObject.id;
 			sdObjectModel.color	 		= changeObject.color;
 			sdObjectModel.x 				= changeObject.x;
 			sdObjectModel.y 				= changeObject.y;

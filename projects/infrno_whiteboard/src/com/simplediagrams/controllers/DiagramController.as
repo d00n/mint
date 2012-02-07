@@ -58,6 +58,7 @@ package com.simplediagrams.controllers
 	import flash.utils.Timer;
 	
 	import mx.charts.AreaChart;
+	import mx.charts.renderers.DiamondItemRenderer;
 	import mx.collections.ArrayCollection;
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
@@ -265,10 +266,9 @@ package com.simplediagrams.controllers
 			undoRedoManager.push(cmd)		
 			diagramManager.diagramModel.select([sdTextAreaModel]);
       
-// RSO TODO
+
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_WIDGET_ADDED);	
-			rsoEvent.changedSDObjectModelArray = new Array;
-			rsoEvent.changedSDObjectModelArray.push(sdTextAreaModel);
+			rsoEvent.sdObjects.addItem(sdTextAreaModel);
 			dispatcher.dispatchEvent(rsoEvent);			      
 		}
 		
@@ -293,11 +293,10 @@ package com.simplediagrams.controllers
 			undoRedoManager.push(cmd);
 			diagramManager.diagramModel.select([textArea]);
 			
-			// RSO TODO
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_WIDGET_CREATED);	
-//			rsoEvent.changedSDObjectModelArray = new Array;
-//			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
-//			dispatcher.dispatchEvent(rsoEvent);				
+
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_WIDGET_CREATED);	
+			rsoEvent.sdObjects.addItem(textArea);
+			dispatcher.dispatchEvent(rsoEvent);				
 		}
 		
 		[Mediate(event='TransformEvent.TRANSFORM')]
@@ -323,11 +322,9 @@ package com.simplediagrams.controllers
 			cmd.execute()		
 			undoRedoManager.push(cmd)	
 			
-				// RSO TODO
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.PENCIL_DRAWING_CREATED);	
-//			rsoEvent.changedSDObjectModelArray = new Array;
-//			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
-//			dispatcher.dispatchEvent(rsoEvent);				
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.PENCIL_DRAWING_CREATED);	
+			rsoEvent.sdObjects.addItem(pencilDrawing);
+			dispatcher.dispatchEvent(rsoEvent);				
 		}
 		
 		
@@ -537,7 +534,6 @@ package com.simplediagrams.controllers
 			if (diagramManager.diagramModel.scaleX > 3) diagramManager.diagramModel.scaleX = 3
 			if (diagramManager.diagramModel.scaleY > 3) diagramManager.diagramModel.scaleY = 3 
 			
-			//			remoteSharedObjectController.dispatchUpdate_RefreshZoom();
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.REFRESH_ZOOM);	
 			dispatcher.dispatchEvent(rsoEvent);
 		}
@@ -551,7 +547,6 @@ package com.simplediagrams.controllers
 			if (diagramManager.diagramModel.scaleX < .1) diagramManager.diagramModel.scaleX = .1
 			if (diagramManager.diagramModel.scaleY < .1) diagramManager.diagramModel.scaleY = .1
 			
-			//			remoteSharedObjectController.dispatchUpdate_RefreshZoom();
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.REFRESH_ZOOM);	
 			dispatcher.dispatchEvent(rsoEvent);
 		}
@@ -572,6 +567,10 @@ package com.simplediagrams.controllers
 				commands.push(cmd);
 			}			
 			execCommands(commands);
+			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.sdObjects = diagramManager.diagramModel.selectedObjects;
+			dispatcher.dispatchEvent(rsoEvent);
 		}
 		
 		private function execCommands(commands:Array):void
@@ -961,10 +960,8 @@ package com.simplediagrams.controllers
 				undoRedoManager.push(transformCommand);
 			}
 			
-			
-			// RSO TODO
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-			rsoEvent.changedSDObjectModelArray = targets;
+			rsoEvent.sdObjects = diagramManager.diagramModel.selectedObjects;
 			dispatcher.dispatchEvent(rsoEvent);
 		}
 		
@@ -987,10 +984,9 @@ package com.simplediagrams.controllers
 			var evt:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.OBJECT_MOVED, true)
       dispatcher.dispatchEvent(evt)
 			
-				// RSO TODO
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
-//			rsoEvent.changedSDObjectModelArray = diagramModel.sdObjectModelsAC.toArray();
-//			dispatcher.dispatchEvent(rsoEvent);
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
+			rsoEvent.sdObjects = diagramManager.diagramModel.sdObjects;
+			dispatcher.dispatchEvent(rsoEvent);
 		}
 		
 		[Mediate(event='ChangeDepthEvent.MOVE_TO_FRONT')]
@@ -1011,10 +1007,9 @@ package com.simplediagrams.controllers
 			var evt:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.OBJECT_MOVED, true)
 			dispatcher.dispatchEvent(evt)
       
-				// RSO TODO
-//      var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
-//			rsoEvent.changedSDObjectModelArray = diagramModel.sdObjectModelsAC.toArray();
-//			dispatcher.dispatchEvent(rsoEvent);			
+      var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
+			rsoEvent.sdObjects = diagramManager.diagramModel.sdObjects;
+			dispatcher.dispatchEvent(rsoEvent);			
 		}
 		
 		
@@ -1035,10 +1030,9 @@ package com.simplediagrams.controllers
 			var evt:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.OBJECT_MOVED, true)
 			dispatcher.dispatchEvent(evt)
       
-				// RSO TODO
-//      var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
-//			rsoEvent.changedSDObjectModelArray = diagramModel.sdObjectModelsAC.toArray();
-//			dispatcher.dispatchEvent(rsoEvent);	
+      var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
+			rsoEvent.sdObjects = diagramManager.diagramModel.sdObjects;
+			dispatcher.dispatchEvent(rsoEvent);	
 		}
 		
 		[Mediate(event='ChangeDepthEvent.MOVE_FORWARD')]
@@ -1058,10 +1052,9 @@ package com.simplediagrams.controllers
 			var evt:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.OBJECT_MOVED, true)
 			dispatcher.dispatchEvent(evt)
       
-				// RSO TODO
-//      var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
-//			rsoEvent.changedSDObjectModelArray = diagramModel.sdObjectModelsAC.toArray();
-//			dispatcher.dispatchEvent(rsoEvent);
+      var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.UPDATE_DEPTHS);
+			rsoEvent.sdObjects = diagramManager.diagramModel.sdObjects;
+			dispatcher.dispatchEvent(rsoEvent);
 		}
 		
 		[Mediate(event="ChangeDepthEvent.OBJECT_MOVED")]

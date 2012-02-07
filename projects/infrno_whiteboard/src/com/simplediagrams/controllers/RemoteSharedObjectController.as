@@ -282,7 +282,7 @@ package com.simplediagrams.controllers
 		{
 			switch (changeObject.commandName) {
 				case "DeleteSelectedSDObjectModel": {
-					processUpdate_DeleteSelectedSDObjectModel(changeObject);
+					processUpdate_DeleteSelectedFromModel(changeObject);
 					break;
 				}
 				case "ObjectChanged": {
@@ -327,43 +327,32 @@ package com.simplediagrams.controllers
 //				_image_server);
 		}		
 
-		[Mediate(event="RemoteSharedObjectEvent.DELETE_SELECTED_SD_OBJECT_MODEL")]
-		public function dispatchUpdate_DeleteSelectedSDObjectModel(event:RemoteSharedObjectEvent) : void 
+		[Mediate(event="RemoteSharedObjectEvent.DISPATCH_DELETE_SELECTED_FROM_MODEL")]
+		public function dispatchUpdate_DeleteSelectedFromModel(event:RemoteSharedObjectEvent) : void 
 		{			
-			Logger.info("dispatchUpdate_DeleteSelectedSDObjectModel()",this);
+			Logger.info("dispatchUpdate_DeleteSelectedFromModel()",this);
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.PROCESS_DELETE_SELECTED_FROM_MODEL);	
 			
-			for(var i:int=0; i< event.idArray.length; i++) 
+			for(var i:int=0; i< event.idAC.length; i++) 
 			{
-				var id:int = event.idArray[i];
+				var id:int = event.idAC[i];
 				var sd_obj:Object = {};
 				sd_obj.commandName = "DeleteSelectedSDObjectModel";
 				sd_obj.id = id;						
 				_remoteSharedObject.setProperty(sd_obj.id.toString(), sd_obj);
+				
+  			rsoEvent.idAC.addItem(id);
 			}			
+			
+			dispatcher.dispatchEvent(rsoEvent);   
 		}	
 		
-		public function processUpdate_DeleteSelectedSDObjectModel(changeObject:Object):void
+		public function processUpdate_DeleteSelectedFromModel(changeObject:Object):void
 		{
-//			Logger.info("processUpdate_DeleteSelectedSDObjectModel()",this);
-//			var id:int = changeObject.id;
-//			var sdObjectModel:SDObjectModel = diagramManager.diagramModel.getModelByID(id);
-//			
-//			var len:uint = diagramManager.diagramModel.sdObjectModelsAC.length;
-//			for (var i:uint=0;i<len;i++)			 
-//			{
-//				if (diagramManager.diagramModel.sdObjectModelsAC.getItemAt(i) as SDObjectModel == sdObjectModel)
-//				{
-//					diagramManager.diagramModel.sdObjectHandles.unregisterComponent(sdObjectModel.sdComponent as EventDispatcher);
-//					diagramManager.diagramModel.sdObjectModelsAC.removeItemAt(i);
-//					break;
-//				}
-//			}	
-//			
-//			if (sdObjectModel) {
-//				var evt:DeleteSDComponentEvent = new DeleteSDComponentEvent(DeleteSDComponentEvent.DELETE_FROM_DIAGRAM, true)
-//				evt.sdComponent = sdObjectModel.sdComponent
-//				dispatcher.dispatchEvent(evt)
-//			}
+			Logger.info("processUpdate_DeleteSelectedFromModel()",this);
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.PROCESS_DELETE_SELECTED_FROM_MODEL);	
+			rsoEvent.idAC.addItem(changeObject.id);
+			dispatcher.dispatchEvent(rsoEvent);   
 		}
 		
 //		[Mediate(event="GridEvent.SHOW_GRID")]    
@@ -401,7 +390,7 @@ package com.simplediagrams.controllers
 		[Mediate(event="RemoteSharedObjectEvent.TEXT_WIDGET_ADDED")]
 		[Mediate(event="RemoteSharedObjectEvent.TEXT_WIDGET_CREATED")]
 		[Mediate(event="RemoteSharedObjectEvent.PENCIL_DRAWING_CREATED")]
-		[Mediate(event="RemoteSharedObjectEvent.ADD_SD_OBJECT_MODEL")]
+//		[Mediate(event="RemoteSharedObjectEvent.ADD_SD_OBJECT_MODEL")]
 		[Mediate(event="RemoteSharedObjectEvent.UPDATE_DEPTHS")]
 		public function dispatchUpdate_ObjectChanged(event:RemoteSharedObjectEvent) : void
 		{
@@ -409,7 +398,7 @@ package com.simplediagrams.controllers
 			
 			for each (var sdObjectModel:SDObjectModel in event.changedSDObjectModelArray)
 			{			
-				isCorrupt("dispatchUpdate_ObjectChanged", sdObjectModel);
+//				isCorrupt("dispatchUpdate_ObjectChanged", sdObjectModel);
 				
 				var sd_obj:Object = {};
 				sd_obj.commandName 	= "ObjectChanged";
@@ -486,6 +475,8 @@ package com.simplediagrams.controllers
 					sd_obj.fontWeight 					= sdTextAreaModel.fontWeight;				
 					sd_obj.fontFamily 					= sdTextAreaModel.fontFamily;				
 					sd_obj.text									= sdTextAreaModel.text;	
+					sd_obj.backgroundColor			= sdTextAreaModel.backgroundColor;	
+					sd_obj.showTape       			= sdTextAreaModel.showTape;	
 					
 					Logger.info("dispatchUpdate_ObjectChanged() sdTextAreaModel.text=" + sdTextAreaModel.text + ", depth=" + sdTextAreaModel.depth.toString() + ", depth=" + sdTextAreaModel.depth.toString(), this);
 				}
@@ -608,6 +599,8 @@ package com.simplediagrams.controllers
 					sdTextAreaModel.fontFamily					= changeObject.fontFamily;
 					sdTextAreaModel.textAlign 					= changeObject.textAlign;
 					sdTextAreaModel.text			 					= changeObject.text;
+					sdTextAreaModel.backgroundColor			= changeObject.backgroundColor;
+					sdTextAreaModel.showTape			 			= changeObject.showTape;
 					
 					sdObjectModel = sdTextAreaModel;
 					

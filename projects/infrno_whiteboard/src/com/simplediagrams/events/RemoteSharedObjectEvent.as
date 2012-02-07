@@ -5,6 +5,8 @@ package com.simplediagrams.events
 	
 	import flash.events.Event;
 	import flash.utils.ByteArray;
+	
+	import mx.collections.ArrayCollection;
 
 	
 	public class RemoteSharedObjectEvent extends Event
@@ -17,7 +19,8 @@ package com.simplediagrams.events
 		public static const START:String = "rso_start";
 		public static const LOAD_IMAGE:String = "rso_loadImage";
 		public static const ADD_SD_OBJECT_MODEL:String = "rso_addSDObjectModel";
-		public static const DELETE_SELECTED_SD_OBJECT_MODEL:String = "rso_DeleteSelectedSDObjectModel";
+		public static const DISPATCH_DELETE_SELECTED_FROM_MODEL:String = "rso_DispatchDeleteSelectedFromModel";
+		public static const PROCESS_DELETE_SELECTED_FROM_MODEL:String = "rso_ProcessDeleteSelectedFromModel";
 		public static const OBJECT_CHANGED:String = "rso_ObjectChanged";	
 		public static const UPDATE_DEPTHS:String = "rso_ObjectUpdateDepths";
 		
@@ -40,7 +43,7 @@ package com.simplediagrams.events
 		public static const STYLE_PHOTO:String = "photoStyle";
 		public var sdImageModel:SDImageModel;
 		public var id:String;
-		public var idArray:Array;
+		public var idAC:ArrayCollection = new ArrayCollection;
 		public var changedSDObjectModelArray:Array;
 		
 		// Wowza will accept these values for specified hosts.

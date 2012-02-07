@@ -266,10 +266,10 @@ package com.simplediagrams.controllers
 			diagramManager.diagramModel.select([sdTextAreaModel]);
       
 // RSO TODO
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_WIDGET_ADDED);	
-//			rsoEvent.changedSDObjectModelArray = new Array;
-//			rsoEvent.changedSDObjectModelArray.push(diagramModel.getModelByID(cmd.sdID));
-//			dispatcher.dispatchEvent(rsoEvent);			      
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_WIDGET_ADDED);	
+			rsoEvent.changedSDObjectModelArray = new Array;
+			rsoEvent.changedSDObjectModelArray.push(sdTextAreaModel);
+			dispatcher.dispatchEvent(rsoEvent);			      
 		}
 		
 		
@@ -382,52 +382,51 @@ package com.simplediagrams.controllers
 		[Mediate(event='DeleteSDObjectModelEvent.DELETE_SELECTED_FROM_MODEL')]
 		public function onDeleteSelectedSDObjectModel(event:DeleteSDObjectModelEvent):void
 		{
-			var selectedItems:IList = diagramManager.diagramModel.selectedObjects;
-			var commands:Array = [];
-			for each(var item:SDObjectModel in selectedItems)
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.DISPATCH_DELETE_SELECTED_FROM_MODEL);	
+			
+			for each(var item:SDObjectModel in diagramManager.diagramModel.selectedObjects)
+  			rsoEvent.idAC.addItem(item.id);
+      
+			dispatcher.dispatchEvent(rsoEvent);      
+		}
+		
+		[Mediate(event='RemoteSharedObjectEvent.PROCESS_DELETE_SELECTED_FROM_MODEL')]
+		public function onDeleteSDObjectModel(event:RemoteSharedObjectEvent):void
+		{
+			var dependencyItem:SDObjectModel;
+			var item:SDObjectModel;
+			var id:int;
+			var index:int;
+	  	var lineModel:SDLineModel;
+			
+			for each(id in event.idAC)
 			{
-				for each(var dependencyItem:SDObjectModel in diagramManager.diagramModel.sdObjects)
-				{
+				item = diagramManager.diagramModel.getModelByID(id);
+				
+				for each(dependencyItem in diagramManager.diagramModel.sdObjects)
+				{				
 					if(dependencyItem is SDLineModel)
 					{
-						var lineModel:SDLineModel = dependencyItem as SDLineModel;
+						lineModel= dependencyItem as SDLineModel;
 						if(lineModel.fromObject == item || lineModel.toObject == item)
 						{
-							var newState:SDLineModel = ObjectUtil.clone(lineModel) as SDLineModel;
 							if(lineModel.fromObject == item )
 							{
-								newState.fromObject = null;
-								newState.fromPoint = null;
+								lineModel.fromObject = null;
+								lineModel.fromPoint = null;
 							}
 							if(lineModel.toObject == item )
 							{
-								newState.toObject = null;
-								newState.toPoint = null;
+								lineModel.toObject = null;
+								lineModel.toPoint = null;
 							}
-							var changeCommand:ChangeCommand = new ChangeCommand(lineModel, newState);
-							commands.push(changeCommand);
 						}
 					}
 				}
-				var removeCommand:RemoveCommand = new RemoveCommand(diagramManager.diagramModel, item);
-				commands.push(removeCommand);
+				index = diagramManager.diagramModel.sdObjects.getItemIndex(item);
+				if (index > -1)
+				  diagramManager.diagramModel.sdObjects.removeItemAt(index);
 			}
-			execCommands(commands);
-      
-			// RSO TODO
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.DELETE_SELECTED_SD_OBJECT_MODEL);	
-//			rsoEvent.sdIDArray = sdIDArray;
-//			dispatcher.dispatchEvent(rsoEvent);      
-		}
-		
-	// Deletes get handled by processing the RSO event for broadcasting it	
-//		[Mediate(event='DeleteSDObjectModelEvent.DELETE_FROM_MODEL')]
-		public function onDeleteSDObjectModel(event:DeleteSDObjectModelEvent):void
-		{
-			var sdObjectModel:SDObjectModel = event.sdObjectModel
-			var cmd:RemoveCommand = new RemoveCommand(diagramManager.diagramModel, sdObjectModel)
-			cmd.execute()
-			undoRedoManager.push(cmd)		
 		}
 				
 		

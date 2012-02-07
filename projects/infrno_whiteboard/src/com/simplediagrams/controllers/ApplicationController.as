@@ -17,6 +17,7 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.events.OpenDiagramEvent;
 	import com.simplediagrams.events.PluginEvent;
 	import com.simplediagrams.events.RemoteLibraryEvent;
+	import com.simplediagrams.events.RemoteSharedObjectEvent;
 	import com.simplediagrams.events.SaveDiagramEvent;
 	import com.simplediagrams.events.SelectionEvent;
 	import com.simplediagrams.events.SettingsEvent;
@@ -95,6 +96,8 @@ package com.simplediagrams.controllers
 		
 		protected var _verifyQuitDialog:VerifyQuitDialog
 		protected var _aboutWindow:AboutWindow
+		
+		private var _libraries_to_load:int = 0;
 		
 				   
 		public function ApplicationController() 
@@ -495,6 +498,10 @@ package com.simplediagrams.controllers
 			var registry:LibrariesRegistry = remoteLibraryEvent.librariesRegistry;
 			
 			var len:uint = registry.libraries.length;
+			
+			_libraries_to_load = len;
+			Logger.info("processLibraryRegistry libraries_to_load= " + _libraries_to_load, this);
+			
 			for (var index:int=0;index < len;index++)
 			{
 				var libInfo:LibraryInfo = registry.libraries.getItemAt(index) as LibraryInfo			
@@ -509,6 +516,15 @@ package com.simplediagrams.controllers
 			var libInfo:LibraryInfo = remoteLibraryEvent.libInfo;
 			
 			libraryManager.loadLibrary(libInfo, library);
+			
+			_libraries_to_load -= 1;
+			Logger.info("processLibrary libraries_to_load= " + _libraries_to_load, this);
+			
+			if (_libraries_to_load == 0) {
+				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.RSO_START, true);
+				Logger.info("processLibrary about to dispatch event: " + rsoEvent, this);
+				dispatcher.dispatchEvent(rsoEvent);
+			}
 		}
 		
 		[Mediate(event="ApplicationEvent.SHOW_MANAGE_LIBRARIES")]

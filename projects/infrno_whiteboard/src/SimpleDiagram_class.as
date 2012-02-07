@@ -126,16 +126,17 @@ protected function onApplicationComplete():void
 //	Security.loadPolicyFile("http://admin.infrno.net/crossdomain.xml");
 //	dispatcher.dispatchEvent(new ApplicationEvent(ApplicationEvent.INIT_APP, true));
 		
+	Logger.debug("onApplicationComplete()", this);
+		
 	var loader_info:LoaderInfo = this.loaderInfo;
 	var flash_vars:Object = loader_info.parameters;
 
 	var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LOAD_FLASHVARS);
 
 	try{
-		Logger.debug("SimpleDiagrams.as onAppComplete() parent load parameters");
 		flash_vars = loader_info.loader.loaderInfo.parameters;
 	}catch(e:Object){
-		Logger.debug("SimpleDiagrams.as onAppComplete() not loaded by another movie");
+		Logger.debug("onApplicationComplete() not loaded by another movie", this);
 
 		// To facilitate dev work, rsoEvent has default values set for auth_key and room_id. 
 		// Wowza will accept these values for specified hosts.

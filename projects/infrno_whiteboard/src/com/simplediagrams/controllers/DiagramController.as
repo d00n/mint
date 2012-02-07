@@ -81,8 +81,8 @@ package com.simplediagrams.controllers
 			
 		}
 
-		[Autowire(bean="remoteSharedObjectController")]
-		public var remoteSharedObjectController:RemoteSharedObjectController    
+//		[Inject]
+//		public var remoteSharedObjectController:RemoteSharedObjectController    
 		
 		[Inject]
 		public var appModel:ApplicationModel
@@ -964,9 +964,9 @@ package com.simplediagrams.controllers
 			
 			
 			// RSO TODO
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-//			rsoEvent.changedSDObjectModelArray = sdObjectsArr;
-//			dispatcher.dispatchEvent(rsoEvent);
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.changedSDObjectModelArray = targets;
+			dispatcher.dispatchEvent(rsoEvent);
 		}
 		
 		

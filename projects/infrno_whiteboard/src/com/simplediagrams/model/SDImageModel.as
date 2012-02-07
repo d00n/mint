@@ -12,13 +12,13 @@ package com.simplediagrams.model
 
 		public var libraryName:String;
 		public var symbolName:String;
-		public var styleName:String = STYLE_BORDER_AND_TAPE;
+		public var styleName:String = STYLE_NONE;
 		
 		public function SDImageModel()
 		{
 			super();
-			this.width = 350
-			this.height = 250
+//			this.width = 350
+//			this.height = 250
 		}
 	}
 }

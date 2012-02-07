@@ -39,8 +39,8 @@ package com.simplediagrams.events
 		public var imageName:String;
 		public static const STYLE_PHOTO:String = "photoStyle";
 		public var sdImageModel:SDImageModel;
-		public var sdID:String;
-		public var sdIDArray:Array;
+		public var id:String;
+		public var idArray:Array;
 		public var changedSDObjectModelArray:Array;
 		
 		// Wowza will accept these values for specified hosts.

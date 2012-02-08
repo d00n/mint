@@ -27,6 +27,7 @@ package com.simplediagrams.model
 			dictionaryTools[Tools.LINE_TOOL] =  new LineTool;
 			dictionaryTools[Tools.ZOOM_TOOL] =  new ZoomTool;
 			selectedTool = Tools.POINTER_TOOL;
+			
 		}
 		
 		private var _dispatcher:IEventDispatcher;
@@ -82,6 +83,7 @@ package com.simplediagrams.model
 			for each(var toolBase:ToolBase in dictionaryTools)
 			{
 				toolBase.dispatcher = _dispatcher;
+//				dispatcher.dispatchEvent( new BeanEvent( BeanEvent.ADD_BEAN, toolBase ) );
 			}
 		}
 		

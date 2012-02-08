@@ -386,12 +386,13 @@ package com.simplediagrams.controllers
 		
 
 		
-		[Mediate(event="RemoteSharedObjectEvent.OBJECT_CHANGED")]
+//		[Mediate(event="RemoteSharedObjectEvent.ADD_SD_OBJECT_MODEL")]
+		[Mediate(event="RemoteSharedObjectEvent.TEXT_CHANGED")]
 		[Mediate(event="RemoteSharedObjectEvent.TEXT_WIDGET_ADDED")]
 		[Mediate(event="RemoteSharedObjectEvent.TEXT_WIDGET_CREATED")]
 		[Mediate(event="RemoteSharedObjectEvent.PENCIL_DRAWING_CREATED")]
-//		[Mediate(event="RemoteSharedObjectEvent.ADD_SD_OBJECT_MODEL")]
 		[Mediate(event="RemoteSharedObjectEvent.UPDATE_DEPTHS")]
+		[Mediate(event="RemoteSharedObjectEvent.OBJECT_CHANGED")]
 		public function dispatchUpdate_ObjectChanged(event:RemoteSharedObjectEvent) : void
 		{
 			Logger.info("dispatchUpdate_ObjectChanged() event:"+event.type,this);
@@ -457,6 +458,7 @@ package com.simplediagrams.controllers
 					sd_obj.startLineStyle 		= sdLineModel.startLineStyle;
 					sd_obj.endLineStyle 			= sdLineModel.endLineStyle;
 					sd_obj.lineWeight 				= sdLineModel.lineWeight;
+					sd_obj.lineStyle  				= sdLineModel.lineStyle;
 				}
 				else if (sdObjectModel is SDPencilDrawingModel){
 					var sdPencilDrawingModel:SDPencilDrawingModel = sdObjectModel as SDPencilDrawingModel;
@@ -529,6 +531,7 @@ package com.simplediagrams.controllers
 					sdSymbolModel.textAlign 		= changeObject.textAlign;
 					sdSymbolModel.textPosition 	= changeObject.textPosition;
 					sdSymbolModel.text		 			= changeObject.text;
+					sdSymbolModel.lineWeight		= changeObject.lineWeight;
 					
 					
 					sdObjectModel = sdSymbolModel;
@@ -569,6 +572,7 @@ package com.simplediagrams.controllers
 					sdLineModel.startLineStyle 	= changeObject.startLineStyle;
 					sdLineModel.endLineStyle 		= changeObject.endLineStyle;
 					sdLineModel.lineWeight 			= changeObject.lineWeight;
+					sdLineModel.lineStyle 			= changeObject.lineStyle;
 
 					sdObjectModel = sdLineModel;
 					break;

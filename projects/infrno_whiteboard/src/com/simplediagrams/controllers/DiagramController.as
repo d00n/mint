@@ -341,6 +341,10 @@ package com.simplediagrams.controllers
 			cmd.execute()	
 			undoRedoManager.push(cmd)
 			diagramManager.diagramModel.select([line]);
+			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.CREATE_LINE_COMPONENT);	
+			rsoEvent.sdObjects.addItem(line);
+			dispatcher.dispatchEvent(rsoEvent);				
 		}
 		
 		
@@ -568,9 +572,11 @@ package com.simplediagrams.controllers
 			}			
 			execCommands(commands);
 			
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-			rsoEvent.sdObjects = diagramManager.diagramModel.selectedObjects;
-			dispatcher.dispatchEvent(rsoEvent);
+			
+			// XXX disabled while testing event dispatch from SDObjectModel
+//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+//			rsoEvent.sdObjects = diagramManager.diagramModel.selectedObjects;
+//			dispatcher.dispatchEvent(rsoEvent);
 		}
 		
 		private function execCommands(commands:Array):void

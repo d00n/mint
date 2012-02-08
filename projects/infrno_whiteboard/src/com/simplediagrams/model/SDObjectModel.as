@@ -1,5 +1,9 @@
 package com.simplediagrams.model
 {
+	import com.simplediagrams.events.RemoteSharedObjectEvent;
+	import com.simplediagrams.util.Logger;
+	
+	import flash.events.IEventDispatcher;
 	import flash.geom.Point;
 	
 	import mx.events.PropertyChangeEvent;
@@ -37,6 +41,11 @@ package com.simplediagrams.model
 			var e:PropertyChangeEvent = PropertyChangeEvent.createUpdateEvent(this, "color", _color, value)
 			_color = value
 			dispatchEvent(e)
+			
+			// XXX dispatchEvent exists, but doesn't appear to be doing anything
+//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED, true);
+//			rsoEvent.sdObjects.addItem(this);
+//			dispatchEvent(rsoEvent);	
 		}
 		
 		public function get color():uint
@@ -57,7 +66,13 @@ package com.simplediagrams.model
 			y = data.y;
 			width = data.width;
 			height = data.height;
-			rotation = data.rotation;
+			rotation = data.rotation;	
+			
+			// XXX dispatchEvent exists, but doesn't appear to be doing anything
+//			Logger.info("XXX applyTransform", this);
+//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED, true);
+//			rsoEvent.sdObjects.addItem(this);
+//			dispatchEvent(rsoEvent);	
 		}
 	}
 }

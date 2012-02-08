@@ -255,7 +255,7 @@ package com.simplediagrams.view.SDComponents
 			Logger.info("onTextAreaChange",this);
 			_model.text = mainText.text;		
 			
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_CHANGED);	
 			rsoEvent.sdObjects.addItem(_model);
 			dispatchEvent(rsoEvent);				
 		}

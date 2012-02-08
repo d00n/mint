@@ -24,6 +24,7 @@ package com.simplediagrams.events
 		public static const OBJECT_CHANGED:String = "rso_ObjectChanged";	
 		public static const UPDATE_DEPTHS:String = "rso_ObjectUpdateDepths";
 		
+		public static const TEXT_CHANGED:String = "rso_TextChanged";
 		public static const TEXT_WIDGET_ADDED:String = "rso_TextWidgetAdded";
 		public static const TEXT_WIDGET_CREATED:String = "rso_TextWidgetCreated";
 		public static const PENCIL_DRAWING_CREATED:String = "rso_PencilDrawingCreated";
@@ -42,7 +43,7 @@ package com.simplediagrams.events
 		public var imageName:String;
 		public static const STYLE_PHOTO:String = "photoStyle";
 		public var sdImageModel:SDImageModel;
-		public var id:String;
+		public var id:int;
 		public var idAC:ArrayCollection = new ArrayCollection;
 		public var sdObjects:ArrayCollection = new ArrayCollection;
 		

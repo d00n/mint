@@ -1,14 +1,17 @@
 package com.simplediagrams.model.tools
 {
+	import com.simplediagrams.events.RemoteSharedObjectEvent;
 	import com.simplediagrams.events.TransformEvent;
 	import com.simplediagrams.model.CopyUtil;
 	import com.simplediagrams.model.DiagramModel;
 	import com.simplediagrams.model.SDObjectModel;
 	import com.simplediagrams.model.SelectionModel;
 	import com.simplediagrams.model.TransformData;
+	import com.simplediagrams.util.Logger;
 	import com.simplediagrams.view.startup.RecentDiagramsItemRenderer;
 	
 	import flash.events.Event;
+//	import flash.events.IEventDispatcher;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -21,6 +24,9 @@ package com.simplediagrams.model.tools
 
 	public class TransformTool extends ToolBase
 	{
+//		[Inject]
+//		public var myDispatcher:IEventDispatcher;
+		
 		public function TransformTool()
 		{
 			super();
@@ -378,7 +384,7 @@ package com.simplediagrams.model.tools
 			}
 		}
 		
-		protected function applyTranslation( translation:TransformData) : void
+		public function applyTranslation( translation:TransformData) : void
 		{
 			if(maintainAspectRatio)
 				applyConstraint(originalTransform, translation, currentDragRole);
@@ -395,6 +401,14 @@ package com.simplediagrams.model.tools
 					i++;
 				}
 			}
+			
+			
+			Logger.info("XXX applyTranslation", this);
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED, true);
+			for each ( var subObject:SDObjectModel in selectedObjects )
+			  rsoEvent.sdObjects.addItem(subObject);
+			dispatcher.dispatchEvent(rsoEvent);	
+			
 		}
 		
 		private var selectionMatrix:Matrix = new Matrix();

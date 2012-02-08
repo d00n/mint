@@ -2,6 +2,7 @@ package com.simplediagrams.view.SDComponents
 {
 	import com.simplediagrams.events.ChangeDepthEvent;
 	import com.simplediagrams.events.ConnectionEvent;
+	import com.simplediagrams.events.RemoteSharedObjectEvent;
 	import com.simplediagrams.model.SDObjectModel;
 	import com.simplediagrams.util.Logger;
 	
@@ -17,6 +18,7 @@ package com.simplediagrams.view.SDComponents
 	import mx.controls.Alert;
 	import mx.core.UIComponent;
 	import mx.events.DragEvent;
+	import mx.events.MoveEvent;
 	import mx.events.PropertyChangeEvent;
 	import mx.managers.DragManager;
 	import mx.managers.IFocusManagerComponent;
@@ -74,7 +76,7 @@ package com.simplediagrams.view.SDComponents
 			cm.customItems = [moveToBackCMI, moveBackwardCMI, moveForwardCMI, moveToFrontCMI]
 		
 			this.contextMenu = cm
-			
+				
 		}
 		
 		public function get sdID():String
@@ -169,7 +171,7 @@ package com.simplediagrams.view.SDComponents
                 default: return;
             }
             positionDragCircle()
-            
+
 		}
 		
 		public function get objectModel():SDObjectModel

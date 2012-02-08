@@ -232,7 +232,10 @@ package com.simplediagrams.controllers
 				}
 			}
 			execCommands(commands);			
-		}
+			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.sdObjects = diagramManager.diagramModel.selectedObjects;			
+			dispatcher.dispatchEvent(rsoEvent);			}
 		
 		
 		
@@ -251,9 +254,9 @@ package com.simplediagrams.controllers
 			}	
 		}
   		
-  		[Mediate(event="ImageStyleEvent.IMAGE_STYLE_CHANGE")]
-  		public function onImageStyleChange(event:ImageStyleEvent):void
-  		{  			
+ 		[Mediate(event="ImageStyleEvent.IMAGE_STYLE_CHANGE")]
+ 		public function onImageStyleChange(event:ImageStyleEvent):void
+ 		{  			
 			Logger.debug("onImageStyleChange() setting imageStyle to: " + event.imageStyle,this);
 			var selectedArr:IList = diagramManager.diagramModel.selectedObjects;	
 			var commands:Array = [];
@@ -270,7 +273,11 @@ package com.simplediagrams.controllers
 			}
 			execCommands(commands);
 			settingsModel.defaultImageStyle = event.imageStyle; 		
-  		}
+				
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.sdObjects = diagramManager.diagramModel.selectedObjects;			
+			dispatcher.dispatchEvent(rsoEvent);							
+		}
 		
 		
 		[Mediate(event="LineStyleEvent.LINE_STYLE_CHANGE")]
@@ -352,8 +359,8 @@ package com.simplediagrams.controllers
 		
 		[Mediate(event="LineStyleEvent.LINE_WEIGHT_CHANGE")]
 		[Mediate(event="LineStyleEvent.SYMBOL_LINE_WEIGHT_CHANGE")]
-  		public function onLineWeightChange(event:LineStyleEvent):void
-  		{
+  	public function onLineWeightChange(event:LineStyleEvent):void
+  	{
 			var selectedArr:IList = diagramManager.diagramModel.selectedObjects;	
 			var commands:Array = [];
 			for each (var obj:Object in selectedArr)
@@ -391,7 +398,8 @@ package com.simplediagrams.controllers
 			rsoEvent.sdObjects = diagramManager.diagramModel.selectedObjects;			
 			dispatcher.dispatchEvent(rsoEvent);			
 		}
-				[Mediate(event="PencilStyleEvent.PENCIL_LINE_WEIGHT_CHANGE")]
+		
+		[Mediate(event="PencilStyleEvent.PENCIL_LINE_WEIGHT_CHANGE")]
 		public function onPencilLineWeightChange(event:PencilStyleEvent):void
 		{
 			var selectedArr:IList = diagramManager.diagramModel.selectedObjects;	
@@ -410,7 +418,9 @@ package com.simplediagrams.controllers
 			execCommands(commands);				
 			settingsModel.defaultPencilLineWeight = event.lineWeight			
 			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.sdObjects = diagramManager.diagramModel.selectedObjects;			
+			dispatcher.dispatchEvent(rsoEvent);			
 		}
-		
 	}
 }

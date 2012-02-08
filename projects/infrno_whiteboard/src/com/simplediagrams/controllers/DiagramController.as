@@ -1148,8 +1148,12 @@ package com.simplediagrams.controllers
 			var transformCommand:TransformCommand = new TransformCommand(targets, newTransforms, oldTransforms, backups);
 			transformCommand.execute();
 			undoRedoManager.push(transformCommand);
+			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED, true);
+			for each ( var so:SDObjectModel in targets )
+			rsoEvent.sdObjects.addItem(so);
+			dispatcher.dispatchEvent(rsoEvent);			
 		}
-		
 		
 	}
 }

@@ -13,6 +13,7 @@ package com.simplediagrams.controllers
 	import flash.desktop.Clipboard;
 	import flash.desktop.ClipboardTransferMode;
 	import flash.events.Event;
+	import flash.events.IEventDispatcher;
 	
 	import mx.collections.ArrayCollection;
 	import mx.core.FlexGlobals;
@@ -37,7 +38,6 @@ package com.simplediagrams.controllers
 		
 		[Inject]
 		public var textEditorModel:TextEditorModel;
-				
 		
 		private var _copyArr:Array = []
 		
@@ -230,6 +230,12 @@ package com.simplediagrams.controllers
 				Logger.warn("the pasted clones array was empty!", this)
 			}
 			diagramManager.diagramModel.select(clonesArr);
+			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LIBRARY_ITEM_ADDED);	
+			for each (sdObjectModel in clonesArr)
+    		rsoEvent.sdObjects.addItem(sdObjectModel);
+			dispatcher.dispatchEvent(rsoEvent);			
+
 		}		
 	
 				

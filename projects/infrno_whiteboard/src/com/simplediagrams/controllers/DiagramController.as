@@ -578,9 +578,9 @@ package com.simplediagrams.controllers
 			
 			
 			// XXX disabled while testing event dispatch from SDObjectModel
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-//			rsoEvent.sdObjects = diagramManager.diagramModel.selectedObjects;
-//			dispatcher.dispatchEvent(rsoEvent);
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+			rsoEvent.sdObjects = diagramManager.diagramModel.selectedObjects;
+			dispatcher.dispatchEvent(rsoEvent);
 		}
 		
 		private function execCommands(commands:Array):void
@@ -757,6 +757,10 @@ package com.simplediagrams.controllers
 			var changeCommand:ChangeCommand = new ChangeCommand(event.newState, CopyUtil.clone(event.newState) );
 			changeCommand.oldState = event.oldState;
 			undoRedoManager.push(changeCommand);
+			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED, true);	
+			rsoEvent.sdObjects.addItem(event.newState);
+			dispatcher.dispatchEvent(rsoEvent);	
 		}
 		
 		public function alignLeft(targets:Array,oldTransforms:Array, newTransforms:Array, backups:Array):void

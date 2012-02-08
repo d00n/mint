@@ -1,8 +1,12 @@
 package com.simplediagrams.model
 {
+	import com.simplediagrams.events.RemoteSharedObjectEvent;
+	
+	import flash.events.IEventDispatcher;
+
 	[Bindable]
 	[RemoteClass]
-	public class SDTextAreaModel extends SDObjectModel
+	public class SDTextAreaModel extends SDObjectModel implements IEventDispatcher
 	{
 		public static var NO_BACKGROUND:String = "noBackground"
 		public static var STICKY_NOTE:String = "stickyNote"
@@ -10,7 +14,7 @@ package com.simplediagrams.model
 		public static var INDEX_CARD:String = "indexCard"
 		
 		public var styleName:String = SDTextAreaModel.NO_BACKGROUND
-		public var text:String = ""
+		private var _text:String = ""
 		public var fontSize:Number = 12
 		public var fontWeight:String = "normal";
 		public var textAlign:String = "left";
@@ -24,6 +28,16 @@ package com.simplediagrams.model
 			this.width = 200;
 			this.height = 150;
 			allowRotation = false;
+		}
+		
+		public function get text():String{
+			return _text;
+		}
+		public function set text(value:String):void{
+			_text = value;		
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_CHANGED, true);	
+			rsoEvent.sdObjects.addItem(this);
+			dispatchEvent(rsoEvent);			
 		}
 	}
 }

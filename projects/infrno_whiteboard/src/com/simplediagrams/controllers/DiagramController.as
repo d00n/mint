@@ -170,6 +170,10 @@ package com.simplediagrams.controllers
 			undoRedoManager.push(cmd)			
 			
 			diagramManager.diagramModel.select([newSymbolModel]);
+			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LIBRARY_ITEM_ADDED);	
+			rsoEvent.sdObjects.addItem(newSymbolModel);
+			dispatcher.dispatchEvent(rsoEvent);			
 		}
 		
 		

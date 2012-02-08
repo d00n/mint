@@ -405,8 +405,8 @@ package com.simplediagrams.model.tools
 			
 			Logger.info("XXX applyTranslation", this);
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED, true);
-			for each ( var subObject:SDObjectModel in selectedObjects )
-			  rsoEvent.sdObjects.addItem(subObject);
+			for each ( var so:SDObjectModel in selectedObjects )
+			  rsoEvent.sdObjects.addItem(so);
 			dispatcher.dispatchEvent(rsoEvent);	
 			
 		}

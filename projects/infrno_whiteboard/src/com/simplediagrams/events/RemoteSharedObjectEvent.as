@@ -19,6 +19,7 @@ package com.simplediagrams.events
 		public static const START:String = "rso_start";
 		public static const LOAD_IMAGE:String = "rso_loadImage";
 		public static const ADD_SD_OBJECT_MODEL:String = "rso_addSDObjectModel";
+		public static const LIBRARY_ITEM_ADDED:String = "rso_libraryItemAdded";
 		public static const DISPATCH_DELETE_SELECTED_FROM_MODEL:String = "rso_DispatchDeleteSelectedFromModel";
 		public static const PROCESS_DELETE_SELECTED_FROM_MODEL:String = "rso_ProcessDeleteSelectedFromModel";
 		public static const OBJECT_CHANGED:String = "rso_ObjectChanged";	

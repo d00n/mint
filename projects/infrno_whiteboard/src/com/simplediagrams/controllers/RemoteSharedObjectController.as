@@ -387,6 +387,7 @@ package com.simplediagrams.controllers
 
 		
 //		[Mediate(event="RemoteSharedObjectEvent.ADD_SD_OBJECT_MODEL")]
+		[Mediate(event="RemoteSharedObjectEvent.LIBRARY_ITEM_ADDED")]
 		[Mediate(event="RemoteSharedObjectEvent.TEXT_CHANGED")]
 		[Mediate(event="RemoteSharedObjectEvent.TEXT_WIDGET_ADDED")]
 		[Mediate(event="RemoteSharedObjectEvent.TEXT_WIDGET_CREATED")]

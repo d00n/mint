@@ -1,9 +1,11 @@
 package com.simplediagrams.events
 {
 	import com.simplediagrams.commands.*;
+	import com.simplediagrams.model.ConnectionPoint;
 	import com.simplediagrams.model.SDImageModel;
 	
 	import flash.events.Event;
+	import flash.geom.Point;
 	import flash.utils.ByteArray;
 	
 	import mx.collections.ArrayCollection;
@@ -25,6 +27,7 @@ package com.simplediagrams.events
 		public static const OBJECT_CHANGED:String = "rso_ObjectChanged";	
 		public static const UPDATE_DEPTHS:String = "rso_ObjectUpdateDepths";
 		
+		public static const DISPATCH_LINE_CONNECTIONS:String = "rso_dispatchLineConnections";
 		public static const TEXT_CHANGED:String = "rso_TextChanged";
 		public static const TEXT_WIDGET_ADDED:String = "rso_TextWidgetAdded";
 		public static const TEXT_WIDGET_CREATED:String = "rso_TextWidgetCreated";
@@ -47,6 +50,7 @@ package com.simplediagrams.events
 		public var id:int;
 		public var idAC:ArrayCollection = new ArrayCollection;
 		public var sdObjects:ArrayCollection = new ArrayCollection;
+
 		
 		// Wowza will accept these values for specified hosts.
 		public var auth_key:String = "sample_auth_key";

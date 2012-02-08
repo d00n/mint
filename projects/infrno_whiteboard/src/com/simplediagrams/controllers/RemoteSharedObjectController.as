@@ -387,6 +387,7 @@ package com.simplediagrams.controllers
 
 		
 //		[Mediate(event="RemoteSharedObjectEvent.ADD_SD_OBJECT_MODEL")]
+		[Mediate(event="RemoteSharedObjectEvent.DISPATCH_LINE_CONNECTIONS")]
 		[Mediate(event="RemoteSharedObjectEvent.LIBRARY_ITEM_ADDED")]
 		[Mediate(event="RemoteSharedObjectEvent.TEXT_CHANGED")]
 		[Mediate(event="RemoteSharedObjectEvent.TEXT_WIDGET_ADDED")]
@@ -460,6 +461,22 @@ package com.simplediagrams.controllers
 					sd_obj.endLineStyle 			= sdLineModel.endLineStyle;
 					sd_obj.lineWeight 				= sdLineModel.lineWeight;
 					sd_obj.lineStyle  				= sdLineModel.lineStyle;
+					
+					//Connections
+					if (sdLineModel.fromPoint) {
+					  sd_obj.fromPoint_id 					= sdLineModel.fromPoint.id;	
+					  sd_obj.fromPoint_x 						= sdLineModel.fromPoint.x;	
+					  sd_obj.fromPoint_y 						= sdLineModel.fromPoint.y;	
+					}
+					if (sdLineModel.toPoint) {
+  					sd_obj.toPoint_id 			  		= sdLineModel.toPoint.id;	
+	    			sd_obj.toPoint_x 		  				= sdLineModel.toPoint.x;	
+					  sd_obj.toPoint_y 	   					= sdLineModel.toPoint.y;	
+					}
+					if (sdLineModel.fromObject)
+					  sd_obj.fromObject_id 					= sdLineModel.fromObject.id;	
+					if (sdLineModel.toObject)
+  					sd_obj.toObject_id 						= sdLineModel.toObject.id;	
 				}
 				else if (sdObjectModel is SDPencilDrawingModel){
 					var sdPencilDrawingModel:SDPencilDrawingModel = sdObjectModel as SDPencilDrawingModel;

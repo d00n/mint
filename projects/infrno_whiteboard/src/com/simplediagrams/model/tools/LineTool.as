@@ -1,10 +1,12 @@
 package com.simplediagrams.model.tools
 {
 	import com.simplediagrams.events.CreateLineComponentEvent;
+	import com.simplediagrams.events.RemoteSharedObjectEvent;
 	import com.simplediagrams.model.ConnectionPoint;
 	import com.simplediagrams.model.DiagramModel;
 	import com.simplediagrams.model.SDLineModel;
 	import com.simplediagrams.model.SDObjectModel;
+	import com.simplediagrams.util.Logger;
 	
 	import flash.events.Event;
 	import flash.geom.Matrix;
@@ -136,6 +138,11 @@ package com.simplediagrams.model.tools
 					dispatcher.dispatchEvent(evt);
 				startPoint = null;
 				endPoint = null;
+				
+				Logger.info("onMouseUp", this);
+				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.DISPATCH_LINE_CONNECTIONS);	
+				rsoEvent.sdObjects.addItem(line);
+				dispatcher.dispatchEvent(rsoEvent);   
 			}
 		}
 		
@@ -228,6 +235,7 @@ package com.simplediagrams.model.tools
 					}
 				}
 				_connectorPoints = resultConnectorPoints;				
+				Logger.info("calculatePoints", this);
 			}
 			else
 			{

@@ -1,12 +1,14 @@
 package com.simplediagrams.model.tools
 {
 	import com.simplediagrams.events.LineTransformEvent;
+	import com.simplediagrams.events.RemoteSharedObjectEvent;
 	import com.simplediagrams.model.ConnectionPoint;
 	import com.simplediagrams.model.CopyUtil;
 	import com.simplediagrams.model.DiagramModel;
 	import com.simplediagrams.model.SDLineModel;
 	import com.simplediagrams.model.SDObjectModel;
 	import com.simplediagrams.model.SDSymbolModel;
+	import com.simplediagrams.util.Logger;
 	import com.simplediagrams.view.SDComponents.SDSymbol;
 	
 	import flash.events.Event;
@@ -217,6 +219,7 @@ package com.simplediagrams.model.tools
 				}
 				currentDragRole = 0;
 				calculatePoints();
+				Logger.info("onMouseUp", this);
 			}
 		}
 		
@@ -292,7 +295,7 @@ package com.simplediagrams.model.tools
 				}
 				_connectorPoints = resultConnectorPoints;
 				controlPoints = [start, bend, end];
-
+				Logger.info("calculatePoints", this);
 			}
 			else
 			{

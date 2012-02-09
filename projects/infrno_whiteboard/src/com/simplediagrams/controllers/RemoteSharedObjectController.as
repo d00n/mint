@@ -5,6 +5,7 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.errors.SDObjectModelNotFoundError;
 	import com.simplediagrams.events.*;
 	import com.simplediagrams.model.ApplicationModel;
+	import com.simplediagrams.model.ConnectionPoint;
 	import com.simplediagrams.model.DiagramManager;
 	import com.simplediagrams.model.DiagramModel;
 	import com.simplediagrams.model.LibraryManager;
@@ -224,37 +225,14 @@ package com.simplediagrams.controllers
 		public function ioErrorHandler(event : IOErrorEvent) : void {  Logger.error('ioErrorHandler() :'+event, this);  }
 		public function asyncErrorHandler(event : AsyncErrorEvent) : void {  Logger.error('asyncErrorHandler() :'+event, this);  }  		
 		
-		private function onSyncEventHandler(event : SyncEvent):void {
-			Logger.info("onSyncEventHandler event:" + event.type,this);	
-			
-			Logger.info("onSyncEventHandler event.changeList.length:" + event.changeList.length,this);	
-			for (var i:Number = 0; i < event.changeList.length; i++) {
-				Logger.info("onSyncEventHandler event.changeList[" +i + "].code:" + event.changeList[i].code,this);	
-
-				switch (event.changeList[i].code){
-					case SUCCESS:   
-						break;
-					case CHANGE:  {
-						Logger.info("onSyncEventHandler event.changeList[" +i + "].name:" + event.changeList[i].name,this);	
-						var id:int = event.changeList[i].name;
-						var changeObject:Object = event.target.data[id];
-						routeChange(changeObject);
-						break;
-					}
-				}
-					
-			}
-		}				
 		[Mediate(event="RemoteSharedObjectEvent.RESET")]
-		public function reset():void
-		{
+		public function reset():void {
 			stop();			
 			connect();
 		}
 		
 		[Mediate(event="RemoteSharedObjectEvent.STOP")]
-		public function stop():void
-		{
+		public function stop():void {
 			_remoteSharedObject.close();
 			_remoteSharedObject = null;
 			_netConnection.close();
@@ -264,8 +242,7 @@ package com.simplediagrams.controllers
 		}
 		
 		[Mediate(event="RemoteSharedObjectEvent.LOAD_FLASHVARS")]
-		public function loadFlashvars(event:RemoteSharedObjectEvent):void
-		{
+		public function loadFlashvars(event:RemoteSharedObjectEvent):void {
 			Logger.info("loadFlashVars", this);
 			_auth_key 				= event.auth_key;
 			_room_id 				= event.room_id;			
@@ -276,33 +253,84 @@ package com.simplediagrams.controllers
 			_wowza_server 			= event.wowza_server;
 			_wowza_whiteboard_app 	= event.wowza_whiteboard_app;
 			_wowza_whiteboard_port 	= event.wowza_whiteboard_port;
-		}		
+		}			
 		
-		private function routeChange(changeObject:Object) : void 
-		{
-			switch (changeObject.commandName) {
-				case "DeleteSelectedSDObjectModel": {
-					processUpdate_DeleteSelectedFromModel(changeObject);
-					break;
+		private function onSyncEventHandler(event : SyncEvent):void {
+			Logger.info("onSyncEventHandler event.changeList.length:" + event.changeList.length,this);	
+			var i:int;
+			var id:int;
+			var changeObject:Object;
+			for (i = 0; i < event.changeList.length; i++) {
+				switch (event.changeList[i].code){
+					case SUCCESS:   
+						break;
+					case CHANGE:  {
+						Logger.info("onSyncEventHandler non-Line pass, event.changeList[" +i + "].name:" + event.changeList[i].name,this);	
+						id = event.changeList[i].name;
+						changeObject = event.target.data[id];
+						if (changeObject.commandName == "ObjectChanged" && changeObject.sdObjectModelType != "SDLineModel")
+     					processUpdate_ObjectChanged(changeObject);
+				    if (changeObject.commandName ==  "ConfigureGrid") 
+					    processUpdate_ConfigureGrid(changeObject);
+						break;
+					}
 				}
-				case "ObjectChanged": {
-					processUpdate_ObjectChanged(changeObject);
-					break;
-				}			
-//				case "UpdateDepths": {
-//					processUpdate_UpdateDepths(changeObject);
-//					break;
-//				}			
-				case "ConfigureGrid": {
-					processUpdate_ConfigureGrid(changeObject);
-					break;
-				}			
+			}
+				
+			for (i = 0; i < event.changeList.length; i++) {
+				switch (event.changeList[i].code){
+					case SUCCESS:   
+						break;
+					case CHANGE:  {
+						Logger.info("onSyncEventHandler Line pass, event.changeList[" +i + "].name:" + event.changeList[i].name,this);	
+						id = event.changeList[i].name;
+						changeObject = event.target.data[id];
+      			if (changeObject.commandName == "ObjectChanged" && changeObject.sdObjectModelType == "SDLineModel")
+     					processUpdate_LineChanged(changeObject);
+						break;
+					}
+				}
+			}
+				
+			for (i = 0; i < event.changeList.length; i++) {
+				switch (event.changeList[i].code){
+					case SUCCESS:   
+						break;
+					case CHANGE:  {
+						Logger.info("onSyncEventHandler delete pass, event.changeList[" +i + "].name:" + event.changeList[i].name,this);	
+						id = event.changeList[i].name;
+						changeObject = event.target.data[id];
+      			if (changeObject.commandName == "DeleteSelectedSDObjectModel")
+    					processUpdate_DeleteSelectedFromModel(changeObject);
+						break;
+					}
+				}
 			}
 		}
+	
+//		private function routeChange(changeObject:Object) : void {
+//			switch (changeObject.commandName) {
+//				case "DeleteSelectedSDObjectModel": {
+//					processUpdate_DeleteSelectedFromModel(changeObject);
+//					break;
+//				}
+//				case "ObjectChanged": {
+//					processUpdate_ObjectChanged(changeObject);
+//					break;
+//				}			
+////				case "UpdateDepths": {
+////					processUpdate_UpdateDepths(changeObject);
+////					break;
+////				}			
+//				case "ConfigureGrid": {
+//					processUpdate_ConfigureGrid(changeObject);
+//					break;
+//				}			
+//			}
+//		}
 
 		[Mediate(event="RemoteSharedObjectEvent.LOAD_IMAGE")]
-		public function dispatchUpdate_LoadImage(rsoEvent:RemoteSharedObjectEvent):void
-		{
+		public function dispatchUpdate_LoadImage(rsoEvent:RemoteSharedObjectEvent):void {
 //			Logger.info("dispatchUpdate_LoadImage() id="+rsoEvent.sdImageModel.id,this);
 //			
 //			var returnValueFunction:Function = function(imageDetails:Object):void
@@ -328,8 +356,7 @@ package com.simplediagrams.controllers
 		}		
 
 		[Mediate(event="RemoteSharedObjectEvent.DISPATCH_DELETE_SELECTED_FROM_MODEL")]
-		public function dispatchUpdate_DeleteSelectedFromModel(event:RemoteSharedObjectEvent) : void 
-		{			
+		public function dispatchUpdate_DeleteSelectedFromModel(event:RemoteSharedObjectEvent) : void {			
 			Logger.info("dispatchUpdate_DeleteSelectedFromModel()",this);
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.PROCESS_DELETE_SELECTED_FROM_MODEL);	
 			
@@ -347,8 +374,7 @@ package com.simplediagrams.controllers
 			dispatcher.dispatchEvent(rsoEvent);   
 		}	
 		
-		public function processUpdate_DeleteSelectedFromModel(changeObject:Object):void
-		{
+		public function processUpdate_DeleteSelectedFromModel(changeObject:Object):void {
 			Logger.info("processUpdate_DeleteSelectedFromModel()",this);
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.PROCESS_DELETE_SELECTED_FROM_MODEL);	
 			rsoEvent.idAC.addItem(changeObject.id);
@@ -368,8 +394,7 @@ package com.simplediagrams.controllers
 			_remoteSharedObject.setProperty("GridState", grid_state_obj);
 		}				
 		
-		public function processUpdate_ConfigureGrid(changeObject:Object) : void 
-		{
+		public function processUpdate_ConfigureGrid(changeObject:Object) : void {
 			Logger.info("processUpdate_ConfigureGrid()",this);
 			
 			var cellWidthEvent:GridEvent 	= new GridEvent(GridEvent.CELL_WIDTH);
@@ -395,8 +420,7 @@ package com.simplediagrams.controllers
 		[Mediate(event="RemoteSharedObjectEvent.PENCIL_DRAWING_CREATED")]
 		[Mediate(event="RemoteSharedObjectEvent.UPDATE_DEPTHS")]
 		[Mediate(event="RemoteSharedObjectEvent.OBJECT_CHANGED")]
-		public function dispatchUpdate_ObjectChanged(event:RemoteSharedObjectEvent) : void
-		{
+		public function dispatchUpdate_ObjectChanged(event:RemoteSharedObjectEvent) : void {
 			Logger.info("dispatchUpdate_ObjectChanged() event:"+event.type,this);
 			
 			for each (var sdObjectModel:SDObjectModel in event.sdObjects)
@@ -463,20 +487,29 @@ package com.simplediagrams.controllers
 					sd_obj.lineStyle  				= sdLineModel.lineStyle;
 					
 					//Connections
+					if (sdLineModel.fromObject)
+						sd_obj.fromObject_id 					= sdLineModel.fromObject.id;	
+					else
+						sd_obj.fromObject_id 					= '';
+					
+					if (sdLineModel.toObject)
+						sd_obj.toObject_id 						= sdLineModel.toObject.id;	
+					else
+						sd_obj.toObject_id 						= '';
+					
 					if (sdLineModel.fromPoint) {
 					  sd_obj.fromPoint_id 					= sdLineModel.fromPoint.id;	
-					  sd_obj.fromPoint_x 						= sdLineModel.fromPoint.x;	
-					  sd_obj.fromPoint_y 						= sdLineModel.fromPoint.y;	
+					} else {
+					  sd_obj.fromPoint_id 					= '';
 					}
+					
 					if (sdLineModel.toPoint) {
   					sd_obj.toPoint_id 			  		= sdLineModel.toPoint.id;	
-	    			sd_obj.toPoint_x 		  				= sdLineModel.toPoint.x;	
-					  sd_obj.toPoint_y 	   					= sdLineModel.toPoint.y;	
+					}else{
+  					sd_obj.toPoint_id 			  		= '';
 					}
-					if (sdLineModel.fromObject)
-					  sd_obj.fromObject_id 					= sdLineModel.fromObject.id;	
-					if (sdLineModel.toObject)
-  					sd_obj.toObject_id 						= sdLineModel.toObject.id;	
+					Logger.info("dispatchUpdate_ObjectChanged() toPoint.idt= " + sdLineModel.toPoint.id);
+					
 				}
 				else if (sdObjectModel is SDPencilDrawingModel){
 					var sdPencilDrawingModel:SDPencilDrawingModel = sdObjectModel as SDPencilDrawingModel;
@@ -506,8 +539,7 @@ package com.simplediagrams.controllers
 			}
 		}
 		
-		public function processUpdate_ObjectChanged(changeObject:Object) : void 
-		{
+		public function processUpdate_ObjectChanged(changeObject:Object) : void {
 			Logger.info("processUpdate_ObjectChanged()",this);
 			var isCorruptObject:Boolean = false;
 			
@@ -574,27 +606,6 @@ package com.simplediagrams.controllers
 //					sdObjectModel = sdImageModel;
 //					break;
 //				}
-				case "SDLineModel": {
-					var sdLineModel:SDLineModel = diagramManager.diagramModel.getModelByID(id) as SDLineModel;
-					
-					if (sdLineModel == null){						
-						sdLineModel = new SDLineModel();
-					}
-					
-					sdLineModel.startX 					= changeObject.startX;
-					sdLineModel.startY 					= changeObject.startY;	
-					sdLineModel.endX 						= changeObject.endX;
-					sdLineModel.endY 						= changeObject.endY;	
-					sdLineModel.bendX 					= changeObject.bendX;
-					sdLineModel.bendY 					= changeObject.bendY;
-					sdLineModel.startLineStyle 	= changeObject.startLineStyle;
-					sdLineModel.endLineStyle 		= changeObject.endLineStyle;
-					sdLineModel.lineWeight 			= changeObject.lineWeight;
-					sdLineModel.lineStyle 			= changeObject.lineStyle;
-
-					sdObjectModel = sdLineModel;
-					break;
-				}
 				case "SDPencilDrawingModel": {
 					var sdPencilDrawingModel:SDPencilDrawingModel = diagramManager.diagramModel.getModelByID(id) as SDPencilDrawingModel;
 					
@@ -683,6 +694,78 @@ package com.simplediagrams.controllers
 				// we perform it's responsibilities here:	
 				diagramManager.diagramModel.sdObjects.addItem(sdObjectModel);
 //				diagramManager.diagramModel.addComponentForModel(sdObjectModel, false);
+			}
+		}		
+		
+		public function processUpdate_LineChanged(changeObject:Object) : void {
+			Logger.info("processUpdate_LineChanged()",this);
+			
+			var id:int = changeObject.id;
+			var sdObjectModel:SDObjectModel;			
+			switch ( changeObject.sdObjectModelType) {
+				case "SDLineModel": {
+					var sdLineModel:SDLineModel = diagramManager.diagramModel.getModelByID(id) as SDLineModel;
+					
+					if (sdLineModel == null){						
+						sdLineModel = new SDLineModel();
+					}
+					
+					sdLineModel.startX 					= changeObject.startX;
+					sdLineModel.startY 					= changeObject.startY;	
+					sdLineModel.endX 						= changeObject.endX;
+					sdLineModel.endY 						= changeObject.endY;	
+					sdLineModel.bendX 					= changeObject.bendX;
+					sdLineModel.bendY 					= changeObject.bendY;
+					sdLineModel.startLineStyle 	= changeObject.startLineStyle;
+					sdLineModel.endLineStyle 		= changeObject.endLineStyle;
+					sdLineModel.lineWeight 			= changeObject.lineWeight;
+					sdLineModel.lineStyle 			= changeObject.lineStyle;
+					
+					if (changeObject.fromObject_id && changeObject.fromObject_id != '')
+						sdLineModel.fromObject		= diagramManager.diagramModel.getModelByID(changeObject.fromObject_id);	
+					else
+						sdLineModel.fromObject		= null;
+					
+					if (sdLineModel.fromObject && changeObject.fromPoint_id && changeObject.fromPoint_id != '')
+						sdLineModel.fromPoint		= sdLineModel.fromObject.getConnectionPoint(changeObject.fromPoint_id);
+					else 
+						sdLineModel.fromPoint		= null;
+					
+					if (changeObject.toObject_id && changeObject.toObject_id != '')
+						sdLineModel.toObject		= diagramManager.diagramModel.getModelByID(changeObject.toObject_id);	
+					else
+						sdLineModel.toObject		= null;
+					
+					if (sdLineModel.toObject && changeObject.toPoint_id && changeObject.toPoint_id != '') {
+						sdLineModel.toPoint		= sdLineModel.toObject.getConnectionPoint(changeObject.toPoint_id);
+	  				Logger.info("process_LineChange toPoint.idt= " + sdLineModel.toPoint.id);
+					} else
+						sdLineModel.toPoint		= null;
+					
+					sdObjectModel = sdLineModel;
+					break;
+				}
+			}
+			
+			sdObjectModel.id			  = changeObject.id;
+			sdObjectModel.color	 		= changeObject.color;
+			sdObjectModel.x 				= changeObject.x;
+			sdObjectModel.y 				= changeObject.y;
+			sdObjectModel.width 		= changeObject.width;
+			sdObjectModel.height		= changeObject.height;
+			sdObjectModel.rotation	= changeObject.rotation;
+			sdObjectModel.depth 		= changeObject.depth;
+			
+	
+			var placementDetails:String = ">>" + changeObject.sdObjectModelType + stateString(changeObject);
+			if (diagramManager.diagramModel.sdObjects.contains(sdObjectModel) == false) {
+				Logger.info("processUpdate_LineChanged() about to add sdObjectModel=" +placementDetails,	this);
+				
+				// TODO Clean this up. The coupling is too tight.
+				// To prevent throwing an RSOEvent from within diagramManager.diagramModel.addSDObjectModel()
+				// we perform it's responsibilities here:	
+				diagramManager.diagramModel.sdObjects.addItem(sdObjectModel);
+				//				diagramManager.diagramModel.addComponentForModel(sdObjectModel, false);
 			}
 		}		
 		

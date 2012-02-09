@@ -295,7 +295,6 @@ package com.simplediagrams.model.tools
 				}
 				_connectorPoints = resultConnectorPoints;
 				controlPoints = [start, bend, end];
-				Logger.info("calculatePoints", this);
 			}
 			else
 			{

@@ -258,7 +258,7 @@ package com.simplediagrams.controllers
 		private function onSyncEventHandler(event : SyncEvent):void {
 			Logger.info("onSyncEventHandler event.changeList.length:" + event.changeList.length,this);	
 			var i:int;
-			var id:int;
+			var recordName:String;
 			var changeObject:Object;
 			for (i = 0; i < event.changeList.length; i++) {
 				switch (event.changeList[i].code){
@@ -266,12 +266,25 @@ package com.simplediagrams.controllers
 						break;
 					case CHANGE:  {
 						Logger.info("onSyncEventHandler non-Line pass, event.changeList[" +i + "].name:" + event.changeList[i].name,this);	
-						id = event.changeList[i].name;
-						changeObject = event.target.data[id];
-						if (changeObject.commandName == "ObjectChanged" && changeObject.sdObjectModelType != "SDLineModel")
+						
+//						if (event.changeList[i].name == 'GridState') {
+//   						changeObject = event.target.data.GridState;
+//						} else {
+//   						id = event.changeList[i].name;
+//   						changeObject = event.target.data[id];
+//						}
+						recordName = event.changeList[i].name;
+						changeObject = event.target.data[recordName];
+						
+						if (changeObject.commandName == "ObjectChanged" && changeObject.sdObjectModelType != "SDLineModel") {
      					processUpdate_ObjectChanged(changeObject);
-				    if (changeObject.commandName ==  "ConfigureGrid") 
+						}
+				    if (changeObject.commandName ==  "ConfigureGrid") {
 					    processUpdate_ConfigureGrid(changeObject);
+						}
+				    if (changeObject.commandName ==  "TextChanged") {
+							processUpdate_TextChanged(changeObject);
+						}
 						break;
 					}
 				}
@@ -283,8 +296,8 @@ package com.simplediagrams.controllers
 						break;
 					case CHANGE:  {
 						Logger.info("onSyncEventHandler Line pass, event.changeList[" +i + "].name:" + event.changeList[i].name,this);	
-						id = event.changeList[i].name;
-						changeObject = event.target.data[id];
+						recordName = event.changeList[i].name;
+						changeObject = event.target.data[recordName];
       			if (changeObject.commandName == "ObjectChanged" && changeObject.sdObjectModelType == "SDLineModel")
      					processUpdate_LineChanged(changeObject);
 						break;
@@ -298,8 +311,8 @@ package com.simplediagrams.controllers
 						break;
 					case CHANGE:  {
 						Logger.info("onSyncEventHandler delete pass, event.changeList[" +i + "].name:" + event.changeList[i].name,this);	
-						id = event.changeList[i].name;
-						changeObject = event.target.data[id];
+						recordName = event.changeList[i].name;
+						changeObject = event.target.data[recordName];
       			if (changeObject.commandName == "DeleteSelectedSDObjectModel")
     					processUpdate_DeleteSelectedFromModel(changeObject);
 						break;
@@ -409,12 +422,60 @@ package com.simplediagrams.controllers
 			dispatcher.dispatchEvent(showGridEvent);				
 		}
 		
-
+		[Mediate(event="RemoteSharedObjectEvent.TEXT_CHANGED")]
+		public function dispatchUpdate_TextChanged(event:RemoteSharedObjectEvent) : void {
+			Logger.info("dispatchUpdate_TextChanged() event:"+event.type,this);
+			
+			for each (var sdObjectModel:SDObjectModel in event.sdObjects)
+			{			
+				var sd_obj:Object = {};
+				sd_obj.commandName 	= "TextChanged";
+				sd_obj.id    				= sdObjectModel.id;							
+				
+				if (sdObjectModel is SDSymbolModel){
+					var sdSymbolModel:SDSymbolModel = sdObjectModel as SDSymbolModel;
+					
+					sd_obj.sdObjectModelType 	= "SDSymbolModel";
+					sd_obj.text								= event.text;	
+				}
+				else if (sdObjectModel is SDTextAreaModel){
+					var sdTextAreaModel:SDTextAreaModel = sdObjectModel as SDTextAreaModel;
+					
+					sd_obj.sdObjectModelType 		= "SDTextAreaModel";
+					sd_obj.text									= event.text;	
+				}
+				
+				_remoteSharedObject.setProperty(sd_obj.id.toString(), sd_obj);
+			}
+		}
+		
+		public function processUpdate_TextChanged(changeObject:Object) : void {
+			Logger.info("processUpdate_TextChanged()",this);
+			
+			var id:int = changeObject.id;
+			switch ( changeObject.sdObjectModelType) {
+				case "SDSymbolModel": {
+					var sdSymbolModel:SDSymbolModel = diagramManager.diagramModel.getModelByID(id) as SDSymbolModel;
+					
+					if (sdSymbolModel != null) {
+  					sdSymbolModel.text		 			= changeObject.text;
+					}
+					break;
+				}
+				case "SDTextAreaModel": {
+					var sdTextAreaModel:SDTextAreaModel = diagramManager.diagramModel.getModelByID(id) as SDTextAreaModel;	
+					
+					if (sdTextAreaModel != null){
+  					sdTextAreaModel.text			 					= changeObject.text;
+					}
+					break;
+				}
+			}
+		}	
 		
 //		[Mediate(event="RemoteSharedObjectEvent.ADD_SD_OBJECT_MODEL")]
 		[Mediate(event="RemoteSharedObjectEvent.DISPATCH_LINE_CONNECTIONS")]
 		[Mediate(event="RemoteSharedObjectEvent.LIBRARY_ITEM_ADDED")]
-		[Mediate(event="RemoteSharedObjectEvent.TEXT_CHANGED")]
 		[Mediate(event="RemoteSharedObjectEvent.TEXT_WIDGET_ADDED")]
 		[Mediate(event="RemoteSharedObjectEvent.TEXT_WIDGET_CREATED")]
 		[Mediate(event="RemoteSharedObjectEvent.PENCIL_DRAWING_CREATED")]
@@ -426,6 +487,8 @@ package com.simplediagrams.controllers
 			for each (var sdObjectModel:SDObjectModel in event.sdObjects)
 			{			
 //				isCorrupt("dispatchUpdate_ObjectChanged", sdObjectModel);
+				
+				
 				
 				var sd_obj:Object = {};
 				sd_obj.commandName 	= "ObjectChanged";
@@ -508,7 +571,6 @@ package com.simplediagrams.controllers
 					}else{
   					sd_obj.toPoint_id 			  		= '';
 					}
-					Logger.info("dispatchUpdate_ObjectChanged() toPoint.idt= " + sdLineModel.toPoint.id);
 					
 				}
 				else if (sdObjectModel is SDPencilDrawingModel){
@@ -726,7 +788,7 @@ package com.simplediagrams.controllers
 					else
 						sdLineModel.fromObject		= null;
 					
-					if (sdLineModel.fromObject && changeObject.fromPoint_id && changeObject.fromPoint_id != '')
+					if (sdLineModel.fromObject && changeObject.fromPoint_id && changeObject.fromPoint_id.toString() != '')
 						sdLineModel.fromPoint		= sdLineModel.fromObject.getConnectionPoint(changeObject.fromPoint_id);
 					else 
 						sdLineModel.fromPoint		= null;
@@ -736,9 +798,9 @@ package com.simplediagrams.controllers
 					else
 						sdLineModel.toObject		= null;
 					
-					if (sdLineModel.toObject && changeObject.toPoint_id && changeObject.toPoint_id != '') {
-						sdLineModel.toPoint		= sdLineModel.toObject.getConnectionPoint(changeObject.toPoint_id);
-	  				Logger.info("process_LineChange toPoint.idt= " + sdLineModel.toPoint.id);
+					if (sdLineModel.toObject && changeObject.toPoint_id && changeObject.toPoint_id.toString() != '') {
+		        sdLineModel.toPoint		= sdLineModel.toObject.getConnectionPoint(changeObject.toPoint_id);
+		        Logger.info("process_LineChange toPoint.id= " + sdLineModel.toPoint.id);
 					} else
 						sdLineModel.toPoint		= null;
 					

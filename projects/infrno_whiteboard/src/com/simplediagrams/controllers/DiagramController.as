@@ -66,6 +66,7 @@ package com.simplediagrams.controllers
 	import mx.core.FlexGlobals;
 	import mx.core.UIComponent;
 	import mx.events.CloseEvent;
+	import mx.events.PropertyChangeEvent;
 	import mx.graphics.BitmapFillMode;
 	import mx.graphics.codec.PNGEncoder;
 	import mx.utils.ObjectUtil;
@@ -171,12 +172,18 @@ package com.simplediagrams.controllers
 			
 			diagramManager.diagramModel.select([newSymbolModel]);
 			
+//			newSymbolModel.addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onChange_SDObjectModel);
+			
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LIBRARY_ITEM_ADDED);	
 			rsoEvent.sdObjects.addItem(newSymbolModel);
 			dispatcher.dispatchEvent(rsoEvent);			
 		}
 		
-		
+//		public function onChange_SDObjectModel(event:PropertyChangeEvent):void{
+//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+//			rsoEvent.sdObjects.addItem(event.source);
+//			dispatcher.dispatchEvent(rsoEvent);			
+//		}
 		
 		[Mediate(event="DiagramEvent.FIT_DIAGRAM_SIZE_TO_DEFAULT_BG_SIZE")]
 		public function fitDiagramSizeToDefaultBackgroundSize(event:DiagramEvent):void
@@ -269,7 +276,8 @@ package com.simplediagrams.controllers
 			cmd.execute()			
 			undoRedoManager.push(cmd)		
 			diagramManager.diagramModel.select([sdTextAreaModel]);
-      
+
+//			sdTextAreaModel.addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onChange_SDObjectModel);
 
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_WIDGET_ADDED);	
 			rsoEvent.sdObjects.addItem(sdTextAreaModel);
@@ -503,8 +511,6 @@ package com.simplediagrams.controllers
 //			t = null
 		}	
 	
-		
-		
 		
 		[Mediate(event='PropertiesEvent.EDIT_PROPERTIES')]
 		public function editProperties(event:PropertiesEvent):void

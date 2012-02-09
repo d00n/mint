@@ -103,7 +103,16 @@
 				}
 			}  
 			
-            
+			[Mediate(event='ShapesPanelEvent.TOGGLE_DISPLAY')]
+			public function onShapesPanelToggle(): void
+			{
+				if (shapesPanel.width > 0){
+					shapesPanel.width = 0;
+				}
+				else{
+					shapesPanel.width = 124;
+				}
+			}  
     			    			
 		]]>
 
@@ -115,7 +124,7 @@
 	<mx:HDividedBox styleName="libraryDivider" height="100%" width="100%"  >
 
 			<drawingBoard:DrawingBoard id="drawingBoard" height="100%" width="100%" />
-			<library:ShapesPanel id="shapesPanel" height="100%" width="250" />
+			<library:ShapesPanel id="shapesPanel" height="100%" width="0" />
 			<!--view:ShapesPanel id="shapesPanel" height="100%" width="250" /-->	
 
 	</mx:HDividedBox>

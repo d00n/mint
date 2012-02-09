@@ -2,11 +2,9 @@ package com.simplediagrams.model
 {
 	import com.simplediagrams.events.RemoteSharedObjectEvent;
 	
-	import flash.events.IEventDispatcher;
-
 	[Bindable]
 	[RemoteClass]
-	public class SDTextAreaModel extends SDObjectModel implements IEventDispatcher
+	public class SDTextAreaModel extends SDObjectModel
 	{
 		public static var NO_BACKGROUND:String = "noBackground"
 		public static var STICKY_NOTE:String = "stickyNote"
@@ -35,9 +33,6 @@ package com.simplediagrams.model
 		}
 		public function set text(value:String):void{
 			_text = value;		
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_CHANGED, true);	
-			rsoEvent.sdObjects.addItem(this);
-			dispatchEvent(rsoEvent);			
 		}
 	}
 }

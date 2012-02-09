@@ -112,6 +112,7 @@ package com.simplediagrams.view.SDComponents
 		
 		override protected function onModelChange(event:PropertyChangeEvent):void
 		{
+			Logger.info("onModelChange",this);
 			super.onModelChange(event)
 			
 			switch(event.property)
@@ -255,9 +256,10 @@ package com.simplediagrams.view.SDComponents
 		{
 			Logger.info("onTextAreaChange",this);
 			
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_CHANGED);	
-//			rsoEvent.sdObjects.addItem(_model);
-//			dispatchEvent(rsoEvent);				
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_CHANGED, true);	
+			rsoEvent.sdObjects.addItem(_model);
+			rsoEvent.text = mainText.text;
+			dispatchEvent(rsoEvent);				
 		}
 		
 		public function onMouseDown(event:MouseEvent):void

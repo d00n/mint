@@ -50,6 +50,7 @@ package com.simplediagrams.events
 		public var id:int;
 		public var idAC:ArrayCollection = new ArrayCollection;
 		public var sdObjects:ArrayCollection = new ArrayCollection;
+		public var text:String;
 
 		
 		// Wowza will accept these values for specified hosts.

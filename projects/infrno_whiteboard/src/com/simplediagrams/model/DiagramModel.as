@@ -1,11 +1,13 @@
 package com.simplediagrams.model
 {
+	import com.simplediagrams.events.RemoteSharedObjectEvent;
+	import com.simplediagrams.util.Logger;
+	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-//	import flash.net.dns.AAAARecord;
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.ArrayList;
@@ -44,6 +46,11 @@ package com.simplediagrams.model
 				case CollectionEventKind.ADD: onAdd(event.items);break;
 				case CollectionEventKind.REMOVE: onRemove(event.items);break;
 			}
+		}
+		
+		[Mediate(event="RemoteSharedObjectEvent.TEXT_CHANGED")]
+		public function hello(e:RemoteSharedObjectEvent):void{
+			Logger.info("hello");
 		}
 		
 		private function onAdd(items:Array):void

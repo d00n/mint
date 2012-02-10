@@ -697,11 +697,11 @@ package com.simplediagrams.controllers
 			// TODO: Throw a SimpleDiagramsImageLoadCompleteEvent instead 	
 			
 			// RSO TODO
-//			var remoteSharedObjectEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LOAD_IMAGE, true, true);
-//			remoteSharedObjectEvent.imageData = _fileReference.data;
-//			remoteSharedObjectEvent.imageName = _fileReference.name;
-//			remoteSharedObjectEvent.sdImageModel = _currModelForImageLoad;
-//			dispatcher.dispatchEvent(remoteSharedObjectEvent);	
+			var remoteSharedObjectEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LOAD_IMAGE, true, true);
+			remoteSharedObjectEvent.imageData = _fileReference.data;
+			remoteSharedObjectEvent.imageName = _fileReference.name;
+			remoteSharedObjectEvent.sdImageModel = _currModelForImageLoad;
+			dispatcher.dispatchEvent(remoteSharedObjectEvent);	
 		}
 		
 		

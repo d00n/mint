@@ -29,6 +29,7 @@ package com.simplediagrams.view.SDComponents
 		private var _model:SDImageModel
 		
 		public var imageData:ByteArray		
+		public var imageSource:Object;
 		
 		[SkinPart(required="true")]		
 		public var imageHolder:Image;
@@ -38,14 +39,15 @@ package com.simplediagrams.view.SDComponents
 		public var borderVisible:Boolean
 		
 		protected var changeImageCMI:ContextMenuItem
-		
+		private static var MAX_INITIAL_IMAGE_WIDTH:int = 800;
+    
 		public function SDImage()
 		{
 			super();
 			this.setStyle("skinClass", Class(SDImageSkin))
 				
-			changeImageCMI = new ContextMenuItem("Change image", false, true)
-			changeImageCMI.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onChangeImage);
+//			changeImageCMI = new ContextMenuItem("Change image", false, true)
+//			changeImageCMI.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onChangeImage);
 //			contextMenu.items.unshift(changeImageCMI)
 		}
 		
@@ -55,17 +57,21 @@ package com.simplediagrams.view.SDComponents
 		
 		protected function onImageLoaded(event:Event):void
 		{
-		}
-	
-		protected function onChangeImage(event:ContextMenuEvent):void
-		{
-			onAddImageClick()
-			
-			/*
-			var evt:ChangeImageEvent = new ChangeImageEvent(ChangeImageEvent.CHANGE_IMAGE, true);
-			evt.sdID = this.sdID
-			dispatchEvent(eventChangeDepth);
-			*/
+			Logger.info("onImageLoaded() -----------------------------------------", this)
+			_model.origWidth = imageHolder.width
+			_model.origHeight = imageHolder.height
+
+			// If so, use actual size, subject to max width
+			if (_model.imageURL == null || _model.imageURL == '') {
+				if (imageHolder.sourceWidth > MAX_INITIAL_IMAGE_WIDTH) {
+					_model.width = MAX_INITIAL_IMAGE_WIDTH;
+					var shrinkPercentage:Number = MAX_INITIAL_IMAGE_WIDTH / imageHolder.sourceWidth;
+					_model.height = imageHolder.sourceHeight * shrinkPercentage;
+				} else {
+					_model.width = imageHolder.sourceWidth;
+					_model.height = imageHolder.sourceHeight;		
+				}
+			}			
 		}
 		
 		public function onAddImageClick():void
@@ -98,8 +104,13 @@ package com.simplediagrams.view.SDComponents
 				var libItem:ImageShape = libraryManager.getLibraryItem(_model.libraryName, _model.symbolName) as ImageShape;
 				this.imageData = libraryManager.getAssetData(libItem, libItem.path) as ByteArray;
 			}
-            imageStyle = _model.styleName
-            _model.addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );
+      imageStyle = _model.styleName
+			if (_model.imageURL != null && _model.imageURL.length != 0)
+				this.imageSource = _model.imageURL;
+			else
+				this.imageSource = _model.imageData;			
+			
+			_model.addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );
         			
 			this.invalidateSkinState()
 			
@@ -113,27 +124,34 @@ package com.simplediagrams.view.SDComponents
 				
 		
 		
-		
-		
 	
 		override protected function onModelChange(event:PropertyChangeEvent):void
 		{
+			Logger.info("onModelChange event.property= " + event.property, this);
 			super.onModelChange(event)
 			invalidateProperties()
 					
 			switch(event.property)
 			{    
-				case "styleName":
+				
+				case "imageData":
 					Logger.debug("imageData changed", this)
+					imageSource = _model.imageData
+					this.invalidateProperties()
+					break
+				case "imageURL":
+					Logger.debug("imageURL changed", this)
+					if (imageSource == null){
+						imageSource = _model.imageURL
+						this.invalidateProperties()
+					}
+					break
+				case "styleName":
+					Logger.debug("styleName changed", this)
 					imageStyle = _model.styleName
 					this.invalidateSkinState()
 					break
-//				case "imageURL":
-//					Logger.debug("imageURL changed", this)
-//					if (imageSource == null){
-//						imageSource = _model.imageURL
-//						this.invalidateProperties()
-//					}								
+				
 			}
 			
 		}        
@@ -146,6 +164,10 @@ package com.simplediagrams.view.SDComponents
 				var libItem:ImageShape = libraryManager.getLibraryItem(_model.libraryName, _model.symbolName) as ImageShape;
 				this.imageData = libraryManager.getAssetData(libItem, libItem.path) as ByteArray;
 			}			
+			else if (_model.imageURL && _model.imageURL.length > 0)
+			{
+				this.imageHolder.source = _model.imageURL;
+			}
 			else
 			{
 				this.imageData = null
@@ -175,8 +197,6 @@ package com.simplediagrams.view.SDComponents
         																	
 		public override function destroy():void
 		{
-			
-			changeImageCMI.removeEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onChangeImage);
 			super.destroy()
 			_model = null
 		}

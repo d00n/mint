@@ -13,8 +13,8 @@ package com.simplediagrams.model
 	public class SDObjectModel
 	{
 		public var id:int = -1;
-		public var x:Number = 10;
-		public var y:Number  = 10;
+		public var x:Number = 50;
+		public var y:Number  = 50;
 		public var height:Number = 50; 
 		public var width:Number = 50; 
 		public var rotation:Number = 0;

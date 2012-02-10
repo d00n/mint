@@ -344,28 +344,27 @@ package com.simplediagrams.controllers
 
 		[Mediate(event="RemoteSharedObjectEvent.LOAD_IMAGE")]
 		public function dispatchUpdate_LoadImage(rsoEvent:RemoteSharedObjectEvent):void {
-//			Logger.info("dispatchUpdate_LoadImage() id="+rsoEvent.sdImageModel.id,this);
-//			
-//			var returnValueFunction:Function = function(imageDetails:Object):void
-//			{
-//				Logger.info("dispatchUpdate_LoadImage() responder.result() id="+imageDetails["id"]+", url="+imageDetails["imageURL"],this);
-//
-//				var sdImageModel:SDImageModel = diagramManager.diagramModel.getModelByID(imageDetails["id"]) as SDImageModel;
-//				sdImageModel.imageURL = imageDetails["imageURL"];
-//				
-//				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-//				rsoEvent.changedSDObjectModelArray = new Array;				
-//				rsoEvent.changedSDObjectModelArray.push(sdImageModel);
-//				dispatcher.dispatchEvent(rsoEvent);	
-//			}
-//			
-//			var responder:Responder = new Responder(returnValueFunction);
-//			
-//			_netConnection.call("sendImage", responder, 
-//				rsoEvent.imageData, 
-//				rsoEvent.imageName,
-//				rsoEvent.sdImageModel.id.toString(),
-//				_image_server);
+			Logger.info("dispatchUpdate_LoadImage() id="+rsoEvent.sdImageModel.id,this);
+			
+			var returnValueFunction:Function = function(imageDetails:Object):void
+			{
+				Logger.info("dispatchUpdate_LoadImage() responder.result() id="+imageDetails["id"]+", url="+imageDetails["imageURL"],this);
+
+				var sdImageModel:SDImageModel = diagramManager.diagramModel.getModelByID(imageDetails["id"]) as SDImageModel;
+				sdImageModel.imageURL = imageDetails["imageURL"];
+				
+				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+				rsoEvent.sdObjects.addItem(sdImageModel);
+				dispatcher.dispatchEvent(rsoEvent);	
+			}
+			
+			var responder:Responder = new Responder(returnValueFunction);
+			
+			_netConnection.call("sendImage", responder, 
+				rsoEvent.imageData, 
+				rsoEvent.imageName,
+				rsoEvent.sdImageModel.id.toString(),
+				_image_server);
 		}		
 
 		[Mediate(event="RemoteSharedObjectEvent.DISPATCH_DELETE_SELECTED_FROM_MODEL")]
@@ -523,17 +522,17 @@ package com.simplediagrams.controllers
 					sd_obj.text								= sdSymbolModel.text;	
 					sd_obj.lineWeight 				= sdSymbolModel.lineWeight;
 				}
-//				else if (sdObjectModel is SDImageModel){
-//					var sdImageModel:SDImageModel = sdObjectModel as SDImageModel;
-//					
-//					sd_obj.sdObjectModelType 	= "SDImageModel";	
-//					if (sdImageModel.imageURL.length > 0) {
-//						Logger.info("dispatchUpdate_ObjectChanged() sdImageModel.imageURL="+sdImageModel.imageURL,this);
-//						sd_obj.imageURL				= sdImageModel.imageURL;
-//					}
-//					
-//					sd_obj.styleName =  sdImageModel.styleName;
-//				}
+				else if (sdObjectModel is SDImageModel){
+					var sdImageModel:SDImageModel = sdObjectModel as SDImageModel;
+					
+					sd_obj.sdObjectModelType 	= "SDImageModel";	
+					if (sdImageModel.imageURL.length > 0) {
+						Logger.info("dispatchUpdate_ObjectChanged() sdImageModel.imageURL="+sdImageModel.imageURL,this);
+						sd_obj.imageURL				= sdImageModel.imageURL;
+					}
+					
+					sd_obj.styleName =  sdImageModel.styleName;
+				}
 				else if (sdObjectModel is SDLineModel){
 					var sdLineModel:SDLineModel = sdObjectModel as SDLineModel;
 					
@@ -649,25 +648,25 @@ package com.simplediagrams.controllers
 					sdObjectModel = sdSymbolModel;
 					break;
 				}
-//				case "SDImageModel": {					
-//					var sdImageModel:SDImageModel = diagramManager.diagramModel.getModelByID(id) as SDImageModel;
-//					
-//					if (sdImageModel == null){
-//						sdImageModel = new SDImageModel();
-//					}
-//					
-//					if (changeObject.imageURL == undefined ) {
-//						Logger.error("processUpdate_ObjectChanged() changeObject.imageURL is undefined, id="+id,this);
-//					} else {
-//						Logger.info("processUpdate_ObjectChanged() changeObject.imageURL = " + changeObject.imageURL,this);
-//						sdImageModel.imageURL = changeObject.imageURL;
-//					}
-//										  
-//					sdImageModel.styleName = changeObject.styleName;
-//					
-//					sdObjectModel = sdImageModel;
-//					break;
-//				}
+				case "SDImageModel": {					
+					var sdImageModel:SDImageModel = diagramManager.diagramModel.getModelByID(id) as SDImageModel;
+					
+					if (sdImageModel == null){
+						sdImageModel = new SDImageModel();
+					}
+					
+					if (changeObject.imageURL == undefined ) {
+						Logger.error("processUpdate_ObjectChanged() changeObject.imageURL is undefined, id="+id,this);
+					} else {
+						Logger.info("processUpdate_ObjectChanged() changeObject.imageURL = " + changeObject.imageURL,this);
+						sdImageModel.imageURL = changeObject.imageURL;
+					}
+										  
+					sdImageModel.styleName = changeObject.styleName;
+					
+					sdObjectModel = sdImageModel;
+					break;
+				}
 				case "SDPencilDrawingModel": {
 					var sdPencilDrawingModel:SDPencilDrawingModel = diagramManager.diagramModel.getModelByID(id) as SDPencilDrawingModel;
 					
@@ -757,6 +756,7 @@ package com.simplediagrams.controllers
 				diagramManager.diagramModel.sdObjects.addItem(sdObjectModel);
 //				diagramManager.diagramModel.addComponentForModel(sdObjectModel, false);
 			}
+
 		}		
 		
 		public function processUpdate_LineChanged(changeObject:Object) : void {
@@ -783,26 +783,21 @@ package com.simplediagrams.controllers
 					sdLineModel.lineWeight 			= changeObject.lineWeight;
 					sdLineModel.lineStyle 			= changeObject.lineStyle;
 					
-					if (changeObject.fromObject_id && changeObject.fromObject_id != '')
+					if (changeObject.fromObject_id != null )
 						sdLineModel.fromObject		= diagramManager.diagramModel.getModelByID(changeObject.fromObject_id);	
-					else
-						sdLineModel.fromObject		= null;
+
 					
-					if (sdLineModel.fromObject && changeObject.fromPoint_id && changeObject.fromPoint_id.toString() != '')
+					if (sdLineModel.fromObject != null && changeObject.fromPoint_id != null )
 						sdLineModel.fromPoint		= sdLineModel.fromObject.getConnectionPoint(changeObject.fromPoint_id);
-					else 
-						sdLineModel.fromPoint		= null;
+
 					
-					if (changeObject.toObject_id && changeObject.toObject_id != '')
+					if (changeObject.toObject_id != null )
 						sdLineModel.toObject		= diagramManager.diagramModel.getModelByID(changeObject.toObject_id);	
-					else
-						sdLineModel.toObject		= null;
+
 					
-					if (sdLineModel.toObject && changeObject.toPoint_id && changeObject.toPoint_id.toString() != '') {
+					if (sdLineModel.toObject != null && changeObject.toPoint_id != null)
 		        sdLineModel.toPoint		= sdLineModel.toObject.getConnectionPoint(changeObject.toPoint_id);
-		        Logger.info("process_LineChange toPoint.id= " + sdLineModel.toPoint.id);
-					} else
-						sdLineModel.toPoint		= null;
+
 					
 					sdObjectModel = sdLineModel;
 					break;

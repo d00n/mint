@@ -162,7 +162,7 @@ package com.simplediagrams.view.SDComponents
 				
 				case "text":
 					text = String(event.newValue)
-					this.invalidateProperties()
+//					this.invalidateProperties()
 					
 			}
 			
@@ -256,11 +256,12 @@ package com.simplediagrams.view.SDComponents
 		{
 			Logger.info("onTextAreaChange",this);
 			
-			// XXX causes a model update, which makes the RichTextEditor lose focus
-//			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_CHANGED, true);	
-//			rsoEvent.sdObjects.addItem(_model);
-//			rsoEvent.text = mainText.text;
-//			dispatchEvent(rsoEvent);				
+			if (mainText.text != _model.text) {
+    	  var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_CHANGED, true);	
+		    rsoEvent.sdObjects.addItem(_model);
+			  rsoEvent.text = mainText.text;
+			  dispatchEvent(rsoEvent);
+			}
 		}
 		
 		public function onMouseDown(event:MouseEvent):void

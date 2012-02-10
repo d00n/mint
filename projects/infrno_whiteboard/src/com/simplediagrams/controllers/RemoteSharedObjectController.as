@@ -444,19 +444,23 @@ package com.simplediagrams.controllers
 					sd_obj.text									= event.text;	
 				}
 				
-				_remoteSharedObject.setProperty(sd_obj.id.toString(), sd_obj);
+				_remoteSharedObject.setProperty(sd_obj.id.toString() +"_text", sd_obj);
 			}
 		}
 		
 		public function processUpdate_TextChanged(changeObject:Object) : void {
 			Logger.info("processUpdate_TextChanged()",this);
 			
-			var id:int = changeObject.id;
+//			var id_with_text:String = changeObject.id;
+//			var id_string:String = id_with_text.substr(0, id_with_text.length-5);
+//			var id:int = parseInt(id_string);
+			
+			var id:int  = changeObject.id;
 			switch ( changeObject.sdObjectModelType) {
 				case "SDSymbolModel": {
 					var sdSymbolModel:SDSymbolModel = diagramManager.diagramModel.getModelByID(id) as SDSymbolModel;
 					
-					if (sdSymbolModel != null) {
+					if (sdSymbolModel != null && sdSymbolModel.text != changeObject.text) {
   					sdSymbolModel.text		 			= changeObject.text;
 					}
 					break;
@@ -464,7 +468,7 @@ package com.simplediagrams.controllers
 				case "SDTextAreaModel": {
 					var sdTextAreaModel:SDTextAreaModel = diagramManager.diagramModel.getModelByID(id) as SDTextAreaModel;	
 					
-					if (sdTextAreaModel != null){
+					if (sdTextAreaModel != null && sdTextAreaModel.text != changeObject.text){
   					sdTextAreaModel.text			 					= changeObject.text;
 					}
 					break;
@@ -480,7 +484,7 @@ package com.simplediagrams.controllers
 		[Mediate(event="RemoteSharedObjectEvent.PENCIL_DRAWING_CREATED")]
 		[Mediate(event="RemoteSharedObjectEvent.UPDATE_DEPTHS")]
 		[Mediate(event="RemoteSharedObjectEvent.OBJECT_CHANGED")]
-		public function dispatchUpdate_ObjectChanged(event:RemoteSharedObjectEvent) : void {
+  	public function dispatchUpdate_ObjectChanged(event:RemoteSharedObjectEvent) : void {
 			Logger.info("dispatchUpdate_ObjectChanged() event:"+event.type,this);
 			
 			for each (var sdObjectModel:SDObjectModel in event.sdObjects)
@@ -500,14 +504,6 @@ package com.simplediagrams.controllers
 				sd_obj.color 				= sdObjectModel.color;	
 				sd_obj.depth 				= sdObjectModel.depth;	
 				
-				if (sdObjectModel.width < 0) {
-					Logger.error("dispatchUpdate_ObjectChanged() sdObjectModel.width is negative: " + sdObjectModel.width, this);
-				}
-				
-				if (sdObjectModel.height < 0){
-					Logger.error("dispatchUpdate_ObjectChanged() sdObjectModel.height is negative: " + sdObjectModel.height, this);
-				}
-				
 				if (sdObjectModel is SDSymbolModel){
 					var sdSymbolModel:SDSymbolModel = sdObjectModel as SDSymbolModel;
 					
@@ -520,7 +516,9 @@ package com.simplediagrams.controllers
 					sd_obj.textAlign 					= sdSymbolModel.textAlign;
 					sd_obj.textPosition				= sdSymbolModel.textPosition;	
 					sd_obj.text								= sdSymbolModel.text;	
-					sd_obj.lineWeight 				= sdSymbolModel.lineWeight;
+					sd_obj.lineWeight 				= sdSymbolModel.lineWeight;			
+					sd_obj.text               = sdSymbolModel.text;	
+
 				}
 				else if (sdObjectModel is SDImageModel){
 					var sdImageModel:SDImageModel = sdObjectModel as SDImageModel;
@@ -589,13 +587,14 @@ package com.simplediagrams.controllers
 					sd_obj.fontSize 						= sdTextAreaModel.fontSize;
 					sd_obj.fontWeight 					= sdTextAreaModel.fontWeight;				
 					sd_obj.fontFamily 					= sdTextAreaModel.fontFamily;				
-					sd_obj.text									= sdTextAreaModel.text;	
 					sd_obj.backgroundColor			= sdTextAreaModel.backgroundColor;	
 					sd_obj.showTape       			= sdTextAreaModel.showTape;	
-					
+					sd_obj.text                 = sdTextAreaModel.text;	
+
 					Logger.info("dispatchUpdate_ObjectChanged() sdTextAreaModel.text=" + sdTextAreaModel.text + ", depth=" + sdTextAreaModel.depth.toString() + ", depth=" + sdTextAreaModel.depth.toString(), this);
 				}
 				
+								
 				_remoteSharedObject.setProperty(sd_obj.id.toString(), sd_obj);
 			}
 		}

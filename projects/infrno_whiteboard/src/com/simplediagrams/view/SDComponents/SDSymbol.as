@@ -3,6 +3,7 @@ package com.simplediagrams.view.SDComponents
 	
 	import com.simplediagrams.errors.SymbolNotFoundError;
 	import com.simplediagrams.events.EditSDComponentTextEvent;
+	import com.simplediagrams.events.RemoteSharedObjectEvent;
 	import com.simplediagrams.model.ApplicationModel;
 	import com.simplediagrams.model.LibraryManager;
 	import com.simplediagrams.model.SDObjectModel;
@@ -360,6 +361,14 @@ package com.simplediagrams.view.SDComponents
 		protected function onTextAreaChange(event:Event):void
 		{
 			textYPos = getTextYPosition();
+			
+			if (retSymbolText.text != _model.text) {
+  			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_CHANGED, true);	
+	  		rsoEvent.sdObjects.addItem(_model);
+		  	rsoEvent.text = retSymbolText.text;
+			  dispatchEvent(rsoEvent);				
+			}
+
 		}
 		
 		protected function onTextAreaFocusOut(event:FocusEvent):void

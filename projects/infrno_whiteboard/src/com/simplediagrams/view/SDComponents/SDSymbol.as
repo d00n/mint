@@ -368,7 +368,6 @@ package com.simplediagrams.view.SDComponents
 		  	rsoEvent.text = retSymbolText.text;
 			  dispatchEvent(rsoEvent);				
 			}
-
 		}
 		
 		protected function onTextAreaFocusOut(event:FocusEvent):void

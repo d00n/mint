@@ -127,7 +127,6 @@ package com.simplediagrams.view.SDComponents
 	
 		override protected function onModelChange(event:PropertyChangeEvent):void
 		{
-			Logger.info("onModelChange event.property= " + event.property, this);
 			super.onModelChange(event)
 			invalidateProperties()
 					

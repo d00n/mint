@@ -583,7 +583,6 @@ package com.simplediagrams.controllers
 			execCommands(commands);
 			
 			
-			// XXX disabled while testing event dispatch from SDObjectModel
 			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
 			rsoEvent.sdObjects = diagramManager.diagramModel.selectedObjects;
 			dispatcher.dispatchEvent(rsoEvent);
@@ -690,13 +689,6 @@ package com.simplediagrams.controllers
 			cmd.execute();
 			undoRedoManager.push(cmd);
 			
-//			Logger.debug("onLoadComplete() about to dispatch RemoteSharedObjectEvent.LOAD_IMAGE, _currModelForImageLoad.sdID=" + _currModelForImageLoad.sdID,this)
-			
-			// Load the image locally for the uploading user
-			// ..and fire the rsoEvent from DiagramModel.addSDObjectModel when imageURL is valid
-			// TODO: Throw a SimpleDiagramsImageLoadCompleteEvent instead 	
-			
-			// RSO TODO
 			var remoteSharedObjectEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LOAD_IMAGE, true, true);
 			remoteSharedObjectEvent.imageData = _fileReference.data;
 			remoteSharedObjectEvent.imageName = _fileReference.name;

@@ -260,6 +260,10 @@ package com.simplediagrams.controllers
 			var i:int;
 			var recordName:String;
 			var changeObject:Object;
+			
+			var lineChangeObjects:ArrayCollection = new ArrayCollection();
+			var deleteChangeObjects:ArrayCollection = new ArrayCollection();
+			
 			for (i = 0; i < event.changeList.length; i++) {
 				switch (event.changeList[i].code){
 					case SUCCESS:   
@@ -276,49 +280,30 @@ package com.simplediagrams.controllers
 						recordName = event.changeList[i].name;
 						changeObject = event.target.data[recordName];
 						
-						if (changeObject.commandName == "ObjectChanged" && changeObject.sdObjectModelType != "SDLineModel") {
-     					processUpdate_ObjectChanged(changeObject);
-						}
-				    if (changeObject.commandName ==  "ConfigureGrid") {
+						if (changeObject.commandName == "ObjectChanged")
+						  if (changeObject.sdObjectModelType == "SDLineModel") 
+							  lineChangeObjects.addItem(changeObject);
+							else
+     				  	processUpdate_ObjectChanged(changeObject);
+						
+				    if (changeObject.commandName ==  "ConfigureGrid") 
 					    processUpdate_ConfigureGrid(changeObject);
-						}
-				    if (changeObject.commandName ==  "TextChanged") {
+						
+				    if (changeObject.commandName ==  "TextChanged") 
 							processUpdate_TextChanged(changeObject);
-						}
+						
+						if (changeObject.commandName == "DeleteSelectedSDObjectModel")
+							deleteChangeObjects.addItem(changeObject);
+						
 						break;
 					}
 				}
 			}
 				
-			for (i = 0; i < event.changeList.length; i++) {
-				switch (event.changeList[i].code){
-					case SUCCESS:   
-						break;
-					case CHANGE:  {
-						Logger.info("onSyncEventHandler Line pass, event.changeList[" +i + "].name:" + event.changeList[i].name,this);	
-						recordName = event.changeList[i].name;
-						changeObject = event.target.data[recordName];
-      			if (changeObject.commandName == "ObjectChanged" && changeObject.sdObjectModelType == "SDLineModel")
-     					processUpdate_LineChanged(changeObject);
-						break;
-					}
-				}
-			}
+			for each(var lineChangeObject:Object in lineChangeObjects)
+  		  processUpdate_LineChange(lineChangeObject);
 				
-			for (i = 0; i < event.changeList.length; i++) {
-				switch (event.changeList[i].code){
-					case SUCCESS:   
-						break;
-					case CHANGE:  {
-						Logger.info("onSyncEventHandler delete pass, event.changeList[" +i + "].name:" + event.changeList[i].name,this);	
-						recordName = event.changeList[i].name;
-						changeObject = event.target.data[recordName];
-      			if (changeObject.commandName == "DeleteSelectedSDObjectModel")
-    					processUpdate_DeleteSelectedFromModel(changeObject);
-						break;
-					}
-				}
-			}
+			processUpdate_DeleteChangeObjects(deleteChangeObjects);
 		}
 	
 //		private function routeChange(changeObject:Object) : void {
@@ -386,11 +371,14 @@ package com.simplediagrams.controllers
 			dispatcher.dispatchEvent(rsoEvent);   
 		}	
 		
-		public function processUpdate_DeleteSelectedFromModel(changeObject:Object):void {
-			Logger.info("processUpdate_DeleteSelectedFromModel()",this);
-			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.PROCESS_DELETE_SELECTED_FROM_MODEL);	
-			rsoEvent.idAC.addItem(changeObject.id);
-			dispatcher.dispatchEvent(rsoEvent);   
+		public function processUpdate_DeleteChangeObjects(deleteChangeObjects:ArrayCollection):void {
+  	  var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.PROCESS_DELETE_SELECTED_FROM_MODEL);	
+			for each(var changeObject:Object in deleteChangeObjects) {
+			  Logger.info("processUpdate_DeleteSelectedFromModel() changeObject.id:"+changeObject.id.toString(),this);
+			  rsoEvent.idAC.addItem(changeObject.id);
+			}
+
+	    dispatcher.dispatchEvent(rsoEvent);   
 		}
 		
 //		[Mediate(event="GridEvent.SHOW_GRID")]    
@@ -495,6 +483,7 @@ package com.simplediagrams.controllers
 				
 				var sd_obj:Object = {};
 				sd_obj.commandName 	= "ObjectChanged";
+//				sd_obj.sdID         = null;
 				sd_obj.id    				= sdObjectModel.id;							
 				sd_obj.x 						= sdObjectModel.x;
 				sd_obj.y 						= sdObjectModel.y;		
@@ -550,23 +539,23 @@ package com.simplediagrams.controllers
 					if (sdLineModel.fromObject)
 						sd_obj.fromObject_id 					= sdLineModel.fromObject.id;	
 					else
-						sd_obj.fromObject_id 					= '';
+						sd_obj.fromObject_id 					= null
 					
 					if (sdLineModel.toObject)
 						sd_obj.toObject_id 						= sdLineModel.toObject.id;	
 					else
-						sd_obj.toObject_id 						= '';
+						sd_obj.toObject_id 						= null
 					
 					if (sdLineModel.fromPoint) {
 					  sd_obj.fromPoint_id 					= sdLineModel.fromPoint.id;	
 					} else {
-					  sd_obj.fromPoint_id 					= '';
+					  sd_obj.fromPoint_id 					= null
 					}
 					
 					if (sdLineModel.toPoint) {
   					sd_obj.toPoint_id 			  		= sdLineModel.toPoint.id;	
 					}else{
-  					sd_obj.toPoint_id 			  		= '';
+  					sd_obj.toPoint_id 			  		= null
 					}
 					
 				}
@@ -604,6 +593,9 @@ package com.simplediagrams.controllers
 			var isCorruptObject:Boolean = false;
 			
 			var id:int = changeObject.id;
+//			if (changeObject.id == null)
+//				id = -1;
+			
 			var sdObjectModel:SDObjectModel;			
 			switch ( changeObject.sdObjectModelType) {
 				case "SDSymbolModel": {
@@ -612,6 +604,8 @@ package com.simplediagrams.controllers
 					if (sdSymbolModel == null) {
 						var libraryName:String = changeObject.libraryName;
 						var symbolName:String = changeObject.symbolName;
+						
+						libraryName = libraryName.replace(/shapelibrary/, "shapeLibrary");
 						
 						sdSymbolModel = new SDSymbolModel();
 						
@@ -755,11 +749,16 @@ package com.simplediagrams.controllers
 				diagramManager.diagramModel.sdObjects.addItem(sdObjectModel);
 //				diagramManager.diagramModel.addComponentForModel(sdObjectModel, false);
 			}
-
+			
+//			if (changeObject.id == null) {
+//				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
+//				rsoEvent.sdObjects.addItem(sdObjectModel);
+//				dispatcher.dispatchEvent(rsoEvent);			
+//			}
 		}		
 		
-		public function processUpdate_LineChanged(changeObject:Object) : void {
-			Logger.info("processUpdate_LineChanged()",this);
+		public function processUpdate_LineChange(changeObject:Object) : void {
+			Logger.info("processUpdate_LineChangeObjects()",this);
 			
 			var id:int = changeObject.id;
 			var sdObjectModel:SDObjectModel;			

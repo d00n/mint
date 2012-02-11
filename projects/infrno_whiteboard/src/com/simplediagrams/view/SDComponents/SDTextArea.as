@@ -162,7 +162,7 @@ package com.simplediagrams.view.SDComponents
 				
 				case "text":
 					text = String(event.newValue)
-//					this.invalidateProperties()
+					this.invalidateProperties()
 					
 			}
 			

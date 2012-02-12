@@ -22,6 +22,7 @@ package com.simplediagrams.model
 		public var maintainProportion:Boolean = false;
 		public var colorizable:Boolean = true;
 		public var allowRotation:Boolean = true;
+		public var isLocked:Boolean = false;
 		public var depth:Number = -1;
 		public var connectionPoints:Array = [new ConnectionPoint(0, 0,0.5), new ConnectionPoint(1, 1.0,0.5), new ConnectionPoint(2, 0.5, 0 ), new ConnectionPoint(3, 0.5, 1)];
 		

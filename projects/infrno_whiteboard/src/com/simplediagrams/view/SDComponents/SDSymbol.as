@@ -127,6 +127,7 @@ package com.simplediagrams.view.SDComponents
 			
 			color = _model.color
 			
+			isLocked = _model.isLocked;
 			x = _model.x;
 			y = _model.y;
 			width = _model.width

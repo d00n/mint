@@ -1157,5 +1157,22 @@ package com.simplediagrams.controllers
 			dispatcher.dispatchEvent(rsoEvent);			
 		}
 		
+		[Mediate(event='LockEvent.LOCK')]
+		[Mediate(event='LockEvent.UNLOCK')]
+		public function lockObject(event:LockEvent):void
+		{
+			var seletedItems:Array = diagramManager.diagramModel.selectedObjects.source;
+			for each(var seletedItem:SDObjectModel in seletedItems)
+			{
+				if (event.type == LockEvent.LOCK)
+					seletedItem.isLocked = true;
+				else
+					seletedItem.isLocked = false;
+			}
+			
+			var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);
+			rsoEvent.sdObjects = new ArrayCollection(diagramManager.diagramModel.selectedObjects.source);
+			dispatcher.dispatchEvent(rsoEvent);
+		}		
 	}
 }

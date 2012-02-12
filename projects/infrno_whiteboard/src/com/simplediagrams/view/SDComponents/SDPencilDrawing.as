@@ -42,6 +42,7 @@ package com.simplediagrams.view.SDComponents
 		{        
             _model = SDPencilDrawingModel(objectModel)
             
+			isLocked = _model.isLocked;
             x = _model.x;
             y = _model.y;         
 		  	width = _model.width

@@ -67,6 +67,7 @@ package com.simplediagrams.view.SDComponents
 		{     
 			_model = SDTextAreaModel(objectModel) 
 			
+			isLocked = _model.isLocked;
 			x = _model.x;
 			y = _model.y;            
 			

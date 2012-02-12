@@ -2,6 +2,7 @@ package com.simplediagrams.view.SDComponents
 {
 	import com.simplediagrams.events.ChangeDepthEvent;
 	import com.simplediagrams.events.ConnectionEvent;
+	import com.simplediagrams.events.LockEvent;
 	import com.simplediagrams.events.RemoteSharedObjectEvent;
 	import com.simplediagrams.model.SDObjectModel;
 	import com.simplediagrams.util.Logger;
@@ -35,8 +36,12 @@ package com.simplediagrams.view.SDComponents
 		private var moveBackwardCMI:ContextMenuItem
 		private var moveForwardCMI:ContextMenuItem
 		private var moveToFrontCMI:ContextMenuItem
+		private var lockCMI:ContextMenuItem
+		private var unlockCMI:ContextMenuItem
 		
 		private var _sdID:String;
+		public var isLocked:Boolean;
+		private var _contextMenu:ContextMenu;
 				
 		public function SDBase()
 		{
@@ -62,22 +67,37 @@ package com.simplediagrams.view.SDComponents
 			moveToFrontCMI = new ContextMenuItem("Move to front ",false, true);
 			moveToFrontCMI.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, moveToFrontSelected);
 			
-			var cm:ContextMenu = new ContextMenu()
+		  unlockCMI = new ContextMenuItem("Unlock",false, true);
+		  unlockCMI.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, unlockSelected);
 				
-			cm.builtInItems.forwardAndBack = false;
-			cm.builtInItems.loop = false;
-			cm.builtInItems.play = false;
-			cm.builtInItems.print = false;
-			cm.builtInItems.quality = false;
-			cm.builtInItems.rewind = false;
-			cm.builtInItems.save = false;
-			cm.builtInItems.zoom = false;
+		  lockCMI = new ContextMenuItem("Lock",false, true);
+		  lockCMI.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, lockSelected);
 			
-			cm.customItems = [moveToBackCMI, moveBackwardCMI, moveForwardCMI, moveToFrontCMI]
+			_contextMenu = new ContextMenu()
+				
+			_contextMenu.builtInItems.forwardAndBack = false;
+			_contextMenu.builtInItems.loop = false;
+			_contextMenu.builtInItems.play = false;
+			_contextMenu.builtInItems.print = false;
+			_contextMenu.builtInItems.quality = false;
+			_contextMenu.builtInItems.rewind = false;
+			_contextMenu.builtInItems.save = false;
+			_contextMenu.builtInItems.zoom = false;
+			
+			_contextMenu.customItems = [moveToBackCMI, moveBackwardCMI, moveForwardCMI, moveToFrontCMI, lockCMI, unlockCMI]
+//			updateContextMenu();
 		
-			this.contextMenu = cm
+			this.contextMenu = _contextMenu
 				
 		}
+		
+//		private function updateContextMenu():void{
+//			if (isLocked) {
+//				_contextMenu.customItems = [moveToBackCMI, moveBackwardCMI, moveForwardCMI, moveToFrontCMI, unlockCMI]
+//			} else {
+//				_contextMenu.customItems = [moveToBackCMI, moveBackwardCMI, moveForwardCMI, moveToFrontCMI, lockCMI]
+//			}
+//		}
 		
 		public function get sdID():String
 		{
@@ -116,6 +136,18 @@ package com.simplediagrams.view.SDComponents
 			var eventChangeDepth:ChangeDepthEvent = new ChangeDepthEvent(ChangeDepthEvent.MOVE_TO_FRONT, true);
 			eventChangeDepth.sdID = this.sdID;
 			dispatchEvent(eventChangeDepth);
+		}		
+		
+		public function lockSelected(event:ContextMenuEvent):void
+		{
+			var lockEvent:LockEvent = new LockEvent(LockEvent.LOCK, true);
+			dispatchEvent(lockEvent);
+		}
+
+		public function unlockSelected(event:ContextMenuEvent):void
+		{
+			var lockEvent:LockEvent = new LockEvent(LockEvent.UNLOCK, true);
+			dispatchEvent(lockEvent);
 		}
 
 		
@@ -159,6 +191,11 @@ package com.simplediagrams.view.SDComponents
                 case "height":    
                 	height = event.newValue as Number
                 	break
+                	                            
+//                case "isLocked":    
+//                	isLocked = event.newValue as Boolean;
+//									updateContextMenu();
+//                	break
                 	                            
                 case "imageSource":
                 	//TODO	
@@ -212,6 +249,8 @@ package com.simplediagrams.view.SDComponents
 			moveBackwardCMI.removeEventListener(ContextMenuEvent.MENU_ITEM_SELECT, moveBackwardSelected);
 			moveForwardCMI.removeEventListener(ContextMenuEvent.MENU_ITEM_SELECT, moveForwardSelected);
 			moveToFrontCMI.removeEventListener(ContextMenuEvent.MENU_ITEM_SELECT, moveToFrontSelected);	
+			lockCMI.removeEventListener(LockEvent.LOCK, lockSelected);	
+			lockCMI.removeEventListener(LockEvent.UNLOCK, unlockSelected);	
 			contextMenu = null				
 		}
 	

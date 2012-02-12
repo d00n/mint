@@ -11,7 +11,6 @@ package com.simplediagrams.model.tools
 	import com.simplediagrams.view.startup.RecentDiagramsItemRenderer;
 	
 	import flash.events.Event;
-//	import flash.events.IEventDispatcher;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -156,8 +155,9 @@ package com.simplediagrams.model.tools
 			{
 				startDragPoint = new Point( toolMouseInfo.x,  toolMouseInfo.y);
 				currentDragPoint = startDragPoint;
-				
-				if(toolMouseInfo.target is SDObjectModel)
+
+				var sdObjectModel:SDObjectModel = toolMouseInfo.target as SDObjectModel;
+				if(sdObjectModel && !sdObjectModel.isLocked)
 					currentDragRole = HandleRoles.MOVE;
 				else
 					currentDragRole = uint(toolMouseInfo.target);

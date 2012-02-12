@@ -492,6 +492,7 @@ package com.simplediagrams.controllers
 				sd_obj.rotation			= sdObjectModel.rotation;		
 				sd_obj.color 				= sdObjectModel.color;	
 				sd_obj.depth 				= sdObjectModel.depth;	
+				sd_obj.isLocked 		= sdObjectModel.isLocked;	
 				
 				if (sdObjectModel is SDSymbolModel){
 					var sdSymbolModel:SDSymbolModel = sdObjectModel as SDSymbolModel;
@@ -706,6 +707,7 @@ package com.simplediagrams.controllers
 			sdObjectModel.height		= changeObject.height;
 			sdObjectModel.rotation	= changeObject.rotation;
 			sdObjectModel.depth 		= changeObject.depth;
+			sdObjectModel.isLocked	= changeObject.isLocked;
 			
 			var placementDetails:String = ">>" + changeObject.sdObjectModelType + stateString(changeObject);
 //			
@@ -810,6 +812,7 @@ package com.simplediagrams.controllers
 			sdObjectModel.height		= changeObject.height;
 			sdObjectModel.rotation	= changeObject.rotation;
 			sdObjectModel.depth 		= changeObject.depth;
+			sdObjectModel.isLocked	= changeObject.isLocked;
 			
 	
 			var placementDetails:String = ">>" + changeObject.sdObjectModelType + stateString(changeObject);

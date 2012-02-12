@@ -93,6 +93,7 @@ package com.simplediagrams.view.SDComponents
 			_model = SDImageModel(objectModel)
 			
 			//redraw();
+			isLocked = _model.isLocked;
 			x = _model.x;
 			y = _model.y;         
 			this.width = _model.width

@@ -50,7 +50,7 @@
 				imageProxy.height = 50;
 				imageProxy.width = 50;
 				
-				DragManager.doDrag(this, dragSource, event, imageProxy, -xOffset, -yOffset );
+				DragManager.doDrag(this, dragSource, event, imageProxy, -xOffset, -yOffset, .1 );
 //				DragManager.doDrag(this, dragSource, event, dragItemRenderer, xOffset, yOffset);
 			}
 			
@@ -237,7 +237,7 @@
 			styleName="libraryTileList" dataProvider="{library.items}"
 			dragStart="onDragStart(event)" width="100%" height="100%">
 		<s:layout>
-			<s:TileLayout horizontalGap="7" verticalGap="7" columnWidth="50" rowHeight="50"/>
+			<s:TileLayout horizontalGap="0" verticalGap="0" columnWidth="35" rowHeight="35" />
 		</s:layout>
 	</s:List>
 	<s:Image verticalCenter="0" horizontalCenter="0" source="@Embed('assets/img/drag_here_from_desktop.png')" 

@@ -20,6 +20,9 @@
 				}
 			}
 			
+			[Bindable]
+			public var ITEM_SIZE:int = 30;
+			
 			protected override function commitProperties():void
 			{
 				super.commitProperties();
@@ -48,13 +51,13 @@
 						var aspectRatio:Number = model.width/model.height;
 						if(aspectRatio >= 1)
 						{
-							shapePath.width = 40;
-							shapePath.height = 40 / aspectRatio;
+							shapePath.width = ITEM_SIZE;
+							shapePath.height = ITEM_SIZE / aspectRatio;
 						}
 						else
 						{
-							shapePath.height = 40;
-							shapePath.width = 40 * aspectRatio;
+							shapePath.height = ITEM_SIZE;
+							shapePath.width = ITEM_SIZE * aspectRatio;
 						}
 						shapePath.data = (model as VectorShape).path;
 						shapePath.visible = true;
@@ -76,13 +79,13 @@
 		<s:BasicLayout/>
 	</s:layout>
 	
-	<mx:Image id="imgSWF" width="40" height="40" horizontalCenter="0" verticalCenter="0" includeInLayout="false" visible="false" mouseEnabled="false" mouseChildren="false" />
+	<mx:Image id="imgSWF" width="{ITEM_SIZE}" height="{ITEM_SIZE}" horizontalCenter="0" verticalCenter="0" includeInLayout="false" visible="false" mouseEnabled="false" mouseChildren="false" />
 	
-	<components:ShapePath id="shapePath" width="40" height="40" horizontalCenter="0" verticalCenter="0"  includeInLayout="false"  visible="false">
+	<components:ShapePath id="shapePath" width="{ITEM_SIZE}" height="{ITEM_SIZE}" horizontalCenter="0" verticalCenter="0"  includeInLayout="false"  visible="false">
 		
 	</components:ShapePath>		
 	
-	<s:BitmapImage smooth="true" smoothingQuality="high" id="iconImage" scaleMode="letterbox" width="40" height="40" horizontalCenter="0" verticalCenter="0"  includeInLayout="false"  visible="false"/>
+	<s:BitmapImage smooth="true" smoothingQuality="high" id="iconImage" scaleMode="letterbox" width="{ITEM_SIZE}" height="{ITEM_SIZE}" horizontalCenter="0" verticalCenter="0"  includeInLayout="false"  visible="false"/>
 	
 	
 </s:ItemRenderer>

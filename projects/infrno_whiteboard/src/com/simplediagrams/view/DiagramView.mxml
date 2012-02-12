@@ -98,7 +98,7 @@
 						
 						var deleteEvent:DeleteSDObjectModelEvent = new DeleteSDObjectModelEvent(DeleteSDObjectModelEvent.DELETE_SELECTED_FROM_MODEL, true)
 						dispatchEvent(deleteEvent)
-						FlexGlobals.topLevelApplication.appView.setFocus()
+//						FlexGlobals.topLevelApplication.appView.setFocus()
 						break					
 				}
 			}  
@@ -110,7 +110,7 @@
 					shapesPanel.width = 0;
 				}
 				else{
-					shapesPanel.width = 124;
+					shapesPanel.width = 165;
 				}
 			}  
     			    			

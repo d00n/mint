@@ -9,7 +9,7 @@
     borderColor="#000000" 
 	selectedIndex="@{libraryManager.selectedShapesLibraryIndex}"
 	headerStyleName="customAccordionHeadStyles" 
-	xmlns:itemRenderers="com.simplediagrams.view.itemRenderers.*"
+	xmlns:itemRenderers="com.simplediagrams.view.itemRenderers.*" 
 	>	
 	<fx:Script>
 		<![CDATA[

@@ -110,7 +110,7 @@
 					shapesPanel.width = 0;
 				}
 				else{
-					shapesPanel.width = 165;
+					shapesPanel.width = 170;
 				}
 			}  
     			    			

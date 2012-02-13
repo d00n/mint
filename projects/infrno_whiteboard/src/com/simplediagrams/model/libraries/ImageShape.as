@@ -9,5 +9,7 @@ package com.simplediagrams.model.libraries
 		
 		//This is the file name within the library
 		public var path:String;
+		
+		public var assetPath:String;
 	}
 }

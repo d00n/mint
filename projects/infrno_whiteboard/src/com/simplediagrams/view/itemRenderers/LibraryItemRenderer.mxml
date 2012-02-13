@@ -34,14 +34,14 @@
 					
 					if (model is SWFShape)
 					{
-						imgSWF.source = LibraryManager.getAssetPath(model, (model as SWFShape).path);
+						imgSWF.source = (model as SWFShape).assetPath;
 						imgSWF.includeInLayout = true;
 						iconImage.visible = false
 						imgSWF.visible = true;
 					}
 					else if (model is ImageShape)
 					{
-						iconImage.source = LibraryManager.getAssetPath(model, (model as ImageShape).path);
+						iconImage.source = (model as ImageShape).assetPath;
 						iconImage.visible = true;
 						iconImage.includeInLayout = true;
 						imgSWF.visible = false

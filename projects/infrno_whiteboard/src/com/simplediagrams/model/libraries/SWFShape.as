@@ -11,5 +11,7 @@ package com.simplediagrams.model.libraries
 		public var path:String;
 		public var maintainAspectRatio:Boolean = false
 		public var startWithShapeDefaultColor:Boolean = false
+			
+		public var assetPath:String;
 	}
 }

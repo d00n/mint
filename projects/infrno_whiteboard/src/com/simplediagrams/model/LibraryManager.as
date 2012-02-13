@@ -442,14 +442,17 @@ package com.simplediagrams.model
 				return chalkboard;
 			else
 //				return ApplicationModel.baseStorageDir.resolvePath("libraries/" + libItem.libraryName + "/" + path).url;
-   			return RemoteLibraryController.assetPath(libItem);
+   			return remoteLibraryController.assetPath(libItem);
 			
 		}
 		
 		public static function getAssetPath(libItem:LibraryItem, path:String):String
 		{
+			Logger.error("static LibraryManager.getAssetPath() should not be called");
+			return null;
+			
 //			return ApplicationModel.baseStorageDir.resolvePath("libraries/" + libItem.libraryName + "/" + path).url;
-			return RemoteLibraryController.assetPath(libItem);
+//			return RemoteLibraryController.assetPath(libItem);
 		}
 		
 		private function getByteContent(libName:String, path:String):ByteArray

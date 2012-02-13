@@ -255,7 +255,7 @@ package com.simplediagrams.view.SDComponents
 		
 		protected function onTextAreaChange(event:Event):void
 		{
-			Logger.info("onTextAreaChange",this);
+//			Logger.info("onTextAreaChange",this);
 			
 			if (mainText.text != _model.text) {
     	  var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.TEXT_CHANGED, true);	

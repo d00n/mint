@@ -154,7 +154,7 @@ package com.simplediagrams.view.SDComponents
 			}
 			if (libraryItem is SWFShape)
 			{
-				swfPath = LibraryManager.getAssetPath(libraryItem, (libraryItem as SWFShape).path);
+				swfPath = (libraryItem as SWFShape).assetPath;
 			}
 			if (libraryItem is VectorShape)
 			{					

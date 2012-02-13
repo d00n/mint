@@ -3,6 +3,7 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.business.RemoteLibraryDelegate;
 	import com.simplediagrams.business.RemoteLibraryRegistryDelegate;
 	import com.simplediagrams.events.RemoteLibraryEvent;
+	import com.simplediagrams.events.RemoteSharedObjectEvent;
 	import com.simplediagrams.model.libraries.ImageBackground;
 	import com.simplediagrams.model.libraries.ImageShape;
 	import com.simplediagrams.model.libraries.LibraryInfo;
@@ -24,13 +25,37 @@ package com.simplediagrams.controllers
 		
 		private var _remoteLibraryDelegateAC:ArrayCollection = new ArrayCollection();
 		
-		private static var HOST:String = "http://localhost";
+		private var _auth_key:String;
+		private var _room_id:String;
+		private var _room_name:String;
+		private var _user_name:String;
+		private var _user_id:String;
+		private var _image_server:String;
+		private var _wowza_server:String;
+		private var _wowza_whiteboard_app:String;
+		private var _wowza_whiteboard_port:String;
+		
+
 		private static var PATH:String = "/libraries/";
 		private var url:String;
 		
 		public function RemoteLibraryController()
 		{
 		}
+		
+		[Mediate(event="RemoteSharedObjectEvent.LOAD_FLASHVARS")]
+		public function loadFlashvars(event:RemoteSharedObjectEvent):void {
+			Logger.info("loadFlashVars", this);
+			_auth_key 				= event.auth_key;
+			_room_id 				= event.room_id;			
+			_room_name 				= event.room_name;			
+			_user_name 				= event.user_name;
+			_user_id 				= event.user_id;
+			_image_server 			= event.image_server;
+			_wowza_server 			= event.wowza_server;
+			_wowza_whiteboard_app 	= event.wowza_whiteboard_app;
+			_wowza_whiteboard_port 	= event.wowza_whiteboard_port;
+		}		
 		
 		public function loadRegistry():void{
 			remoteLibraryRegistryDelegate.loadRegistry();
@@ -41,7 +66,7 @@ package com.simplediagrams.controllers
 		  var remoteLibraryDelegate:RemoteLibraryDelegate = new RemoteLibraryDelegate();
 			_remoteLibraryDelegateAC.addItem(remoteLibraryDelegate);
 		  remoteLibraryDelegate.libInfo = libInfo;
-		  remoteLibraryDelegate.url = HOST + PATH + libInfo.name + "/";
+		  remoteLibraryDelegate.url = _image_server + PATH + libInfo.name + "/";
 		  remoteLibraryDelegate.readLibrary();
 			
 			dispatcher.dispatchEvent(new BeanEvent(BeanEvent.SET_UP_BEAN, remoteLibraryDelegate));
@@ -59,13 +84,13 @@ package com.simplediagrams.controllers
 //				_remoteLibraryDelegateAC = null;
 		}
 		
-		public static function assetPath(libItem:LibraryItem):String{
+		public function assetPath(libItem:LibraryItem):String{
 			if (libItem == null){
 				Logger.error("RemoteLibraryController.assetPath was passed a null libItem");
 				return '';
 			}
 			
-			var path:String = HOST + PATH + libItem.libraryName +'/';	
+			var path:String = _image_server + PATH + libItem.libraryName +'/';	
 			if  (libItem is ImageShape)  {
 				path = path + (libItem as ImageShape).path;
 			}else if (libItem is SWFShape)  {

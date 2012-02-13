@@ -81,10 +81,11 @@ package com.simplediagrams.business
 			var imageBackground:ImageBackground = new ImageBackground();
 			readLibraryItem(xml, imageBackground);
 			imageBackground.path = xml.path;
-			imageBackground.thumbnailPath = xml.thumbnailPath;				
+			imageBackground.assetPath = url + xml.path;
+			imageBackground.thumbnailPath = url + xml.thumbnailPath;				
 			if (imageBackground.thumbnailPath=="")
 			{				
-				imageBackground.thumbnailPath = imageBackground.path
+				imageBackground.thumbnailPath = url + imageBackground.path
 			}
 			return imageBackground;
 		}
@@ -95,10 +96,11 @@ package com.simplediagrams.business
 			var swfBackground:SWFBackground = new SWFBackground();
 			readLibraryItem(xml, swfBackground);
 			swfBackground.path = xml.path;
-			swfBackground.thumbnailPath = xml.thumbnailPath;				
+			swfBackground.assetPath = url + xml.path;
+			swfBackground.thumbnailPath = url + xml.thumbnailPath;				
 			if (swfBackground.thumbnailPath=="")
 			{				
-				swfBackground.thumbnailPath = swfBackground.path
+				swfBackground.thumbnailPath = url + swfBackground.path
 			}
 			return swfBackground;
 		}
@@ -108,6 +110,7 @@ package com.simplediagrams.business
 			var imageShape:ImageShape = new ImageShape();
 			readLibraryItem(xml, imageShape);
 			imageShape.path = xml.path;
+			imageShape.assetPath = url + xml.path;
 			return imageShape;
 		}
 		
@@ -116,6 +119,7 @@ package com.simplediagrams.business
 			var swfShape:SWFShape = new SWFShape()
 			readLibraryItem(xml,swfShape)
 			swfShape.path = xml.path
+			swfShape.assetPath = url + xml.path;
 			swfShape.maintainAspectRatio = xml.maintainAspectRatio == "true"
 			swfShape.startWithShapeDefaultColor = xml.startWithShapeDefaultColor == "true"
 			return swfShape

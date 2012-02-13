@@ -9,5 +9,6 @@ package com.simplediagrams.model.libraries
 		public var thumbnailPath:String;
 		public var path:String;
 		
+		public var assetPath:String;
 	}
 }

@@ -14,6 +14,7 @@
 			import com.simplediagrams.view.dialogs.RenameCustomLibraryItemDialog;
 			
 			import mx.controls.Alert;
+			import mx.core.BitmapAsset;
 			import mx.core.DragSource;
 			import mx.core.IFlexDisplayObject;
 			import mx.events.CloseEvent;
@@ -42,14 +43,17 @@
 				
 //				var dragProxy:IFlexDisplayObject; 
 //				var dragItemRenderer:IFlexDisplayObject = IFlexDisplayObject(dragInitiator.dataGroup.getElementAt(dragInitiator.selectedIndex));
+				
+				
 				var xOffset:Number=mouseX ;
 				var yOffset:Number=mouseY;
 				
-				var imageProxy:Image = new Image();
-				imageProxy.source = dragImage;
+				var imageProxy:BitmapAsset = BitmapAsset(new dragImage());
+//				imageProxy.source = dragImage;
 				imageProxy.height = 50;
 				imageProxy.width = 50;
 				
+//				DragManager.doDrag(this, dragSource, event );
 				DragManager.doDrag(this, dragSource, event, imageProxy, -xOffset, -yOffset, .1 );
 //				DragManager.doDrag(this, dragSource, event, dragItemRenderer, xOffset, yOffset);
 			}

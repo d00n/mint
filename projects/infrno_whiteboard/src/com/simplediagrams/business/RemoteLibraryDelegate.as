@@ -161,11 +161,11 @@ package com.simplediagrams.business
 			return library;
 		}
 		
-		public function  readLibrary():void
+		public function  readLibrary(base_lib_url:String):void
 		{
 //			var file:File = ApplicationModel.baseStorageDir.resolvePath("libraries/" + name + "/library.xml");
 			
-			_libUrl = remoteLibraryController.library_url() + libInfo.name + "/";
+			_libUrl = base_lib_url + libInfo.name + "/";
 
 			Logger.info("RemoteLibraryDelegate.readLibrary url: "+ _libUrl +"library.xml", this);
 			var urlRequest:URLRequest = new URLRequest(_libUrl + "library.xml");

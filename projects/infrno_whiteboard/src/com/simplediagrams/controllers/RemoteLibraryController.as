@@ -82,7 +82,7 @@ package com.simplediagrams.controllers
 		  var remoteLibraryDelegate:RemoteLibraryDelegate = new RemoteLibraryDelegate();
 			_remoteLibraryDelegateAC.addItem(remoteLibraryDelegate);
 		  remoteLibraryDelegate.libInfo = libInfo;
-		  remoteLibraryDelegate.readLibrary();
+		  remoteLibraryDelegate.readLibrary(library_url());
 			
 			dispatcher.dispatchEvent(new BeanEvent(BeanEvent.SET_UP_BEAN, remoteLibraryDelegate));
 		}	

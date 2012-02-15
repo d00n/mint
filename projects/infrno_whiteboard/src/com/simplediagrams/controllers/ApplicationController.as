@@ -108,6 +108,7 @@ package com.simplediagrams.controllers
 			LibraryRegistryDelegate;
 			Logger.debug("ApplicationController created.", this);
 			
+			startupLogs += "Whiteboard version:"+ AboutInfo.VERSION +"\r\n";
 			Logger.myLogger.addEventListener(LogEvent.LOG, remoteStartupLogging);
 			
 			//add close listener to intercept application close event
@@ -327,11 +328,6 @@ package com.simplediagrams.controllers
 				dispatcher.dispatchEvent( new CreateNewDiagramEvent(CreateNewDiagramEvent.CREATE_NEW_DIAGRAM, true));
 				
 		}
-		
-//		[Mediate(event="RemoteSharedObjectEvent.SHOW_DIAGRAM")]
-//		public function showDiagram():void{
-//		  appModel.viewing = ApplicationModel.VIEW_DIAGRAM;
-//		}
 		
 		
 		/* ******** */

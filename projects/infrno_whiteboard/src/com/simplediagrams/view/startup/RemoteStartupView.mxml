@@ -3,10 +3,10 @@
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	xmlns:mx="library://ns.adobe.com/flex/mx" 
 	xmlns:view="com.simplediagrams.view.*" 
-	width="620" height="360" 		
+	width="510" height="360" 		
 	horizontalCenter="0"
 	verticalCenter="0"
-	creationComplete="onCC()">
+	creationComplete="onCC()" >
 
 	
 	<s:layout>
@@ -38,16 +38,16 @@
 			public var applicationController:ApplicationController; 
 			
 			
-			[Embed('assets/img/startup_menu_bg.png')]
+			[Embed('assets/img/InfrnoBug_corner_215x360.png')]
 			[Bindable]
-			protected var StartupMenuBG:Class
+			protected var InfrnoBug:Class
 			
 			
 			protected function onCC():void
 			{
 				Logger.debug("onCC()",this)
-				var aboutInfo:AboutInfo = new AboutInfo()
-				lblVersion.text = "Version : " + AboutInfo.applicationVersion 
+				lblVersion.text = AboutInfo.applicationVersion 
+			  loadingStatus.appendText("Whiteboard version:"+ AboutInfo.VERSION +"\r\n");
 			}
 			
 			
@@ -69,7 +69,6 @@
 			
 			protected function onProceed():void
 			{
-//				dispatchEvent(new RemoteSharedObjectEvent(RemoteSharedObjectEvent.SHOW_DIAGRAM));
 				applicationModel.viewing = ApplicationModel.VIEW_DIAGRAM;
 				Logger.myLogger.removeEventListener(LogEvent.LOG, applicationController.remoteStartupLogging);
 				applicationController.startupLogs = null;
@@ -79,35 +78,34 @@
 		]]>
 	</fx:Script>
 	
-    	
-	<s:Image source="{StartupMenuBG}" />
+	<s:Rect width="100%" height="100%">
+		<s:fill><s:SolidColor color="0xFFFFFF" /></s:fill>
+	</s:Rect>
+   	
+	<s:Image source="{InfrnoBug}" right="0" />
 	
-	
-	<mx:VBox width="100%" height="100%">
+	<mx:Label id="lblVersion0"
+				color="#000000"
+				text="Loading..."
+				x="30"
+				y="11" 
+				 width="121" enabled="true"/>
 			
   	<s:TextArea id="loadingStatus"
-          horizontalCenter="0"
-          verticalCenter="0"
-          width="90%"
+          verticalCenter="1"
+          width="450"
 			    height="280" 
-					editable="false"
-	             />
-	  <s:Button label="Copy startup info to clipboard" click="onCopyStartupInfo()" />
-	  <s:Button id="proceedBtn" label="Proceed to game table" click="onProceed()" enabled="false" />
-				
+					editable="false" alpha=".5"
+ horizontalCenter="0"/>
+	  <s:Button id="proceedBtn" label="Proceed to game table" click="onProceed()" enabled="false"  x="30" y="329"/>
+	  <s:Button label="Copy startup info to clipboard" click="onCopyStartupInfo()"  x="184" y="329"/>
 			
-	</mx:VBox>
-		
 
 	<mx:Label id="lblVersion"
-				color="#cddcff"
+				color="#020202"
 				text="V3.0"
-				x="431"
-				y="37" 
-				/>
-
-
-
+				x="418"
+				y="329" 
+				 width="62" textAlign="right" fontWeight="bold"/>
 	
-		
 </s:Group>

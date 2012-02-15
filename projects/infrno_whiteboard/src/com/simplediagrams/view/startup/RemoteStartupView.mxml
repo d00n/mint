@@ -16,6 +16,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import com.simplediagrams.controllers.ApplicationController;
 			import com.simplediagrams.events.*;
 			import com.simplediagrams.model.ApplicationModel;
 			import com.simplediagrams.model.LibraryManager;
@@ -23,43 +24,23 @@
 			import com.simplediagrams.util.AboutInfo;
 			import com.simplediagrams.util.Logger;
 			
+			import flash.desktop.Clipboard;
+			import flash.desktop.ClipboardFormats;
+			
 			import mx.collections.ArrayCollection;
+			import mx.logging.LogEvent;
 			
 			[Bindable]
 			[Inject]
 			public var applicationModel:ApplicationModel;    
 			
-			[Bindable]
 			[Inject]
-			public var library:LibraryManager;    	
+			public var applicationController:ApplicationController; 
 			
-			
-			[Bindable]
-			[Inject]
-			public var settingsModel:SettingsModel;    	
-				    			
 			
 			[Embed('assets/img/startup_menu_bg.png')]
 			[Bindable]
 			protected var StartupMenuBG:Class
-			
-			[Embed('assets/img/icons/diagram_icon.png')]
-			[Bindable]
-			protected var DiagramIcon:Class
-			
-			[Embed('assets/img/icons/diagram_icon.png')]
-			[Bindable]
-			protected var NewDiagramIcon:Class
-			
-			
-			[Embed('assets/img/icons/icon_help.png')]
-			[Bindable]
-			protected var HelpIcon:Class
-			
-			
-			[Embed('assets/img/icons/icon_folder.png')]
-			[Bindable]
-			protected var FolderIcon:Class;
 			
 			
 			protected function onCC():void
@@ -67,7 +48,6 @@
 				Logger.debug("onCC()",this)
 				var aboutInfo:AboutInfo = new AboutInfo()
 				lblVersion.text = "Version : " + AboutInfo.applicationVersion 
-			
 			}
 			
 			
@@ -78,7 +58,8 @@
 
 			protected function onCopyStartupInfo():void
 			{
-				settingsModel.clearAllRecent();
+				Clipboard.generalClipboard.clear(); 
+				Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, applicationController.startupLogs, false); 
 			}
 			
 			[Mediate(event="RemoteSharedObjectEvent.DIAGRAM_LOADED")]
@@ -90,6 +71,8 @@
 			{
 //				dispatchEvent(new RemoteSharedObjectEvent(RemoteSharedObjectEvent.SHOW_DIAGRAM));
 				applicationModel.viewing = ApplicationModel.VIEW_DIAGRAM;
+				Logger.myLogger.removeEventListener(LogEvent.LOG, applicationController.remoteStartupLogging);
+				applicationController.startupLogs = null;
 			}
 		
 			

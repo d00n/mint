@@ -318,7 +318,7 @@ package com.simplediagrams.controllers
 						
 						if (changeObject.commandName == "ObjectChanged") {
        			  var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
-			        rle.status = "Game table load: onSync, pass 1, change " + i.toString();
+			        rle.status = "Game table load: onSync, pass 1, change #" + i.toString() +", object id:" + changeObject.id.toString();
  			        dispatcher.dispatchEvent(rle);
 			
 						  if (changeObject.sdObjectModelType == "SDLineModel") 
@@ -329,7 +329,7 @@ package com.simplediagrams.controllers
 						
 				    if (changeObject.commandName ==  "ConfigureGrid") {
 							var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
-			        rle.status = "Game table load: onSync, pass 1, configure grid, change " + i.toString();
+			        rle.status = "Game table load: onSync, pass 1, configure grid, change #" + i.toString() +", object id:" + changeObject.id.toString();
 							dispatcher.dispatchEvent(rle);
 							
 					    processUpdate_ConfigureGrid(changeObject);
@@ -337,7 +337,7 @@ package com.simplediagrams.controllers
 						
 				    if (changeObject.commandName ==  "TextChanged") {
 							var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
-			        rle.status = "Game table load: onSync, pass 1, text change, change " + i.toString();
+			        rle.status = "Game table load: onSync, pass 1, text edit, change #" + i.toString() +", object id:" + changeObject.id.toString();
 						  dispatcher.dispatchEvent(rle);
 						
 							processUpdate_TextChanged(changeObject);
@@ -345,7 +345,7 @@ package com.simplediagrams.controllers
 						
 						if (changeObject.commandName == "DeleteSelectedSDObjectModel") {
 							var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
-			        rle.status = "Game table load: onSync, pass 1, delete object, change " + i.toString();
+			        rle.status = "Game table load: onSync, pass 1, delete object, change #" + i.toString() +", object id:" + changeObject.id.toString();
 						  dispatcher.dispatchEvent(rle);
 						
 							deleteChangeObjects.addItem(changeObject);
@@ -442,7 +442,7 @@ package com.simplediagrams.controllers
   	  var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.PROCESS_DELETE_SELECTED_FROM_MODEL);	
 			for each(var changeObject:Object in deleteChangeObjects) {
   		  var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
-        rle.status = "Game table load: onSync, pass 3, delete object";
+        rle.status = "Game table load: onSync, pass 3, delete object, object id:" + changeObject.id.toString();
         dispatcher.dispatchEvent(rle);
 				
 			  Logger.info("processUpdate_DeleteSelectedFromModel() changeObject.id:"+changeObject.id.toString(),this);
@@ -556,10 +556,10 @@ package com.simplediagrams.controllers
 				sd_obj.commandName 	= "ObjectChanged";
 //				sd_obj.sdID         = null;
 				sd_obj.id    				= sdObjectModel.id;							
-				sd_obj.x 						= sdObjectModel.x;
-				sd_obj.y 						= sdObjectModel.y;		
-				sd_obj.height 			= sdObjectModel.height;		
-				sd_obj.width 				= sdObjectModel.width;		
+				sd_obj.x 						= sdObjectModel.x.toFixed(0);
+				sd_obj.y 						= sdObjectModel.y.toFixed(0);	
+				sd_obj.height 			= sdObjectModel.height.toFixed(0);		
+				sd_obj.width 				= sdObjectModel.width.toFixed(0);		
 				sd_obj.rotation			= sdObjectModel.rotation;		
 				sd_obj.color 				= sdObjectModel.color;	
 				sd_obj.depth 				= sdObjectModel.depth;	

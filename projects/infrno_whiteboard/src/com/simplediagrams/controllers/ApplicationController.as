@@ -58,6 +58,7 @@ package com.simplediagrams.controllers
 	import mx.core.FlexGlobals;
 	import mx.events.DynamicEvent;
 	import mx.events.FlexEvent;
+	import mx.logging.LogEvent;
 	import mx.managers.PopUpManager;
 	import mx.rpc.events.InvokeEvent;
 	
@@ -99,6 +100,7 @@ package com.simplediagrams.controllers
 		protected var _aboutWindow:AboutWindow
 		
 		private var _libraries_to_load:int = 0;
+		public var startupLogs:String = new String();
 		
 				   
 		public function ApplicationController() 
@@ -106,10 +108,17 @@ package com.simplediagrams.controllers
 			LibraryRegistryDelegate;
 			Logger.debug("ApplicationController created.", this);
 			
+			Logger.myLogger.addEventListener(LogEvent.LOG, remoteStartupLogging);
+			
 			//add close listener to intercept application close event
 //			FlexGlobals.topLevelApplication.addEventListener(Event.CLOSING, onWindowClose, false,0,true);
 			
 		}
+		
+		public function remoteStartupLogging(e:LogEvent):void{
+  		startupLogs += "["+e.level+"] "+e.message +"\r\n";
+		}
+																				 
 		
 		
 		

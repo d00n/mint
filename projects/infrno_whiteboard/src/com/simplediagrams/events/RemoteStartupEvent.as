@@ -6,6 +6,8 @@ package com.simplediagrams.events
 
 	public class RemoteStartupEvent extends Event
 	{
+		public static const CONNECT_LOGGER:String = "rle_connectLogger";
+		public static const DISCONNECT_LOGGER:String = "rle_disconnectLogger";
 		public static const STATUS:String = "rle_Status";
 		public var status:String;
 		

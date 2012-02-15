@@ -4,7 +4,6 @@ package com.simplediagrams.util
 	import com.simplediagrams.model.ApplicationModel;
 	
 	import flash.events.IOErrorEvent;
-//	import flash.filesystem.*;
 	import flash.net.XMLSocket;
 	import flash.utils.getQualifiedClassName;
 	
@@ -23,8 +22,6 @@ package com.simplediagrams.util
 //		public static var logFileStream:FileStream
 		public static var logToFile:Boolean = true;
 		
-		
-
 		public static function debug(o:Object, target:Object=null):void
 		{
 			_send(LogEventLevel.DEBUG, o, target);
@@ -157,8 +154,9 @@ package com.simplediagrams.util
 //				logFileStream.close()
 //			}
 				
+				
 		}
-	
+		
 		protected static function getTargetClassName(target:Object):String
 		{
 			if (target!=null)

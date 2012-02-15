@@ -21,7 +21,10 @@ package com.simplediagrams.model
 		public function newDiagram(diagramModel:DiagramModel):void
 		{
 			this.diagramModel = diagramModel;
-			dispatcher.dispatchEvent(new CreateNewDiagramEvent(CreateNewDiagramEvent.NEW_DIAGRAM_CREATED));
+			
+			// RemoteObectController will throw RemoteSharedObjectEvent.DIAGRAM_LOADED
+			// so we can show the user loading progress info in the startup view
+//			dispatcher.dispatchEvent(new CreateNewDiagramEvent(CreateNewDiagramEvent.NEW_DIAGRAM_CREATED));
 		}
 		
 		public function openDiagram(diagramModel:DiagramModel):void

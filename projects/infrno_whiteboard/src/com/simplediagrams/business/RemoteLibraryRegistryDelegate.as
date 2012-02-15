@@ -1,6 +1,7 @@
 package com.simplediagrams.business
 {
 	import com.simplediagrams.events.RemoteLibraryEvent;
+	import com.simplediagrams.events.RemoteStartupEvent;
 	import com.simplediagrams.model.ApplicationModel;
 	import com.simplediagrams.model.libraries.LibrariesRegistry;
 	import com.simplediagrams.model.libraries.LibraryInfo;
@@ -31,6 +32,10 @@ package com.simplediagrams.business
 		
 		public function loadRegistry():void
 		{
+			var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+			rle.status = "Library registry load: starting";
+			dispatcher.dispatchEvent(rle);
+			
 			var urlRequest:URLRequest = new URLRequest(HOST + PATH);
 			_urlLoader = new URLLoader(urlRequest);
 			_urlLoader.addEventListener(Event.COMPLETE, onComplete);			
@@ -39,6 +44,10 @@ package com.simplediagrams.business
 		}
 		
 		protected function onComplete(e:Event):void{
+			var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+			rle.status = "Library registry load: completed";
+			dispatcher.dispatchEvent(rle);
+			
 			var remoteLibraryEvent:RemoteLibraryEvent = new RemoteLibraryEvent(RemoteLibraryEvent.PROCESS_LIBRARY_REGISTRY);		
 			var contentXML:XML = XML(_urlLoader.data);
 			remoteLibraryEvent.librariesRegistry = readRegistry(contentXML);
@@ -47,10 +56,10 @@ package com.simplediagrams.business
 		}
 		
 		protected function onFault(e:Event):void{
-			// RSO TODO mediate this
-			var remoteLibraryEvent:RemoteLibraryEvent = new RemoteLibraryEvent(RemoteLibraryEvent.ON_FAULT);		
-			remoteLibraryEvent.error = e.toString();
-			dispatcher.dispatchEvent(remoteLibraryEvent);			
+			var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+			rle.status = "Library registry load: " + e.toString();
+			dispatcher.dispatchEvent(rle);			
+			
 			cleanup();
 		}
 		

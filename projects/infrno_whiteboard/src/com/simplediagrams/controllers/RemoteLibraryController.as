@@ -74,7 +74,7 @@ package com.simplediagrams.controllers
 
 		[Mediate(event="RemoteLibraryEvent.PROCESS_LIBRARY")]
 		public function on_complete(rlEvent:RemoteLibraryEvent):void
-		{
+		{			
 			var index:int = _remoteLibraryDelegateAC.getItemIndex(rlEvent.remoteLibraryDelegate);
 			 _remoteLibraryDelegateAC.removeItemAt(index);
 			
@@ -86,7 +86,7 @@ package com.simplediagrams.controllers
 		
 		public function assetPath(libItem:LibraryItem):String{
 			if (libItem == null){
-				Logger.error("RemoteLibraryController.assetPath was passed a null libItem");
+				Logger.error("RemoteLibraryController.assetPath was passed a null libItem", this);
 				return '';
 			}
 			

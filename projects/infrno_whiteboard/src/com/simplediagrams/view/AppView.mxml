@@ -75,12 +75,17 @@
 	<s:states>
 		<!-- Define the new view states. -->
 		<s:State name="default" />
+		<s:State name="multiuser_default" />
 		<s:State name="eulaView"/>
 		<s:State name="registrationView"/>
 		<s:State name="diagramView"/>
 	</s:states>    
 	
 	<s:transitions>
+		
+		<s:Transition fromState="multiuser_default" toState="diagramView">			
+			<s:Fade targets="{[multiuser_startup]}" duration="2"/>
+		</s:Transition>
 		
 		<s:Transition fromState="default" toState="registrationView">			
 			<s:Fade targets="{[registration, startup]}"/>
@@ -91,7 +96,7 @@
 		</s:Transition>
 				
 		<s:Transition fromState="eulaView" toState="registrationView" >
-			<s:Fade targets="{[eula, registration]}"/>
+			<s:Fade targets="{[eula, registration]}" />
 		</s:Transition>
 		
 		<s:Transition fromState="eulaView" toState="default" >
@@ -125,6 +130,12 @@
 		
 		<startup:StartupMenuView id="startup" 
 							  includeIn="default"	
+							  horizontalCenter="0"
+							  verticalCenter="0"
+							  />			 
+		
+		<startup:RemoteStartupView id="multiuser_startup" 
+							  includeIn="multiuser_default"	
 							  horizontalCenter="0"
 							  verticalCenter="0"
 							  />			 

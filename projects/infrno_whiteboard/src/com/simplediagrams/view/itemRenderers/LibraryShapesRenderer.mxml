@@ -44,12 +44,10 @@
 //				var dragProxy:IFlexDisplayObject; 
 //				var dragItemRenderer:IFlexDisplayObject = IFlexDisplayObject(dragInitiator.dataGroup.getElementAt(dragInitiator.selectedIndex));
 				
-				
 				var xOffset:Number=mouseX ;
 				var yOffset:Number=mouseY;
 				
 				var imageProxy:BitmapAsset = BitmapAsset(new dragImage());
-//				imageProxy.source = dragImage;
 				imageProxy.height = 50;
 				imageProxy.width = 50;
 				

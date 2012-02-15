@@ -18,6 +18,7 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.events.PluginEvent;
 	import com.simplediagrams.events.RemoteLibraryEvent;
 	import com.simplediagrams.events.RemoteSharedObjectEvent;
+	import com.simplediagrams.events.RemoteStartupEvent;
 	import com.simplediagrams.events.SaveDiagramEvent;
 	import com.simplediagrams.events.SelectionEvent;
 	import com.simplediagrams.events.SettingsEvent;
@@ -233,6 +234,7 @@ package com.simplediagrams.controllers
 					
 		public function doStartupTasks():void
 		{
+				appModel.viewing = ApplicationModel.VIEW_REMOTE_STARTUP;					
 						
 			//make sure user folder exists
 //			try
@@ -312,12 +314,15 @@ package com.simplediagrams.controllers
 //				registrationManager.showTrialVsFreeExplanation = true
 //			}
 					
-        //This is how we'll do an intro dialog					
 //				appModel.viewing = ApplicationModel.VIEW_STARTUP					
 				dispatcher.dispatchEvent( new CreateNewDiagramEvent(CreateNewDiagramEvent.CREATE_NEW_DIAGRAM, true));
-			
 				
 		}
+		
+//		[Mediate(event="RemoteSharedObjectEvent.SHOW_DIAGRAM")]
+//		public function showDiagram():void{
+//		  appModel.viewing = ApplicationModel.VIEW_DIAGRAM;
+//		}
 		
 		
 		/* ******** */
@@ -502,6 +507,10 @@ package com.simplediagrams.controllers
 			_libraries_to_load = len;
 			Logger.info("processLibraryRegistry libraries_to_load= " + _libraries_to_load, this);
 			
+			var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+			rle.status = "Libraries to load: " + _libraries_to_load.toString();
+			dispatcher.dispatchEvent(rle);
+			
 			for (var index:int=0;index < len;index++)
 			{
 				var libInfo:LibraryInfo = registry.libraries.getItemAt(index) as LibraryInfo			
@@ -519,6 +528,10 @@ package com.simplediagrams.controllers
 			
 			_libraries_to_load -= 1;
 			Logger.info("processLibrary libraries_to_load= " + _libraries_to_load, this);
+			
+			var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+			rle.status = "Libraries to load: " + _libraries_to_load.toString();
+			dispatcher.dispatchEvent(rle);
 			
 			if (_libraries_to_load == 0) {
 				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.START, true);

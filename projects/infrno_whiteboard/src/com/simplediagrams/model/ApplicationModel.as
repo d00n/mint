@@ -1,13 +1,11 @@
 package com.simplediagrams.model
 {
+	import com.simplediagrams.util.AboutInfo;
 	import com.simplediagrams.util.Logger;
 	
-//	import flash.data.EncryptedLocalStore;
-//	import flash.desktop.NativeApplication;
 	import flash.display.Sprite;
 	import flash.events.EventDispatcher;
 	import flash.events.TimerEvent;
-//	import flash.filesystem.File;
 	import flash.system.Capabilities;
 	import flash.text.Font;
 	import flash.utils.ByteArray;
@@ -23,7 +21,6 @@ package com.simplediagrams.model
 	[Bindable]
 	public class ApplicationModel extends EventDispatcher
 	{
-		public static const VERSION:String		= "Whiteboard v0.2.01";
 		
 		public static var menuDataArr:Array
 		
@@ -53,6 +50,7 @@ package com.simplediagrams.model
 		public static const VIEW_EULA:String = "eulaView"
 		public static const VIEW_REGISTRATION:String = "registrationView"
 		public static const VIEW_STARTUP:String = "default"
+		public static const VIEW_REMOTE_STARTUP:String = "multiuser_default"
 		public static const VIEW_DIAGRAM:String = "diagramView";
 						
 		public static const DEFAULT_SYSTEM_FONT:String = "Arial"	
@@ -302,7 +300,7 @@ package com.simplediagrams.model
 //			return appXML.air::version;
 //			//this.airApplicationName = appXML.air::name;
 			
-			return VERSION;
+			return AboutInfo.VERSION;
 		
 		}
 				

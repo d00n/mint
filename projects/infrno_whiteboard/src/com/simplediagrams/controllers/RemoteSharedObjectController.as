@@ -18,6 +18,7 @@ package com.simplediagrams.controllers
 	import com.simplediagrams.model.SettingsModel;
 	import com.simplediagrams.model.UndoRedoManager;
 	import com.simplediagrams.model.libraries.Library;
+	import com.simplediagrams.util.AboutInfo;
 	import com.simplediagrams.util.Logger;
 	import com.simplediagrams.view.SDComponents.SDBase;
 	import com.simplediagrams.view.SDComponents.SDLine;
@@ -93,6 +94,11 @@ package com.simplediagrams.controllers
 		
 		[Mediate(event="RemoteSharedObjectEvent.START")]
 		public function connect():void{
+			
+			var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+			rle.status = "Game table load: starting";
+			dispatcher.dispatchEvent(rle);
+			
 				Logger.info("connect", this);
 			_netConnection = new NetConnection();
 			_netConnection.client = this; 
@@ -158,7 +164,7 @@ package com.simplediagrams.controllers
 			userInfoObj.user_name = _user_name;
 			userInfoObj.user_id = _user_id;
 			userInfoObj.application_name = "whiteboard";
-			userInfoObj.application_version = ApplicationModel.VERSION;
+			userInfoObj.application_version = AboutInfo.VERSION;
 			var userInfoVO:UserInfoVO = new UserInfoVO(userInfoObj);
 			
 			
@@ -168,7 +174,7 @@ package com.simplediagrams.controllers
 				_room_id, 
 				_room_name, 
 				_wowza_whiteboard_app, 
-				ApplicationModel.VERSION, 
+				AboutInfo.VERSION, 
 				Capabilities.serverString);     
 		}
 		
@@ -177,11 +183,18 @@ package com.simplediagrams.controllers
 			if (event.info !== '' || event.info !== null) {  
 				switch (event.info.code) {
 					case "NetConnection.Connect.Success":   
+						var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+						rle.status = "Game table load: connection success";
+       			dispatcher.dispatchEvent(rle);
+			
 						Logger.info("onNetConnStatus NetConnection.Connect.Success", this);  
 						createSharedObject();  
 						break;
 					case "NetConnection.Connect.Closed":  
-						// TODO: tell the user the connection failed
+						var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+						rle.status = "Game table load: connection error "+event.toString();
+       			dispatcher.dispatchEvent(rle);
+			
 						Logger.info("onNetConnStatus NetConnection.Connect.Closed", this);  
 						break;
 				}      
@@ -198,6 +211,10 @@ package com.simplediagrams.controllers
 			try {
 				_remoteSharedObject = SharedObject.getRemote(SHARED_OBJECT_NAME, _netConnection.uri, true);
 			} catch(error:Error) {
+				var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+				rle.status = "Game table load: shared object error "+error.toString();
+   			dispatcher.dispatchEvent(rle);
+			
 				Logger.info("createSharedObject() could not create remote shared object: " + error.toString(),this);		
 			}
 			
@@ -211,10 +228,17 @@ package com.simplediagrams.controllers
 			if (event.info !== '' || event.info !== null) {  
 				switch (event.info.code) {
 					case "NetConnection.Connect.Success":   
+						var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+						rle.status = "Game table load: shared object created";
+       			dispatcher.dispatchEvent(rle);
+			
 						Logger.info("onCreateSOStatus NetConnection.Connect.Success", this);  
 						break;
 					case "NetConnection.Connect.Closed":  
-						// TODO: tell the user the connection failed
+						var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+						rle.status = "Game table load: shared object error "+event.toString();
+       			dispatcher.dispatchEvent(rle);
+			
 						Logger.info("onCreateSOStatus NetConnection.Connect.Closed", this);  
 						break;
 				}      
@@ -243,6 +267,10 @@ package com.simplediagrams.controllers
 		
 		[Mediate(event="RemoteSharedObjectEvent.LOAD_FLASHVARS")]
 		public function loadFlashvars(event:RemoteSharedObjectEvent):void {
+			var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+			rle.status = "Game table load: loading flashvars ";
+ 			dispatcher.dispatchEvent(rle);
+			
 			Logger.info("loadFlashVars", this);
 			_auth_key 				= event.auth_key;
 			_room_id 				= event.room_id;			
@@ -256,6 +284,10 @@ package com.simplediagrams.controllers
 		}			
 		
 		private function onSyncEventHandler(event : SyncEvent):void {
+			var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+			rle.status = "Game table load: onSync, changes to process: " +event.changeList.length.toString();
+ 			dispatcher.dispatchEvent(rle);
+			
 			Logger.info("onSyncEventHandler event.changeList.length:" + event.changeList.length,this);	
 			var i:int;
 			var recordName:String;
@@ -269,6 +301,10 @@ package com.simplediagrams.controllers
 					case SUCCESS:   
 						break;
 					case CHANGE:  {
+       			var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+			      rle.status = "Game table load: onSync, pass 1, change " + i.toString();
+ 			      dispatcher.dispatchEvent(rle);
+			
 						Logger.info("onSyncEventHandler non-Line pass, event.changeList[" +i + "].name:" + event.changeList[i].name,this);	
 						
 //						if (event.changeList[i].name == 'GridState') {
@@ -280,30 +316,61 @@ package com.simplediagrams.controllers
 						recordName = event.changeList[i].name;
 						changeObject = event.target.data[recordName];
 						
-						if (changeObject.commandName == "ObjectChanged")
+						if (changeObject.commandName == "ObjectChanged") {
+       			  var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+			        rle.status = "Game table load: onSync, pass 1, change " + i.toString();
+ 			        dispatcher.dispatchEvent(rle);
+			
 						  if (changeObject.sdObjectModelType == "SDLineModel") 
 							  lineChangeObjects.addItem(changeObject);
 							else
      				  	processUpdate_ObjectChanged(changeObject);
+						}
 						
-				    if (changeObject.commandName ==  "ConfigureGrid") 
+				    if (changeObject.commandName ==  "ConfigureGrid") {
+							var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+			        rle.status = "Game table load: onSync, pass 1, configure grid, change " + i.toString();
+							dispatcher.dispatchEvent(rle);
+							
 					    processUpdate_ConfigureGrid(changeObject);
+						}
 						
-				    if (changeObject.commandName ==  "TextChanged") 
+				    if (changeObject.commandName ==  "TextChanged") {
+							var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+			        rle.status = "Game table load: onSync, pass 1, text change, change " + i.toString();
+						  dispatcher.dispatchEvent(rle);
+						
 							processUpdate_TextChanged(changeObject);
+						}
 						
-						if (changeObject.commandName == "DeleteSelectedSDObjectModel")
+						if (changeObject.commandName == "DeleteSelectedSDObjectModel") {
+							var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+			        rle.status = "Game table load: onSync, pass 1, delete object, change " + i.toString();
+						  dispatcher.dispatchEvent(rle);
+						
 							deleteChangeObjects.addItem(changeObject);
+						}
 						
 						break;
 					}
 				}
 			}
 				
-			for each(var lineChangeObject:Object in lineChangeObjects)
+			for each(var lineChangeObject:Object in lineChangeObjects){
+ 			  var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+        rle.status = "Game table load: onSync, pass 2, line change ";
+        dispatcher.dispatchEvent(rle);
+				
   		  processUpdate_LineChange(lineChangeObject);
+			}
 				
 			processUpdate_DeleteChangeObjects(deleteChangeObjects);
+			
+		  var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+      rle.status = "Game table load: complete";
+      dispatcher.dispatchEvent(rle);
+				
+			dispatcher.dispatchEvent(new RemoteSharedObjectEvent(RemoteSharedObjectEvent.DIAGRAM_LOADED));
 		}
 	
 //		private function routeChange(changeObject:Object) : void {
@@ -374,6 +441,10 @@ package com.simplediagrams.controllers
 		public function processUpdate_DeleteChangeObjects(deleteChangeObjects:ArrayCollection):void {
   	  var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.PROCESS_DELETE_SELECTED_FROM_MODEL);	
 			for each(var changeObject:Object in deleteChangeObjects) {
+  		  var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+        rle.status = "Game table load: onSync, pass 3, delete object";
+        dispatcher.dispatchEvent(rle);
+				
 			  Logger.info("processUpdate_DeleteSelectedFromModel() changeObject.id:"+changeObject.id.toString(),this);
 			  rsoEvent.idAC.addItem(changeObject.id);
 			}

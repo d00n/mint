@@ -313,7 +313,9 @@ package com.simplediagrams.controllers
 			diagramModel.width = settingsModel.defaultDiagramWidth
 			diagramModel.height = settingsModel.defaultDiagramHeight
 			
-			appModel.viewing = ApplicationModel.VIEW_DIAGRAM			
+			// RemoteObectController will fire RemoteSharedObjectEvent.DIAGRAM_LOADED
+			// so we can show the user loading progress info in the startup view
+//			appModel.viewing = ApplicationModel.VIEW_DIAGRAM			
 			
 			diagramManager.newDiagram(diagramModel);
 			libraryManager.clearLocalLibrary();

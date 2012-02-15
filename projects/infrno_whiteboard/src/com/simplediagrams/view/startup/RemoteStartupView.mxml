@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	xmlns:view="com.simplediagrams.view.*" 
+	width="620" height="360" 		
+	horizontalCenter="0"
+	verticalCenter="0"
+	creationComplete="onCC()">
+
+	
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import com.simplediagrams.events.*;
+			import com.simplediagrams.model.ApplicationModel;
+			import com.simplediagrams.model.LibraryManager;
+			import com.simplediagrams.model.SettingsModel;
+			import com.simplediagrams.util.AboutInfo;
+			import com.simplediagrams.util.Logger;
+			
+			import mx.collections.ArrayCollection;
+			
+			[Bindable]
+			[Inject]
+			public var applicationModel:ApplicationModel;    
+			
+			[Bindable]
+			[Inject]
+			public var library:LibraryManager;    	
+			
+			
+			[Bindable]
+			[Inject]
+			public var settingsModel:SettingsModel;    	
+				    			
+			
+			[Embed('assets/img/startup_menu_bg.png')]
+			[Bindable]
+			protected var StartupMenuBG:Class
+			
+			[Embed('assets/img/icons/diagram_icon.png')]
+			[Bindable]
+			protected var DiagramIcon:Class
+			
+			[Embed('assets/img/icons/diagram_icon.png')]
+			[Bindable]
+			protected var NewDiagramIcon:Class
+			
+			
+			[Embed('assets/img/icons/icon_help.png')]
+			[Bindable]
+			protected var HelpIcon:Class
+			
+			
+			[Embed('assets/img/icons/icon_folder.png')]
+			[Bindable]
+			protected var FolderIcon:Class;
+			
+			
+			protected function onCC():void
+			{
+				Logger.debug("onCC()",this)
+				var aboutInfo:AboutInfo = new AboutInfo()
+				lblVersion.text = "Version : " + AboutInfo.applicationVersion 
+			
+			}
+			
+			
+			[Mediate(event="RemoteStartupEvent.STATUS")]
+			public function updateLoadStatus(e:RemoteStartupEvent):void{
+				loadingStatus.appendText(e.status + "\n");				
+			}
+
+			protected function onCopyStartupInfo():void
+			{
+				settingsModel.clearAllRecent();
+			}
+			
+			[Mediate(event="RemoteSharedObjectEvent.DIAGRAM_LOADED")]
+			public function showDiagram():void{
+				proceedBtn.enabled = true;
+			}
+			
+			protected function onProceed():void
+			{
+//				dispatchEvent(new RemoteSharedObjectEvent(RemoteSharedObjectEvent.SHOW_DIAGRAM));
+				applicationModel.viewing = ApplicationModel.VIEW_DIAGRAM;
+			}
+		
+			
+		]]>
+	</fx:Script>
+	
+    	
+	<s:Image source="{StartupMenuBG}" />
+	
+	
+	<mx:VBox width="100%" height="100%">
+			
+  	<s:TextArea id="loadingStatus"
+          horizontalCenter="0"
+          verticalCenter="0"
+          width="90%"
+			    height="280" 
+					editable="false"
+	             />
+	  <s:Button label="Copy startup info to clipboard" click="onCopyStartupInfo()" />
+	  <s:Button id="proceedBtn" label="Proceed to game table" click="onProceed()" enabled="false" />
+				
+			
+	</mx:VBox>
+		
+
+	<mx:Label id="lblVersion"
+				color="#cddcff"
+				text="V3.0"
+				x="431"
+				y="37" 
+				/>
+
+
+
+	
+		
+</s:Group>

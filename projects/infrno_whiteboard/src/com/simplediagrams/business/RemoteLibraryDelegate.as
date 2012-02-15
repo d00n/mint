@@ -161,7 +161,7 @@ package com.simplediagrams.business
 //			var file:File = ApplicationModel.baseStorageDir.resolvePath("libraries/" + name + "/library.xml");
 
 			var lib_url:String = url +"library.xml";
-			trace("RemoteLibraryDelegate.readLibrary url: "+ lib_url);
+			Logger.info("RemoteLibraryDelegate.readLibrary url: "+ lib_url, this);
 			var urlRequest:URLRequest = new URLRequest(lib_url);
 			
 			_urlLoader = new URLLoader(urlRequest);

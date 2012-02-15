@@ -71,6 +71,9 @@ package com.simplediagrams.events
 		public var wowza_whiteboard_app:String = "whiteboard";
 		public var wowza_whiteboard_port:String = "1936";
 		public var image_server:String = "http://localhost";
+		public var library_server:String = "http://localhost/";
+		public var library_base_path:String = "libraries/"
+		public var library_registry_file:String = "libraries.xml";
 //		public var google_analytics_report_interval_seconds:int = 60;
 //		public var google_analytics_debug_mode:Boolean = false;
 

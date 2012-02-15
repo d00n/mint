@@ -1,5 +1,6 @@
 package com.simplediagrams.business
 {
+	import com.simplediagrams.controllers.RemoteLibraryController;
 	import com.simplediagrams.events.RemoteLibraryEvent;
 	import com.simplediagrams.events.RemoteStartupEvent;
 	import com.simplediagrams.model.ApplicationModel;
@@ -21,10 +22,12 @@ package com.simplediagrams.business
 
 	public class RemoteLibraryRegistryDelegate extends AbstractController
 	{
-		private var HOST:String = "http://localhost";
-		private var PATH:String = "/libraries/libraries.xml";
-		
 		private var _urlLoader:URLLoader;
+		
+		[Inject]
+		public var remoteLibraryController:RemoteLibraryController;
+		
+		private var _library_registry_file:String;
 		
 		public function RemoteLibraryRegistryDelegate()
 		{
@@ -36,7 +39,7 @@ package com.simplediagrams.business
 			rle.status = "Library registry load: starting";
 			dispatcher.dispatchEvent(rle);
 			
-			var urlRequest:URLRequest = new URLRequest(HOST + PATH);
+			var urlRequest:URLRequest = new URLRequest(remoteLibraryController.library_registry_file_url());
 			_urlLoader = new URLLoader(urlRequest);
 			_urlLoader.addEventListener(Event.COMPLETE, onComplete);			
 			_urlLoader.addEventListener(IOErrorEvent.IO_ERROR, onFault);			

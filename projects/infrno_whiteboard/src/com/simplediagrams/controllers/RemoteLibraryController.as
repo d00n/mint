@@ -20,8 +20,7 @@ package com.simplediagrams.controllers
 
 	public class RemoteLibraryController extends AbstractController
 	{
-		[Inject]
-		public var remoteLibraryRegistryDelegate:RemoteLibraryRegistryDelegate;
+		private var _remoteLibraryRegistryDelegate:RemoteLibraryRegistryDelegate;
 		
 		private var _remoteLibraryDelegateAC:ArrayCollection = new ArrayCollection();
 		
@@ -36,11 +35,22 @@ package com.simplediagrams.controllers
 		private var _wowza_whiteboard_port:String;
 		
 
-		private static var PATH:String = "/libraries/";
-		private var url:String;
+		private var _library_server:String;
+		private var _library_base_path:String;
+		private var _library_registry_file:String;
+		
+//		private var url:String;
 		
 		public function RemoteLibraryController()
 		{
+		}
+		
+		public function library_registry_file_url():String{
+			return _library_server + _library_base_path + _library_registry_file;
+		}
+		
+		public function library_url():String{
+			return _library_server + _library_base_path;
 		}
 		
 		[Mediate(event="RemoteSharedObjectEvent.LOAD_FLASHVARS")]
@@ -55,10 +65,16 @@ package com.simplediagrams.controllers
 			_wowza_server 			= event.wowza_server;
 			_wowza_whiteboard_app 	= event.wowza_whiteboard_app;
 			_wowza_whiteboard_port 	= event.wowza_whiteboard_port;
+			
+			_library_server = event.library_server;
+			_library_base_path = event.library_base_path;
+			_library_registry_file = event.library_registry_file;
 		}		
 		
 		public function loadRegistry():void{
-			remoteLibraryRegistryDelegate.loadRegistry();
+			_remoteLibraryRegistryDelegate = new RemoteLibraryRegistryDelegate();
+			dispatcher.dispatchEvent(new BeanEvent(BeanEvent.SET_UP_BEAN, _remoteLibraryRegistryDelegate));
+			_remoteLibraryRegistryDelegate.loadRegistry();
 		}
 
 		public function readLibrary(libInfo:LibraryInfo):void
@@ -66,7 +82,6 @@ package com.simplediagrams.controllers
 		  var remoteLibraryDelegate:RemoteLibraryDelegate = new RemoteLibraryDelegate();
 			_remoteLibraryDelegateAC.addItem(remoteLibraryDelegate);
 		  remoteLibraryDelegate.libInfo = libInfo;
-		  remoteLibraryDelegate.url = _image_server + PATH + libInfo.name + "/";
 		  remoteLibraryDelegate.readLibrary();
 			
 			dispatcher.dispatchEvent(new BeanEvent(BeanEvent.SET_UP_BEAN, remoteLibraryDelegate));
@@ -90,7 +105,7 @@ package com.simplediagrams.controllers
 				return '';
 			}
 			
-			var path:String = _image_server + PATH + libItem.libraryName +'/';	
+			var path:String = library_url + libItem.libraryName +'/';	
 			if  (libItem is ImageShape)  {
 				path = path + (libItem as ImageShape).path;
 			}else if (libItem is SWFShape)  {

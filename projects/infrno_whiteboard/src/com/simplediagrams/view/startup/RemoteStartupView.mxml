@@ -47,7 +47,7 @@
 			{
 				Logger.debug("onCC()",this)
 				lblVersion.text = AboutInfo.applicationVersion 
-			  loadingStatus.appendText("Whiteboard version:"+ AboutInfo.VERSION +"\r\n");
+			  loadingStatus.appendText("Whiteboard version: "+ AboutInfo.VERSION +"\r\n");
 			}
 			
 			

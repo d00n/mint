@@ -2,6 +2,7 @@ package com.simplediagrams.business
 {
 	import avmplus.getQualifiedClassName;
 	
+	import com.simplediagrams.controllers.RemoteLibraryController;
 	import com.simplediagrams.events.RemoteLibraryEvent;
 	import com.simplediagrams.model.ApplicationModel;
 	import com.simplediagrams.model.CopyUtil;
@@ -40,8 +41,11 @@ package com.simplediagrams.business
 		
 		private var _urlLoader:URLLoader;
 		
+		[Inject]
+		public var remoteLibraryController:RemoteLibraryController;
+		
 		public var libInfo:LibraryInfo;
-		public var url:String;
+		private var _libUrl:String;
 		
 		public function RemoteLibraryDelegate()
 		{
@@ -55,6 +59,8 @@ package com.simplediagrams.business
 			dictionaryWriters[getQualifiedClassName(ImageShape)] = writeImageShapeItem;
 			dictionaryWriters[getQualifiedClassName(VectorShape)] = writeVectorShapeItem;
 			dictionaryWriters[getQualifiedClassName(SWFShape)] = writeSWFShapeItem;
+			
+			_libUrl = remoteLibraryController.library_url + libInfo.name + "/";
 		}
 		
 		protected function readLibraryItem(xml:XML, libraryItem:LibraryItem):void
@@ -76,16 +82,16 @@ package com.simplediagrams.business
 		
 		protected function readImageBackgroundItem(xml:XML):ImageBackground
 		{
-			trace("RemoteLibraryDelegate.readImageBackgroundItem path: "+ url + xml.path);
+			trace("RemoteLibraryDelegate.readImageBackgroundItem: "+ _libUrl + xml.path);
 
 			var imageBackground:ImageBackground = new ImageBackground();
 			readLibraryItem(xml, imageBackground);
 			imageBackground.path = xml.path;
-			imageBackground.assetPath = url + xml.path;
-			imageBackground.thumbnailPath = url + xml.thumbnailPath;				
+			imageBackground.assetPath = _libUrl + xml.path;
+			imageBackground.thumbnailPath = _libUrl + xml.thumbnailPath;				
 			if (imageBackground.thumbnailPath=="")
 			{				
-				imageBackground.thumbnailPath = url + imageBackground.path
+				imageBackground.thumbnailPath = _libUrl + imageBackground.path
 			}
 			return imageBackground;
 		}
@@ -96,11 +102,11 @@ package com.simplediagrams.business
 			var swfBackground:SWFBackground = new SWFBackground();
 			readLibraryItem(xml, swfBackground);
 			swfBackground.path = xml.path;
-			swfBackground.assetPath = url + xml.path;
-			swfBackground.thumbnailPath = url + xml.thumbnailPath;				
+			swfBackground.assetPath = _libUrl + xml.path;
+			swfBackground.thumbnailPath = _libUrl + xml.thumbnailPath;				
 			if (swfBackground.thumbnailPath=="")
 			{				
-				swfBackground.thumbnailPath = url + swfBackground.path
+				swfBackground.thumbnailPath = _libUrl + swfBackground.path
 			}
 			return swfBackground;
 		}
@@ -110,7 +116,7 @@ package com.simplediagrams.business
 			var imageShape:ImageShape = new ImageShape();
 			readLibraryItem(xml, imageShape);
 			imageShape.path = xml.path;
-			imageShape.assetPath = url + xml.path;
+			imageShape.assetPath = _libUrl + xml.path;
 			return imageShape;
 		}
 		
@@ -119,7 +125,7 @@ package com.simplediagrams.business
 			var swfShape:SWFShape = new SWFShape()
 			readLibraryItem(xml,swfShape)
 			swfShape.path = xml.path
-			swfShape.assetPath = url + xml.path;
+			swfShape.assetPath = _libUrl + xml.path;
 			swfShape.maintainAspectRatio = xml.maintainAspectRatio == "true"
 			swfShape.startWithShapeDefaultColor = xml.startWithShapeDefaultColor == "true"
 			return swfShape
@@ -160,9 +166,8 @@ package com.simplediagrams.business
 		{
 //			var file:File = ApplicationModel.baseStorageDir.resolvePath("libraries/" + name + "/library.xml");
 
-			var lib_url:String = url +"library.xml";
-			Logger.info("RemoteLibraryDelegate.readLibrary url: "+ lib_url, this);
-			var urlRequest:URLRequest = new URLRequest(lib_url);
+			Logger.info("RemoteLibraryDelegate.readLibrary url: "+ _libUrl +"library.xml", this);
+			var urlRequest:URLRequest = new URLRequest(_libUrl + "library.xml");
 			
 			_urlLoader = new URLLoader(urlRequest);
 			_urlLoader.addEventListener(Event.COMPLETE, onComplete);			

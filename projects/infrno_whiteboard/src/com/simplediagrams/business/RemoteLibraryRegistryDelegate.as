@@ -35,6 +35,8 @@ package com.simplediagrams.business
 		
 		public function loadRegistry():void
 		{
+			Logger.info("loadRegistry url: "+ remoteLibraryController.library_registry_file_url(), this);
+			
 			var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
 			rle.status = "Library registry load: starting";
 			dispatcher.dispatchEvent(rle);
@@ -59,8 +61,11 @@ package com.simplediagrams.business
 		}
 		
 		protected function onFault(e:Event):void{
-			var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
-			rle.status = "Library registry load: " + e.toString();
+			Logger.error(e.toString(), this);
+			
+			var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.ERROR);
+			rle.status = "Library registry load failed.";
+			rle.error = "Library registry load failed: " + e.toString();
 			dispatcher.dispatchEvent(rle);			
 			
 			cleanup();

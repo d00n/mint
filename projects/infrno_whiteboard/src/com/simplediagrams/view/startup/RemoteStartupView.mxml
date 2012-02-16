@@ -51,8 +51,16 @@
 			}
 			
 			
+			[Mediate(event="RemoteStartupEvent.ERROR")]
+			public function processStartupError(e:RemoteStartupEvent):void{
+				status_lbl.text = e.status;
+				status_lbl.setStyle("color", "#FE0202");
+				loadingStatus.appendText(e.error + "\n");				
+			}
+
+			
 			[Mediate(event="RemoteStartupEvent.STATUS")]
-			public function updateLoadStatus(e:RemoteStartupEvent):void{
+			public function processUpdateStatus(e:RemoteStartupEvent):void{
 				loadingStatus.appendText(e.status + "\n");				
 			}
 
@@ -62,8 +70,9 @@
 				Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, applicationController.startupLogs, false); 
 			}
 			
-			[Mediate(event="RemoteSharedObjectEvent.DIAGRAM_LOADED")]
+			[Mediate(event="RemoteStartupEvent.COMPLETE")]
 			public function showDiagram():void{
+				status_lbl.text = "Startup complete";
 				proceedBtn.enabled = true;
 			}
 			
@@ -84,13 +93,13 @@
    	
 	<s:Image source="{InfrnoBug}" right="0" />
 	
-	<mx:Label id="lblVersion0"
-				color="#000000"
+	
+	<mx:Label id="status_lbl"
 				text="Loading..."
 				x="30"
 				y="11" 
-				 width="121" enabled="true"/>
-			
+				 width="450" visible="true"/>
+	
   	<s:TextArea id="loadingStatus"
           verticalCenter="1"
           width="450"

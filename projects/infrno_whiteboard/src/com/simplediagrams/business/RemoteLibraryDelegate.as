@@ -4,6 +4,7 @@ package com.simplediagrams.business
 	
 	import com.simplediagrams.controllers.RemoteLibraryController;
 	import com.simplediagrams.events.RemoteLibraryEvent;
+	import com.simplediagrams.events.RemoteStartupEvent;
 	import com.simplediagrams.model.ApplicationModel;
 	import com.simplediagrams.model.CopyUtil;
 	import com.simplediagrams.model.libraries.ImageBackground;
@@ -166,9 +167,11 @@ package com.simplediagrams.business
 //			var file:File = ApplicationModel.baseStorageDir.resolvePath("libraries/" + name + "/library.xml");
 			
 			_libUrl = base_lib_url + libInfo.name + "/";
+			
+			var full_lib_url:String = _libUrl +"library.xml";
 
-			Logger.info("RemoteLibraryDelegate.readLibrary url: "+ _libUrl +"library.xml", this);
-			var urlRequest:URLRequest = new URLRequest(_libUrl + "library.xml");
+			Logger.info("RemoteLibraryDelegate.readLibrary url: "+ full_lib_url, this);
+			var urlRequest:URLRequest = new URLRequest(full_lib_url);
 			
 			_urlLoader = new URLLoader(urlRequest);
 			_urlLoader.addEventListener(Event.COMPLETE, onComplete);			
@@ -187,10 +190,10 @@ package com.simplediagrams.business
 		}
 		
 		protected function onFault(e:Event):void{
-			// RSO TODO mediate this
-			var remoteLibraryEvent:RemoteLibraryEvent = new RemoteLibraryEvent(RemoteLibraryEvent.ON_FAULT);		
-			remoteLibraryEvent.error = e.toString();
-			dispatcher.dispatchEvent(remoteLibraryEvent);			
+			var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.ERROR);
+			rle.status = "Library load failed.";
+			rle.error = "Library load failed: " + e.toString();
+			dispatcher.dispatchEvent(rle);			
 			cleanup();
 		}
 		

@@ -366,11 +366,11 @@ package com.simplediagrams.controllers
 				
 			processUpdate_DeleteChangeObjects(deleteChangeObjects);
 			
-		  var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+		  var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.COMPLETE);
       rle.status = "Game table load: complete";
       dispatcher.dispatchEvent(rle);
 				
-			dispatcher.dispatchEvent(new RemoteSharedObjectEvent(RemoteSharedObjectEvent.DIAGRAM_LOADED));
+//			dispatcher.dispatchEvent(new RemoteSharedObjectEvent(RemoteSharedObjectEvent.DIAGRAM_LOADED));
 		}
 	
 //		private function routeChange(changeObject:Object) : void {

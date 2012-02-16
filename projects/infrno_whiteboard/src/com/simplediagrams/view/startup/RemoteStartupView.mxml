@@ -104,7 +104,7 @@
           verticalCenter="1"
           width="450"
 			    height="280" 
-					editable="false" alpha=".5"
+					editable="false" alpha=".9"
  horizontalCenter="0"/>
 	  <s:Button id="proceedBtn" label="Proceed to game table" click="onProceed()" enabled="false"  x="30" y="329"/>
 	  <s:Button label="Copy startup info to clipboard" click="onCopyStartupInfo()"  x="184" y="329"/>

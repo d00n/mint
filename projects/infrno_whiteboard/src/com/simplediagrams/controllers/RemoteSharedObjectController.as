@@ -183,20 +183,37 @@ package com.simplediagrams.controllers
 			if (event.info !== '' || event.info !== null) {  
 				switch (event.info.code) {
 					case "NetConnection.Connect.Success":   
+						Logger.info("onNetConnStatus NetConnection.Connect.Success", this);  
 						var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
 						rle.status = "Game table load: connection success";
        			dispatcher.dispatchEvent(rle);
 			
-						Logger.info("onNetConnStatus NetConnection.Connect.Success", this);  
 						createSharedObject();  
 						break;
 					case "NetConnection.Connect.Closed":  
-						var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
-						rle.status = "Game table load: connection error "+event.toString();
+						Logger.info("onNetConnStatus NetConnection.Connect.Closed", this);  
+						var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.ERROR);
+						rle.status = "Game table load: connection error.";
+						rle.error = "Game table load: connection error "+event.toString();
        			dispatcher.dispatchEvent(rle);
 			
-						Logger.info("onNetConnStatus NetConnection.Connect.Closed", this);  
 						break;
+					case "NetConnection.Connect.Failed":  
+						Logger.info("onNetConnStatus NetConnection.Connect.Failed", this);  
+						var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.ERROR);
+						rle.status = "Game table load: connection error.";
+						rle.error = "Game table load: connection error "+event.info.code +":"+ event.target.uri;
+						dispatcher.dispatchEvent(rle);
+						
+						break;				
+					case "NetConnection.Connect.Rejected":
+						Logger.info("onNetConnStatus NetConnection.Connect.Rejected", this);  
+						var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.ERROR);
+						rle.status = "Game table load: connection error.";
+						rle.error = "Game table load: connection error "+event.info.code +":"+ event.info.description;
+						dispatcher.dispatchEvent(rle);
+						
+						break;					
 				}      
 			}
 		}
@@ -235,7 +252,8 @@ package com.simplediagrams.controllers
 						Logger.info("onCreateSOStatus NetConnection.Connect.Success", this);  
 						break;
 					case "NetConnection.Connect.Closed":  
-						var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+						var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.ERROR);
+						rle.status = "Game table load: shared object error.";
 						rle.status = "Game table load: shared object error "+event.toString();
        			dispatcher.dispatchEvent(rle);
 			
@@ -245,9 +263,30 @@ package com.simplediagrams.controllers
 			}
 		}		
 		
-		public function securityErrorHandler(event : SecurityErrorEvent) : void {  Logger.error('securityErrorHandler() '+event, this);  }
-		public function ioErrorHandler(event : IOErrorEvent) : void {  Logger.error('ioErrorHandler() :'+event, this);  }
-		public function asyncErrorHandler(event : AsyncErrorEvent) : void {  Logger.error('asyncErrorHandler() :'+event, this);  }  		
+		public function securityErrorHandler(event : SecurityErrorEvent) : void {  
+			Logger.error('securityErrorHandler() '+event, this);  
+			
+			var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.ERROR);
+			rle.status = "Game table load: connection error.";
+			rle.error = "Game table load: connection error "+event.toString();
+ 			dispatcher.dispatchEvent(rle);
+		}
+		public function ioErrorHandler(event : IOErrorEvent) : void {  
+			Logger.error('ioErrorHandler() :'+event, this);  
+			
+			var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.ERROR);
+			rle.status = "Game table load: connection error.";
+			rle.error = "Game table load: connection error "+event.toString();
+ 			dispatcher.dispatchEvent(rle);
+		}
+		public function asyncErrorHandler(event : AsyncErrorEvent) : void {  
+			Logger.error('asyncErrorHandler() :'+event, this);  
+			
+			var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.ERROR);
+			rle.status = "Game table load: connection error.";
+			rle.error = "Game table load: connection error "+event.toString();
+ 			dispatcher.dispatchEvent(rle);
+		}  		
 		
 		[Mediate(event="RemoteSharedObjectEvent.RESET")]
 		public function reset():void {

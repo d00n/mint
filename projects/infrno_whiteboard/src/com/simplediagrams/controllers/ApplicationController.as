@@ -114,6 +114,7 @@ package com.simplediagrams.controllers
 			//add close listener to intercept application close event
 //			FlexGlobals.topLevelApplication.addEventListener(Event.CLOSING, onWindowClose, false,0,true);
 			
+			var popUpManager:PopUpManager;
 		}
 		
 		public function remoteStartupLogging(e:LogEvent):void{

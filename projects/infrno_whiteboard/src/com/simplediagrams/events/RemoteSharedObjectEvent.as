@@ -62,7 +62,7 @@ package com.simplediagrams.events
 //		public var room_id:String = "err2015";
 //		public var room_id:String = "neg-width-on-SDTextArea";
 //		public var room_id:String = "staging_snap_err_wOfflineDB";
-		public var room_id:String = "14";
+		public var room_id:String = "err_1010";
 		
 		public var room_name:String = "";
 		public var user_name:String = "";
@@ -70,10 +70,11 @@ package com.simplediagrams.events
 		public var wowza_server:String = "rtmp://localhost";
 		public var wowza_whiteboard_app:String = "whiteboard";
 		public var wowza_whiteboard_port:String = "1936";
+		
 		public var image_server:String = "http://localhost";
 		
-		public var library_server:String = "http://localhost/";
-		public var library_base_path:String = "libraries/"
+		public var library_server:String = "http://localhost";
+		public var library_base_path:String = "/libraries/"
 		public var library_registry_file:String = "libraries.xml";
 		
 //		public var google_analytics_report_interval_seconds:int = 60;

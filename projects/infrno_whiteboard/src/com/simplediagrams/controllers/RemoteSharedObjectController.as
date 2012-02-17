@@ -368,7 +368,7 @@ package com.simplediagrams.controllers
 						
 				    if (changeObject.commandName ==  "ConfigureGrid") {
 							var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
-			        rle.status = "Game table load: onSync, pass 1, configure grid, change #" + i.toString() +", object id:" + changeObject.id.toString();
+			        rle.status = "Game table load: onSync, pass 1, configure grid, change #" + i.toString() ;
 							dispatcher.dispatchEvent(rle);
 							
 					    processUpdate_ConfigureGrid(changeObject);
@@ -439,10 +439,10 @@ package com.simplediagrams.controllers
 			
 			var returnValueFunction:Function = function(imageDetails:Object):void
 			{
-				Logger.info("dispatchUpdate_LoadImage() responder.result() id="+imageDetails["id"]+", url="+imageDetails["imageURL"],this);
+				Logger.info("dispatchUpdate_LoadImage() responder.result() id="+imageDetails["id"]+", path="+imageDetails["imagePath"],this);
 
 				var sdImageModel:SDImageModel = diagramManager.diagramModel.getModelByID(imageDetails["id"]) as SDImageModel;
-				sdImageModel.imageURL = imageDetails["imageURL"];
+				sdImageModel.imageURL = _image_server + imageDetails["imagePath"];
 				
 				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
 				rsoEvent.sdObjects.addItem(sdImageModel);

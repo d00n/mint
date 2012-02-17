@@ -169,6 +169,15 @@ protected function onApplicationComplete():void
 	if (flash_vars.image_server != null)
 		rsoEvent.image_server = flash_vars.image_server;
 	
+	if (flash_vars.library_server != null)
+		rsoEvent.library_server = flash_vars.library_server;
+	
+	if (flash_vars.library_base_path != null)
+		rsoEvent.library_base_path = flash_vars.library_base_path;
+	
+	if (flash_vars.library_registry_file != null)
+		rsoEvent.library_registry_file = flash_vars.library_registry_file;
+	
 //	if (flash_vars.google_analytics_debug_mode != null)
 //		rsoEvent.google_analytics_debug_mode = (Boolean) flash_vars.google_analytics_debug_mode;
 //	

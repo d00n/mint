@@ -11,13 +11,17 @@ package com.simplediagrams.view.SDComponents
 	
 	import flash.events.ContextMenuEvent;
 	import flash.events.Event;
+	import flash.events.HTTPStatusEvent;
+	import flash.events.IOErrorEvent;
+	import flash.events.ProgressEvent;
+	import flash.events.SecurityErrorEvent;
 	import flash.ui.ContextMenuItem;
 	import flash.utils.ByteArray;
 	
 	import mx.events.PropertyChangeEvent;
 	
 	import spark.components.Image;
-
+	
 	[SkinState("normal")]
 	[SkinState("border")]
 	[SkinState("tape")]
@@ -25,7 +29,7 @@ package com.simplediagrams.view.SDComponents
 	[Bindable]	
 	public class SDImage extends SDBase implements ISDComponent
 	{	
-					
+		
 		private var _model:SDImageModel
 		
 		public var imageData:ByteArray		
@@ -40,15 +44,15 @@ package com.simplediagrams.view.SDComponents
 		
 		protected var changeImageCMI:ContextMenuItem
 		private static var MAX_INITIAL_IMAGE_WIDTH:int = 800;
-    
+		
 		public function SDImage()
 		{
 			super();
 			this.setStyle("skinClass", Class(SDImageSkin))
-				
-//			changeImageCMI = new ContextMenuItem("Change image", false, true)
-//			changeImageCMI.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onChangeImage);
-//			contextMenu.items.unshift(changeImageCMI)
+			
+			//			changeImageCMI = new ContextMenuItem("Change image", false, true)
+			//			changeImageCMI.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onChangeImage);
+			//			contextMenu.items.unshift(changeImageCMI)
 		}
 		
 		public var libraryManager:LibraryManager;
@@ -60,7 +64,7 @@ package com.simplediagrams.view.SDComponents
 			Logger.info("onImageLoaded() -----------------------------------------", this)
 			_model.origWidth = imageHolder.width
 			_model.origHeight = imageHolder.height
-
+			
 			// If so, use actual size, subject to max width
 			if (_model.imageURL == null || _model.imageURL == '') {
 				if (imageHolder.sourceWidth > MAX_INITIAL_IMAGE_WIDTH) {
@@ -105,32 +109,32 @@ package com.simplediagrams.view.SDComponents
 				var libItem:ImageShape = libraryManager.getLibraryItem(_model.libraryName, _model.symbolName) as ImageShape;
 				this.imageData = libraryManager.getAssetData(libItem, libItem.path) as ByteArray;
 			}
-      imageStyle = _model.styleName
+			imageStyle = _model.styleName
 			if (_model.imageURL != null && _model.imageURL.length != 0)
 				this.imageSource = _model.imageURL;
 			else
 				this.imageSource = _model.imageData;			
 			
 			_model.addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, onModelChange );
-        			
+			
 			this.invalidateSkinState()
 			
 		}	
-
+		
 		
 		public override function get objectModel():SDObjectModel
 		{
 			return _model
 		}
-				
 		
 		
-	
+		
+		
 		override protected function onModelChange(event:PropertyChangeEvent):void
 		{
 			super.onModelChange(event)
 			invalidateProperties()
-					
+			
 			switch(event.property)
 			{    
 				
@@ -176,7 +180,7 @@ package com.simplediagrams.view.SDComponents
 		
 		
 		
-       
+		
 		override protected function getCurrentSkinState():String 
 		{
 			if (imageStyle=="none") return "normal"
@@ -187,14 +191,41 @@ package com.simplediagrams.view.SDComponents
 		override protected function partAdded(partName:String, instance:Object) : void
 		{
 			super.partAdded(partName, instance)
-	       		
+			
 			if (instance == imageHolder)
-       		{
-       			imageHolder.addEventListener(Event.COMPLETE, onImageLoaded)
-       		}	       	
-	    }
-        
-        																	
+			{
+				imageHolder.addEventListener(Event.COMPLETE, onImageLoaded)
+				imageHolder.addEventListener(HTTPStatusEvent.HTTP_STATUS, onImageHttpStatus);
+				imageHolder.addEventListener(Event.INIT, onImageEvent);
+				imageHolder.addEventListener(IOErrorEvent.IO_ERROR, onImageIoError);
+				imageHolder.addEventListener(Event.OPEN, onImageEvent);
+				imageHolder.addEventListener(ProgressEvent.PROGRESS, onImageProgress);
+				imageHolder.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onImageSecurityError);
+				imageHolder.addEventListener(Event.UNLOAD, onImageEvent); 
+			}	       	
+		}
+		
+		protected function onImageHttpStatus(event:HTTPStatusEvent):void{
+			Logger.info(event.toString(), this);
+		}
+		
+		protected function onImageIoError(event:IOErrorEvent):void{
+			Logger.info(event.toString(), this);
+		}
+		
+		protected function onImageEvent(event:Event):void{
+			Logger.info(event.toString(), this);
+		}
+		
+		protected function onImageProgress(event:ProgressEvent):void{
+			Logger.info(event.toString(), this);
+		}
+		
+		protected function onImageSecurityError(event:SecurityErrorEvent):void{
+			Logger.info(event.toString(), this);
+		}
+		
+		
 		public override function destroy():void
 		{
 			super.destroy()

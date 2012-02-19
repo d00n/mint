@@ -1,6 +1,7 @@
 package com.simplediagrams.view.SDComponents
 {
 	
+	import com.google.analytics.debug.Alert;
 	import com.simplediagrams.events.LoadImageEvent;
 	import com.simplediagrams.model.LibraryManager;
 	import com.simplediagrams.model.SDImageModel;
@@ -18,6 +19,8 @@ package com.simplediagrams.view.SDComponents
 	import flash.ui.ContextMenuItem;
 	import flash.utils.ByteArray;
 	
+	import mx.controls.Alert;
+	import mx.controls.ProgressBar;
 	import mx.events.PropertyChangeEvent;
 	
 	import spark.components.Image;
@@ -37,6 +40,9 @@ package com.simplediagrams.view.SDComponents
 		
 		[SkinPart(required="true")]		
 		public var imageHolder:Image;
+		
+		[SkinPart(required="true")]		
+		public var loading_pb:ProgressBar;
 		
 		public var imageStyle:String
 		public var tapeVisible:Boolean
@@ -62,6 +68,9 @@ package com.simplediagrams.view.SDComponents
 		protected function onImageLoaded(event:Event):void
 		{
 			Logger.info("onImageLoaded() -----------------------------------------", this)
+				
+			loading_pb.visible = false;
+			
 			_model.origWidth = imageHolder.width
 			_model.origHeight = imageHolder.height
 			
@@ -170,14 +179,18 @@ package com.simplediagrams.view.SDComponents
 			}			
 			else if (_model.imageURL && _model.imageURL.length > 0)
 			{
-				this.imageHolder.source = _model.imageURL;
+				callLater(setImageSource);
+//				this.imageHolder.source = _model.imageURL;
 			}
 			else
 			{
 				this.imageData = null
 			}
 		}
-		
+
+		public function setImageSource():void{
+			this.imageHolder.source = _model.imageURL;
+		}
 		
 		
 		
@@ -211,6 +224,7 @@ package com.simplediagrams.view.SDComponents
 		
 		protected function onImageIoError(event:IOErrorEvent):void{
 			Logger.info(event.toString(), this);
+			mx.controls.Alert.show(event.toString(), "Image loading error");  
 		}
 		
 		protected function onImageEvent(event:Event):void{
@@ -223,6 +237,7 @@ package com.simplediagrams.view.SDComponents
 		
 		protected function onImageSecurityError(event:SecurityErrorEvent):void{
 			Logger.info(event.toString(), this);
+			mx.controls.Alert.show(event.toString(), "Image security error");  
 		}
 		
 		

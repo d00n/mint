@@ -49,19 +49,19 @@ package com.simplediagrams.model
 			_imageURL = value;		
 		}
 		
-		private function loadProgress(event:ProgressEvent):void
-		{   
-			// TODO loading bar in the image frame for extra credit
-			var percentLoaded:Number = Math.round((event.bytesLoaded/event.bytesTotal) * 100);
-			trace("SDImageModel Loading: "+percentLoaded+"%");
-		}
-		
-		public function loadComplete(event:Event):void
-		{
-			trace("SDImageModel Complete");
-			// TODO: ....and where's Johnny?
-			//			addChild(loader);
-		}
+//		private function loadProgress(event:ProgressEvent):void
+//		{   
+//			// TODO loading bar in the image frame for extra credit
+//			var percentLoaded:Number = Math.round((event.bytesLoaded/event.bytesTotal) * 100);
+//			trace("SDImageModel Loading: "+percentLoaded+"%");
+//		}
+//		
+//		public function loadComplete(event:Event):void
+//		{
+//			trace("SDImageModel Complete");
+//			// TODO: ....and where's Johnny?
+//			//			addChild(loader);
+//		}
 
 		
 		public function get styleName():String

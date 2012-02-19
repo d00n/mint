@@ -39,9 +39,9 @@
 			public var settingsModel:SettingsModel;    	
 				    			
 			
-			[Embed('assets/img/startup_menu_bg.png')]
-			[Bindable]
-			protected var StartupMenuBG:Class
+//			[Embed('assets/img/startup_menu_bg.png')]
+//			[Bindable]
+//			protected var StartupMenuBG:Class
 			
 			[Embed('assets/img/icons/diagram_icon.png')]
 			[Bindable]
@@ -126,7 +126,7 @@
 	</fx:Script>
 	
     	
-	<s:Image source="{StartupMenuBG}" />
+	<!--s:Image source="{StartupMenuBG}" /-->
 	
 	<mx:Grid x="5" y="40" width="400" height="320" horizontalGap="0">
 	

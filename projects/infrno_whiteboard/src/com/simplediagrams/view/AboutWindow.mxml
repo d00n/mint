@@ -24,9 +24,9 @@
 			import com.simplediagrams.util.Logger;
 			import flash.filters.DropShadowFilter
     		
-			[Bindable]
-			[Embed(source='assets/img/registration_bg.png')]
-			protected var Bkgd:Class;
+//			[Bindable]
+//			[Embed(source='assets/img/registration_bg.png')]
+//			protected var Bkgd:Class;
 			
 			[Bindable]
 			public var version:String
@@ -70,7 +70,7 @@
 		]]>
 	</fx:Script>
 	
-	<s:Image source="{Bkgd}" />
+	<!--s:Image source="{Bkgd}" /-->
 	
 	
 	<mx:Label text="About SimpleDiagrams" x="10" y="7" styleName="infoWindowHeader" />

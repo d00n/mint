@@ -32,9 +32,9 @@
 			public var registrationManager:RegistrationManager
 			
 						
-			[Bindable]
-			[Embed(source='assets/img/registration_bg.png')]
-			protected var Bkgd:Class;
+//			[Bindable]
+//			[Embed(source='assets/img/registration_bg.png')]
+//			protected var Bkgd:Class;
 													
 			protected var req:URLRequest 
 			
@@ -68,7 +68,7 @@
 		<s:State name="serverUnavailableView"/>
 	</s:states>	    
 	
-	<s:Image source="{Bkgd}" />
+	<!--s:Image source="{Bkgd}" /-->
 	
 	<register:TrialModeView includeIn="trialModeView" 
 							register="onRegister()" />

@@ -32,9 +32,9 @@
 			}
 			
 			
-			[Bindable]
-			[Embed(source='assets/img/registration_bg.png')]
-			protected var Bkgd:Class;
+//			[Bindable]
+//			[Embed(source='assets/img/registration_bg.png')]
+//			protected var Bkgd:Class;
 			
 			
 			[Bindable]
@@ -61,7 +61,7 @@
 		<s:BasicLayout/>
 	</s:layout>
 	
-	<s:Image source="{Bkgd}" />
+	<!--s:Image source="{Bkgd}" /-->
 	
 	<s:Label 
 		color="#000000"

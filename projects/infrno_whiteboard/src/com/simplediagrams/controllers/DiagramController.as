@@ -117,6 +117,8 @@ package com.simplediagrams.controllers
 		protected var _diagramPropertiesDialog:DiagramPropertiesDialog
 		protected var _viewToExport:Group
 		
+		public var MAX_FILE_BYTES:Number = 3145728;
+		
 		[Mediate(event='LoadDiagramEvent.DIAGRAM_BUILT')]
 		public function diagramBuilt(event:Event):void
 		{
@@ -607,7 +609,7 @@ package com.simplediagrams.controllers
 		protected var _fileReference:FileReference;	
 		
 		
-		[Mediate(event='LoadImageEvent.ADD_IMAGE_FROM_MENU')]
+//		[Mediate(event='LoadImageEvent.ADD_IMAGE_FROM_MENU')]
 		public function onAddImageFromMenu(event:LoadImageEvent):void
 		{			
 			var imageModel:SDImageModel = new SDImageModel();
@@ -622,10 +624,11 @@ package com.simplediagrams.controllers
 			dispatcher.dispatchEvent(evt)
 		}
 			
-		[Mediate(event='LoadImageEvent.BROWSE_FOR_IMAGE')]
+//		[Mediate(event='LoadImageEvent.BROWSE_FOR_IMAGE')]
+		[Mediate(event='LoadImageEvent.ADD_IMAGE_FROM_MENU')]
 		public function onBrowseForImage(event:LoadImageEvent):void
 		{
-			_currModelForImageLoad = event.model  	
+//			_currModelForImageLoad = event.model  	
 				
 			_fileReference = new FileReference();
 			_fileReference.addEventListener(Event.SELECT, onFileReferenceSelect);
@@ -665,15 +668,28 @@ package com.simplediagrams.controllers
 
 		private function onFileReferenceSelect(event:Event):void
 		{
-			_fileReference.addEventListener(Event.COMPLETE, onFileReferenceLoadComplete);
-			_fileReference.load()
+			if (_fileReference.size < MAX_FILE_BYTES) {
+  			_fileReference.addEventListener(Event.COMPLETE, onFileReferenceLoadComplete);
+	  		_fileReference.load()
+			} else {
+				cleanupFileRef();
+				
+			  Alert.show("Images can not be larger than 3 megabytes.", "Image too large");	
+			}
 		}
 		
 		public function onFileReferenceLoadComplete(event:Event):void
 		{							
-			_fileReference.removeEventListener(Event.SELECT, onFileReferenceSelect);
-			_fileReference.removeEventListener(Event.CANCEL, onFileReferenceCancel);
-			_fileReference.removeEventListener(Event.COMPLETE, onFileReferenceLoadComplete);
+			cleanupFileRef();
+			
+			var imageModel:SDImageModel = new SDImageModel();
+			imageModel.x = 20;
+			imageModel.y = 20;
+			var addCmd:AddCommand = new AddCommand(diagramManager.diagramModel, imageModel)
+			addCmd.execute()
+			undoRedoManager.push(addCmd)		
+				
+			_currModelForImageLoad = imageModel;
 			
 			var id:String = UIDUtil.createUID();
 			var byteItem:ImageShape = new ImageShape();
@@ -694,6 +710,12 @@ package com.simplediagrams.controllers
 			remoteSharedObjectEvent.imageName = _fileReference.name;
 			remoteSharedObjectEvent.sdImageModel = _currModelForImageLoad;
 			dispatcher.dispatchEvent(remoteSharedObjectEvent);	
+		}
+		
+		private function cleanupFileRef():void{
+			_fileReference.removeEventListener(Event.SELECT, onFileReferenceSelect);
+			_fileReference.removeEventListener(Event.CANCEL, onFileReferenceCancel);
+			_fileReference.removeEventListener(Event.COMPLETE, onFileReferenceLoadComplete);
 		}
 		
 		

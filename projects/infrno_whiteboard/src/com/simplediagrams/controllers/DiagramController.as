@@ -609,22 +609,21 @@ package com.simplediagrams.controllers
 		protected var _fileReference:FileReference;	
 		
 		
-//		[Mediate(event='LoadImageEvent.ADD_IMAGE_FROM_MENU')]
+		[Mediate(event='LoadImageEvent.ADD_IMAGE_FROM_MENU')]
 		public function onAddImageFromMenu(event:LoadImageEvent):void
 		{			
-			var imageModel:SDImageModel = new SDImageModel();
-			imageModel.x = 20;
-			imageModel.y = 20;
-			var cmd:AddCommand = new AddCommand(diagramManager.diagramModel, imageModel)
-			cmd.execute()
-			undoRedoManager.push(cmd)				
-				
+//			var imageModel:SDImageModel = new SDImageModel();
+//			imageModel.x = 20;
+//			imageModel.y = 20;
+//			var cmd:AddCommand = new AddCommand(diagramManager.diagramModel, imageModel)
+//			cmd.execute()
+//			undoRedoManager.push(cmd)				
+//				
 			var evt:LoadImageEvent = new LoadImageEvent(LoadImageEvent.BROWSE_FOR_IMAGE, true)
-			evt.model = imageModel
+//			evt.model = imageModel
 			dispatcher.dispatchEvent(evt)
 		}
 			
-//		[Mediate(event='LoadImageEvent.BROWSE_FOR_IMAGE')]
 		[Mediate(event='LoadImageEvent.ADD_IMAGE_FROM_MENU')]
 		public function onBrowseForImage(event:LoadImageEvent):void
 		{

@@ -595,10 +595,10 @@ package com.simplediagrams.controllers
 				sd_obj.commandName 	= "ObjectChanged";
 //				sd_obj.sdID         = null;
 				sd_obj.id    				= sdObjectModel.id;							
-				sd_obj.x 						= sdObjectModel.x.toFixed(0);
-				sd_obj.y 						= sdObjectModel.y.toFixed(0);	
-				sd_obj.height 			= sdObjectModel.height.toFixed(0);		
-				sd_obj.width 				= sdObjectModel.width.toFixed(0);		
+				sd_obj.x 						= sdObjectModel.x;
+				sd_obj.y 						= sdObjectModel.y;
+				sd_obj.height 			= sdObjectModel.height;
+				sd_obj.width 				= sdObjectModel.width;
 				sd_obj.rotation			= sdObjectModel.rotation;		
 				sd_obj.color 				= sdObjectModel.color;	
 				sd_obj.depth 				= sdObjectModel.depth;	
@@ -927,7 +927,7 @@ package com.simplediagrams.controllers
 	
 			var placementDetails:String = ">>" + changeObject.sdObjectModelType + stateString(changeObject);
 			if (diagramManager.diagramModel.sdObjects.contains(sdObjectModel) == false) {
-				Logger.info("processUpdate_LineChanged() about to add sdObjectModel=" +placementDetails,	this);
+				Logger.info("processUpdate_LineChanged() about to add sdObjectModel=" +stateString(changeObject),	this);
 				
 				// TODO Clean this up. The coupling is too tight.
 				// To prevent throwing an RSOEvent from within diagramManager.diagramModel.addSDObjectModel()
@@ -938,7 +938,9 @@ package com.simplediagrams.controllers
 		}		
 		
 		private function stateString(o:Object):String{
-			var d:String = " x=" +o.x;
+			var d:String = ">> id=" +o.id;
+			d += " "+ o.sdObjectModelType;
+			d += " x=" +o.x;
 			d += " width=" +o.width;
 			d += " y=" +o.y;
 			d += " height=" +o.height;

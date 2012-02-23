@@ -320,6 +320,8 @@ package com.simplediagrams.controllers
 			_wowza_server 			= event.wowza_server;
 			_wowza_whiteboard_app 	= event.wowza_whiteboard_app;
 			_wowza_whiteboard_port 	= event.wowza_whiteboard_port;
+			
+			Logger.info("loadFlashvars room_id=" + _room_id,this);	
 		}			
 		
 		private function onSyncEventHandler(event : SyncEvent):void {
@@ -346,12 +348,6 @@ package com.simplediagrams.controllers
 			
 						Logger.info("onSyncEventHandler non-Line pass, event.changeList[" +i + "].name:" + event.changeList[i].name,this);	
 						
-//						if (event.changeList[i].name == 'GridState') {
-//   						changeObject = event.target.data.GridState;
-//						} else {
-//   						id = event.changeList[i].name;
-//   						changeObject = event.target.data[id];
-//						}
 						recordName = event.changeList[i].name;
 						changeObject = event.target.data[recordName];
 						
@@ -400,7 +396,7 @@ package com.simplediagrams.controllers
         rle.status = "Game table load: onSync, pass 2, line change ";
         dispatcher.dispatchEvent(rle);
 				
-  		  processUpdate_LineChange(lineChangeObject);
+				processUpdate_ObjectChanged(lineChangeObject);
 			}
 				
 			processUpdate_DeleteChangeObjects(deleteChangeObjects);
@@ -587,13 +583,8 @@ package com.simplediagrams.controllers
 			
 			for each (var sdObjectModel:SDObjectModel in event.sdObjects)
 			{			
-//				isCorrupt("dispatchUpdate_ObjectChanged", sdObjectModel);
-				
-				
-				
 				var sd_obj:Object = {};
 				sd_obj.commandName 	= "ObjectChanged";
-//				sd_obj.sdID         = null;
 				sd_obj.id    				= sdObjectModel.id;							
 				sd_obj.x 						= sdObjectModel.x;
 				sd_obj.y 						= sdObjectModel.y;
@@ -695,7 +686,13 @@ package com.simplediagrams.controllers
 				}
 				
 								
-				_remoteSharedObject.setProperty(sd_obj.id.toString(), sd_obj);
+				if (isSane(sdObjectModel)) {
+  				_remoteSharedObject.setProperty(sd_obj.id.toString(), sd_obj);
+				} else {
+    			var placementDetails:String = sd_obj.sdObjectModelType + stateString(sdObjectModel);
+	    		Logger.error("dispatchUpdate_ObjectChanged() skipping object with insane params: "+placementDetails);
+				}
+				
 			}
 		}
 		
@@ -704,8 +701,6 @@ package com.simplediagrams.controllers
 			var isCorruptObject:Boolean = false;
 			
 			var id:int = changeObject.id;
-//			if (changeObject.id == null)
-//				id = -1;
 			
 			var sdObjectModel:SDObjectModel;			
 			switch ( changeObject.sdObjectModelType) {
@@ -806,75 +801,6 @@ package com.simplediagrams.controllers
 					Logger.info("processUpdate_ObjectChanged() sdTextAreaModel.text=" + sdTextAreaModel.text + ", depth=" + sdTextAreaModel.depth.toString(), this);
 					break;
 				}
-			}
-			
-			
-			sdObjectModel.id			  = changeObject.id;
-			sdObjectModel.color	 		= changeObject.color;
-			sdObjectModel.x 				= changeObject.x;
-			sdObjectModel.y 				= changeObject.y;
-			sdObjectModel.width 		= changeObject.width;
-			sdObjectModel.height		= changeObject.height;
-			sdObjectModel.rotation	= changeObject.rotation;
-			sdObjectModel.depth 		= changeObject.depth;
-			sdObjectModel.isLocked	= changeObject.isLocked;
-			
-			var placementDetails:String = ">>" + changeObject.sdObjectModelType + stateString(changeObject);
-//			
-//			var reportPrefix:String = "processUpdate_ObjectChanged"
-//			reportPrefix += " :"+ changeObject.commandName;
-//			reportPrefix += " :"+ changeObject.sdObjectModelType ;
-//			isCorruptObject =  isCorrupt(reportPrefix, changeObject);
-//			
-//			if (isCorruptObject){
-//				if (isNaN(sdObjectModel.x) || isNaN(sdObjectModel.y) || isNaN(sdObjectModel.height) || isNaN(sdObjectModel.width) || isNaN(sdObjectModel.rotation) ) {
-//					sdObjectModel.x = 50;
-//					sdObjectModel.y = 50;
-//					sdObjectModel.height = 50;
-//					sdObjectModel.width = 50;
-//					sdObjectModel.rotation = 0;
-//				}
-//				
-//				if (sdObjectModel.height <= 0)
-//					sdObjectModel.height = 50;
-//				if (sdObjectModel.width <= 0)
-//					sdObjectModel.width = 50;
-//				
-//				if (sdObjectModel.x <= 0 && ((sdObjectModel.width + sdObjectModel.x) < 0) )
-//					sdObjectModel.x = 200;
-//				if (sdObjectModel.y <= 0 && ((sdObjectModel.height + sdObjectModel.y) < 0) )
-//					sdObjectModel.y = 50;
-//				
-//				isCorruptObject = false;
-//				placementDetails += ' <--> ' + stateString(sdObjectModel);
-//			}
-//			
-//			var isBlank:Boolean = false;
-
-			
-			if (diagramManager.diagramModel.sdObjects.contains(sdObjectModel) == false) {
-				Logger.info("processUpdate_ObjectChanged() about to add sdObjectModel=" +placementDetails,	this);
-				
-				// TODO Clean this up. The coupling is too tight.
-				// To prevent throwing an RSOEvent from within diagramManager.diagramModel.addSDObjectModel()
-				// we perform it's responsibilities here:	
-				diagramManager.diagramModel.sdObjects.addItem(sdObjectModel);
-//				diagramManager.diagramModel.addComponentForModel(sdObjectModel, false);
-			}
-			
-//			if (changeObject.id == null) {
-//				var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.OBJECT_CHANGED);	
-//				rsoEvent.sdObjects.addItem(sdObjectModel);
-//				dispatcher.dispatchEvent(rsoEvent);			
-//			}
-		}		
-		
-		public function processUpdate_LineChange(changeObject:Object) : void {
-			Logger.info("processUpdate_LineChangeObjects()",this);
-			
-			var id:int = changeObject.id;
-			var sdObjectModel:SDObjectModel;			
-			switch ( changeObject.sdObjectModelType) {
 				case "SDLineModel": {
 					var sdLineModel:SDLineModel = diagramManager.diagramModel.getModelByID(id) as SDLineModel;
 					
@@ -895,24 +821,25 @@ package com.simplediagrams.controllers
 					
 					if (changeObject.fromObject_id != null )
 						sdLineModel.fromObject		= diagramManager.diagramModel.getModelByID(changeObject.fromObject_id);	
-
+					
 					
 					if (sdLineModel.fromObject != null && changeObject.fromPoint_id != null )
 						sdLineModel.fromPoint		= sdLineModel.fromObject.getConnectionPoint(changeObject.fromPoint_id);
-
+					
 					
 					if (changeObject.toObject_id != null )
 						sdLineModel.toObject		= diagramManager.diagramModel.getModelByID(changeObject.toObject_id);	
-
+					
 					
 					if (sdLineModel.toObject != null && changeObject.toPoint_id != null)
-		        sdLineModel.toPoint		= sdLineModel.toObject.getConnectionPoint(changeObject.toPoint_id);
-
+						sdLineModel.toPoint		= sdLineModel.toObject.getConnectionPoint(changeObject.toPoint_id);
+					
 					
 					sdObjectModel = sdLineModel;
 					break;
 				}
 			}
+			
 			
 			sdObjectModel.id			  = changeObject.id;
 			sdObjectModel.color	 		= changeObject.color;
@@ -924,22 +851,125 @@ package com.simplediagrams.controllers
 			sdObjectModel.depth 		= changeObject.depth;
 			sdObjectModel.isLocked	= changeObject.isLocked;
 			
-	
 			var placementDetails:String = ">>" + changeObject.sdObjectModelType + stateString(changeObject);
+			
+			var xString:String = changeObject.x;
+			var yString:String = changeObject.y;
+			var widthString:String = changeObject.width;
+			var heightString:String = changeObject.height;
+			var isModified:Boolean = false;
+			
+			if ( (xString.indexOf('179769313486231') == 0) 
+				|| (xString.indexOf('179769313486231') == 1) ) {
+				sdObjectModel.x = 50;
+				isModified = true;
+			}
+			
+			if ( (yString.indexOf('179769313486231') == 0) 
+				|| (yString.indexOf('179769313486231') == 1) ){
+				sdObjectModel.y = 50;
+				isModified = true;
+			}
+			
+			if ( (widthString.indexOf('179769313486231') == 0) 
+				|| (widthString.indexOf('179769313486231') == 1) ){
+				sdObjectModel.width = 50;
+				isModified = true;
+			}
+			
+			if ( (heightString.indexOf('179769313486231') == 0) 
+				|| (heightString.indexOf('179769313486231') == 1) ){
+				sdObjectModel.height = 50;
+				isModified = true;
+			}
+			
+			var newPlacementDetails:String = ">>" + changeObject.sdObjectModelType + stateString(sdObjectModel);
+			
+			if (changeObject.id == -1) {
+				Logger.info("processUpdate_ObjectChanged() skipping sdObjectModel=" +placementDetails,	this);
+				return;
+			}
+			
 			if (diagramManager.diagramModel.sdObjects.contains(sdObjectModel) == false) {
-				Logger.info("processUpdate_LineChanged() about to add sdObjectModel=" +stateString(changeObject),	this);
+				Logger.info("processUpdate_ObjectChanged() about to add " +placementDetails,	this);
 				
-				// TODO Clean this up. The coupling is too tight.
-				// To prevent throwing an RSOEvent from within diagramManager.diagramModel.addSDObjectModel()
-				// we perform it's responsibilities here:	
+				if (isModified)
+  				Logger.info("processUpdate_ObjectChanged() modified params for " +newPlacementDetails,	this);
+				
 				diagramManager.diagramModel.sdObjects.addItem(sdObjectModel);
-				//				diagramManager.diagramModel.addComponentForModel(sdObjectModel, false);
 			}
 		}		
 		
+//		public function processUpdate_LineChange(changeObject:Object) : void {
+//			Logger.info("processUpdate_LineChangeObjects()",this);
+//			
+//			var id:int = changeObject.id;
+//			var sdObjectModel:SDObjectModel;			
+//			switch ( changeObject.sdObjectModelType) {
+//				case "SDLineModel": {
+//					var sdLineModel:SDLineModel = diagramManager.diagramModel.getModelByID(id) as SDLineModel;
+//					
+//					if (sdLineModel == null){						
+//						sdLineModel = new SDLineModel();
+//					}
+//					
+//					sdLineModel.startX 					= changeObject.startX;
+//					sdLineModel.startY 					= changeObject.startY;	
+//					sdLineModel.endX 						= changeObject.endX;
+//					sdLineModel.endY 						= changeObject.endY;	
+//					sdLineModel.bendX 					= changeObject.bendX;
+//					sdLineModel.bendY 					= changeObject.bendY;
+//					sdLineModel.startLineStyle 	= changeObject.startLineStyle;
+//					sdLineModel.endLineStyle 		= changeObject.endLineStyle;
+//					sdLineModel.lineWeight 			= changeObject.lineWeight;
+//					sdLineModel.lineStyle 			= changeObject.lineStyle;
+//					
+//					if (changeObject.fromObject_id != null )
+//						sdLineModel.fromObject		= diagramManager.diagramModel.getModelByID(changeObject.fromObject_id);	
+//
+//					
+//					if (sdLineModel.fromObject != null && changeObject.fromPoint_id != null )
+//						sdLineModel.fromPoint		= sdLineModel.fromObject.getConnectionPoint(changeObject.fromPoint_id);
+//
+//					
+//					if (changeObject.toObject_id != null )
+//						sdLineModel.toObject		= diagramManager.diagramModel.getModelByID(changeObject.toObject_id);	
+//
+//					
+//					if (sdLineModel.toObject != null && changeObject.toPoint_id != null)
+//		        sdLineModel.toPoint		= sdLineModel.toObject.getConnectionPoint(changeObject.toPoint_id);
+//
+//					
+//					sdObjectModel = sdLineModel;
+//					break;
+//				}
+//			}
+//			
+//			sdObjectModel.id			  = changeObject.id;
+//			sdObjectModel.color	 		= changeObject.color;
+//			sdObjectModel.x 				= changeObject.x;
+//			sdObjectModel.y 				= changeObject.y;
+//			sdObjectModel.width 		= changeObject.width;
+//			sdObjectModel.height		= changeObject.height;
+//			sdObjectModel.rotation	= changeObject.rotation;
+//			sdObjectModel.depth 		= changeObject.depth;
+//			sdObjectModel.isLocked	= changeObject.isLocked;
+//			
+//	
+//			var placementDetails:String = ">>" + changeObject.sdObjectModelType + stateString(changeObject);
+//			if (diagramManager.diagramModel.sdObjects.contains(sdObjectModel) == false) {
+//				Logger.info("processUpdate_LineChanged() about to add sdObjectModel=" +stateString(changeObject),	this);
+//				
+//				// TODO Clean this up. The coupling is too tight.
+//				// To prevent throwing an RSOEvent from within diagramManager.diagramModel.addSDObjectModel()
+//				// we perform it's responsibilities here:	
+//				diagramManager.diagramModel.sdObjects.addItem(sdObjectModel);
+//				//				diagramManager.diagramModel.addComponentForModel(sdObjectModel, false);
+//			}
+//		}		
+		
 		private function stateString(o:Object):String{
 			var d:String = ">> id=" +o.id;
-			d += " "+ o.sdObjectModelType;
 			d += " x=" +o.x;
 			d += " width=" +o.width;
 			d += " y=" +o.y;
@@ -985,6 +1015,46 @@ package com.simplediagrams.controllers
 //				}
 //			}
 			return blank;
+		}
+		
+		private function isSane(sdObjectModel:SDObjectModel):Boolean{
+			var xString:String = sdObjectModel.x.toString();
+			var yString:String = sdObjectModel.y.toString();
+			var widthString:String = sdObjectModel.width.toString();
+			var heightString:String = sdObjectModel.height.toString();
+			var is_ok:Boolean = true;
+			
+			if ( (xString.indexOf('179769313486231') == 0) 
+				|| (xString.indexOf('179769313486231') == 1) ) {
+				is_ok = false;
+			}
+			
+			if ( (yString.indexOf('179769313486231') == 0) 
+				|| (yString.indexOf('179769313486231') == 1) ){
+				sdObjectModel.y = 50;
+				is_ok = false;
+			}
+			
+			if ( (widthString.indexOf('179769313486231') == 0) 
+				|| (widthString.indexOf('179769313486231') == 1) ){
+				sdObjectModel.width = 50;
+				is_ok = false;
+			}
+			
+			if ( (heightString.indexOf('179769313486231') == 0) 
+				|| (heightString.indexOf('179769313486231') == 1) ){
+				sdObjectModel.height = 50;
+				is_ok = false;
+			}
+			
+			if (sdObjectModel is SDPencilDrawingModel)
+				if ( (sdObjectModel as SDPencilDrawingModel).linePath == "")
+  				is_ok = false;
+		
+			if (sdObjectModel.id == -1)
+				is_ok = false;
+			
+			return is_ok;
 		}
 		
 		private function isCorrupt(reportPrefix:String, changeObject:Object):Boolean{

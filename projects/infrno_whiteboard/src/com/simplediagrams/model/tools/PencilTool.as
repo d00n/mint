@@ -69,6 +69,10 @@ package com.simplediagrams.model.tools
 		public function commitPath():void
 		{			
 			var len:int = segments.length;
+			
+			if (len == 0)
+				return;
+			
 			var i:int;
 			var left:Number = Number.MAX_VALUE;
 			var top:Number =  Number.MAX_VALUE;
@@ -100,6 +104,7 @@ package com.simplediagrams.model.tools
 				var moveType:String = (segment.type == PathSegment.MOVE)?"M":"L";
 				path += moveType + " " + segment.x.toString() + "," + segment.y.toString() + " ";
 			}
+			
 			var evt:PencilDrawingEvent = new PencilDrawingEvent(PencilDrawingEvent.DRAWING_CREATED, true)
 			evt.path = path;
 			evt.color = _color;

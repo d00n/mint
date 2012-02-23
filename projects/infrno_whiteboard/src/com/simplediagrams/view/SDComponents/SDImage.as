@@ -67,7 +67,7 @@ package com.simplediagrams.view.SDComponents
 		
 		protected function onImageLoaded(event:Event):void
 		{
-			Logger.info("onImageLoaded() -----------------------------------------", this)
+			Logger.info("onImageLoaded() ",this)
 				
 			loading_pb.visible = false;
 			
@@ -232,7 +232,7 @@ package com.simplediagrams.view.SDComponents
 		}
 		
 		protected function onImageProgress(event:ProgressEvent):void{
-			Logger.info(event.toString(), this);
+//			Logger.info(event.toString(), this);
 		}
 		
 		protected function onImageSecurityError(event:SecurityErrorEvent):void{

@@ -28,6 +28,7 @@
 			import flash.desktop.ClipboardFormats;
 			
 			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
 			import mx.logging.LogEvent;
 			
 			[Bindable]
@@ -68,6 +69,8 @@
 			{
 				Clipboard.generalClipboard.clear(); 
 				Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, applicationController.startupLogs, false); 
+				
+				Alert.show("Please email to support@infrno.net. THANK YOU!", "Startup info copied.");
 			}
 			
 			[Mediate(event="RemoteStartupEvent.COMPLETE")]
@@ -104,7 +107,7 @@
           verticalCenter="1"
           width="450"
 			    height="280" 
-					editable="false" alpha=".9"
+					editable="false" alpha=".9" selectable="false"
  horizontalCenter="0"/>
 	  <s:Button id="proceedBtn" label="Proceed to game table" click="onProceed()" enabled="false"  x="30" y="329"/>
 	  <s:Button label="Copy startup info to clipboard" click="onCopyStartupInfo()"  x="184" y="329"/>

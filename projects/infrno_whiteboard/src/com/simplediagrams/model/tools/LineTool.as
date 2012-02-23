@@ -235,7 +235,7 @@ package com.simplediagrams.model.tools
 					}
 				}
 				_connectorPoints = resultConnectorPoints;				
-				Logger.info("calculatePoints", this);
+//				Logger.info("calculatePoints", this);
 			}
 			else
 			{

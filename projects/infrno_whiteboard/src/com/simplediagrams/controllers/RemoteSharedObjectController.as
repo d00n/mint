@@ -342,9 +342,9 @@ package com.simplediagrams.controllers
 					case SUCCESS:   
 						break;
 					case CHANGE:  {
-       			var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
-			      rle.status = "Game table load: onSync, pass 1, change " + i.toString();
- 			      dispatcher.dispatchEvent(rle);
+//       			var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+//			      rle.status = "Game table load: onSync, pass 1, change " + i.toString();
+// 			      dispatcher.dispatchEvent(rle);
 			
 						Logger.info("onSyncEventHandler non-Line pass, event.changeList[" +i + "].name:" + event.changeList[i].name,this);	
 						
@@ -352,9 +352,9 @@ package com.simplediagrams.controllers
 						changeObject = event.target.data[recordName];
 						
 						if (changeObject.commandName == "ObjectChanged") {
-       			  var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
-			        rle.status = "Game table load: onSync, pass 1, change #" + i.toString() +", object id:" + changeObject.id.toString();
- 			        dispatcher.dispatchEvent(rle);
+//       			  var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+//			        rle.status = "Game table load: onSync, pass 1, change #" + i.toString() +", object id:" + changeObject.id.toString();
+// 			        dispatcher.dispatchEvent(rle);
 			
 						  if (changeObject.sdObjectModelType == "SDLineModel") 
 							  lineChangeObjects.addItem(changeObject);
@@ -363,25 +363,25 @@ package com.simplediagrams.controllers
 						}
 						
 				    if (changeObject.commandName ==  "ConfigureGrid") {
-							var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
-			        rle.status = "Game table load: onSync, pass 1, configure grid, change #" + i.toString() ;
-							dispatcher.dispatchEvent(rle);
+//							var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+//			        rle.status = "Game table load: onSync, pass 1, configure grid, change #" + i.toString() ;
+//							dispatcher.dispatchEvent(rle);
 							
 					    processUpdate_ConfigureGrid(changeObject);
 						}
 						
 				    if (changeObject.commandName ==  "TextChanged") {
-							var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
-			        rle.status = "Game table load: onSync, pass 1, text edit, change #" + i.toString() +", object id:" + changeObject.id.toString();
-						  dispatcher.dispatchEvent(rle);
+//							var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+//			        rle.status = "Game table load: onSync, pass 1, text edit, change #" + i.toString() +", object id:" + changeObject.id.toString();
+//						  dispatcher.dispatchEvent(rle);
 						
 							processUpdate_TextChanged(changeObject);
 						}
 						
 						if (changeObject.commandName == "DeleteSelectedSDObjectModel") {
-							var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
-			        rle.status = "Game table load: onSync, pass 1, delete object, change #" + i.toString() +", object id:" + changeObject.id.toString();
-						  dispatcher.dispatchEvent(rle);
+//							var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+//			        rle.status = "Game table load: onSync, pass 1, delete object, change #" + i.toString() +", object id:" + changeObject.id.toString();
+//						  dispatcher.dispatchEvent(rle);
 						
 							deleteChangeObjects.addItem(changeObject);
 						}
@@ -392,9 +392,9 @@ package com.simplediagrams.controllers
 			}
 				
 			for each(var lineChangeObject:Object in lineChangeObjects){
- 			  var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
-        rle.status = "Game table load: onSync, pass 2, line change ";
-        dispatcher.dispatchEvent(rle);
+// 			  var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+//        rle.status = "Game table load: onSync, pass 2, line change ";
+//        dispatcher.dispatchEvent(rle);
 				
 				processUpdate_ObjectChanged(lineChangeObject);
 			}
@@ -407,27 +407,7 @@ package com.simplediagrams.controllers
 				
 //			dispatcher.dispatchEvent(new RemoteSharedObjectEvent(RemoteSharedObjectEvent.DIAGRAM_LOADED));
 		}
-	
-//		private function routeChange(changeObject:Object) : void {
-//			switch (changeObject.commandName) {
-//				case "DeleteSelectedSDObjectModel": {
-//					processUpdate_DeleteSelectedFromModel(changeObject);
-//					break;
-//				}
-//				case "ObjectChanged": {
-//					processUpdate_ObjectChanged(changeObject);
-//					break;
-//				}			
-////				case "UpdateDepths": {
-////					processUpdate_UpdateDepths(changeObject);
-////					break;
-////				}			
-//				case "ConfigureGrid": {
-//					processUpdate_ConfigureGrid(changeObject);
-//					break;
-//				}			
-//			}
-//		}
+
 
 		[Mediate(event="RemoteSharedObjectEvent.LOAD_IMAGE")]
 		public function dispatchUpdate_LoadImage(rsoEvent:RemoteSharedObjectEvent):void {
@@ -476,9 +456,9 @@ package com.simplediagrams.controllers
 		public function processUpdate_DeleteChangeObjects(deleteChangeObjects:ArrayCollection):void {
   	  var rsoEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.PROCESS_DELETE_SELECTED_FROM_MODEL);	
 			for each(var changeObject:Object in deleteChangeObjects) {
-  		  var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
-        rle.status = "Game table load: onSync, pass 3, delete object, object id:" + changeObject.id.toString();
-        dispatcher.dispatchEvent(rle);
+//  		  var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+//        rle.status = "Game table load: onSync, pass 3, delete object, object id:" + changeObject.id.toString();
+//        dispatcher.dispatchEvent(rle);
 				
 			  Logger.info("processUpdate_DeleteSelectedFromModel() changeObject.id:"+changeObject.id.toString(),this);
 			  rsoEvent.idAC.addItem(changeObject.id);

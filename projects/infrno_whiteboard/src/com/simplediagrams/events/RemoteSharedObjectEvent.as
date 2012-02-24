@@ -60,7 +60,7 @@ package com.simplediagrams.events
 		public var auth_key:String = "sample_auth_key";
 		
 //		public var room_id:String = "hugeSdPencilParams";
-		public var room_id:String = "3";
+		public var room_id:String = "err_1015";
 		
 		public var room_name:String = "";
 		public var user_name:String = "";

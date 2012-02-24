@@ -12,18 +12,18 @@
 			import mx.events.ResizeEvent;
 			
 			protected function InfrnoChat_Application_resizeHandler(event:ResizeEvent):void {				
-				// This event fires before everything is in place, so mind your nulls
-				if (ChatVGroup) {
-					ChatVGroup.width = this.width;
-				}
+//				// This event fires before everything is in place, so mind your nulls
+//				if (ChatVGroup) {
+//					ChatVGroup.width = this.width;
+//				}
 			}
-			
-			public function updateDimensions(width:int, height:int):void{
-				ChatVGroup.width = width;
-				ChatVGroup.height = height;
-				
-//				videosComponent.height = height - chatComponent.height - 10;
-			}
+//			
+//			public function updateDimensions(width:int, height:int):void{
+//				ChatVGroup.width = width;
+//				ChatVGroup.height = height;
+//				
+////				videosComponent.height = height - chatComponent.height - 10;
+//			}
 
 		]]>
 	</fx:Script>	
@@ -49,16 +49,16 @@
 		</mx:VDividedBox>
 	</s:VGroup>
 	-->
-
+<!--
 	<s:VGroup id="ChatVGroup" height="100%">
 		<mx:VDividedBox id="ChatVDividedBox" width="100%" height="100%">			
 			<components:VideosGroup id="videosComponent" width="100%" height="100%"/>
-			<!--components:StatsGroup id="statsComponent" width="100%" height="0" visible="false"/-->
 			<components:Chat id="chatComponent" width="100%" />
 		</mx:VDividedBox>
 	</s:VGroup>
+	-->
 	
-
+	<components:Chat id="chatComponent" width="100%" />
 
 		
 </s:Application>

@@ -12,6 +12,7 @@ package com.simplediagrams.events
 		public static const STICKY_NOTE_ADDED:String = "stickyNoteAdded"
 		public static const INDEX_CARD_ADDED:String = "indexCardAdded"
 		public static const NAPKIN_ADDED:String = "napkinAdded"
+		public static const CHAT_VIEW_MOVED:String = "chatViewMoved"
 		
 		public var libraryName:String 
 		public var symbolName:String 

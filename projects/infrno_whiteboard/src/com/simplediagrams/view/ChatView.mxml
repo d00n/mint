@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"		 
+		 creationComplete="myPanelCCHandler(event);"
+		 width="300"
+		 height="185"
+		 skinClass="com.simplediagrams.view.skins.ResizableDraggableTitleWindowSkin"
+		 resize="ChatSwfLoader_resizeHandler(event)"
+		 cornerRadius="0"
+		 >
+	
+	<fx:Script>
+		<![CDATA[
+			import com.simplediagrams.events.DrawingBoardItemDroppedEvent;
+			
+			import mx.containers.Canvas;
+			import mx.core.DragSource;
+			import mx.events.DragEvent;
+			import mx.events.ResizeEvent;
+			import mx.managers.CursorManager;
+			import mx.managers.DragManager;
+			import mx.managers.SystemManager;
+			
+	
+			public function handleSwfLoaderComplete( event:Event ) : void 
+			{
+				var displayObject:DisplayObject = loadedChatSwf.content;
+				displayObject.addEventListener( "CHAT_CLOSE", handleChatClose, false, 0, true );
+				
+				try {
+					var loadedSM:SystemManager = SystemManager(loadedChatSwf.content);
+					loadedSM.application["updateDimensions"] (this.width, this.height - 8);
+				} catch(e:Error) {
+					trace("loadedSM.application[updateDimensions]  threw:" + e);
+				}
+			}
+			
+			public function handleChatClose( event:Event ) : void 
+			{
+				trace( "Chat.handleChatClose()" );
+				var displayObject:DisplayObject = loadedChatSwf.content;
+				displayObject.removeEventListener( "CHAT_CLOSE", handleChatClose );
+				
+				loadedChatSwf.source = "";				
+				loadedChatSwf.unloadAndStop(true);
+			}
+
+			protected function ChatSwfLoader_resizeHandler(event:ResizeEvent):void
+			{
+//				trace("ChatSwfLoader_resizeHandler old width,height:" + loadedChatSwf.width +','+ loadedChatSwf.height);
+//				loadedChatSwf.width = this.width;	
+//				loadedChatSwf.height = this.height;
+//				trace("ChatSwfLoader_resizeHandler new width,height:" + loadedChatSwf.width +','+ loadedChatSwf.height);
+
+//				try {
+//					Object(loadedChatSwf.content).setActualSize(this.width, this.height);
+//				} catch(e:Error) {
+//					trace("Object(loadedChatSwf.content).setActualSize threw:" + e);
+//				}
+				
+				try {
+					var loadedSM:SystemManager = SystemManager(loadedChatSwf.content);
+					loadedSM.application["updateDimensions"] (this.width, this.height - 8);
+				} catch(e:Error) {
+					trace("loadedSM.application[updateDimensions]  threw:" + e);
+				}
+			}
+			
+			// Creation complete handler for each panel to add the 
+			// mouseMove event handler to the title bar. 
+			// Clicking the mouse button, then moving the mouse on the title bar
+			// initiates the d&d operation. 
+			private function myPanelCCHandler(event:Event):void 
+			{
+				closeButton.visible = false;
+			}
+
+		]]>
+	</fx:Script>
+
+	
+	<mx:SWFLoader id="loadedChatSwf" 
+			source="InfrnoChat.swf" 
+			height="100%"
+			width="100%"
+			complete="handleSwfLoaderComplete(event);" />
+	
+</s:TitleWindow>

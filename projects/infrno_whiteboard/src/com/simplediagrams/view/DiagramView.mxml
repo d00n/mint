@@ -13,6 +13,7 @@
 	
 		<![CDATA[
 			import com.simplediagrams.events.DeleteSDObjectModelEvent;
+			import com.simplediagrams.events.DrawingBoardItemDroppedEvent;
 			import com.simplediagrams.events.ExportDiagramEvent;
 			import com.simplediagrams.events.ExportDiagramUserRequestEvent;
 			import com.simplediagrams.events.SaveDiagramEvent;
@@ -25,7 +26,6 @@
 			
 			import flash.events.Event;
 			import flash.events.KeyboardEvent;
-//			import flash.filesystem.*;
 			
 			import mx.core.FlexGlobals;
 			import mx.core.UITextField;
@@ -113,7 +113,14 @@
 					shapesPanel.width = 170;
 				}
 			}  
-    			    			
+			
+//			[Mediate(event='DrawingBoardItemDroppedEvent.CHAT_VIEW_MOVED')]
+//			public function moveChatView(event:DrawingBoardItemDroppedEvent):void 
+//			{
+//				chatView.x = event.dropX - chatView.xOff;
+//				chatView.y = event.dropY - chatView.yOff;
+//			}
+    			
 		]]>
 
 	</fx:Script>
@@ -131,6 +138,7 @@
 	
 	
 	<view:ToolPanel id="toolPanel" x="2" y="2" />
+	<view:ChatView id="chatView" x="2" y="300" />
 	
 	<view:PercentView id="percentView" x="{drawingBoard.width/2 - 45}" top="10"/>
 	

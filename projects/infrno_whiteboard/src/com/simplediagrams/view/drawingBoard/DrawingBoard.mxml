@@ -32,6 +32,7 @@
 			import com.simplediagrams.model.libraries.LibraryItem;
 			import com.simplediagrams.model.tools.ToolMouseInfo;
 			import com.simplediagrams.util.Logger;
+			import com.simplediagrams.view.ChatView;
 			import com.simplediagrams.view.SDComponents.*;
 			import com.simplediagrams.view.tools.LineTransformHandle;
 			import com.simplediagrams.view.tools.ObjectTransformHandle;
@@ -93,7 +94,7 @@
 			
 			private function onDragEnter(event:DragEvent):void 
 			{
-				if (event.dragSource.hasFormat('libraryItem') || event.dragSource.hasFormat('annotationTool')|| event.dragSource.hasFormat('backgroundLibraryItem')) 
+				if (event.dragSource.hasFormat('libraryItem') || event.dragSource.hasFormat('annotationTool')|| event.dragSource.hasFormat('backgroundLibraryItem')) // || event.dragSource.hasFormat('chatView')) 
 				{
 					DragManager.acceptDragDrop(this);          
 				}
@@ -194,14 +195,21 @@
 						default:
 							Logger.warn("Unrecognized tool type: " + toolObject.type, this)
 							return
-					}			
+					}
 					
 					defaultToolDroppedEvent.dropX = p.x 
 					defaultToolDroppedEvent.dropY = p.y     
 					
 					dispatchEvent(defaultToolDroppedEvent)		 
 				}
-				
+//				else if (event.dragSource.hasFormat("chatView"))
+//				{										
+//					var chatViewMovedEvt:DrawingBoardItemDroppedEvent = new DrawingBoardItemDroppedEvent(DrawingBoardItemDroppedEvent.CHAT_VIEW_MOVED, true)                        
+//					chatViewMovedEvt.dropX = p.x
+//					chatViewMovedEvt.dropY = p.y
+//					
+//					dispatchEvent(chatViewMovedEvt)
+//				}				
 				
 			}
 			

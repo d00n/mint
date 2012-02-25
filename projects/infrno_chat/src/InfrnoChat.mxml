@@ -17,13 +17,16 @@
 //					ChatVGroup.width = this.width;
 //				}
 			}
-//			
-//			public function updateDimensions(width:int, height:int):void{
+			
+			public function updateDimensions(width:int, height:int):void{
+				chatComponent.width = width;
+				chatComponent.height = height;
+				
 //				ChatVGroup.width = width;
 //				ChatVGroup.height = height;
 //				
 ////				videosComponent.height = height - chatComponent.height - 10;
-//			}
+			}
 
 		]]>
 	</fx:Script>	

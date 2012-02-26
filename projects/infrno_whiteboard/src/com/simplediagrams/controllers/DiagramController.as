@@ -439,12 +439,24 @@ package com.simplediagrams.controllers
 					}
 				}
 				index = diagramManager.diagramModel.sdObjects.getItemIndex(item);
-				if (index > -1)
+				if (index > -1) {
 				  diagramManager.diagramModel.sdObjects.removeItemAt(index);
+					packDepthSlots(item.depth);
+				}
 			}
 		}
 				
-		
+		public function packDepthSlots(depth:int): void {
+			var len:uint = diagramManager.diagramModel.sdObjects.length
+			for (var i:uint=0;i<len;i++)			 
+			{
+				var sdObjectModel:SDObjectModel = diagramManager.diagramModel.sdObjects.getItemAt(i) as SDObjectModel;
+				if (sdObjectModel.depth > depth)
+				{
+					sdObjectModel.depth--;	
+				}
+			}		
+		}
 		
 		
 		[Mediate(event='ExportDiagramEvent.EXPORT_TO_CLIPBOARD')]
@@ -706,7 +718,7 @@ package com.simplediagrams.controllers
 			
 			var remoteSharedObjectEvent:RemoteSharedObjectEvent = new RemoteSharedObjectEvent(RemoteSharedObjectEvent.LOAD_IMAGE, true, true);
 			remoteSharedObjectEvent.imageData = _fileReference.data;
-			remoteSharedObjectEvent.imageName = _fileReference.name;
+			remoteSharedObjectEvent.imageName = _fileReference.name.replace(/[^a-zA-Z0-9.]+/g, '_');
 			remoteSharedObjectEvent.sdImageModel = _currModelForImageLoad;
 			dispatcher.dispatchEvent(remoteSharedObjectEvent);	
 		}

@@ -9,7 +9,7 @@ package com.simplediagrams.util
 		/* TODO: implement this class so that it grabs version and name info from AIR (if this is an AIR app) or from MDM (if this is a zinc app) */
 		
 		public static var applicationName:String = "SimpleDiagram"
-		public static const VERSION:String		= "v0.2.07";
+		public static const VERSION:String		= "v0.2.08";
 		
 		public function AboutInfo()
 		{

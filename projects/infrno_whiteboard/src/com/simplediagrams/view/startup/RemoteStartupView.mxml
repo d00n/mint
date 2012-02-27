@@ -127,9 +127,9 @@
 
 	<mx:Label id="lblVersion"
 				color="#020202"
-				text="V3.0"
-				x="418"
-				y="329" 
+				text="Version"
+				top="11"
+				right="10"
 				 width="62" textAlign="right" fontWeight="bold"/>
 	
 </s:Group>

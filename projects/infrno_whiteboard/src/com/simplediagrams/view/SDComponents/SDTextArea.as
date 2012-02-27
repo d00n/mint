@@ -278,6 +278,8 @@ package com.simplediagrams.view.SDComponents
 		{
 			textAreaEnabled = false
 			_model.text = mainText.text
+				
+			this.contextMenu = this.contextMenuBaseDefaults;
 		}
 		
 		

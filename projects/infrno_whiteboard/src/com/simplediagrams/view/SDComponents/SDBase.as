@@ -88,8 +88,11 @@ package com.simplediagrams.view.SDComponents
 //			updateContextMenu();
 		
 			this.contextMenu = _contextMenu
-				
 		}
+		
+//		public function get contextMenuBaseDefaults():ContextMenu{
+//			return _contextMenu;
+//		}
 		
 //		private function updateContextMenu():void{
 //			if (isLocked) {

@@ -51,6 +51,7 @@ package com.simplediagrams.controllers
 	import flashx.textLayout.formats.Category;
 	
 	import mx.collections.ArrayCollection;
+	import mx.controls.Alert;
 	import mx.core.UIComponent;
 	import mx.graphics.codec.PNGEncoder;
 	import mx.utils.object_proxy;
@@ -196,7 +197,8 @@ package com.simplediagrams.controllers
 						rle.status = "Game table load: connection error.";
 						rle.error = "Game table load: connection error "+event.toString();
        			dispatcher.dispatchEvent(rle);
-			
+						
+						Alert.show(event.toString(), "Network connection closed");			
 						break;
 					case "NetConnection.Connect.Failed":  
 						Logger.info("onNetConnStatus NetConnection.Connect.Failed", this);  
@@ -205,6 +207,7 @@ package com.simplediagrams.controllers
 						rle.error = "Game table load: connection error "+event.info.code +":"+ event.target.uri;
 						dispatcher.dispatchEvent(rle);
 						
+						Alert.show(event.toString(), "Network connection failed");			
 						break;				
 					case "NetConnection.Connect.Rejected":
 						Logger.info("onNetConnStatus NetConnection.Connect.Rejected", this);  
@@ -213,6 +216,7 @@ package com.simplediagrams.controllers
 						rle.error = "Game table load: connection error "+event.info.code +":"+ event.info.description;
 						dispatcher.dispatchEvent(rle);
 						
+						Alert.show(event.toString(), "Network connection rejected");			
 						break;					
 				}      
 			}
@@ -257,6 +261,7 @@ package com.simplediagrams.controllers
 						rle.status = "Game table load: shared object error "+event.toString();
        			dispatcher.dispatchEvent(rle);
 			
+						Alert.show(event.toString(), "Shared object closed");			
 						Logger.info("onCreateSOStatus NetConnection.Connect.Closed", this);  
 						break;
 				}      
@@ -265,6 +270,7 @@ package com.simplediagrams.controllers
 		
 		public function securityErrorHandler(event : SecurityErrorEvent) : void {  
 			Logger.error('securityErrorHandler() '+event, this);  
+			Alert.show(event.toString(), "Network connection SecurityError");			
 			
 			var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.ERROR);
 			rle.status = "Game table load: connection error.";
@@ -273,6 +279,7 @@ package com.simplediagrams.controllers
 		}
 		public function ioErrorHandler(event : IOErrorEvent) : void {  
 			Logger.error('ioErrorHandler() :'+event, this);  
+			Alert.show(event.toString(), "Network connection IOError");			
 			
 			var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.ERROR);
 			rle.status = "Game table load: connection error.";
@@ -281,6 +288,7 @@ package com.simplediagrams.controllers
 		}
 		public function asyncErrorHandler(event : AsyncErrorEvent) : void {  
 			Logger.error('asyncErrorHandler() :'+event, this);  
+			Alert.show(event.toString(), "Network connection AsyncError");			
 			
 			var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.ERROR);
 			rle.status = "Game table load: connection error.";

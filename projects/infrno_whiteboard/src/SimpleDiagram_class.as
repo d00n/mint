@@ -137,11 +137,6 @@ protected function onApplicationComplete():void
 		flash_vars = loader_info.loader.loaderInfo.parameters;
 	}catch(e:Object){
 		Logger.debug("onApplicationComplete() not loaded by another movie", this);
-
-		// To facilitate dev work, rsoEvent has default values set for auth_key and room_id. 
-		// Wowza will accept these values for specified hosts.
-		dispatcher.dispatchEvent(rsoEvent);
-		return;
 	}
 		
 

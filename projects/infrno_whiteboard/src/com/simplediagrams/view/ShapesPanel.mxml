@@ -91,7 +91,7 @@
 		<s:Group width="100%" height="100%">			
 			<s:Rect  width="100%" height="100%">
 				<s:fill>
-					<s:BitmapFill source="@Embed('assets/img/backgrounds/shape_library_bg.png')" fillMode="repeat"/>
+					<s:BitmapFill source="@Embed('assets/img/backgrounds/chalkboard.png')" fillMode="repeat"/>
 				</s:fill>					
 			</s:Rect>
 			<!-- view:LibraryPanel id="libraryPanel" height="100%" width="100%" contentBackgroundAlpha="0" backgroundAlpha="0" / -->

@@ -31,6 +31,8 @@
 			import mx.controls.Alert;
 			import mx.logging.LogEvent;
 			
+			import spark.filters.GlowFilter;
+			
 			[Bindable]
 			[Inject]
 			public var applicationModel:ApplicationModel;    
@@ -74,9 +76,18 @@
 			}
 			
 			[Mediate(event="RemoteStartupEvent.COMPLETE")]
-			public function showDiagram():void{
+			public function showDiagram(e:RemoteStartupEvent):void{
+				loadingStatus.appendText(e.status + "\n");				
 				status_lbl.text = "Startup complete";
 				proceedBtn.enabled = true;
+				
+				var glow:spark.filters.GlowFilter = new spark.filters.GlowFilter();
+				glow.strength=2;
+				glow.color= 0xE05700;
+				glow.blurX = 4;
+				glow.blurY = 4;
+					
+				proceedBtn.filters = [glow];
 			}
 			
 			protected function onProceed():void
@@ -109,15 +120,16 @@
 			    height="280" 
 					editable="false" alpha=".9" selectable="false"
  horizontalCenter="0"/>
+	
 	  <s:Button id="proceedBtn" label="Proceed to game table" click="onProceed()" enabled="false"  x="30" y="329"/>
 	  <s:Button label="Copy startup info to clipboard" click="onCopyStartupInfo()"  x="184" y="329"/>
 			
 
 	<mx:Label id="lblVersion"
 				color="#020202"
-				text="V3.0"
-				x="418"
-				y="329" 
+				text="Version"
+				top="11"
+				right="10"
 				 width="62" textAlign="right" fontWeight="bold"/>
 	
 </s:Group>

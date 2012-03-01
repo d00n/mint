@@ -219,11 +219,11 @@ package com.simplediagrams.view.SDComponents
 		}
 		
 		protected function onImageHttpStatus(event:HTTPStatusEvent):void{
-			Logger.info(event.toString(), this);
+			Logger.info("onImageHttpStatus() "+event.toString(), this);
 		}
 		
 		protected function onImageIoError(event:IOErrorEvent):void{
-			Logger.info(event.toString(), this);
+			Logger.info("onImageIoError()" + event.toString(), this);
 			mx.controls.Alert.show(event.toString(), "Image loading error");  
 		}
 		
@@ -236,7 +236,7 @@ package com.simplediagrams.view.SDComponents
 		}
 		
 		protected function onImageSecurityError(event:SecurityErrorEvent):void{
-			Logger.info(event.toString(), this);
+			Logger.info("onImageSecurityError() "+event.toString(), this);
 			mx.controls.Alert.show(event.toString(), "Image security error");  
 		}
 		

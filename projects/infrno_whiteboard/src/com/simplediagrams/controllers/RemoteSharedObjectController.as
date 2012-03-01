@@ -334,6 +334,8 @@ package com.simplediagrams.controllers
 			var recordName:String;
 			var changeObject:Object;
 			
+			var numOfChanges:int = 0;
+			
 			var lineChangeObjects:ArrayCollection = new ArrayCollection();
 			var deleteChangeObjects:ArrayCollection = new ArrayCollection();
 			
@@ -355,6 +357,7 @@ package com.simplediagrams.controllers
 //       			  var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
 //			        rle.status = "Game table load: onSync, pass 1, change #" + i.toString() +", object id:" + changeObject.id.toString();
 // 			        dispatcher.dispatchEvent(rle);
+  						numOfChanges += 1;
 			
 						  if (changeObject.sdObjectModelType == "SDLineModel") 
 							  lineChangeObjects.addItem(changeObject);
@@ -401,6 +404,14 @@ package com.simplediagrams.controllers
 				
 			processUpdate_DeleteChangeObjects(deleteChangeObjects);
 			
+ 		  var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+      rle.status = "Game table load: number of adds/changes: " + numOfChanges;
+      dispatcher.dispatchEvent(rle);
+    			
+ 		  var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.STATUS);
+      rle.status = "Game table load: number of deletes: " + deleteChangeObjects.length;
+      dispatcher.dispatchEvent(rle);
+    			
 		  var rle:RemoteStartupEvent = new RemoteStartupEvent(RemoteStartupEvent.COMPLETE);
       rle.status = "Game table load: complete";
       dispatcher.dispatchEvent(rle);
@@ -662,15 +673,17 @@ package com.simplediagrams.controllers
 					sd_obj.showTape       			= sdTextAreaModel.showTape;	
 					sd_obj.text                 = sdTextAreaModel.text;	
 
-					Logger.info("dispatchUpdate_ObjectChanged() sdTextAreaModel.text=" + sdTextAreaModel.text + ", depth=" + sdTextAreaModel.depth.toString() + ", depth=" + sdTextAreaModel.depth.toString(), this);
+					Logger.info("dispatchUpdate_ObjectChanged() sdTextAreaModel.text=" + sdTextAreaModel.text + ", depth=" + sdTextAreaModel.depth.toString(), this);
 				}
 				
 								
+				var placementDetails:String = sd_obj.sdObjectModelType + stateString(sdObjectModel);
 				if (isSane(sdObjectModel)) {
   				_remoteSharedObject.setProperty(sd_obj.id.toString(), sd_obj);
+	    		Logger.debug("dispatchUpdate_ObjectChanged() "+placementDetails, this);
 				} else {
     			var placementDetails:String = sd_obj.sdObjectModelType + stateString(sdObjectModel);
-	    		Logger.error("dispatchUpdate_ObjectChanged() skipping object with insane params: "+placementDetails);
+	    		Logger.error("dispatchUpdate_ObjectChanged() skipping object with insane params: "+placementDetails, this);
 				}
 				
 			}
@@ -778,7 +791,7 @@ package com.simplediagrams.controllers
 					
 					sdObjectModel = sdTextAreaModel;
 					
-					Logger.info("processUpdate_ObjectChanged() sdTextAreaModel.text=" + sdTextAreaModel.text + ", depth=" + sdTextAreaModel.depth.toString(), this);
+					Logger.info("processUpdate_ObjectChanged() sdTextAreaModel.text=" + sdTextAreaModel.text, this);
 					break;
 				}
 				case "SDLineModel": {

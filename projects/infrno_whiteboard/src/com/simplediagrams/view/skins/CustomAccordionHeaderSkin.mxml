@@ -49,6 +49,18 @@ in accordance with the terms of the license agreement accompanying it.
 		<s:fill>
 			
 			<s:LinearGradient rotation="80">
+				<s:GradientEntry color="0x4d5771" 
+												 color.over="0x899cd1" 
+												 color.down="0xAAAAAA" 
+												 alpha="1" />
+				<s:GradientEntry color="0x434b60" 
+												 color.over="0x8596c4" 
+												 color.down="0x929496" 
+												 alpha="1" />
+			</s:LinearGradient>
+			
+<!-- a brown/orange treatment
+			<s:LinearGradient rotation="80">
 				<s:GradientEntry color="0x271A07" 
 								 color.over="0x401F00"  
 								 color.down="0x401F00" 
@@ -58,6 +70,7 @@ in accordance with the terms of the license agreement accompanying it.
 								 color.down="0x837B56" 
 								 alpha="1" />
 			</s:LinearGradient>
+-->
 			
 		</s:fill>
 	</s:Rect>

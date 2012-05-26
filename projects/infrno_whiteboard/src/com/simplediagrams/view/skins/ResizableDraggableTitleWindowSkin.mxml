@@ -98,7 +98,8 @@
 		<![CDATA[
 			import flex.utils.spark.resize.MoveManager;
 			import flex.utils.spark.resize.ResizeManager;
-			
+			import com.simplediagrams.events.TextChatEvent;
+		
 			import mx.events.FlexEvent;
 
 			[Bindable]
@@ -119,6 +120,12 @@
 				
 //				topGroup.addEventListener(MouseEvent.MOUSE_OVER, onMouseOverTopGroup);
 //				topGroup.addEventListener(MouseEvent.MOUSE_OUT, onMouseOutTopGroup);
+			}
+			
+			protected function onCloseButtonClick():void	
+			{					
+				var evt:TextChatEvent = new TextChatEvent(TextChatEvent.TEXT_CHAT_EVENT, true)
+				dispatchEvent(evt)					
 			}
 			
 //			public function onMouseOverTopGroup(e:MouseEvent):void{
@@ -327,6 +334,7 @@
 
 				<!--- @copy spark.components.TitleWindow#closeButton -->
 				<s:Button id="closeButton"
+									click="onCloseButtonClick()"
 					height="15"
 					width="15"
 					right="0"

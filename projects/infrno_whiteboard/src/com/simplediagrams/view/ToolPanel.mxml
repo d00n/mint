@@ -156,7 +156,7 @@
 				dispatchEvent(evt)					
 			}
 			
-			protected function onChat():void	
+			protected function onChatToggle():void	
 			{					
 				var evt:TextChatEvent = new TextChatEvent(TextChatEvent.TEXT_CHAT_EVENT, true)
 				dispatchEvent(evt)					
@@ -268,7 +268,7 @@
 					skinClass="com.simplediagrams.view.skins.AlignButtonPopUpSkin"
 					/>
 
-		<mx:Button icon="{chat}" click="onChat()" width="20" height="20" toolTip="Text chat"/>	
+		<mx:Button icon="{chat}" click="onChatToggle()" width="20" height="20" toolTip="Text chat"/>	
 		
 	</s:VGroup>
 		

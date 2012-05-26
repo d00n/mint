@@ -78,7 +78,8 @@
 //				closeButton.visible = false;
 				var skin:ResizableDraggableTitleWindowSkin = (this.skin as ResizableDraggableTitleWindowSkin);
 				skin.moveManager.constrainToParentBounds = true;
-				skin.resizeManager.constrainToParentBounds = true;				
+				skin.resizeManager.constrainToParentBounds = true;		
+				
 				
 				try {
 					var loadedSM:SystemManager = SystemManager(loadedChatSwf.content);

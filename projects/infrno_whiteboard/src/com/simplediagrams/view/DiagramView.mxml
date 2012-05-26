@@ -114,6 +114,11 @@
 				}
 			}  
 			
+			[Mediate(event='TextChatEvent.TEXT_CHAT_EVENT')]
+			public function onTextChatToggle(): void
+			{
+				chatView.visible = !chatView.visible;
+			} 			
 //			[Mediate(event='DrawingBoardItemDroppedEvent.CHAT_VIEW_MOVED')]
 //			public function moveChatView(event:DrawingBoardItemDroppedEvent):void 
 //			{

@@ -117,16 +117,16 @@
 				resizeManager = new ResizeManager(hostComponent, resizeHandle);
 				moveManager = new MoveManager(hostComponent, moveArea);
 				
-				topGroup.addEventListener(MouseEvent.MOUSE_OVER, onMouseOverTopGroup);
-				topGroup.addEventListener(MouseEvent.MOUSE_OUT, onMouseOutTopGroup);
+//				topGroup.addEventListener(MouseEvent.MOUSE_OVER, onMouseOverTopGroup);
+//				topGroup.addEventListener(MouseEvent.MOUSE_OUT, onMouseOutTopGroup);
 			}
 			
-			public function onMouseOverTopGroup(e:MouseEvent):void{
-				cursorManager.setCursor(CursorMove);
-			}
-			public function onMouseOutTopGroup(e:MouseEvent):void{
-				cursorManager.removeAllCursors()
-			}
+//			public function onMouseOverTopGroup(e:MouseEvent):void{
+//				cursorManager.setCursor(CursorMove);
+//			}
+//			public function onMouseOutTopGroup(e:MouseEvent):void{
+//				cursorManager.removeAllCursors()
+//			}
 		]]>
 	</fx:Script>
 
@@ -241,7 +241,7 @@
 			</s:layout>
 			<!--- @private -->
 			<s:Group id="topGroup"
-							 height="5"
+							 height="15"
 				mask="{topGroupMask}">
 
 				<!--- layer 0: title bar fill @private -->
@@ -303,7 +303,7 @@
 				<!-- layer 3: text -->
 				<!--- @copy spark.components.Panel#titleDisplay -->
 				<s:Label id="titleDisplay"
-					minHeight="0"
+					minHeight="10"
 					bottom="0"
 					fontWeight="bold"
 					left="19"
@@ -329,8 +329,8 @@
 				<s:Button id="closeButton"
 					height="15"
 					width="15"
-					right="7"
-					top="7"
+					right="0"
+					top="0"
 					skinClass="spark.skins.spark.TitleWindowCloseButtonSkin"/>
 			</s:Group>
 

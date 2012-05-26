@@ -22,6 +22,8 @@
 			import mx.managers.DragManager;
 			import mx.managers.SystemManager;
 			
+			private static var HEIGHT_ALLOWANCE = 20;
+			
 	
 			public function handleSwfLoaderComplete( event:Event ) : void 
 			{
@@ -30,9 +32,9 @@
 				
 				try {
 					var loadedSM:SystemManager = SystemManager(loadedChatSwf.content);
-					loadedSM.application["updateDimensions"] (this.width, this.height - 8);
+					loadedSM.application["updateDimensions"] (this.width, this.height - HEIGHT_ALLOWANCE);
 				} catch(e:Error) {
-					trace("loadedSM.application[updateDimensions]  threw:" + e);
+					trace("handleSwfLoaderComplete: loadedSM.application[updateDimensions]  threw:" + e);
 				}
 			}
 			
@@ -61,9 +63,9 @@
 				
 				try {
 					var loadedSM:SystemManager = SystemManager(loadedChatSwf.content);
-					loadedSM.application["updateDimensions"] (this.width, this.height - 8);
+					loadedSM.application["updateDimensions"] (this.width, this.height - HEIGHT_ALLOWANCE);
 				} catch(e:Error) {
-					trace("loadedSM.application[updateDimensions]  threw:" + e);
+					trace("ChatSwfLoader_resizeHandler: loadedSM.application[updateDimensions]  threw:" + e);
 				}
 			}
 			
@@ -73,7 +75,17 @@
 			// initiates the d&d operation. 
 			private function myPanelCCHandler(event:Event):void 
 			{
-				closeButton.visible = false;
+//				closeButton.visible = false;
+				var skin:ResizableDraggableTitleWindowSkin = (this.skin as ResizableDraggableTitleWindowSkin);
+				skin.moveManager.constrainToParentBounds = true;
+				skin.resizeManager.constrainToParentBounds = true;				
+				
+				try {
+					var loadedSM:SystemManager = SystemManager(loadedChatSwf.content);
+					loadedSM.application["updateDimensions"] (this.width, this.height - HEIGHT_ALLOWANCE);
+				} catch(e:Error) {
+					trace("myPanelCCHandler: loadedSM.application[updateDimensions]  threw:" + e);
+				}				
 			}
 
 		]]>

@@ -22,6 +22,7 @@
 			import com.simplediagrams.events.ShapesPanelEvent;
 			import com.simplediagrams.events.StyleEvent;
 			import com.simplediagrams.events.ToolPanelEvent;
+			import com.simplediagrams.events.TextChatEvent;
 			import com.simplediagrams.events.UndoRedoEvent;
 			import com.simplediagrams.model.DiagramModel;
 			import com.simplediagrams.model.ToolsManager;
@@ -98,6 +99,10 @@
 			[Embed(source='assets/img/icons/zoom.png')]
 			private var magnifier:Class
 			
+			[Bindable]
+			[Embed(source='assets/img/icons/chat_16x16.png')]
+			private var chat:Class
+			
 			
 			protected function onCC():void
 			{
@@ -151,7 +156,12 @@
 				dispatchEvent(evt)					
 			}
 			
-			
+			protected function onChat():void	
+			{					
+				var evt:TextChatEvent = new TextChatEvent(TextChatEvent.TEXT_CHAT_EVENT, true)
+				dispatchEvent(evt)					
+			}
+						
 			protected function onLineTool():void
 			{				
 				var evt:ToolPanelEvent = new ToolPanelEvent(ToolPanelEvent.TOOL_SELECTED, true)
@@ -258,7 +268,8 @@
 					skinClass="com.simplediagrams.view.skins.AlignButtonPopUpSkin"
 					/>
 
-
+		<mx:Button icon="{chat}" click="onChat()" width="20" height="20" toolTip="Text chat"/>	
+		
 	</s:VGroup>
 		
 	

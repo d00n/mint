@@ -138,7 +138,7 @@
 	
 	
 	<view:ToolPanel id="toolPanel" x="2" y="2" />
-	<view:ChatView id="chatView" x="2" y="300" />
+	<view:ChatView id="chatView" x="0" bottom="15" />
 	
 	<view:PercentView id="percentView" x="{drawingBoard.width/2 - 45}" top="10"/>
 	
